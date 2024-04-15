@@ -1,0 +1,705 @@
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kuid-system
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.14.0
+  name: networkinstances.ipam.res.kuid.dev
+spec:
+  group: ipam.res.kuid.dev
+  names:
+    categories:
+    - kuid
+    - ipam
+    kind: NetworkInstance
+    listKind: NetworkInstanceList
+    plural: networkinstances
+    singular: networkinstance
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.conditions[?(@.type=='Ready')].status
+      name: READY
+      type: string
+    - jsonPath: .metadata.name
+      name: NETWORK-INSTANCE
+      type: string
+    - jsonPath: .spec.prefixes[0].prefix
+      name: PREFIX0
+      type: string
+    - jsonPath: .spec.prefixes[1].prefix
+      name: PREFIX1
+      type: string
+    - jsonPath: .spec.prefixes[2].prefix
+      name: PREFIX2
+      type: string
+    - jsonPath: .spec.prefixes[3].prefix
+      name: PREFIX3
+      type: string
+    - jsonPath: .spec.prefixes[4].prefix
+      name: PREFIX4
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: AGE
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: NetworkInstance is the Schema for the networkinstances API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: NetworkInstanceSpec defines the desired state of NetworkInstance
+            properties:
+              prefixes:
+                description: |-
+                  Prefixes define the aggregate prefixes for the network instance
+                  A Network instance needs at least 1 prefix to be defined to become operational
+                items:
+                  properties:
+                    labels:
+                      additionalProperties:
+                        type: string
+                      description: Labels as user defined labels
+                      type: object
+                    prefix:
+                      description: Prefix defines the ip cidr in prefix notation.
+                      pattern: (([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/(([0-9])|([1-2][0-9])|(3[0-2]))|((:|[0-9a-fA-F]{0,4}):)([0-9a-fA-F]{0,4}:){0,5}((([0-9a-fA-F]{0,4}:)?(:|[0-9a-fA-F]{0,4}))|(((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])))(/(([0-9])|([0-9]{2})|(1[0-1][0-9])|(12[0-8])))
+                      type: string
+                  required:
+                  - prefix
+                  type: object
+                type: array
+            required:
+            - prefixes
+            type: object
+          status:
+            description: NetworkInstanceStatus defines the observed state of NetworkInstance
+            properties:
+              conditions:
+                description: Conditions of the resource.
+                items:
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        lastTransitionTime is the last time the condition transitioned from one status to another.
+                        This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        message is a human readable message indicating details about the transition.
+                        This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: |-
+                        observedGeneration represents the .metadata.generation that the condition was set based upon.
+                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+                        with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: |-
+                        reason contains a programmatic identifier indicating the reason for the condition's last transition.
+                        Producers of specific condition types may define expected values and meanings for this field,
+                        and whether the values are considered a guaranteed API.
+                        The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: |-
+                        type of condition in CamelCase or in foo.example.com/CamelCase.
+                        ---
+                        Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
+                        useful (see .node.status.conditions), the ability to deconflict is important.
+                        The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+              prefixes:
+                description: Prefixes defines the prefixes, claimed through the IPAM
+                  backend
+                items:
+                  properties:
+                    labels:
+                      additionalProperties:
+                        type: string
+                      description: Labels as user defined labels
+                      type: object
+                    prefix:
+                      description: Prefix defines the ip cidr in prefix notation.
+                      pattern: (([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/(([0-9])|([1-2][0-9])|(3[0-2]))|((:|[0-9a-fA-F]{0,4}):)([0-9a-fA-F]{0,4}:){0,5}((([0-9a-fA-F]{0,4}:)?(:|[0-9a-fA-F]{0,4}))|(((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])))(/(([0-9])|([0-9]{2})|(1[0-1][0-9])|(12[0-8])))
+                      type: string
+                  required:
+                  - prefix
+                  type: object
+                type: array
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.14.0
+  name: ipprefixes.ipam.res.kuid.dev
+spec:
+  group: ipam.res.kuid.dev
+  names:
+    categories:
+    - kuid
+    - ipam
+    kind: IPPrefix
+    listKind: IPPrefixList
+    plural: ipprefixes
+    singular: ipprefix
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.conditions[?(@.type=='Ready')].status
+      name: READY
+      type: string
+    - jsonPath: .spec.networkInstance
+      name: NETWORK-INSTANCE
+      type: string
+    - jsonPath: .spec.kind
+      name: KIND
+      type: string
+    - jsonPath: .spec.subnetName
+      name: SUBNET
+      type: string
+    - jsonPath: .spec.prefix
+      name: PREFIX-REQ
+      type: string
+    - jsonPath: .status.prefix
+      name: PREFIX-ALLOC
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: AGE
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: IPPrefix is the Schema for the ipprefixes API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: IPPrefixSpec defines the desired state of IPPrefix
+            properties:
+              gateway:
+                description: Gateway defines if the prefix/address is a gateway
+                type: boolean
+              kind:
+                default: network
+                description: |-
+                  Kind defines the kind of prefix for the IP Prefix
+                  - network kind is used for physical, virtual nics on a device
+                  - loopback kind is used for loopback interfaces
+                  - pool kind is used for pools for dhcp/radius/bng/upf/etc
+                  - aggregate kind is used for claiming an aggregate prefix
+                enum:
+                - network
+                - loopback
+                - pool
+                - aggregate
+                type: string
+              labels:
+                additionalProperties:
+                  type: string
+                description: Labels as user defined labels
+                type: object
+              networkInstance:
+                description: |-
+                  NetworkInstance defines the networkInstance context for the IP prefix
+                  Name and optionally Namespace is used here
+                type: string
+              prefix:
+                description: Prefix defines the ip cidr in prefix or address notation.
+                pattern: (([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/(([0-9])|([1-2][0-9])|(3[0-2]))|((:|[0-9a-fA-F]{0,4}):)([0-9a-fA-F]{0,4}:){0,5}((([0-9a-fA-F]{0,4}:)?(:|[0-9a-fA-F]{0,4}))|(((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])))(/(([0-9])|([0-9]{2})|(1[0-1][0-9])|(12[0-8])))
+                type: string
+            required:
+            - kind
+            - networkInstance
+            - prefix
+            type: object
+          status:
+            description: IPPrefixStatus defines the observed state of IPPrefix
+            properties:
+              conditions:
+                description: Conditions of the resource.
+                items:
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        lastTransitionTime is the last time the condition transitioned from one status to another.
+                        This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        message is a human readable message indicating details about the transition.
+                        This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: |-
+                        observedGeneration represents the .metadata.generation that the condition was set based upon.
+                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+                        with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: |-
+                        reason contains a programmatic identifier indicating the reason for the condition's last transition.
+                        Producers of specific condition types may define expected values and meanings for this field,
+                        and whether the values are considered a guaranteed API.
+                        The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: |-
+                        type of condition in CamelCase or in foo.example.com/CamelCase.
+                        ---
+                        Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
+                        useful (see .node.status.conditions), the ability to deconflict is important.
+                        The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+              prefix:
+                description: Prefix defines the prefix, claimed through the IPAM backend
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+
+---
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  name: v1alpha1.ipam.be.kuid.dev
+spec:
+  group: ipam.be.kuid.dev
+  groupPriorityMinimum: 1000
+  insecureSkipTLSVerify: true
+  service:
+    name: kuid-server
+    namespace: kuid-system
+    port: 6443
+  version: v1alpha1
+  versionPriority: 15
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: kuid-server
+  name: kuid-server
+  namespace: kuid-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kuid-server
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kuid-server
+    spec:
+      containers:
+      - args:
+        - --tls-cert-file=/apiserver.local.config/certificates/tls.crt
+        - --tls-private-key-file=/apiserver.local.config/certificates/tls.key
+        - --feature-gates=APIPriorityAndFairness=false
+        - --audit-log-path=-
+        - --audit-log-maxage=0
+        - --audit-log-maxbackup=0
+        - --secure-port=6443
+        command:
+        - /app/kuid-server
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.hostIP
+        - name: ENABLE_IPAMIPPREFIX
+          value: "true"
+        - name: ENABLE_IPAMNETWORKINSTANCE
+          value: "true"
+        - name: ENABLE_IPAMIPINDEX
+          value: "true"
+        - name: ENABLE_IPAMIPCLAIM
+          value: "true"
+        image: europe-docker.pkg.dev/srlinux/eu.gcr.io/kuid-server:latest
+        imagePullPolicy: Always
+        name: kuid-server
+        volumeMounts:
+        - mountPath: /apiserver.local.config/certificates
+          name: apiserver-certs
+          readOnly: true
+        - mountPath: /config
+          name: config-store
+      securityContext:
+        fsGroup: 10000
+        runAsGroup: 10000
+        runAsUser: 10000
+      serviceAccountName: kuid-server
+      volumes:
+      - name: apiserver-certs
+        secret:
+          secretName: kuid-server
+      - name: config-store
+        persistentVolumeClaim:
+          claimName: pvc-config-store
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kuid-server-clusterrole
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  - secrets
+  - services
+  - pods
+  verbs:
+  - get
+  - watch
+  - list
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - mutatingwebhookconfigurations
+  - validatingwebhookconfigurations
+  verbs:
+  - get
+  - watch
+  - list
+- apiGroups:
+  - flowcontrol.apiserver.k8s.io
+  resources:
+  - flowschemas
+  - prioritylevelconfigurations
+  verbs:
+  - get
+  - watch
+  - list
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - get
+  - watch
+  - list
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ipam.be.kuid.dev
+  resources:
+  - ipclaims
+  - ipclaims/status
+  verbs:
+  - get
+  - watch
+  - list
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ipam.be.kuid.dev
+  resources:
+  - ipentries
+  - ipentries/status
+  verbs:
+  - get
+  - watch
+  - list
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ipam.be.kuid.dev
+  resources:
+  - ipindices
+  - ipindices/status
+  verbs:
+  - get
+  - watch
+  - list
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ipam.res.kuid.dev
+  resources:
+  - networkinstances
+  - networkinstances/status
+  verbs:
+  - get
+  - watch
+  - list
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ipam.res.kuid.dev
+  resources:
+  - ipprefixes
+  - ipprefixes/status
+  verbs:
+  - get
+  - watch
+  - list
+  - create
+  - update
+  - patch
+  - delete
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: config:system:auth-delegator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+- kind: ServiceAccount
+  name: kuid-server
+  namespace: kuid-system
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kuid-server-clusterrolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kuid-server-clusterrole
+subjects:
+- kind: ServiceAccount
+  name: kuid-server
+  namespace: kuid-system
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kuid-server-apiserver-role
+  namespace: kuid-system
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - serviceaccounts
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - serviceaccounts/token
+  verbs:
+  - create
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kuid-server-clusterrolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: extension-apiserver-authentication-reader
+subjects:
+- kind: ServiceAccount
+  name: kuid-server
+  namespace: kuid-system
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kuid-server-auth-reader
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: extension-apiserver-authentication-reader
+subjects:
+- kind: ServiceAccount
+  name: kuid-server
+  namespace: kuid-system
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-config-store
+  namespace: kuid-system
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+apiVersion: v1
+data:
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURZekNDQWt1Z0F3SUJBZ0lJSC9mSFZHenZ3cnN3RFFZSktvWklodmNOQVFFTEJRQXdaVEVMTUFrR0ExVUUKQmhNQ2RXNHhDekFKQmdOVkJBZ01Bbk4wTVFvd0NBWURWUVFIREFGc01Rb3dDQVlEVlFRS0RBRnZNUXN3Q1FZRApWUVFMREFKdmRURWtNQ0lHQTFVRUF3d2JZbUZ6YVdNdFkyVnlkR2xtYVdOaGRHVXRZWFYwYUc5eWFYUjVNQjRYCkRUSXlNRE16TVRBNU1UYzFNMW9YRFRNeU1ETXlPREE1TVRjMU5Gb3dIREVhTUJnR0ExVUVBeE1SWW1GemFXTXUKWkdWbVlYVnNkQzV6ZG1Nd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3Z2dFS0FvSUJBUUN0TUt0eApjc3Rjdk8rdDVMazZRQkRBZ3g1akZCL2F1dStVb3BDR2Z6VitaRW5obldpaC8xMVZ2ek44cjhmdGZuUkZGTVZ6CmJqYlVhSXNDOFc1eGJDNXNpc2VrdnVBWDlpanUzMlFybEU0RTR1UzNYREdVZkhGSFhMcWxBRU9RclUvRzQ0RGgKa0I3ajJOcDRzbk9IckF0aDA3TStvbXBmVklhSTlkQmdYY3hsUE5QRkNNamlOb1VweVM4eXNha3RQRXFjZTBpawpmNDBYVERmN1YwekFFelI0QkE4Yzh0b05UMVNnSXFIV0xueERKcnZRempDaTVFN2NMNkpmTmhlZDQ5MUVNWlEwCmVnbkV5bXd6d1Jya3BYTkZ4RHJzSXpOZmhHelB6RGJLdmFIUHh5NUwvM3h3clZ3VHllbklaOVExK0tjemtCSksKRXZIaVVKL1BML0VYZkloakFnTUJBQUdqWURCZU1BNEdBMVVkRHdFQi93UUVBd0lGb0RBZEJnTlZIU1VFRmpBVQpCZ2dyQmdFRkJRY0RBUVlJS3dZQkJRVUhBd0l3TFFZRFZSMFJCQ1l3SklJSmJHOWpZV3hvYjNOMGdoRmlZWE5wCll5NWtaV1poZFd4MExuTjJZNGNFZndBQUFUQU5CZ2txaGtpRzl3MEJBUXNGQUFPQ0FRRUFEa1hsbGZMTlpzWDEKYmp1b0h4RXVUWitaODlMWUxPUDBMM0dHMFgwdVdkZzJFcXY1bmZNRHVRVmJIRmt5dVo3ZDlDY01QYk12MTdDWgoxZGwwQk1GQTJkTkJzK3V1UXFIUFh3RkI4SFdPSDhBc1pMMnYvbG91T3g2dU1QQk9uWUhuQ3pFY21FQXZoR2dLCkpXMDNkd2QwNlJPeUdLT29qSklFTlRnd0xnQ1dZSytPWmIzQklyMUJqS012Q2dHN3pJVDFUUVNna3hGN1NGNzUKYk5BaEdOa0NWMGVrSnNXQWk1UGhzVS9IdWthdGVHUGNMS3hia0RGdHpSV2tRNmdKUXhkZmVuOVBKTjVJVCt4RQpFci8wYUkrOFM5Y1FPUnk0VTNDSFRodmlnOGFyZ3FucmFWMU92OXZNTWxzZ3pnYXc3SjdaeGtkWWwrSkMyWUcvCjJrUThVd1IzQnc9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+  tls.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBclRDcmNYTExYTHp2cmVTNU9rQVF3SU1lWXhRZjJycnZsS0tRaG44MWZtUko0WjFvCm9mOWRWYjh6ZksvSDdYNTBSUlRGYzI0MjFHaUxBdkZ1Y1d3dWJJckhwTDdnRi9Zbzd0OWtLNVJPQk9Ma3Qxd3gKbEh4eFIxeTZwUUJEa0sxUHh1T0E0WkFlNDlqYWVMSnpoNndMWWRPelBxSnFYMVNHaVBYUVlGM01aVHpUeFFqSQo0amFGS2Nrdk1yR3BMVHhLbkh0SXBIK05GMHczKzFkTXdCTTBlQVFQSFBMYURVOVVvQ0toMWk1OFF5YTcwTTR3Cm91Uk8zQytpWHpZWG5lUGRSREdVTkhvSnhNcHNNOEVhNUtWelJjUTY3Q016WDRSc3o4dzJ5cjJoejhjdVMvOTgKY0sxY0U4bnB5R2ZVTmZpbk01QVNTaEx4NGxDZnp5L3hGM3lJWXdJREFRQUJBb0lCQUJWWU16ajNLZU1URWdMLwpkbWljYnJRYk5NcUhOMm5Rc2loQ1pNZCt0QXdRdGg1Tk5SRUtGT20xZDlYOUlBbkFGUHBTbGdjazVUTUdjMk40CmQrRVlzUndGZXBkdVF0WVJLM2hOSmQ1TkY5UjRWakhXOWZGVDZPNGZtbzB0WENaZmhiNkFXV2p6Unl0VGxaRmMKaE9xS3BKaDQ2OVZqVlBMTXl3dmtKN3RJdENFaHl4b0t0VVhwcm45SXBLNnNUa051OTFmMVA4czJNbDd1RlVqYwpJdGhMb3JnMEYyU3RaeEJmVDJGaFRYaFZxRlRJS1pmazFGbnRpbUwyWlQrRXZzQlpnZHYwa2Z1Q2hFdE5jRW1PCnRZc2dKT3ExTWF5M2d0dlk3VDB6WkRtTTIrOVpKQ0JLcm8yV2IxdGw0RHNnaWNkR0I2SlhnTi81aklSMTNmbDUKMTRJd1hza0NnWUVBemtQb1MrTko0QkJkR3RYem5tZWVhRFFQVVU0dkF1R3YyU2VtajR3RG1KRXB6aDdoMWlQZAprVWxmYjcxZ1VMbmk0SDVkVFlyVFpwOElUaXZvM3A1bUNrV3lFV09wMmx4VUZoM3JnVWN6NWt0RUhkejl1bjNoCnFYNVJpTWlkM0Y3dWRIODdqYTdJVi9mUEFGSnlremQrWHNaZGFuT0tPK1UvV0t2ek0rSFEzUThDZ1lFQTF2TWoKdml3dnFxM0FBa0VpN2RlOUxLUE1uS1N5VE9BdHQzS2dqV1RLNU5aQUdqeWpoSGxEbjRCempSS25DWk8xY0lJZwo0Wnl1VzQrUlB5aGQreEFubzVoMVh0Ny9LYzNFaW1ucjBLU0ZmRWVza2NORFIyVHNTdCtjYTl6aFFPTFJ0TWRCCnE5OWZDeFprK1pmcEhpSzJCK0pHVExNdVJRY0tDYU43RldKTkIyMENnWUJhc2k5bGx3WjMySm9uMzZYa3BDbGEKSm5JSnpUZ01xMUlZU1VBSzVJVDhRL0ErNndOZ2xwcXBkTHJiTmtrd2xkdjEzSHFJU3gvVGd1QXpCMG01QWF0YQpudlRDZ3JGQUM5TUplcFNBWHQrcVJyUW44WEU3M0hncWdCbTM3SWJGVEpUTGN0cXIzUXZJNm5VQjdqN2xEc1NwClJjM3pyZVE5bS9yenNZQVo4eFJVN3dLQmdRQ0JYTjg4Q3JlOVRzaHFFdTJFbXZ4ZEswOXZUcWVJSUxzaTFyZk4Kb01XREozWjQwOW5OVm5YZVBwNU1YdGRzcWhyZVZWS1l0WVV4MFp1bW1STEdrSmhxbXN5NGhoaW0vaEcxQTc1SwpXVm1FekZZTmU2aTRCUU00cEk4dFUwZTFsMHlDTWhGUjhTTHdOMUFaN3RUN3NBUkJobXFzcW9IRVJWSkRMc0phCndraDltUUtCZ0NYR2xoZzY4aVMzMldmSWVtYUFRMTJpNFRUUk1FNWppTFl0ZlkyREJTMDBWV3NxY0l1OEFUWm0KVHVoZHBRVG9mKzE3LzFyU0cyYnFaWFA2L0h3ak14OTVIdWlXbjVKSjA3RTduOUVCUDlkQTY0K0lHdWlvd0h5RAo2a3g3VVhuTUtTYXdiV2JxZ1JGZTFOZEdLbkh0ZE5GOGxndEdjdytxUTk3YkIreXFreXMxCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg==
+kind: Secret
+metadata:
+  labels:
+    app.kubernetes.io/name: kuid-server
+  name: kuid-server
+  namespace: kuid-system
+type: kubernetes.io/tls
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: kuid-server
+  name: kuid-server
+  namespace: kuid-system
+spec:
+  ports:
+  - port: 6443
+    protocol: TCP
+    targetPort: 6443
+  selector:
+    app.kubernetes.io/name: kuid-server
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/name: kuid-server
+  name: kuid-server
+  namespace: kuid-system

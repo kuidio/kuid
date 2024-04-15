@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kuid-server
+  namespace: kuid-system
+  labels:
+    app.kubernetes.io/name: kuid-server
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kuid-server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kuid-server
+    spec:
+      securityContext:
+        runAsUser: 10000
+        runAsGroup: 10000
+        fsGroup: 10000
+      serviceAccountName: kuid-server
+      containers:
+      - name: kuid-server
+        image: europe-docker.pkg.dev/srlinux/eu.gcr.io/kuid-server:latest
+        imagePullPolicy: Always
+        command:
+        - /app/kuid-server
+        args:
+        - "--tls-cert-file=/apiserver.local.config/certificates/tls.crt"
+        - "--tls-private-key-file=/apiserver.local.config/certificates/tls.key"
+        - "--feature-gates=APIPriorityAndFairness=false"
+        - "--audit-log-path=-"
+        - "--audit-log-maxage=0"
+        - "--audit-log-maxbackup=0"
+        - "--secure-port=6443"
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: "NODE_NAME"
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: "NODE_IP"
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.hostIP
+        - name: ENABLE_IPAMIPPREFIX
+          value: "true"
+        - name: ENABLE_IPAMNETWORKINSTANCE
+          value: "true"
+        - name: ENABLE_IPAMIPINDEX
+          value: "true"
+        - name: ENABLE_IPAMIPCLAIM
+          value: "true"
+        volumeMounts:
+        - name: apiserver-certs
+          mountPath: /apiserver.local.config/certificates
+          readOnly: true
+        - name: config-store
+          mountPath: /config
+      volumes:
+      - name: apiserver-certs
+        secret:
+          secretName: kuid-server
+      - name: config-store
+        persistentVolumeClaim:
+          claimName: pvc-config-store
