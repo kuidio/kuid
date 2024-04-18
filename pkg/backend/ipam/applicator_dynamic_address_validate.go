@@ -22,6 +22,14 @@ import (
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 )
 
-type Validator interface {
-	Validate(ctx context.Context, claim *ipambev1alpha1.IPClaim) error
+type dynamicAddressApplicator struct {
+	name string
+	applicator
+	parentClaimInfo ipambev1alpha1.IPClaimInfo
+	parentRangeName string
+	parentNetwork   bool
+}
+
+func (r *dynamicAddressApplicator) Validate(ctx context.Context, claim *ipambev1alpha1.IPClaim) error {
+	return nil
 }

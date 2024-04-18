@@ -19,22 +19,22 @@ package ipam
 import (
 	"context"
 
+	"github.com/henderiw/iputil"
 	"github.com/henderiw/logger/log"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 )
 
-type dynamicApplicator struct {
-	applicator
-}
-
-func (r *dynamicApplicator) Apply(ctx context.Context, claim *ipambev1alpha1.IPClaim) error {
-	log := log.FromContext(ctx).With("name", claim.GetName(), "kind", claim.Spec.Kind)
-	log.Info("dynamic claim")
-	
-	// claim a prefix
-	pi, err := r.claimPrefix(ctx, claim)
+func (r *staticPrefixApplicator) Apply(ctx context.Context, claim *ipambev1alpha1.IPClaim) error {
+	log := log.FromContext(ctx).With("name", claim.GetName())
+	log.Info("static prefix claim")
+	pi, err := iputil.New(*claim.Spec.Prefix)
 	if err != nil {
 		return err
 	}
-	return r.apply(ctx, claim, pi)
+
+	if err := r.apply(ctx, claim, []*iputil.Prefix{pi}, false); err != nil {
+		return err
+	}
+	r.updateClaimPrefixStatus(ctx, claim, pi)
+	return nil
 }

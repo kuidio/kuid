@@ -22,18 +22,29 @@ import (
 	"github.com/henderiw/iputil"
 	"github.com/henderiw/logger/log"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
+	"go4.org/netipx"
 )
 
-type prefixApplicator struct {
-	applicator
-}
-
-func (r *prefixApplicator) Apply(ctx context.Context, claim *ipambev1alpha1.IPClaim) error {
-	log := log.FromContext(ctx).With("name", claim.GetName(), "kind", claim.Spec.Kind)
-	log.Info("prefix claim")
-	pi, err := iputil.New(*claim.Spec.Prefix)
+func (r *staticRangeApplicator) Apply(ctx context.Context, claim *ipambev1alpha1.IPClaim) error {
+	log := log.FromContext(ctx).With("name", claim.GetName())
+	log.Info("static range claim")
+	ipRange, err := netipx.ParseIPRange(*claim.Spec.Range)
 	if err != nil {
 		return err
 	}
-	return r.apply(ctx, claim, pi)
+
+	// add each prefix in the routing table -> we convey them all together
+	pis := make([]*iputil.Prefix, 0, len(ipRange.Prefixes()))
+	for _, prefix := range ipRange.Prefixes() {
+		pis = append(pis, iputil.NewPrefixInfo(prefix))
+	}
+	if err := r.apply(ctx, claim, pis, false); err != nil {
+		return err
+	}
+	if err := r.applyRange(ctx, claim, ipRange); err != nil {
+		return err
+	}
+
+	r.updateClaimRangeStatus(ctx, claim)
+	return nil
 }

@@ -17,11 +17,21 @@ limitations under the License.
 package ipam
 
 import (
-	"context"
-
-	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
+	"github.com/hansthienpondt/nipam/pkg/table"
+	"github.com/henderiw/idxtable/pkg/iptable"
+	"github.com/henderiw/store"
+	"github.com/henderiw/store/memory"
 )
 
-type Validator interface {
-	Validate(ctx context.Context, claim *ipambev1alpha1.IPClaim) error
+type CacheContext struct {
+	rib    *table.RIB
+	ranges store.Storer[iptable.IPTable]
+}
+
+func NewCacheContext() *CacheContext {
+	return &CacheContext{
+		rib:    table.NewRIB(),
+		ranges: memory.NewStore[iptable.IPTable](),
+	}
+
 }

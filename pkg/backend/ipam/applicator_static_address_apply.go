@@ -19,9 +19,28 @@ package ipam
 import (
 	"context"
 
+	"github.com/henderiw/iputil"
+	"github.com/henderiw/logger/log"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 )
 
-type Validator interface {
-	Validate(ctx context.Context, claim *ipambev1alpha1.IPClaim) error
+func (r *staticAddressApplicator) Apply(ctx context.Context, claim *ipambev1alpha1.IPClaim) error {
+	log := log.FromContext(ctx).With("name", claim.GetName())
+	log.Info("static address claim")
+	pi, err := iputil.New(*claim.Spec.Address)
+	if err != nil {
+		return err
+	}
+	if r.parentClaimInfo == ipambev1alpha1.IPClaimInfo_Range {
+		if err := r.applyAddressInRange(ctx, claim, pi, r.parentRangeName); err != nil {
+			return err
+		}
+	} else {
+		if err := r.apply(ctx, claim, []*iputil.Prefix{pi}, false); err != nil {
+			return err
+		}
+	}
+
+	r.updateClaimAddressStatus(ctx, claim, pi)
+	return nil
 }

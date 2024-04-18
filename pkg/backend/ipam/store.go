@@ -20,7 +20,6 @@ import (
 	"context"
 	"errors"
 
-	"github.com/hansthienpondt/nipam/pkg/table"
 	"github.com/henderiw/logger/log"
 	"github.com/henderiw/store"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
@@ -33,7 +32,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func NewStore(c client.Client, cache backend.Cache[*table.RIB]) backend.Store {
+func NewStore(c client.Client, cache backend.Cache[*CacheContext]) backend.Store {
 	return &bestore{
 		client: c,
 		cache:  cache,
@@ -42,7 +41,7 @@ func NewStore(c client.Client, cache backend.Cache[*table.RIB]) backend.Store {
 
 type bestore struct {
 	client client.Client
-	cache  backend.Cache[*table.RIB]
+	cache  backend.Cache[*CacheContext]
 }
 
 func (r *bestore) Restore(ctx context.Context, k store.Key) error {
@@ -125,14 +124,14 @@ func (r *bestore) Destroy(ctx context.Context, k store.Key) error {
 
 func (r *bestore) getEntriesFromCache(ctx context.Context, k store.Key) ([]*ipambev1alpha1.IPEntry, error) {
 	log := log.FromContext(ctx).With("key", k.String())
-	rib, err := r.cache.Get(ctx, k, false)
+	cacheCtx, err := r.cache.Get(ctx, k, false)
 	if err != nil {
 		log.Error("cannot get index", "error", err.Error())
 		return nil, err
 	}
 
-	ipEntries := make([]*ipambev1alpha1.IPEntry, 0, rib.Size())
-	for _, route := range rib.GetTable() {
+	ipEntries := make([]*ipambev1alpha1.IPEntry, 0, cacheCtx.rib.Size())
+	for _, route := range cacheCtx.rib.GetTable() {
 		ipEntries = append(ipEntries, ipambev1alpha1.GetIPEntry(ctx, k, route.Prefix(), route.Labels()))
 	}
 	return ipEntries, nil
@@ -153,7 +152,7 @@ func (r *bestore) restoreEntries(ctx context.Context, k store.Key) error {
 		// debug end
 	*/
 
-	rib, err := r.cache.Get(ctx, k, true) // return a rib even when not initialized
+	cacheCtx, err := r.cache.Get(ctx, k, true) // return a rib even when not initialized
 	if err != nil {
 		return err
 	}
@@ -172,7 +171,7 @@ func (r *bestore) restoreEntries(ctx context.Context, k store.Key) error {
 		Version: ipamresv1alpha1.Version,
 		Kind:    ipamresv1alpha1.NetworkInstanceKind,
 	}
-	if err := r.restorePrefixes(ctx, claims, niGvk, rib); err != nil {
+	if err := r.restorePrefixes(ctx, claims, niGvk, cacheCtx); err != nil {
 		return err
 	}
 	pfxGvk := schema.GroupVersionKind{
@@ -180,7 +179,23 @@ func (r *bestore) restoreEntries(ctx context.Context, k store.Key) error {
 		Version: ipamresv1alpha1.Version,
 		Kind:    ipamresv1alpha1.IPPrefixKind,
 	}
-	if err := r.restorePrefixes(ctx, claims, pfxGvk, rib); err != nil {
+	if err := r.restorePrefixes(ctx, claims, pfxGvk, cacheCtx); err != nil {
+		return err
+	}
+	rangeGvk := schema.GroupVersionKind{
+		Group:   ipamresv1alpha1.Group,
+		Version: ipamresv1alpha1.Version,
+		Kind:    ipamresv1alpha1.IPRangeKind,
+	}
+	if err := r.restorePrefixes(ctx, claims, rangeGvk, cacheCtx); err != nil {
+		return err
+	}
+	addrGvk := schema.GroupVersionKind{
+		Group:   ipamresv1alpha1.Group,
+		Version: ipamresv1alpha1.Version,
+		Kind:    ipamresv1alpha1.IPAddressKind,
+	}
+	if err := r.restorePrefixes(ctx, claims, addrGvk, cacheCtx); err != nil {
 		return err
 	}
 	claimGvk := schema.GroupVersionKind{
@@ -188,7 +203,7 @@ func (r *bestore) restoreEntries(ctx context.Context, k store.Key) error {
 		Version: ipambev1alpha1.Version,
 		Kind:    ipambev1alpha1.IPClaimKind,
 	}
-	if err := r.restorePrefixes(ctx, claims, claimGvk, rib); err != nil {
+	if err := r.restorePrefixes(ctx, claims, claimGvk, cacheCtx); err != nil {
 		return err
 	}
 
@@ -249,16 +264,14 @@ func (r *bestore) listClaims(ctx context.Context, _ store.Key) (*ipambev1alpha1.
 	return &claims, nil
 }
 
-func (r *bestore) restorePrefixes(ctx context.Context, claims *ipambev1alpha1.IPClaimList, gvk schema.GroupVersionKind, rib *table.RIB) error {
+func (r *bestore) restorePrefixes(ctx context.Context, claims *ipambev1alpha1.IPClaimList, gvk schema.GroupVersionKind, cacheCtx *CacheContext) error {
 	log := log.FromContext(ctx)
 	for _, claim := range claims.Items {
 		if claim.GetCondition(conditionv1alpha1.ConditionTypeReady).Status == metav1.ConditionTrue {
 			if claim.Spec.Owner.Group == gvk.Group && claim.Spec.Owner.Version == gvk.Version && claim.Spec.Owner.Kind == gvk.Kind {
-				var a Applicator
-				if claim.Spec.Prefix != nil {
-					a = &prefixApplicator{applicator: applicator{rib: rib}}
-				} else {
-					a = &dynamicApplicator{applicator: applicator{rib: rib}}
+				a, err := getApplicator(ctx, &claim, cacheCtx)
+				if err != nil {
+					return err
 				}
 				log.Info("restore claim", "name", claim.Name, "prefix", claim.Status.Prefix)
 				if err := a.Apply(ctx, &claim); err != nil {
