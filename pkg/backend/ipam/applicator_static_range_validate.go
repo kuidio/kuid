@@ -120,9 +120,9 @@ func (r *staticRangeApplicator) Validate(ctx context.Context, claim *ipambev1alp
 
 func (r *staticRangeApplicator) validateExistingParent(_ *ipambev1alpha1.IPClaim, _ *iputil.Prefix, route table.Route) error {
 	routeLabels := route.Labels()
-	parentClaimType := routeLabels[backend.KuidIPAMTypeKey]
+	parentClaimType := routeLabels[backend.KuidIPAMIPPrefixTypeKey]
 
-	if parentClaimType == string(ipambev1alpha1.IPClaimType_Aggregate) {
+	if parentClaimType == string(ipambev1alpha1.IPPrefixType_Aggregate) {
 		return fmt.Errorf("a range is not possible with a parent of type %s", parentClaimType)
 	}
 

@@ -1,0 +1,11 @@
+apiVersion: ipam.be.kuid.dev/v1alpha1
+kind: IPClaim
+metadata:
+  name: vpc1.172.0.0.0-16
+spec:
+  networkInstance: vpc1
+  prefixType: pool
+  prefix: 172.0.0.0/16
+  labels:
+    inv.kuid.dev/pool: pool1
+    

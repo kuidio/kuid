@@ -17,6 +17,8 @@ limitations under the License.
 package ipam
 
 import (
+	"context"
+
 	"github.com/hansthienpondt/nipam/pkg/table"
 	"github.com/henderiw/idxtable/pkg/iptable"
 	"github.com/henderiw/store"
@@ -34,4 +36,13 @@ func NewCacheContext() *CacheContext {
 		ranges: memory.NewStore[iptable.IPTable](),
 	}
 
+}
+
+func (r *CacheContext) Size() int {
+	var size int
+	size += r.rib.Size()
+	r.ranges.List(context.Background(), func(ctx context.Context, k store.Key, i iptable.IPTable) {
+        size +=i.Count()
+    })
+    return size
 }

@@ -16,27 +16,79 @@ limitations under the License.
 
 package v1alpha1
 
-type PrefixKind string
-
-const (
-	PrefixKindUnknown   PrefixKind = "unknown"
-	PrefixKindNetwork   PrefixKind = "network"
-	PrefixKindLoopback  PrefixKind = "loopback"
-	PrefixKindPool      PrefixKind = "pool"
-	PrefixKindAggregate PrefixKind = "aggregate"
+import (
+	"k8s.io/utils/ptr"
 )
 
-func GetPrefixKindFromString(s string) PrefixKind {
+type IPClaimType string
+
+const (
+	IPClaimType_Invalid        IPClaimType = "invalid"
+	IPClaimType_StaticAddress  IPClaimType = "staticAddress"
+	IPClaimType_StaticPrefix   IPClaimType = "staticPrefix"
+	IPClaimType_StaticRange    IPClaimType = "staticRange"
+	IPClaimType_DynamicAddress IPClaimType = "dynamicAddress"
+	IPClaimType_DynamicPrefix  IPClaimType = "dynamicPrefix"
+)
+
+func GetIPClaimTypeFromString(s string) IPClaimType {
 	switch s {
-	case string(PrefixKindNetwork):
-		return PrefixKindNetwork
-	case string(PrefixKindLoopback):
-		return PrefixKindLoopback
-	case string(PrefixKindPool):
-		return PrefixKindPool
-	case string(PrefixKindAggregate):
-		return PrefixKindAggregate
+	case string(IPClaimType_StaticAddress):
+		return IPClaimType_StaticAddress
+	case string(IPClaimType_StaticPrefix):
+		return IPClaimType_StaticPrefix
+	case string(IPClaimType_StaticRange):
+		return IPClaimType_StaticRange
+	case string(IPClaimType_DynamicAddress):
+		return IPClaimType_DynamicAddress
+	case string(IPClaimType_DynamicPrefix):
+		return IPClaimType_DynamicPrefix
 	default:
-		return PrefixKindUnknown
+		return IPClaimType_Invalid
+	}
+}
+
+type IPClaimSummaryType string
+
+const (
+	IPClaimSummaryType_Prefix  IPClaimSummaryType = "prefix"
+	IPClaimSummaryType_Address IPClaimSummaryType = "address"
+	IPClaimSummaryType_Range   IPClaimSummaryType = "range"
+	IPClaimSummaryType_Invalid IPClaimSummaryType = "invalid"
+)
+
+func GetIPClaimSummaryTypeFromString(s string) IPClaimSummaryType {
+	switch s {
+	case string(IPClaimSummaryType_Prefix):
+		return IPClaimSummaryType_Prefix
+	case string(IPClaimSummaryType_Address):
+		return IPClaimSummaryType_Address
+	case string(IPClaimSummaryType_Range):
+		return IPClaimSummaryType_Range
+	default:
+		return IPClaimSummaryType_Invalid
+	}
+}
+
+type IPPrefixType string
+
+const (
+	IPPrefixType_Invalid   IPPrefixType = "invalid"
+	IPPrefixType_Other     IPPrefixType = "other"
+	IPPrefixType_Pool      IPPrefixType = "pool"
+	IPPrefixType_Network   IPPrefixType = "network"
+	IPPrefixType_Aggregate IPPrefixType = "aggregate"
+)
+
+func GetIPPrefixTypeFromString(s string) *IPPrefixType {
+	switch s {
+	case string(IPPrefixType_Pool):
+		return ptr.To[IPPrefixType](IPPrefixType_Pool)
+	case string(IPPrefixType_Network):
+		return ptr.To[IPPrefixType](IPPrefixType_Network)
+	case string(IPPrefixType_Aggregate):
+		return ptr.To[IPPrefixType](IPPrefixType_Aggregate)
+	default:
+		return nil
 	}
 }

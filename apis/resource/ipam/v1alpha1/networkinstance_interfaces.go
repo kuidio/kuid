@@ -17,10 +17,15 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"github.com/henderiw/iputil"
+	"github.com/henderiw/store"
+	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
 	"github.com/kuidio/kuid/pkg/reconcilers/resource"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/utils/ptr"
 )
 
 // GetCondition returns the condition based on the condition kind
@@ -57,5 +62,56 @@ func (r *NetworkInstance) GetOwnerReference() *commonv1alpha1.OwnerReference {
 		Kind:      r.Kind,
 		Namespace: r.Namespace,
 		Name:      r.Name,
+	}
+}
+
+func (r *NetworkInstance) GetKey() store.Key {
+	return store.KeyFromNSN(r.GetNamespacedName())
+}
+
+func (r *NetworkInstance) GetIPClaim(prefix Prefix) (*ipambev1alpha1.IPClaim, error) {
+	pi, err := iputil.New(prefix.Prefix)
+	if err != nil {
+		return nil, err
+	}
+
+	return ipambev1alpha1.BuildIPClaim(
+		metav1.ObjectMeta{
+			Namespace: r.GetNamespace(),
+			Name:      pi.GetSubnetName(),
+		},
+		&ipambev1alpha1.IPClaimSpec{
+			PrefixType:      ptr.To[ipambev1alpha1.IPPrefixType](ipambev1alpha1.IPPrefixType_Aggregate),
+			NetworkInstance: r.Name,
+			Prefix:          ptr.To[string](prefix.Prefix),
+			PrefixLength:    ptr.To[uint32](uint32(pi.GetPrefixLength())),
+			CreatePrefix:    ptr.To[bool](true),
+			ClaimLabels: commonv1alpha1.ClaimLabels{
+				UserDefinedLabels: prefix.UserDefinedLabels,
+			},
+			Owner: commonv1alpha1.GetOwnerReference(r),
+		},
+		nil,
+	), nil
+
+}
+
+func BuildNetworkInstance(meta metav1.ObjectMeta, spec *NetworkInstanceSpec, status *NetworkInstanceStatus) *NetworkInstance {
+	aspec := NetworkInstanceSpec{}
+	if spec != nil {
+		aspec = *spec
+	}
+	astatus := NetworkInstanceStatus{}
+	if status != nil {
+		astatus = *status
+	}
+	return &NetworkInstance{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: SchemeGroupVersion.Identifier(),
+			Kind:       NetworkInstanceKind,
+		},
+		ObjectMeta: meta,
+		Spec:       aspec,
+		Status:     astatus,
 	}
 }

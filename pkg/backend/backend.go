@@ -21,7 +21,6 @@ import (
 
 	"github.com/henderiw/store"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
 type Backend[T1 any] interface {
@@ -29,14 +28,10 @@ type Backend[T1 any] interface {
 	CreateIndex(ctx context.Context, obj runtime.Object) error
 	// DeleteIndex deletes a backend index
 	DeleteIndex(ctx context.Context, obj runtime.Object) error
-	// ValidateClaimSyntax validates the claim
-	ValidateClaimSyntax(ctx context.Context, obj runtime.Object) field.ErrorList
-	// ValidateClaim validates the claim
-	ValidateClaim(ctx context.Context, obj runtime.Object) error
 	// Claim claims an entry in the backend index
 	Claim(ctx context.Context, obj runtime.Object) error
-	// DeleteClaim delete a claim in the backend index
-	DeleteClaim(ctx context.Context, obj runtime.Object) error
+	// Release a claim in the backend
+	Release(ctx context.Context, obj runtime.Object) error
 	// GetCache returns the cache
 	GetCache(ctx context.Context, k store.Key) (T1, error)
 }

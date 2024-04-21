@@ -19,14 +19,14 @@ package ctrlconfig
 import (
 	"context"
 
-	"github.com/hansthienpondt/nipam/pkg/table"
 	"github.com/henderiw/logger/log"
 	"github.com/kuidio/kuid/pkg/backend"
+	"github.com/kuidio/kuid/pkg/backend/ipam"
 	"k8s.io/apimachinery/pkg/types"
 )
 
 type ControllerConfig struct {
-	IPAMBackend backend.Backend[*table.RIB]
+	IPAMBackend backend.Backend[*ipam.CacheContext]
 }
 
 func InitContext(ctx context.Context, controllerName string, req types.NamespacedName) context.Context {

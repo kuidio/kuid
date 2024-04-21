@@ -14,21 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package ipindex
+package v1alpha1
 
 import (
-	"context"
-
-	"github.com/henderiw/apiserver-store/pkg/storebackend"
-	apierrors "k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
-func (r *strategy) Get(ctx context.Context, key types.NamespacedName) (runtime.Object, error) {
-	obj, err := r.store.Get(ctx, storebackend.KeyFromNSN(key))
-	if err != nil {
-		return nil, apierrors.NewNotFound(r.gr, key.Name)
-	}
-	return obj, nil
+type SyntaxValidator interface {
+	Validate(claim *IPClaim) field.ErrorList
 }

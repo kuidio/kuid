@@ -20,13 +20,14 @@ import (
 	"context"
 	"fmt"
 	"reflect"
+	"strings"
 	"time"
 
-	"github.com/hansthienpondt/nipam/pkg/table"
 	"github.com/henderiw/logger/log"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
 	"github.com/kuidio/kuid/pkg/backend"
+	"github.com/kuidio/kuid/pkg/backend/ipam"
 	"github.com/kuidio/kuid/pkg/reconcilers"
 	"github.com/kuidio/kuid/pkg/reconcilers/ctrlconfig"
 	"github.com/kuidio/kuid/pkg/reconcilers/ipentryeventhandler"
@@ -89,7 +90,7 @@ type reconciler struct {
 	client.Client
 	finalizer *resource.APIFinalizer
 	recorder  record.EventRecorder
-	be        backend.Backend[*table.RIB]
+	be        backend.Backend[*ipam.CacheContext]
 }
 
 func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
@@ -109,9 +110,11 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 	cr = cr.DeepCopy()
 
 	if !cr.GetDeletionTimestamp().IsZero() {
-		if err := r.be.DeleteClaim(ctx, cr); err != nil {
-			r.handleError(ctx, cr, "cannot delete ipclaim", err)
-			return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+		if err := r.be.Release(ctx, cr); err != nil {
+			if !strings.Contains(err.Error(), "not initialized") {
+				r.handleError(ctx, cr, "cannot delete ipclaim", err)
+				return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+			}
 		}
 
 		if err := r.finalizer.RemoveFinalizer(ctx, cr); err != nil {
@@ -125,11 +128,6 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 	if err := r.finalizer.AddFinalizer(ctx, cr); err != nil {
 		r.handleError(ctx, cr, "cannot add finalizer", err)
 		return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
-	}
-
-	if err := r.be.ValidateClaim(ctx, cr); err != nil {
-		r.handleError(ctx, cr, "claim validation failed", err)
-		return ctrl.Result{RequeueAfter: 5 * time.Second}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
 	}
 
 	if err := r.be.Claim(ctx, cr); err != nil {

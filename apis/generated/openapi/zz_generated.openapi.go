@@ -31,77 +31,82 @@ import (
 
 func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenAPIDefinition {
 	return map[string]common.OpenAPIDefinition{
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaim":        schema_apis_backend_ipam_v1alpha1_IPClaim(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaimList":    schema_apis_backend_ipam_v1alpha1_IPClaimList(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaimSpec":    schema_apis_backend_ipam_v1alpha1_IPClaimSpec(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaimStatus":  schema_apis_backend_ipam_v1alpha1_IPClaimStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntry":        schema_apis_backend_ipam_v1alpha1_IPEntry(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntryList":    schema_apis_backend_ipam_v1alpha1_IPEntryList(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntrySpec":    schema_apis_backend_ipam_v1alpha1_IPEntrySpec(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntryStatus":  schema_apis_backend_ipam_v1alpha1_IPEntryStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndex":        schema_apis_backend_ipam_v1alpha1_IPIndex(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndexList":    schema_apis_backend_ipam_v1alpha1_IPIndexList(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndexSpec":    schema_apis_backend_ipam_v1alpha1_IPIndexSpec(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndexStatus":  schema_apis_backend_ipam_v1alpha1_IPIndexStatus(ref),
-		"github.com/kuidio/kuid/apis/common/v1alpha1.ClaimLabels":          schema_kuid_apis_common_v1alpha1_ClaimLabels(ref),
-		"github.com/kuidio/kuid/apis/common/v1alpha1.OwnerReference":       schema_kuid_apis_common_v1alpha1_OwnerReference(ref),
-		"github.com/kuidio/kuid/apis/common/v1alpha1.UserDefinedLabels":    schema_kuid_apis_common_v1alpha1_UserDefinedLabels(ref),
-		"github.com/kuidio/kuid/apis/condition/v1alpha1.Condition":         schema_kuid_apis_condition_v1alpha1_Condition(ref),
-		"github.com/kuidio/kuid/apis/condition/v1alpha1.ConditionedStatus": schema_kuid_apis_condition_v1alpha1_ConditionedStatus(ref),
-		"k8s.io/apimachinery/pkg/api/resource.Quantity":                    schema_apimachinery_pkg_api_resource_Quantity(ref),
-		"k8s.io/apimachinery/pkg/api/resource.int64Amount":                 schema_apimachinery_pkg_api_resource_int64Amount(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIGroup":                    schema_pkg_apis_meta_v1_APIGroup(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIGroupList":                schema_pkg_apis_meta_v1_APIGroupList(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIResource":                 schema_pkg_apis_meta_v1_APIResource(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIResourceList":             schema_pkg_apis_meta_v1_APIResourceList(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIVersions":                 schema_pkg_apis_meta_v1_APIVersions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ApplyOptions":                schema_pkg_apis_meta_v1_ApplyOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Condition":                   schema_pkg_apis_meta_v1_Condition(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.CreateOptions":               schema_pkg_apis_meta_v1_CreateOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.DeleteOptions":               schema_pkg_apis_meta_v1_DeleteOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Duration":                    schema_pkg_apis_meta_v1_Duration(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.FieldsV1":                    schema_pkg_apis_meta_v1_FieldsV1(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GetOptions":                  schema_pkg_apis_meta_v1_GetOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupKind":                   schema_pkg_apis_meta_v1_GroupKind(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupResource":               schema_pkg_apis_meta_v1_GroupResource(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersion":                schema_pkg_apis_meta_v1_GroupVersion(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionForDiscovery":    schema_pkg_apis_meta_v1_GroupVersionForDiscovery(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionKind":            schema_pkg_apis_meta_v1_GroupVersionKind(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionResource":        schema_pkg_apis_meta_v1_GroupVersionResource(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.InternalEvent":               schema_pkg_apis_meta_v1_InternalEvent(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector":               schema_pkg_apis_meta_v1_LabelSelector(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelectorRequirement":    schema_pkg_apis_meta_v1_LabelSelectorRequirement(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.List":                        schema_pkg_apis_meta_v1_List(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta":                    schema_pkg_apis_meta_v1_ListMeta(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ListOptions":                 schema_pkg_apis_meta_v1_ListOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ManagedFieldsEntry":          schema_pkg_apis_meta_v1_ManagedFieldsEntry(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.MicroTime":                   schema_pkg_apis_meta_v1_MicroTime(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta":                  schema_pkg_apis_meta_v1_ObjectMeta(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.OwnerReference":              schema_pkg_apis_meta_v1_OwnerReference(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.PartialObjectMetadata":       schema_pkg_apis_meta_v1_PartialObjectMetadata(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.PartialObjectMetadataList":   schema_pkg_apis_meta_v1_PartialObjectMetadataList(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Patch":                       schema_pkg_apis_meta_v1_Patch(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.PatchOptions":                schema_pkg_apis_meta_v1_PatchOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Preconditions":               schema_pkg_apis_meta_v1_Preconditions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.RootPaths":                   schema_pkg_apis_meta_v1_RootPaths(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ServerAddressByClientCIDR":   schema_pkg_apis_meta_v1_ServerAddressByClientCIDR(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Status":                      schema_pkg_apis_meta_v1_Status(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.StatusCause":                 schema_pkg_apis_meta_v1_StatusCause(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.StatusDetails":               schema_pkg_apis_meta_v1_StatusDetails(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Table":                       schema_pkg_apis_meta_v1_Table(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TableColumnDefinition":       schema_pkg_apis_meta_v1_TableColumnDefinition(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TableOptions":                schema_pkg_apis_meta_v1_TableOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TableRow":                    schema_pkg_apis_meta_v1_TableRow(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TableRowCondition":           schema_pkg_apis_meta_v1_TableRowCondition(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Time":                        schema_pkg_apis_meta_v1_Time(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Timestamp":                   schema_pkg_apis_meta_v1_Timestamp(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TypeMeta":                    schema_pkg_apis_meta_v1_TypeMeta(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.UpdateOptions":               schema_pkg_apis_meta_v1_UpdateOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.WatchEvent":                  schema_pkg_apis_meta_v1_WatchEvent(ref),
-		"k8s.io/apimachinery/pkg/runtime.RawExtension":                     schema_k8sio_apimachinery_pkg_runtime_RawExtension(ref),
-		"k8s.io/apimachinery/pkg/runtime.TypeMeta":                         schema_k8sio_apimachinery_pkg_runtime_TypeMeta(ref),
-		"k8s.io/apimachinery/pkg/runtime.Unknown":                          schema_k8sio_apimachinery_pkg_runtime_Unknown(ref),
-		"k8s.io/apimachinery/pkg/version.Info":                             schema_k8sio_apimachinery_pkg_version_Info(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaim":                       schema_apis_backend_ipam_v1alpha1_IPClaim(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaimList":                   schema_apis_backend_ipam_v1alpha1_IPClaimList(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaimSpec":                   schema_apis_backend_ipam_v1alpha1_IPClaimSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaimStatus":                 schema_apis_backend_ipam_v1alpha1_IPClaimStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntry":                       schema_apis_backend_ipam_v1alpha1_IPEntry(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntryList":                   schema_apis_backend_ipam_v1alpha1_IPEntryList(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntrySpec":                   schema_apis_backend_ipam_v1alpha1_IPEntrySpec(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntryStatus":                 schema_apis_backend_ipam_v1alpha1_IPEntryStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndex":                       schema_apis_backend_ipam_v1alpha1_IPIndex(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndexList":                   schema_apis_backend_ipam_v1alpha1_IPIndexList(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndexSpec":                   schema_apis_backend_ipam_v1alpha1_IPIndexSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndexStatus":                 schema_apis_backend_ipam_v1alpha1_IPIndexStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.dynamicAddressSyntaxValidator": schema_apis_backend_ipam_v1alpha1_dynamicAddressSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.dynamicPrefixSyntaxValidator":  schema_apis_backend_ipam_v1alpha1_dynamicPrefixSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.staticAddressSyntaxValidator":  schema_apis_backend_ipam_v1alpha1_staticAddressSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.staticPrefixSyntaxValidator":   schema_apis_backend_ipam_v1alpha1_staticPrefixSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.staticRangeSyntaxValidator":    schema_apis_backend_ipam_v1alpha1_staticRangeSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/common/v1alpha1.ClaimLabels":                         schema_kuid_apis_common_v1alpha1_ClaimLabels(ref),
+		"github.com/kuidio/kuid/apis/common/v1alpha1.OwnerReference":                      schema_kuid_apis_common_v1alpha1_OwnerReference(ref),
+		"github.com/kuidio/kuid/apis/common/v1alpha1.UserDefinedLabels":                   schema_kuid_apis_common_v1alpha1_UserDefinedLabels(ref),
+		"github.com/kuidio/kuid/apis/condition/v1alpha1.Condition":                        schema_kuid_apis_condition_v1alpha1_Condition(ref),
+		"github.com/kuidio/kuid/apis/condition/v1alpha1.ConditionedStatus":                schema_kuid_apis_condition_v1alpha1_ConditionedStatus(ref),
+		"k8s.io/apimachinery/pkg/api/resource.Quantity":                                   schema_apimachinery_pkg_api_resource_Quantity(ref),
+		"k8s.io/apimachinery/pkg/api/resource.int64Amount":                                schema_apimachinery_pkg_api_resource_int64Amount(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIGroup":                                   schema_pkg_apis_meta_v1_APIGroup(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIGroupList":                               schema_pkg_apis_meta_v1_APIGroupList(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIResource":                                schema_pkg_apis_meta_v1_APIResource(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIResourceList":                            schema_pkg_apis_meta_v1_APIResourceList(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIVersions":                                schema_pkg_apis_meta_v1_APIVersions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ApplyOptions":                               schema_pkg_apis_meta_v1_ApplyOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Condition":                                  schema_pkg_apis_meta_v1_Condition(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.CreateOptions":                              schema_pkg_apis_meta_v1_CreateOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.DeleteOptions":                              schema_pkg_apis_meta_v1_DeleteOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Duration":                                   schema_pkg_apis_meta_v1_Duration(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.FieldsV1":                                   schema_pkg_apis_meta_v1_FieldsV1(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GetOptions":                                 schema_pkg_apis_meta_v1_GetOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupKind":                                  schema_pkg_apis_meta_v1_GroupKind(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupResource":                              schema_pkg_apis_meta_v1_GroupResource(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersion":                               schema_pkg_apis_meta_v1_GroupVersion(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionForDiscovery":                   schema_pkg_apis_meta_v1_GroupVersionForDiscovery(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionKind":                           schema_pkg_apis_meta_v1_GroupVersionKind(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionResource":                       schema_pkg_apis_meta_v1_GroupVersionResource(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.InternalEvent":                              schema_pkg_apis_meta_v1_InternalEvent(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector":                              schema_pkg_apis_meta_v1_LabelSelector(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelectorRequirement":                   schema_pkg_apis_meta_v1_LabelSelectorRequirement(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.List":                                       schema_pkg_apis_meta_v1_List(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta":                                   schema_pkg_apis_meta_v1_ListMeta(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ListOptions":                                schema_pkg_apis_meta_v1_ListOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ManagedFieldsEntry":                         schema_pkg_apis_meta_v1_ManagedFieldsEntry(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.MicroTime":                                  schema_pkg_apis_meta_v1_MicroTime(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta":                                 schema_pkg_apis_meta_v1_ObjectMeta(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.OwnerReference":                             schema_pkg_apis_meta_v1_OwnerReference(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.PartialObjectMetadata":                      schema_pkg_apis_meta_v1_PartialObjectMetadata(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.PartialObjectMetadataList":                  schema_pkg_apis_meta_v1_PartialObjectMetadataList(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Patch":                                      schema_pkg_apis_meta_v1_Patch(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.PatchOptions":                               schema_pkg_apis_meta_v1_PatchOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Preconditions":                              schema_pkg_apis_meta_v1_Preconditions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.RootPaths":                                  schema_pkg_apis_meta_v1_RootPaths(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ServerAddressByClientCIDR":                  schema_pkg_apis_meta_v1_ServerAddressByClientCIDR(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Status":                                     schema_pkg_apis_meta_v1_Status(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.StatusCause":                                schema_pkg_apis_meta_v1_StatusCause(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.StatusDetails":                              schema_pkg_apis_meta_v1_StatusDetails(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Table":                                      schema_pkg_apis_meta_v1_Table(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TableColumnDefinition":                      schema_pkg_apis_meta_v1_TableColumnDefinition(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TableOptions":                               schema_pkg_apis_meta_v1_TableOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TableRow":                                   schema_pkg_apis_meta_v1_TableRow(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TableRowCondition":                          schema_pkg_apis_meta_v1_TableRowCondition(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Time":                                       schema_pkg_apis_meta_v1_Time(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Timestamp":                                  schema_pkg_apis_meta_v1_Timestamp(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TypeMeta":                                   schema_pkg_apis_meta_v1_TypeMeta(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.UpdateOptions":                              schema_pkg_apis_meta_v1_UpdateOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.WatchEvent":                                 schema_pkg_apis_meta_v1_WatchEvent(ref),
+		"k8s.io/apimachinery/pkg/runtime.RawExtension":                                    schema_k8sio_apimachinery_pkg_runtime_RawExtension(ref),
+		"k8s.io/apimachinery/pkg/runtime.TypeMeta":                                        schema_k8sio_apimachinery_pkg_runtime_TypeMeta(ref),
+		"k8s.io/apimachinery/pkg/runtime.Unknown":                                         schema_k8sio_apimachinery_pkg_runtime_Unknown(ref),
+		"k8s.io/apimachinery/pkg/version.Info":                                            schema_k8sio_apimachinery_pkg_version_Info(ref),
 	}
 }
 
@@ -208,20 +213,61 @@ func schema_apis_backend_ipam_v1alpha1_IPClaimSpec(ref common.ReferenceCallback)
 				Description: "IPClaimSpec defines the desired state of IPClaim",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
-					"kind": {
+					"networkInstance": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Kind defines the kind of prefix for the IP Claim - network kind is used for physical, virtual nics on a device - loopback kind is used for loopback interfaces within a device - pool kind is used for pools for dhcp/radius/bng/upf/etc - aggregate kind is used for claiming an aggregate prefix",
+							Description: "NetworkInstance defines the networkInstance context of the IPAddress. A NetworkInstance is a dedicated routing table instance",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
 						},
 					},
-					"networkInstance": {
+					"prefixType": {
 						SchemaProps: spec.SchemaProps{
-							Description: "NetworkInstance defines the networkInstance context for the IP claim The NetworkInstance must exist within the IPClaim namespace to succeed in claiming the ip",
-							Default:     "",
+							Description: "PrefixType defines the prefixtype of IPEntry; for address and range claims this is not relevant - network kind is used for physical, virtual nics on a device - pool kind is used for allocating dedicated IP addresses - aggregate kind is used for claiming an aggregate prefix; only used for networkInstance prefixes",
 							Type:        []string{"string"},
 							Format:      "",
+						},
+					},
+					"prefix": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Prefix defines the prefix for the IP claim",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"address": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Address defines the address for the IP claim",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"range": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Range defines the range for the IP claim",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"defaultGateway": {
+						SchemaProps: spec.SchemaProps{
+							Description: "DefaultGateway defines if the address acts as a default gateway",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"createPrefix": {
+						SchemaProps: spec.SchemaProps{
+							Description: "CreatePrefix defines if this prefix must be created. Only used for dynamic prefixes e.g. non /32 ipv4 and non /128 ipv6 prefixes",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"prefixLength": {
+						SchemaProps: spec.SchemaProps{
+							Description: "PrefixLength defines the prefix length for the IP Claim, Must be set when CreatePrefic is set If not present we use assume /32 for ipv4 and /128 for ipv6",
+							Type:        []string{"integer"},
+							Format:      "int64",
 						},
 					},
 					"addressFamily": {
@@ -231,39 +277,11 @@ func schema_apis_backend_ipam_v1alpha1_IPClaimSpec(ref common.ReferenceCallback)
 							Format:      "",
 						},
 					},
-					"prefix": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Prefix defines the prefix for the IP claim Used for specific prefix claim or used as a hint for a dynamic prefix claim in case of restart",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"gateway": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Gateway defines if the prefix/address is a gateway",
-							Type:        []string{"boolean"},
-							Format:      "",
-						},
-					},
-					"prefixLength": {
-						SchemaProps: spec.SchemaProps{
-							Description: "PrefixLength defines the prefix length for the IP Claim If not present we use assume /32 for ipv4 and /128 for ipv6",
-							Type:        []string{"integer"},
-							Format:      "int64",
-						},
-					},
 					"index": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Index defines the index of the IP Claim, used to get a deterministic IP from a prefix If not present we claim a random prefix from a prefix",
 							Type:        []string{"integer"},
 							Format:      "int64",
-						},
-					},
-					"createPrefix": {
-						SchemaProps: spec.SchemaProps{
-							Description: "CreatePrefix defines if this prefix must be created. Only used for non address prefixes e.g. non /32 ipv4 and non /128 ipv6 prefixes",
-							Type:        []string{"boolean"},
-							Format:      "",
 						},
 					},
 					"labels": {
@@ -290,11 +308,12 @@ func schema_apis_backend_ipam_v1alpha1_IPClaimSpec(ref common.ReferenceCallback)
 					},
 					"owner": {
 						SchemaProps: spec.SchemaProps{
-							Ref: ref("github.com/kuidio/kuid/apis/common/v1alpha1.OwnerReference"),
+							Description: "Owner defines the ownerReference of the IPClaim Allow for different namesapces, hence it is part of the spec",
+							Ref:         ref("github.com/kuidio/kuid/apis/common/v1alpha1.OwnerReference"),
 						},
 					},
 				},
-				Required: []string{"kind", "networkInstance"},
+				Required: []string{"networkInstance"},
 			},
 		},
 		Dependencies: []string{
@@ -323,6 +342,20 @@ func schema_apis_backend_ipam_v1alpha1_IPClaimStatus(ref common.ReferenceCallbac
 							},
 						},
 					},
+					"range": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Range defines the range, claimed through the IPAM backend",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"address": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Address defines the address, claimed through the IPAM backend",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
 					"prefix": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Prefix defines the prefix, claimed through the IPAM backend",
@@ -330,9 +363,9 @@ func schema_apis_backend_ipam_v1alpha1_IPClaimStatus(ref common.ReferenceCallbac
 							Format:      "",
 						},
 					},
-					"gateway": {
+					"defaultGateway": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Gateway defines the gateway IP for the claimed prefix Gateway is only relevant for prefix kind = network",
+							Description: "DefaultGateway defines the default gateway IP for the claimed prefix DefaultGateway is only relevant for prefix kind = network",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -455,57 +488,47 @@ func schema_apis_backend_ipam_v1alpha1_IPEntrySpec(ref common.ReferenceCallback)
 				Description: "IPEntrySpec defines the desired state of IPEntry",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
-					"kind": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Kind defines the kind of prefix for the IP Claim - network kind is used for physical, virtual nics on a device - loopback kind is used for loopback interfaces within a device - pool kind is used for pools for dhcp/radius/bng/upf/etc - aggregate kind is used for claiming an aggregate prefix",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
 					"networkInstance": {
 						SchemaProps: spec.SchemaProps{
-							Description: "NetworkInstance defines the networkInstance context for the IP claim The NetworkInstance must exist within the IPClaim namespace to succeed in claiming the ip",
+							Description: "NetworkInstance defines the networkInstance context of the IPAddress. A NetworkInstance is a dedicated routing table instance",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
 						},
 					},
-					"addressFamily": {
+					"prefixType": {
 						SchemaProps: spec.SchemaProps{
-							Description: "AddressFamily defines the address family for the IP Entry",
-							Default:     "",
+							Description: "PrefixType defines the prefixtype of IPEntry; for address and range claims this is not relevant - network kind is used for physical, virtual nics on a device - pool kind is used for allocating dedicated IP addresses - aggregate kind is used for claiming an aggregate prefix; only used for networkInstance prefixes",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"claimType": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ClaimType defines the claimType of the IP Entry",
 							Type:        []string{"string"},
 							Format:      "",
 						},
 					},
 					"prefix": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Prefix defines the prefix for the IP Entry; can be address or prefix",
+							Description: "Prefix defines the prefix for the IP entry; which can be an expanded prefix from the prefix, range or address",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
 						},
 					},
-					"subnet": {
+					"defaultGateway": {
 						SchemaProps: spec.SchemaProps{
-							Description: "ParentPrefix defines the parent prefix for the IP Entry Used for specific prefix claim or used as a hint for a dynamic prefix claim in case of restart",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"index": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Index defines the index of the IP Entry, used to get a deterministic IP from a prefix If not present we claim a random prefix from a prefix",
-							Type:        []string{"integer"},
-							Format:      "int64",
-						},
-					},
-					"gateway": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Gateway defines if the prefix/address is a gateway",
+							Description: "DefaultGateway defines if the address acts as a default gateway",
 							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"addressFamily": {
+						SchemaProps: spec.SchemaProps{
+							Description: "AddressFamily defines the address family for the IP claim",
+							Type:        []string{"string"},
 							Format:      "",
 						},
 					},
@@ -539,7 +562,7 @@ func schema_apis_backend_ipam_v1alpha1_IPEntrySpec(ref common.ReferenceCallback)
 						},
 					},
 				},
-				Required: []string{"kind", "networkInstance", "addressFamily", "prefix", "subnet", "ipClaim"},
+				Required: []string{"networkInstance", "prefix", "ipClaim"},
 			},
 		},
 		Dependencies: []string{
@@ -709,6 +732,106 @@ func schema_apis_backend_ipam_v1alpha1_IPIndexStatus(ref common.ReferenceCallbac
 		},
 		Dependencies: []string{
 			"github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"},
+	}
+}
+
+func schema_apis_backend_ipam_v1alpha1_dynamicAddressSyntaxValidator(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Default: "",
+							Type:    []string{"string"},
+							Format:  "",
+						},
+					},
+				},
+				Required: []string{"name"},
+			},
+		},
+	}
+}
+
+func schema_apis_backend_ipam_v1alpha1_dynamicPrefixSyntaxValidator(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Default: "",
+							Type:    []string{"string"},
+							Format:  "",
+						},
+					},
+				},
+				Required: []string{"name"},
+			},
+		},
+	}
+}
+
+func schema_apis_backend_ipam_v1alpha1_staticAddressSyntaxValidator(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Default: "",
+							Type:    []string{"string"},
+							Format:  "",
+						},
+					},
+				},
+				Required: []string{"name"},
+			},
+		},
+	}
+}
+
+func schema_apis_backend_ipam_v1alpha1_staticPrefixSyntaxValidator(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Default: "",
+							Type:    []string{"string"},
+							Format:  "",
+						},
+					},
+				},
+				Required: []string{"name"},
+			},
+		},
+	}
+}
+
+func schema_apis_backend_ipam_v1alpha1_staticRangeSyntaxValidator(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Default: "",
+							Type:    []string{"string"},
+							Format:  "",
+						},
+					},
+				},
+				Required: []string{"name"},
+			},
+		},
 	}
 }
 

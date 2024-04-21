@@ -56,11 +56,9 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: status.hostIP
-        - name: ENABLE_IPAMIPPREFIX
+        - name: ENABLE_IPAMIP
           value: "true"
         - name: ENABLE_IPAMNETWORKINSTANCE
-          value: "true"
-        - name: ENABLE_IPAMIPINDEX
           value: "true"
         - name: ENABLE_IPAMIPCLAIM
           value: "true"

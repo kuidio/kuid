@@ -18,9 +18,12 @@ package ipclaim
 
 import (
 	"context"
+	"fmt"
+	"reflect"
 
 	"github.com/henderiw/apiserver-store/pkg/storebackend"
 	"github.com/henderiw/logger/log"
+	ipambe1v1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
@@ -34,7 +37,19 @@ func (r *strategy) PrepareForCreate(ctx context.Context, obj runtime.Object) {
 }
 
 func (r *strategy) Validate(ctx context.Context, obj runtime.Object) field.ErrorList {
-	return r.be.ValidateClaimSyntax(ctx, obj)
+	var allErrs field.ErrorList
+
+	claim, ok := obj.(*ipambe1v1alpha1.IPClaim)
+	if !ok {
+		allErrs = append(allErrs, field.Invalid(
+			field.NewPath(""),
+			claim,
+			fmt.Errorf("unexpected new object, expecting: %s, got: %s", ipambe1v1alpha1.IPClaimKind, reflect.TypeOf(obj)).Error(),
+		))
+		return allErrs
+	}
+
+	return claim.ValidateSyntax()
 }
 
 func (r *strategy) Create(ctx context.Context, key types.NamespacedName, obj runtime.Object, dryrun bool) (runtime.Object, error) {
@@ -42,16 +57,6 @@ func (r *strategy) Create(ctx context.Context, key types.NamespacedName, obj run
 	if dryrun {
 		return obj, nil
 	}
-
-	/*
-	if err := r.be.ValidateClaim(ctx, obj); err != nil {
-		return obj, apierrors.NewInternalError(err)
-	}
-
-	if err := r.be.Claim(ctx, obj); err != nil {
-		return obj, apierrors.NewInternalError(err)
-	}
-	*/
 
 	log.Info("create ipclaim storage", "key", key, "obj", obj)
 

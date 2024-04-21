@@ -20,7 +20,7 @@ func TestIPAMIndexNormal(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			be := New(nil)
 			ctx := context.Background()
-			index := getIPIndex(tc.niName)
+			index := getNI(tc.niName)
 			if err := be.CreateIndex(ctx, index); err != nil {
 				assert.Error(t, err)
 			}

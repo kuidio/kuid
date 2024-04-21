@@ -54,7 +54,7 @@ func (r *dynamicPrefixApplicator) claimPrefix(ctx context.Context, claim *ipambe
 	}
 	found := false
 	var spi *iputil.Prefix
-	for _, existingRoute := range existingRoutes {
+	for _, existingRoute := range existingRoutes[""] {
 		// validate if the existing prefix/address is in the routing
 		// table -> if so we return -> apply takes care of the cleanup
 		if claim.Status.Prefix != nil {

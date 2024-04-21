@@ -18,6 +18,7 @@ package ipam
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/henderiw/iputil"
 	"github.com/henderiw/logger/log"
@@ -31,7 +32,8 @@ func (r *staticAddressApplicator) Apply(ctx context.Context, claim *ipambev1alph
 	if err != nil {
 		return err
 	}
-	if r.parentClaimInfo == ipambev1alpha1.IPClaimInfo_Range {
+	fmt.Println("applyAddress", *claim.Spec.Address, r.parentClaimSummaryType, r.parentRangeName, r.parentNetwork)
+	if r.parentClaimSummaryType == ipambev1alpha1.IPClaimSummaryType_Range {
 		if err := r.applyAddressInRange(ctx, claim, pi, r.parentRangeName); err != nil {
 			return err
 		}
@@ -41,6 +43,6 @@ func (r *staticAddressApplicator) Apply(ctx context.Context, claim *ipambev1alph
 		}
 	}
 
-	r.updateClaimAddressStatus(ctx, claim, pi)
+	r.updateClaimAddressStatus(ctx, claim, pi, r.parentNetwork)
 	return nil
 }

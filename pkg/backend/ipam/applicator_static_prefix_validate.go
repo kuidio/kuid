@@ -56,10 +56,7 @@ func (r *staticPrefixApplicator) Validate(ctx context.Context, claim *ipambev1al
 		// we need to also validate if the address part does not exist
 		if pi.GetIPSubnet().String() != pi.GetIPPrefix().String() {
 			// check if the existing net prefix/subnet is of type network
-			if routeLabels[backend.KuidIPAMTypeKey] == string(ipambev1alpha1.IPClaimType_Network) {
-				return fmt.Errorf("a static address based prefix (net <> address) is only allowed for claimType network")
-			}
-			if claim.GetType() != ipambev1alpha1.IPClaimType_Network {
+			if claim.GetIPPrefixType() != ipambev1alpha1.IPPrefixType_Network {
 				return fmt.Errorf("a static address based prefix (net <> address) is only allowed for claimType network")
 			}
 			route, ok = dryrunRib.Get(pi.GetIPAddressPrefix())
@@ -116,65 +113,65 @@ func (r *staticPrefixApplicator) Validate(ctx context.Context, claim *ipambev1al
 }
 
 func (r *staticPrefixApplicator) validateExistingChildren(claim *ipambev1alpha1.IPClaim, routes table.Routes) error {
-	claimType := claim.GetType()
+	prefixType := claim.GetIPPrefixType()
 
 	for _, route := range routes {
 		routeLabels := route.Labels()
-		childInfo := routeLabels[backend.KuidIPAMInfoKey]
-		childClaimType := routeLabels[backend.KuidIPAMTypeKey]
-		switch claimType {
-		case ipambev1alpha1.IPClaimType_Aggregate, ipambev1alpha1.IPClaimType_Other: // the claim is of type aggregate
+		childClaimSummaryType := routeLabels[backend.KuidIPAMClaimSummaryTypeKey]
+		childPrefixType := routeLabels[backend.KuidIPAMIPPrefixTypeKey]
+		switch prefixType {
+		case ipambev1alpha1.IPPrefixType_Aggregate, ipambev1alpha1.IPPrefixType_Other: // the claim is of type aggregate
 			// we only allow prefixes -> validate aggregate type
-			if childInfo == string(ipambev1alpha1.IPClaimInfo_Address) ||
-				childInfo == string(ipambev1alpha1.IPClaimInfo_Range) {
-				return fmt.Errorf("child with addressing %s not allowed in claim of type %s", childInfo, claimType)
+			if childClaimSummaryType == string(ipambev1alpha1.IPClaimSummaryType_Address) ||
+				childClaimSummaryType == string(ipambev1alpha1.IPClaimSummaryType_Range) {
+				return fmt.Errorf("child with addressing %s not allowed in claim of type %s", childClaimSummaryType, prefixType)
 			}
-			if childClaimType == string(ipambev1alpha1.IPClaimType_Aggregate) {
-				return fmt.Errorf("nesting %s is not possible", childClaimType)
+			if childPrefixType == string(ipambev1alpha1.IPPrefixType_Aggregate) {
+				return fmt.Errorf("nesting %s is not possible", childPrefixType)
 			}
-		case ipambev1alpha1.IPClaimType_Network, ipambev1alpha1.IPClaimType_Pool:
+		case ipambev1alpha1.IPPrefixType_Network, ipambev1alpha1.IPPrefixType_Pool:
 			// we only allow range and addresses -> these dont have a claimType
-			if childInfo == string(ipambev1alpha1.IPClaimInfo_Prefix) {
-				return fmt.Errorf("child with addressing %s not allowed in claim of type %s", childInfo, claimType)
+			if childClaimSummaryType == string(ipambev1alpha1.IPClaimSummaryType_Prefix) {
+				return fmt.Errorf("child with addressing %s not allowed in claim of type %s", childClaimSummaryType, prefixType)
 			}
 		default:
-			return fmt.Errorf("invalid claimType: %s", claimType)
+			return fmt.Errorf("invalid claimType: %s", prefixType)
 		}
 	}
 	return nil
 }
 
 func (r *staticPrefixApplicator) validateExistingParent(claim *ipambev1alpha1.IPClaim, _ *iputil.Prefix, route table.Route) error {
-	claimType := claim.GetType()
+	prefixType := claim.GetIPPrefixType()
 
 	routeLabels := route.Labels()
-	parentInfo := routeLabels[backend.KuidIPAMInfoKey]
-	parentClaimType := routeLabels[backend.KuidIPAMTypeKey]
-	switch claimType {
-	case ipambev1alpha1.IPClaimType_Aggregate:
-		return fmt.Errorf("parent %s/%s nesting %s/%s is not possible", route.Prefix().String(), *claim.Spec.Prefix, parentClaimType, claimType)
-	case ipambev1alpha1.IPClaimType_Other: // the claim is of type aggregate
+	parentClaimSummaryType := routeLabels[backend.KuidIPAMClaimSummaryTypeKey]
+	parentClaimType := routeLabels[backend.KuidIPAMIPPrefixTypeKey]
+	switch prefixType {
+	case ipambev1alpha1.IPPrefixType_Aggregate:
+		return fmt.Errorf("parent %s/%s nesting %s/%s is not possible", route.Prefix().String(), *claim.Spec.Prefix, parentClaimType, prefixType)
+	case ipambev1alpha1.IPPrefixType_Other: // the claim is of type aggregate
 		// we only allow prefixes
-		if parentInfo == string(ipambev1alpha1.IPClaimInfo_Address) ||
-			parentInfo == string(ipambev1alpha1.IPClaimInfo_Range) {
-			return fmt.Errorf("parent %s not allowed in claim of type %s", parentInfo, claimType)
+		if parentClaimSummaryType == string(ipambev1alpha1.IPClaimSummaryType_Address) ||
+			parentClaimSummaryType == string(ipambev1alpha1.IPClaimSummaryType_Range) {
+			return fmt.Errorf("parent %s not allowed in claim of type %s", parentClaimSummaryType, prefixType)
 		}
-		if parentClaimType == string(ipambev1alpha1.IPClaimType_Network) ||
-			parentClaimType == string(ipambev1alpha1.IPClaimType_Pool) {
-			return fmt.Errorf("parent %s/%s nesting %s/%s is not possible", route.Prefix().String(), *claim.Spec.Prefix, parentClaimType, claimType)
+		if parentClaimType == string(ipambev1alpha1.IPPrefixType_Network) ||
+			parentClaimType == string(ipambev1alpha1.IPPrefixType_Pool) {
+			return fmt.Errorf("parent %s/%s nesting %s/%s is not possible", route.Prefix().String(), *claim.Spec.Prefix, parentClaimType, prefixType)
 		}
-	case ipambev1alpha1.IPClaimType_Network, ipambev1alpha1.IPClaimType_Pool:
+	case ipambev1alpha1.IPPrefixType_Network, ipambev1alpha1.IPPrefixType_Pool:
 		// we only allow range and addresses -> these dont have a claimType
-		if parentInfo == string(ipambev1alpha1.IPClaimInfo_Address) ||
-			parentInfo == string(ipambev1alpha1.IPClaimInfo_Range) {
-			return fmt.Errorf("parent %s not allowed in claim of type %s", parentInfo, claimType)
+		if parentClaimSummaryType == string(ipambev1alpha1.IPClaimSummaryType_Address) ||
+			parentClaimSummaryType == string(ipambev1alpha1.IPClaimSummaryType_Range) {
+			return fmt.Errorf("parent %s not allowed in claim of type %s", parentClaimSummaryType, prefixType)
 		}
-		if parentClaimType == string(ipambev1alpha1.IPClaimType_Network) ||
-			parentClaimType == string(ipambev1alpha1.IPClaimType_Pool) {
-			return fmt.Errorf("parent %s/%s nesting %s/%s is not possible", route.Prefix().String(), *claim.Spec.Prefix, parentClaimType, claimType)
+		if parentClaimType == string(ipambev1alpha1.IPPrefixType_Network) ||
+			parentClaimType == string(ipambev1alpha1.IPPrefixType_Pool) {
+			return fmt.Errorf("parent %s/%s nesting %s/%s is not possible", route.Prefix().String(), *claim.Spec.Prefix, parentClaimType, prefixType)
 		}
 	default:
-		return fmt.Errorf("invalid claimType: %s", claimType)
+		return fmt.Errorf("invalid claimType: %s", prefixType)
 	}
 	return nil
 }

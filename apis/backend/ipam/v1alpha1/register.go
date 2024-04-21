@@ -60,8 +60,6 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 		&IPClaimList{},
 		&IPEntry{},
 		&IPEntryList{},
-		&IPIndex{},
-		&IPIndexList{},
 	)
 
 	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)

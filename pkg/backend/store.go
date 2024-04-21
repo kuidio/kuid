@@ -23,9 +23,22 @@ import (
 )
 
 type Store interface {
+	// Restore restores the backend data in the cache
 	Restore(ctx context.Context, k store.Key) error
-	// only used in configmap
+	// SaveAll saves the backend in memory cache to disk
 	SaveAll(ctx context.Context, k store.Key) error
-	// Destroy removes the store db
+	// Destroy detroys the storage
 	Destroy(ctx context.Context, k store.Key) error
 }
+
+func NewNopStore() Store {
+	return &nopStore{}
+}
+
+type nopStore struct{}
+
+func (r *nopStore) Restore(ctx context.Context, k store.Key) error { return nil }
+
+func (r *nopStore) SaveAll(ctx context.Context, k store.Key) error { return nil }
+
+func (r *nopStore) Destroy(ctx context.Context, k store.Key) error { return nil }

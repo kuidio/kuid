@@ -22,11 +22,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/netip"
-	"strconv"
 
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
 	"github.com/henderiw/iputil"
-	"github.com/henderiw/logger/log"
 	"github.com/henderiw/store"
 	"github.com/kuidio/kuid/apis/backend"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
@@ -138,19 +136,35 @@ func (r *IPEntry) GetClaimName() string {
 	return r.Spec.IPClaim
 }
 
+func (r *IPEntry) GetIPPrefixType() IPPrefixType {
+	if r.Spec.PrefixType == nil {
+		return IPPrefixType_Other
+	}
+	switch *r.Spec.PrefixType {
+	case IPPrefixType_Aggregate, IPPrefixType_Network, IPPrefixType_Pool:
+		return *r.Spec.PrefixType
+	default:
+		return IPPrefixType_Invalid
+	}
+}
+
+func (r *IPEntry) GetIPPrefix() string {
+	return r.Spec.Prefix
+}
+
 func GetIPEntry(ctx context.Context, k store.Key, prefix netip.Prefix, labels map[string]string) *IPEntry {
-	log := log.FromContext(ctx)
+	//log := log.FromContext(ctx)
 	pi := iputil.NewPrefixInfo(prefix)
 
 	ni := k.Name
 	ns := k.Namespace
 
 	spec := &IPEntrySpec{
-		Kind:            GetPrefixKindFromString(labels[backend.KuidIPAMKindKey]),
 		NetworkInstance: ni,
-		AddressFamily:   pi.GetAddressFamily(),
+		PrefixType:      GetIPPrefixTypeFromString(labels[backend.KuidIPAMIPPrefixTypeKey]),
+		ClaimType:       GetIPClaimTypeFromString(labels[backend.KuidIPAMClaimTypeKey]),
+		AddressFamily:   ptr.To[iputil.AddressFamily](pi.GetAddressFamily()),
 		Prefix:          pi.String(),
-		Subnet:          labels[backend.KuidIPAMSubnetKey],
 		IPClaim:         labels[backend.KuidClaimNameKey],
 		Owner: &commonv1alpha1.OwnerReference{
 			Group:     labels[backend.KuidOwnerGroupKey],
@@ -160,16 +174,8 @@ func GetIPEntry(ctx context.Context, k store.Key, prefix netip.Prefix, labels ma
 			Name:      labels[backend.KuidOwnerNameKey],
 		},
 	}
-	if _, ok := labels[backend.KuidIPAMGatewayKey]; ok {
-		spec.Gateway = ptr.To[bool](true)
-	}
-	if idx, ok := labels[backend.KuidIPAMIndexKey]; ok {
-		i, err := strconv.Atoi(idx)
-		if err != nil {
-			log.Error("cannot convert index from string to int")
-		} else {
-			spec.Index = ptr.To[uint32](uint32(i))
-		}
+	if _, ok := labels[backend.KuidIPAMDefaultGatewayKey]; ok {
+		spec.DefaultGateway = ptr.To[bool](true)
 	}
 	// filter the system defined labels from the labels to prepare for the user defined labels
 	udLabels := map[string]string{}

@@ -20,13 +20,13 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hansthienpondt/nipam/pkg/table"
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
 	"github.com/henderiw/apiserver-store/pkg/rest"
 	"github.com/henderiw/apiserver-store/pkg/storebackend"
 	"github.com/henderiw/logger/log"
 	ipambe1v1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 	"github.com/kuidio/kuid/pkg/backend"
+	"github.com/kuidio/kuid/pkg/backend/ipam"
 	watchermanager "github.com/kuidio/kuid/pkg/kuidserver/watcher-manager"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/labels"
@@ -40,7 +40,7 @@ import (
 )
 
 // NewStrategy creates and returns a fischerStrategy instance
-func NewStrategy(ctx context.Context, typer runtime.ObjectTyper, client client.Client, store storebackend.Storer[runtime.Object], be backend.Backend[*table.RIB]) *strategy {
+func NewStrategy(ctx context.Context, typer runtime.ObjectTyper, client client.Client, store storebackend.Storer[runtime.Object], be backend.Backend[*ipam.CacheContext]) *strategy {
 	watcherManager := watchermanager.New(32)
 
 	go watcherManager.Start(ctx)
@@ -93,7 +93,7 @@ type strategy struct {
 	names.NameGenerator
 	client         client.Client
 	store          storebackend.Storer[runtime.Object]
-	be             backend.Backend[*table.RIB]
+	be             backend.Backend[*ipam.CacheContext]
 	gr             schema.GroupResource
 	resource       resource.Object
 	watcherManager watchermanager.WatcherManager

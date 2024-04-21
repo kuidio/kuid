@@ -25,9 +25,9 @@ import (
 type dynamicAddressApplicator struct {
 	name string
 	applicator
-	parentClaimInfo ipambev1alpha1.IPClaimInfo
-	parentRangeName string
-	parentNetwork   bool
+	parentClaimSummaryType ipambev1alpha1.IPClaimSummaryType
+	parentRangeName        string
+	parentNetwork          bool
 }
 
 func (r *dynamicAddressApplicator) Validate(ctx context.Context, claim *ipambev1alpha1.IPClaim) error {

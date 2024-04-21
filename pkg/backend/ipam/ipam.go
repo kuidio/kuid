@@ -24,6 +24,7 @@ import (
 	"github.com/henderiw/logger/log"
 	"github.com/henderiw/store"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
+	ipamresv1alpha1 "github.com/kuidio/kuid/apis/resource/ipam/v1alpha1"
 
 	"github.com/kuidio/kuid/pkg/backend"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -50,9 +51,9 @@ type be struct {
 
 // CreateIndex creates a backend index
 func (r *be) CreateIndex(ctx context.Context, obj runtime.Object) error {
-	cr, ok := obj.(*ipambev1alpha1.IPIndex)
+	cr, ok := obj.(*ipamresv1alpha1.NetworkInstance)
 	if !ok {
-		return fmt.Errorf("cannot create index expecting %s, got %s", ipambev1alpha1.IPIndexKind, reflect.TypeOf(obj).Name())
+		return fmt.Errorf("cannot create index expecting %s, got %s", ipamresv1alpha1.NetworkInstanceKind, reflect.TypeOf(obj).Name())
 	}
 	ctx = initIndexContext(ctx, "create", cr)
 	log := log.FromContext(ctx)
@@ -78,9 +79,9 @@ func (r *be) CreateIndex(ctx context.Context, obj runtime.Object) error {
 
 // DeleteIndex deletes a backend index
 func (r *be) DeleteIndex(ctx context.Context, obj runtime.Object) error {
-	cr, ok := obj.(*ipambev1alpha1.IPIndex)
+	cr, ok := obj.(*ipamresv1alpha1.NetworkInstance)
 	if !ok {
-		return fmt.Errorf("cannot delete index expecting %s, got %s", ipambev1alpha1.IPIndexKind, reflect.TypeOf(obj).Name())
+		return fmt.Errorf("cannot delete index expecting %s, got %s", ipamresv1alpha1.NetworkInstanceKind, reflect.TypeOf(obj).Name())
 	}
 	ctx = initIndexContext(ctx, "delete", cr)
 	log := log.FromContext(ctx)
@@ -104,7 +105,7 @@ func (r *be) DeleteIndex(ctx context.Context, obj runtime.Object) error {
 func (r *be) Claim(ctx context.Context, obj runtime.Object) error {
 	claim, ok := obj.(*ipambev1alpha1.IPClaim)
 	if !ok {
-		return fmt.Errorf("cannot claim ip expecting %s, got %s", ipambev1alpha1.IPIndexKind, reflect.TypeOf(obj).Name())
+		return fmt.Errorf("cannot claim ip expecting %s, got %s", ipambev1alpha1.IPClaimKind, reflect.TypeOf(obj).Name())
 	}
 	ctx = initClaimContext(ctx, "create", claim)
 	log := log.FromContext(ctx)
@@ -115,7 +116,7 @@ func (r *be) Claim(ctx context.Context, obj runtime.Object) error {
 		return err
 	}
 
-	a, err := getApplicator(ctx, claim, cacheCtx)
+	a, err := getApplicator(ctx, cacheCtx, claim)
 	if err != nil {
 		return err
 	}
@@ -134,19 +135,19 @@ func (r *be) Claim(ctx context.Context, obj runtime.Object) error {
 func (r *be) Release(ctx context.Context, obj runtime.Object) error {
 	claim, ok := obj.(*ipambev1alpha1.IPClaim)
 	if !ok {
-		return fmt.Errorf("cannot delete ip cliam expecting %s, got %s", ipambev1alpha1.IPIndexKind, reflect.TypeOf(obj).Name())
+		return fmt.Errorf("cannot delete ip cliam expecting %s, got %s", ipamresv1alpha1.NetworkInstanceKind, reflect.TypeOf(obj).Name())
 	}
 	ctx = initClaimContext(ctx, "delete", claim)
 	log := log.FromContext(ctx)
 	log.Debug("start")
 
-	rib, err := r.cache.Get(ctx, claim.GetKey(), false)
+	cacheCtx, err := r.cache.Get(ctx, claim.GetKey(), false)
 	if err != nil {
 		return err
 	}
 
 	// ip claim delete and store
-	a, err := getApplicator(ctx, claim, rib)
+	a, err := getApplicator(ctx, cacheCtx, claim)
 	if err != nil {
 		// error gets returned when rib is not initialized -> this means we can safely return
 		// and pretend nothing is wrong (hence return nil) since the cleanup already happened
@@ -163,26 +164,25 @@ func (r *be) GetCache(ctx context.Context, key store.Key) (*CacheContext, error)
 	return r.cache.Get(ctx, key, false)
 }
 
-func getApplicator(_ context.Context, claim *ipambev1alpha1.IPClaim, cacheCtx *CacheContext) (Applicator, error) {
-
-	addressing, err := claim.GetAddressing()
+func getApplicator(_ context.Context, cacheCtx *CacheContext, claim *ipambev1alpha1.IPClaim) (Applicator, error) {
+	ipClaimType, err := claim.GetIPClaimType()
 	if err != nil {
 		return nil, err
 	}
 	var a Applicator
-	switch addressing {
-	case ipambev1alpha1.IPClaimAddressing_StaticAddress:
-		a = &staticAddressApplicator{name: "staticIPAddress", applicator: applicator{cacheCtx: cacheCtx}}
-	case ipambev1alpha1.IPClaimAddressing_StaticPrefix:
-		a = &staticPrefixApplicator{name: "staticIPprefix", applicator: applicator{cacheCtx: cacheCtx}}
-	case ipambev1alpha1.IPClaimAddressing_StaticRange:
-		a = &staticRangeApplicator{name: "staticIPRange", applicator: applicator{cacheCtx: cacheCtx}}
-	case ipambev1alpha1.IPClaimAddressing_DynamicAddress:
-		a = &dynamicAddressApplicator{name: "dynamicIPRange", applicator: applicator{cacheCtx: cacheCtx}}
-	case ipambev1alpha1.IPClaimAddressing_DynamicPrefix:
-		a = &dynamicPrefixApplicator{name: "dynamicIPprefix", applicator: applicator{cacheCtx: cacheCtx}}
+	switch ipClaimType {
+	case ipambev1alpha1.IPClaimType_StaticAddress:
+		a = &staticAddressApplicator{name: string(ipambev1alpha1.IPClaimType_StaticAddress), applicator: applicator{cacheCtx: cacheCtx}}
+	case ipambev1alpha1.IPClaimType_StaticPrefix:
+		a = &staticPrefixApplicator{name: string(ipambev1alpha1.IPClaimType_StaticPrefix), applicator: applicator{cacheCtx: cacheCtx}}
+	case ipambev1alpha1.IPClaimType_StaticRange:
+		a = &staticRangeApplicator{name: string(ipambev1alpha1.IPClaimType_StaticRange), applicator: applicator{cacheCtx: cacheCtx}}
+	case ipambev1alpha1.IPClaimType_DynamicAddress:
+		a = &dynamicAddressApplicator{name: string(ipambev1alpha1.IPClaimType_DynamicAddress), applicator: applicator{cacheCtx: cacheCtx}}
+	case ipambev1alpha1.IPClaimType_DynamicPrefix:
+		a = &dynamicPrefixApplicator{name: string(ipambev1alpha1.IPClaimType_DynamicPrefix), applicator: applicator{cacheCtx: cacheCtx}}
 	default:
-		return nil, fmt.Errorf("invalid addressing, got: %s", string(addressing))
+		return nil, fmt.Errorf("invalid addressing, got: %s", string(ipClaimType))
 	}
 
 	return a, nil

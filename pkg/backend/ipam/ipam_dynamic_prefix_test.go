@@ -2,7 +2,6 @@ package ipam
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
@@ -13,38 +12,40 @@ func TestIPAMDynamicPrefix(t *testing.T) {
 	tests := map[string]struct {
 		niName   string
 		prefixes []testprefix
-	}{/*
+	}{
 		"Normal": {
 			niName: "a",
 			prefixes: []testprefix{
-				{prefix: "10.0.0.0/8", claimType: "aggregate", claimInfo: "prefix", expectedError: false},
-				{prefixLength: 24, claimType: "other", claimInfo: "prefix", expectedError: false},
-				{prefixLength: 24, claimType: "pool", claimInfo: "prefix", expectedError: false},
-				{prefixLength: 24, claimType: "network", claimInfo: "prefix", expectedError: false},
-				{prefixLength: 24, claimType: "network", claimInfo: "prefix", expectedError: false},
+				{claimType: staticPrefix, ip: "10.0.0.0/8", prefixType: aggregate, expectedError: false},
+				{claimType: dynamicPrefix, name: "prefix1", prefixLength: 24, expectedError: false, expectedIP: "10.0.0.0/24"},
+				{claimType: dynamicPrefix, name: "prefix2", prefixLength: 24, prefixType: pool, expectedError: false, expectedIP: "10.0.1.0/24"},
+				{claimType: dynamicPrefix, name: "prefix3", prefixLength: 24, prefixType: network, expectedError: false, expectedIP: "10.0.2.0/24"},
+				{claimType: dynamicPrefix, name: "prefix4", prefixLength: 24, prefixType: network, expectedError: false, expectedIP: "10.0.3.0/24"},
+				{claimType: dynamicPrefix, name: "prefix5", prefixLength: 24, expectedError: false, expectedIP: "10.0.4.0/24"},
 			},
 		},
 		"NoAvailable": {
 			niName: "a",
 			prefixes: []testprefix{
-				{prefix: "10.0.0.0/24", claimType: "aggregate", claimInfo: "prefix", expectedError: false},
-				{prefixLength: 24, claimType: "other", claimInfo: "prefix", expectedError: true},
+				{claimType: staticPrefix, ip: "10.0.0.0/24", prefixType: aggregate, expectedError: false},
+				{claimType: dynamicPrefix, name: "prefix1", prefixLength: 24, expectedError: true},
 			},
 		},
 		"NoAggregate": {
 			niName: "a",
 			prefixes: []testprefix{
-				{prefixLength: 24, claimType: "other", claimInfo: "prefix", expectedError: true},
+				{claimType: dynamicPrefix, name: "prefix1", prefixLength: 24, expectedError: true},
 			},
-		},*/
+		},
 	}
 
 	for name, tc := range tests {
+		tc := tc
 		t.Run(name, func(t *testing.T) {
 			be := New(nil)
 			ctx := context.Background()
 			if tc.niName != "" {
-				index := getIPIndex(tc.niName)
+				index := getNI(tc.niName)
 				err := be.CreateIndex(ctx, index)
 				assert.NoError(t, err)
 			}
@@ -53,26 +54,22 @@ func TestIPAMDynamicPrefix(t *testing.T) {
 				p := p
 				var ipClaim *v1alpha1.IPClaim
 				var err error
-				if p.claimType == "aggregate" {
-					ipClaim, err = getIPClaimFromNetworkPrefix(tc.niName, p.prefix, p.labels)
 
-				} else {
-					switch p.claimInfo {
-					case "prefix":
-						if p.prefix != "" {
-							ipClaim, err = getIPClaimFromPrefix(tc.niName, p.prefix, v1alpha1.GetIPClaimTypeFromString(p.claimType), p.labels)
-						} else {
-							ipClaim, err = getIPClaimFromDynamicPrefix(p.name, tc.niName, v1alpha1.GetIPClaimTypeFromString(p.claimType), p.prefixLength, p.labels, p.selector)
-						}
-					case "address":
-						if p.prefix != "" {
-							ipClaim, err = getIPClaimFromAddress(tc.niName, p.prefix, p.labels)
-						} else {
-							ipClaim, err = getIPClaimFromDynamicAddress(p.name, tc.niName, p.labels, p.selector)
-						}
-					case "range":
-						ipClaim, err = getIPClaimFromRange(p.name, tc.niName, p.prefix, p.labels)
+				switch p.claimType {
+				case staticPrefix:
+					if p.prefixType != nil && *p.prefixType == *aggregate {
+						ipClaim, err = p.getIPClaimFromNetworkPrefix(tc.niName)
+					} else {
+						ipClaim, err = p.getStaticPrefixIPClaim(tc.niName)
 					}
+				case staticRange:
+					ipClaim, err = p.getStaticRangeIPClaim(tc.niName)
+				case staticAddress:
+					ipClaim, err = p.getStaticAddressIPClaim(tc.niName)
+				case dynamicPrefix:
+					ipClaim, err = p.getDynamicPrefixIPClaim(tc.niName)
+				case dynamicAddress:
+					ipClaim, err = p.getDynamicAddressIPClaim(tc.niName)
 				}
 				assert.NoError(t, err)
 
@@ -81,9 +78,52 @@ func TestIPAMDynamicPrefix(t *testing.T) {
 					assert.Error(t, err)
 				} else {
 					assert.NoError(t, err)
-				}
-				if ipClaim.Status.Prefix != nil {
-					fmt.Println("status", *ipClaim.Status.Prefix)
+					switch p.claimType {
+					case staticPrefix, dynamicPrefix:
+						if ipClaim.Status.Prefix == nil {
+							t.Errorf("expecting prefix status got nil")
+						} else {
+							expectedIP := p.ip
+							if p.expectedIP != "" {
+								expectedIP = p.expectedIP
+							}
+							if *ipClaim.Status.Prefix != expectedIP {
+								t.Errorf("expecting prefix got %s, want %s\n", *ipClaim.Status.Prefix, expectedIP)
+							}
+						}
+					case staticAddress, dynamicAddress:
+						if ipClaim.Status.Address == nil {
+							t.Errorf("expecting address status got nil")
+						} else {
+							expectedIP := p.ip
+							if p.expectedIP != "" {
+								expectedIP = p.expectedIP
+							}
+							if *ipClaim.Status.Address != expectedIP {
+								t.Errorf("expecting address got %s, want %s\n", *ipClaim.Status.Address, expectedIP)
+							}
+						}
+						if ipClaim.Status.DefaultGateway == nil {
+							if p.expectedDG != "" {
+								t.Errorf("expecting defaultGateway %s got nil", p.expectedDG)
+							}
+						} else {
+							if p.expectedDG == "" {
+								t.Errorf("unexpected defaultGateway got %s", *ipClaim.Status.DefaultGateway)
+							}
+							if *ipClaim.Status.DefaultGateway != p.expectedDG {
+								t.Errorf("expecting defaultGateway got %s, want %s\n", *ipClaim.Status.DefaultGateway, p.expectedDG)
+							}
+						}
+					case staticRange:
+						if ipClaim.Status.Range == nil {
+							t.Errorf("expecting range status got nil")
+						} else {
+							if *ipClaim.Status.Range != p.ip {
+								t.Errorf("expecting prefix got %s, want %s\n", *ipClaim.Status.Range, p.ip)
+							}
+						}
+					}
 				}
 			}
 		})

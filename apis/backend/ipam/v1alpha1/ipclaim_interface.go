@@ -20,8 +20,8 @@ import (
 	"crypto/sha1"
 	"encoding/json"
 	"fmt"
+	"strings"
 
-	"github.com/hansthienpondt/nipam/pkg/table"
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
 	"github.com/henderiw/iputil"
 	"github.com/henderiw/store"
@@ -35,8 +35,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/selection"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/utils/ptr"
-	"sigs.k8s.io/controller-runtime/pkg/client"
+	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
 const IPClaimPlural = "ipclaims"
@@ -171,9 +170,155 @@ func (r *IPClaim) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
+func (r *IPClaim) GetIPPrefixType() IPPrefixType {
+	if r.Spec.PrefixType == nil {
+		return IPPrefixType_Other
+	}
+	switch *r.Spec.PrefixType {
+	case IPPrefixType_Aggregate, IPPrefixType_Network, IPPrefixType_Pool:
+		return *r.Spec.PrefixType
+	default:
+		return IPPrefixType_Invalid
+	}
+}
+
+func (r *IPClaim) GetClaimRequest() string {
+	// we assume validation is already done when calling this
+	if r.Spec.Address != nil {
+		return *r.Spec.Address
+	}
+	if r.Spec.Prefix != nil {
+		return *r.Spec.Prefix
+	}
+	if r.Spec.Range != nil {
+		return *r.Spec.Range
+	}
+	return ""
+}
+
+func (r *IPClaim) GetClaimResponse() string {
+	// we assume validation is already done when calling this
+	if r.Status.Address != nil {
+		return *r.Status.Address
+	}
+	if r.Status.Prefix != nil {
+		return *r.Status.Prefix
+	}
+	if r.Status.Range != nil {
+		return *r.Status.Range
+	}
+	return ""
+}
+
+func (r *IPClaim) GetIPClaimType() (IPClaimType, error) {
+	addressing := IPClaimType_Invalid
+	var sb strings.Builder
+	count := 0
+	if r.Spec.Address != nil {
+		sb.WriteString(fmt.Sprintf("address: %s", *r.Spec.Address))
+		addressing = IPClaimType_StaticAddress
+		count++
+
+	}
+	if r.Spec.Prefix != nil {
+		if count > 0 {
+			sb.WriteString(", ")
+		}
+		sb.WriteString(fmt.Sprintf("prefix: %s", *r.Spec.Prefix))
+		addressing = IPClaimType_StaticPrefix
+		count++
+
+	}
+	if r.Spec.Range != nil {
+		if count > 0 {
+			sb.WriteString(", ")
+		}
+		sb.WriteString(fmt.Sprintf("range: %s", *r.Spec.Range))
+		addressing = IPClaimType_StaticRange
+		count++
+	}
+	if count > 1 {
+		return IPClaimType_Invalid, fmt.Errorf("an ipclaim can only have 1 addressing, got %s", sb.String())
+	}
+	if count == 0 {
+		if r.Spec.CreatePrefix != nil {
+			return IPClaimType_DynamicPrefix, nil
+		} else {
+			return IPClaimType_DynamicAddress, nil
+		}
+	}
+	return addressing, nil
+}
+
+func (r *IPClaim) GetIPClaimSummaryType() IPClaimSummaryType {
+	ipClaimType, err := r.GetIPClaimType()
+	if err != nil {
+		return IPClaimSummaryType_Invalid
+	}
+	switch ipClaimType {
+	case IPClaimType_DynamicAddress, IPClaimType_StaticAddress:
+		return IPClaimSummaryType_Address
+	case IPClaimType_DynamicPrefix, IPClaimType_StaticPrefix:
+		return IPClaimSummaryType_Prefix
+	case IPClaimType_StaticRange:
+		return IPClaimSummaryType_Range
+	default:
+		return IPClaimSummaryType_Invalid
+	}
+}
+
+func (r *IPClaim) ValidateSyntax() field.ErrorList {
+	var allErrs field.ErrorList
+
+	gv, err := schema.ParseGroupVersion(r.APIVersion)
+	if err != nil {
+		allErrs = append(allErrs, field.Invalid(
+			field.NewPath("apiVersion"),
+			r,
+			fmt.Errorf("invalid apiVersion: err: %s", err.Error()).Error(),
+		))
+		return allErrs
+	}
+
+	// this is for user convenience
+	if r.Spec.Owner == nil {
+		r.Spec.Owner = &commonv1alpha1.OwnerReference{
+			Group:     gv.Group,
+			Version:   gv.Version,
+			Kind:      r.Kind,
+			Namespace: r.Namespace,
+			Name:      r.Name,
+		}
+	}
+
+	ipClaimType, err := r.GetIPClaimType()
+	if err != nil {
+		allErrs = append(allErrs, field.Invalid(
+			field.NewPath(""),
+			r,
+			err.Error(),
+		))
+		return allErrs
+	}
+	var v SyntaxValidator
+	switch ipClaimType {
+	case IPClaimType_StaticAddress:
+		v = &staticAddressSyntaxValidator{name: "staticIPAddress"}
+	case IPClaimType_StaticPrefix:
+		v = &staticPrefixSyntaxValidator{name: "staticIPprefix"}
+	case IPClaimType_StaticRange:
+		v = &staticRangeSyntaxValidator{name: "staticIPRange"}
+	case IPClaimType_DynamicAddress:
+		v = &dynamicAddressSyntaxValidator{name: "dynamicIPRange"}
+	case IPClaimType_DynamicPrefix:
+		v = &dynamicPrefixSyntaxValidator{name: "dynamicIPprefix"}
+	default:
+		return allErrs
+	}
+	return v.Validate(r)
+}
+
 func (r *IPClaim) ValidateOwner(labels labels.Set) error {
-	fmt.Println("ValidateOwner claim", r)
-	fmt.Println("ValidateOwner labels", labels)
 	routeClaimName := labels[backend.KuidClaimNameKey]
 	routeOwner := commonv1alpha1.OwnerReference{
 		Group:     labels[backend.KuidOwnerGroupKey],
@@ -193,31 +338,6 @@ func (r *IPClaim) ValidateOwner(labels labels.Set) error {
 	return nil
 }
 
-func (r *IPClaim) ValidateExistingChildren(route table.Route) error {
-	routeLabels := route.Labels()
-	switch r.Spec.Kind {
-	case PrefixKindNetwork:
-		if routeLabels[backend.KuidIPAMKindKey] != string(PrefixKindNetwork) {
-			return fmt.Errorf("child prefix kind mismatch got %s/%s", string(PrefixKindNetwork), routeLabels[backend.KuidIPAMKindKey])
-		}
-		if route.Prefix().Addr().Is4() && route.Prefix().Bits() != 32 {
-			return fmt.Errorf("a child prefix of kind %s, can only be an address prefix (/32), got: %v", string(PrefixKindNetwork), route.Prefix())
-		}
-		if route.Prefix().Addr().Is6() && route.Prefix().Bits() != 128 {
-			return fmt.Errorf("a child prefix of kind %s, can only be an address prefix (/128), got: %v", string(PrefixKindNetwork), route.Prefix())
-		}
-		return nil
-	case PrefixKindAggregate:
-		// nesting is possible in aggregate
-		return nil
-	default:
-		return fmt.Errorf("a more specific prefix was already claimed %s/%s, nesting not allowed for %s",
-			routeLabels[backend.KuidIPAMKindKey],
-			routeLabels[backend.KuidClaimNameKey],
-			string(r.Spec.Kind))
-	}
-}
-
 // GetDummyLabelsFromPrefix returns a map with the labels from the spec
 // augmented with the prefixkind and the subnet from the prefixInfo
 func (r *IPClaim) GetDummyLabelsFromPrefix(pi iputil.Prefix) map[string]string {
@@ -225,7 +345,8 @@ func (r *IPClaim) GetDummyLabelsFromPrefix(pi iputil.Prefix) map[string]string {
 	for k, v := range r.Spec.GetUserDefinedLabels() {
 		labels[k] = v
 	}
-	labels[backend.KuidIPAMKindKey] = string(r.Spec.Kind)
+	labels[backend.KuidIPAMIPPrefixTypeKey] = string(r.GetIPPrefixType())
+	labels[backend.KuidIPAMClaimSummaryTypeKey] = string(r.GetIPClaimSummaryType())
 	labels[backend.KuidIPAMSubnetKey] = string(pi.GetSubnetName())
 
 	return labels
@@ -259,10 +380,10 @@ func (r *IPClaim) GetOwnerSelector() (labels.Selector, error) {
 }
 
 // GetGatewayLabelSelector returns a label selector to select the gateway of the claim in the backend
-func (r *IPClaim) GetGatewayLabelSelector(subnetString string) (labels.Selector, error) {
+func (r *IPClaim) GetDefaultGatewayLabelSelector(subnetString string) (labels.Selector, error) {
 	l := map[string]string{
-		backend.KuidIPAMGatewayKey: "true",
-		backend.KuidIPAMSubnetKey:  subnetString,
+		backend.KuidIPAMDefaultGatewayKey: "true",
+		backend.KuidIPAMSubnetKey:         subnetString,
 	}
 	fullselector := labels.NewSelector()
 	for k, v := range l {
@@ -273,86 +394,6 @@ func (r *IPClaim) GetGatewayLabelSelector(subnetString string) (labels.Selector,
 		fullselector = fullselector.Add(*req)
 	}
 	return fullselector, nil
-}
-
-func (r *IPClaim) ValidateExistingParent(pi *iputil.Prefix, route table.Route) error {
-	routeLabels := route.Labels()
-	switch r.Spec.Kind {
-	case PrefixKindAggregate:
-		if routeLabels[backend.KuidIPAMKindKey] != string(PrefixKindAggregate) {
-			return fmt.Errorf("nesting aggregate prefixes with anything other than an aggregate prefix is not allowed, prefix %s/%s kind %s/%s",
-				route.Prefix().String(),
-				pi.String(),
-				routeLabels[backend.KuidIPAMKindKey],
-				string(PrefixKindAggregate),
-			)
-		}
-		return nil
-	case PrefixKindLoopback:
-		if routeLabels[backend.KuidIPAMKindKey] != string(PrefixKindAggregate) &&
-			routeLabels[backend.KuidIPAMKindKey] != string(PrefixKindLoopback) {
-			return fmt.Errorf("nesting loopback prefixes with anything other than an aggregate/loopback prefix is not allowed, prefix %s/%s kind %s/%s",
-				route.Prefix().String(),
-				pi.String(),
-				routeLabels[backend.KuidIPAMKindKey],
-				string(PrefixKindAggregate),
-			)
-		}
-		if pi.IsAddressPrefix() {
-			// address (/32 or /128) can parant with aggregate or loopback
-			switch routeLabels[backend.KuidIPAMKindKey] {
-			case string(PrefixKindAggregate), string(PrefixKindLoopback):
-				// /32 or /128 can be parented with aggregates or loopbacks
-			default:
-				return fmt.Errorf("nesting loopback prefixes only possible with address (/32, /128) based prefixes, got %s", pi.GetIPPrefix().String())
-			}
-		}
-
-		if !pi.IsAddressPrefix() {
-			switch routeLabels[backend.KuidIPAMKindKey] {
-			case string(PrefixKindAggregate):
-				// none /32 or /128 can only be parented with aggregates
-			default:
-				return fmt.Errorf("nesting (none /32, /128)loopback prefixes only possible with aggregate prefixes, got %s", route.String())
-			}
-		}
-		return nil
-	case PrefixKindNetwork:
-		if r.Spec.CreatePrefix != nil {
-			if routeLabels[backend.KuidIPAMKindKey] != string(PrefixKindAggregate) {
-				return fmt.Errorf("nesting network prefixes with anything other than an aggregate prefix is not allowed, prefix %s/%s kind %s/%s",
-					route.Prefix().String(),
-					pi.String(),
-					routeLabels[backend.KuidIPAMKindKey],
-					string(PrefixKindAggregate),
-				)
-			}
-		} else {
-			if routeLabels[backend.KuidIPAMKindKey] != string(PrefixKindNetwork) {
-				return fmt.Errorf("nesting network address prefixes with anything other than an network prefix is not allowed, prefix %s/%s kind %s/%s",
-					route.Prefix().String(),
-					pi.String(),
-					routeLabels[backend.KuidIPAMKindKey],
-					string(PrefixKindAggregate),
-				)
-			}
-		}
-		return nil
-	case PrefixKindPool:
-		// if the parent is not an aggregate we dont allow the prefix to be created
-		if routeLabels[backend.KuidIPAMKindKey] != string(PrefixKindAggregate) &&
-			routeLabels[backend.KuidIPAMKindKey] != string(PrefixKindPool) {
-			return fmt.Errorf("nesting loopback prefixes with anything other than an aggregate/pool prefix is not allowed, prefix %s/%s kind %s/%s",
-				route.Prefix().String(),
-				pi.String(),
-				routeLabels[backend.KuidIPAMKindKey],
-				string(PrefixKindAggregate),
-			)
-		}
-		return nil
-	default:
-		return fmt.Errorf("unknown prefix kind %s", r.Spec.Kind)
-	}
 }
 
 // BuildIPClaim returns a reource from a client Object a Spec/Status
@@ -376,7 +417,8 @@ func BuildIPClaim(meta metav1.ObjectMeta, spec *IPClaimSpec, status *IPClaimStat
 	}
 }
 
-func GetIPClaimFromPrefix(kind PrefixKind, ni, prefix string, udLabels commonv1alpha1.UserDefinedLabels, obj client.Object) (*IPClaim, error) {
+/*
+func GetIPClaimFromPrefix(claimType *IPClaimType, ni, prefix string, gw *bool, udLabels commonv1alpha1.UserDefinedLabels, obj client.Object) (*IPClaim, error) {
 	pi, err := iputil.New(prefix)
 	if err != nil {
 		return nil, fmt.Errorf("cannot build ip claim bad prefix %s", prefix)
@@ -386,19 +428,72 @@ func GetIPClaimFromPrefix(kind PrefixKind, ni, prefix string, udLabels commonv1a
 			Namespace: obj.GetNamespace(),
 			Name:      pi.GetSubnetName(),
 		},
-		GetIPClaimSpec(kind, ni, pi, udLabels, obj),
+		GetIPClaimPrefixSpec(claimType, ni, pi, gw, udLabels, obj),
 		nil,
 	), nil
 }
 
-func GetIPClaimSpec(kind PrefixKind, ni string, pi *iputil.Prefix, udLabels commonv1alpha1.UserDefinedLabels, obj client.Object) *IPClaimSpec {
+func GetIPClaimPrefixSpec(claimType *IPClaimType, ni string, pi *iputil.Prefix, gw *bool, udLabels commonv1alpha1.UserDefinedLabels, obj client.Object) *IPClaimSpec {
 	return &IPClaimSpec{
-		Kind:            kind,
+		Type:            claimType,
 		NetworkInstance: ni,
-		AddressFamily:   ptr.To[iputil.AddressFamily](pi.GetAddressFamily()),
-		Prefix:          ptr.To[string](pi.Prefix.String()),
-		PrefixLength:    ptr.To[uint32](uint32(pi.GetPrefixLength())),
-		CreatePrefix:    ptr.To[bool](!pi.IsAddressPrefix()),
+		//AddressFamily:   ptr.To[iputil.AddressFamily](pi.GetAddressFamily()),
+		Prefix:         ptr.To[string](pi.Prefix.String()),
+		PrefixLength:   ptr.To[uint32](uint32(pi.GetPrefixLength())),
+		CreatePrefix:   ptr.To[bool](true),
+		DefaultGateway: gw,
+		ClaimLabels: commonv1alpha1.ClaimLabels{
+			UserDefinedLabels: udLabels,
+		},
+		Owner: commonv1alpha1.GetOwnerReference(obj),
+	}
+}
+*/
+/*
+func (r *IPClaim) UpdateSpecFromPrefix(claimType *IPClaimType, ni, prefix string, gw *bool, udLabels commonv1alpha1.UserDefinedLabels, obj client.Object) error {
+	pi, err := iputil.New(prefix)
+	if err != nil {
+		return fmt.Errorf("cannot build ip claim bad prefix %s", prefix)
+	}
+	r.Spec = *(GetIPClaimPrefixSpec(claimType, ni, pi, gw, udLabels, obj))
+	return nil
+}
+
+func (r *IPClaim) UpdateSpecFromAddress(ni, prefix string, udLabels commonv1alpha1.UserDefinedLabels, obj client.Object) error {
+	pi, err := iputil.New(prefix)
+	if err != nil {
+		return fmt.Errorf("cannot build ip claim bad prefix %s", prefix)
+	}
+	r.Spec = *(GetIPClaimAddressSpec(ni, pi, udLabels, obj))
+	return nil
+}
+
+func (r *IPClaim) UpdateSpecFromRange(ni, ipRange string, udLabels commonv1alpha1.UserDefinedLabels, obj client.Object) error {
+	r.Spec = *(GetIPClaimRangeSpec(ni, ipRange, udLabels, obj))
+	return nil
+}
+
+func GetIPClaimFromAddress(ni, prefix string, udLabels commonv1alpha1.UserDefinedLabels, obj client.Object) (*IPClaim, error) {
+	pi, err := iputil.New(prefix)
+	if err != nil {
+		return nil, fmt.Errorf("cannot build ip claim bad prefix %s", prefix)
+	}
+	return BuildIPClaim(
+		metav1.ObjectMeta{
+			Namespace: obj.GetNamespace(),
+			Name:      pi.GetSubnetName(),
+		},
+		GetIPClaimAddressSpec(ni, pi, udLabels, obj),
+		nil,
+	), nil
+}
+
+func GetIPClaimAddressSpec(ni string, pi *iputil.Prefix, udLabels commonv1alpha1.UserDefinedLabels, obj client.Object) *IPClaimSpec {
+	return &IPClaimSpec{
+		Type:            nil,
+		NetworkInstance: ni,
+		//AddressFamily:   ptr.To[iputil.AddressFamily](pi.GetAddressFamily()),
+		Address:         ptr.To[string](pi.Prefix.String()),
 		ClaimLabels: commonv1alpha1.ClaimLabels{
 			UserDefinedLabels: udLabels,
 		},
@@ -406,11 +501,26 @@ func GetIPClaimSpec(kind PrefixKind, ni string, pi *iputil.Prefix, udLabels comm
 	}
 }
 
-func (r *IPClaim) UpdateSpecFromPrefix(kind PrefixKind, ni, prefix string, udLabels commonv1alpha1.UserDefinedLabels, obj client.Object) error {
-	pi, err := iputil.New(prefix)
-	if err != nil {
-		return fmt.Errorf("cannot build ip claim bad prefix %s", prefix)
-	}
-	r.Spec = *(GetIPClaimSpec(kind, ni, pi, udLabels, obj))
-	return nil
+func GetIPClaimFromRange(name, ni, ipRange string, udLabels commonv1alpha1.UserDefinedLabels, obj client.Object) (*IPClaim, error) {
+	return BuildIPClaim(
+		metav1.ObjectMeta{
+			Namespace: obj.GetNamespace(),
+			Name:      name,
+		},
+		GetIPClaimRangeSpec(ni, ipRange, udLabels, obj),
+		nil,
+	), nil
 }
+
+func GetIPClaimRangeSpec(ni string, ipRange string, udLabels commonv1alpha1.UserDefinedLabels, obj client.Object) *IPClaimSpec {
+	return &IPClaimSpec{
+		Type:            nil,
+		NetworkInstance: ni,
+		Range:           ptr.To[string](ipRange),
+		ClaimLabels: commonv1alpha1.ClaimLabels{
+			UserDefinedLabels: udLabels,
+		},
+		Owner: commonv1alpha1.GetOwnerReference(obj),
+	}
+}
+*/

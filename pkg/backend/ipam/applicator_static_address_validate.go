@@ -31,8 +31,9 @@ import (
 type staticAddressApplicator struct {
 	name string
 	applicator
-	parentClaimInfo ipambev1alpha1.IPClaimInfo
-	parentRangeName string
+	parentClaimSummaryType ipambev1alpha1.IPClaimSummaryType
+	parentRangeName        string
+	parentNetwork          bool
 }
 
 func (r *staticAddressApplicator) Validate(ctx context.Context, claim *ipambev1alpha1.IPClaim) error {
@@ -50,21 +51,20 @@ func (r *staticAddressApplicator) Validate(ctx context.Context, claim *ipambev1a
 	// check the /32 or /128 equivalent in the rib
 	route, ok := dryrunRib.Get(pi.GetIPAddressPrefix())
 	if ok {
+		fmt.Println("static address route exists", *claim.Spec.Address, route.Prefix().String())
 		// if the route exists validate the owner
 		routeLabels := route.Labels()
 		// a range is an exception as it can overlap with an address
-		if routeLabels[backend.KuidIPAMInfoKey] == string(ipambev1alpha1.IPClaimInfo_Range) {
-			r.parentClaimInfo = ipambev1alpha1.IPClaimInfo_Range
+		if routeLabels[backend.KuidIPAMClaimSummaryTypeKey] == string(ipambev1alpha1.IPClaimSummaryType_Range) {
+			r.parentClaimSummaryType = ipambev1alpha1.IPClaimSummaryType_Range
 			r.parentRangeName = routeLabels[backend.KuidClaimNameKey]
 			return nil
-
 		} else {
 			if err := claim.ValidateOwner(routeLabels); err != nil {
 				return err
 			}
 			return nil
 		}
-
 	}
 	route = table.NewRoute(
 		pi.GetIPAddressPrefix(),
@@ -99,6 +99,7 @@ func (r *staticAddressApplicator) Validate(ctx context.Context, claim *ipambev1a
 	}
 	// parents exist
 	parentRoute := findParent(routes)
+	fmt.Println("static address parent route", parentRoute.Prefix(), parentRoute.Labels())
 	if err := r.validateExistingParent(ctx, claim, pi, parentRoute); err != nil {
 		log.Error(err.Error())
 		return err
@@ -106,38 +107,46 @@ func (r *staticAddressApplicator) Validate(ctx context.Context, claim *ipambev1a
 	return nil
 }
 
-func (r *staticAddressApplicator) validateExistingParent(ctx context.Context, _ *ipambev1alpha1.IPClaim, pi *iputil.Prefix, route table.Route) error {
+func (r *staticAddressApplicator) validateExistingParent(ctx context.Context, claim *ipambev1alpha1.IPClaim, pi *iputil.Prefix, route table.Route) error {
 	routeLabels := route.Labels()
-	parentClaimInfo := routeLabels[backend.KuidIPAMInfoKey]
-	parentClaimType := routeLabels[backend.KuidIPAMTypeKey]
+	parentIPPrefixType := ipambev1alpha1.GetIPPrefixTypeFromString(routeLabels[backend.KuidIPAMIPPrefixTypeKey])
+	parentClaimSummaryType := ipambev1alpha1.GetIPClaimSummaryTypeFromString(routeLabels[backend.KuidIPAMClaimSummaryTypeKey])
 	parentClaimName := routeLabels[backend.KuidClaimNameKey]
+	// update the context such that the applicator can use this information to apply the IP
+	r.parentClaimSummaryType = parentClaimSummaryType
+	r.parentRangeName = parentClaimName
 
 	if pi.IsAddressPrefix() {
 		// 32 or /128 -> cannot be claimed in a network or aggregate
-		if parentClaimType == string(ipambev1alpha1.IPClaimType_Network) ||
-			parentClaimType == string(ipambev1alpha1.IPClaimType_Aggregate) {
-			return fmt.Errorf("a /32 or /128 address is not possible with a parent of type %s", parentClaimType)
+		if parentIPPrefixType != nil &&
+			(*parentIPPrefixType == ipambev1alpha1.IPPrefixType_Network || *parentIPPrefixType == ipambev1alpha1.IPPrefixType_Aggregate) {
+			return fmt.Errorf("a /32 or /128 address is not possible with a parent of type %s", *parentIPPrefixType)
 		}
-		if parentClaimInfo == string(ipambev1alpha1.IPClaimInfo_Range) {
+		if parentClaimSummaryType == ipambev1alpha1.IPClaimSummaryType_Range {
 			k := store.ToKey(parentClaimName)
 			ipTable, err := r.applicator.cacheCtx.ranges.Get(ctx, k)
 			if err != nil {
 				return err
 			}
-			if !ipTable.IsFree(pi.GetIPAddress().String()) {
-				return fmt.Errorf("address is already allocated in range %s", parentClaimName)
+			route, err := ipTable.Get(pi.GetIPAddress().String())
+			if err == nil { // error means not found
+				fmt.Println("range address labels", route.Labels())
+				if err := claim.ValidateOwner(route.Labels()); err != nil {
+					fmt.Println("owner error", err.Error())
+					return fmt.Errorf("address is already allocated in range %s, err: %s", parentClaimName, err.Error())
+				}
 			}
-			r.parentClaimInfo = ipambev1alpha1.IPClaimInfo_Range
-			r.parentRangeName = parentClaimName
+			return nil
 		}
 	} else {
 		// an address with a dedicated prefixLength is only possible for network prefix parents
-		if parentClaimType != string(ipambev1alpha1.IPClaimType_Network) {
-			return fmt.Errorf("a prefix based address is not possible with a parent of type %s", parentClaimType)
+		if parentIPPrefixType != nil && *parentIPPrefixType != ipambev1alpha1.IPPrefixType_Network {
+			return fmt.Errorf("a prefix based address is not possible with a parent of type %s", *parentIPPrefixType)
 		}
-		if parentClaimInfo == string(ipambev1alpha1.IPClaimInfo_Range) {
-			return fmt.Errorf("a prefix based address is not possible for a %s", parentClaimInfo)
+		if parentClaimSummaryType == ipambev1alpha1.IPClaimSummaryType_Range {
+			return fmt.Errorf("a prefix based address is not possible for a %v", parentIPPrefixType)
 		}
+		r.parentNetwork = true
 	}
 	return nil
 }

@@ -23,9 +23,10 @@ import (
 
 	"github.com/henderiw/logger/log"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
+	ipamresv1alpha1 "github.com/kuidio/kuid/apis/resource/ipam/v1alpha1"
 )
 
-func initIndexContext(ctx context.Context, op string, idx *ipambev1alpha1.IPIndex) context.Context {
+func initIndexContext(ctx context.Context, op string, idx *ipamresv1alpha1.NetworkInstance) context.Context {
 	l := log.FromContext(ctx).
 		With(
 			"op", fmt.Sprintf("%s index", op),
@@ -37,26 +38,27 @@ func initIndexContext(ctx context.Context, op string, idx *ipambev1alpha1.IPInde
 func initClaimContext(ctx context.Context, op string, claim *ipambev1alpha1.IPClaim) context.Context {
 	var l *slog.Logger
 
-	addressing, err := claim.GetAddressing()
+	ipClaimType, err := claim.GetIPClaimType()
 	if err != nil {
 		return ctx
 	}
-	switch addressing {
-	case ipambev1alpha1.IPClaimAddressing_DynamicAddress:
+	switch ipClaimType {
+	case ipambev1alpha1.IPClaimType_DynamicAddress:
 		l = log.FromContext(ctx).
 			With(
 				"op", fmt.Sprintf("%s dynamic address claim", op),
 				"nsn", claim.GetNamespacedName().String(),
 				"ni", claim.Spec.NetworkInstance,
 			)
-	case ipambev1alpha1.IPClaimAddressing_DynamicPrefix:
+	case ipambev1alpha1.IPClaimType_DynamicPrefix:
 		l = log.FromContext(ctx).
 			With(
 				"op", fmt.Sprintf("%s dynamic prefix claim", op),
 				"nsn", claim.GetNamespacedName().String(),
 				"ni", claim.Spec.NetworkInstance,
+				"prefixType", claim.GetIPPrefixType(),
 			)
-	case ipambev1alpha1.IPClaimAddressing_StaticAddress:
+	case ipambev1alpha1.IPClaimType_StaticAddress:
 		l = log.FromContext(ctx).
 			With(
 				"op", fmt.Sprintf("%s static address claim", op),
@@ -64,15 +66,16 @@ func initClaimContext(ctx context.Context, op string, claim *ipambev1alpha1.IPCl
 				"ni", claim.Spec.NetworkInstance,
 				"address", *claim.Spec.Address,
 			)
-	case ipambev1alpha1.IPClaimAddressing_StaticPrefix:
+	case ipambev1alpha1.IPClaimType_StaticPrefix:
 		l = log.FromContext(ctx).
 			With(
 				"op", fmt.Sprintf("%s static prefix claim", op),
 				"nsn", claim.GetNamespacedName().String(),
 				"ni", claim.Spec.NetworkInstance,
 				"prefix", *claim.Spec.Prefix,
+				"prefixType", claim.GetIPPrefixType(),
 			)
-	case ipambev1alpha1.IPClaimAddressing_StaticRange:
+	case ipambev1alpha1.IPClaimType_StaticRange:
 		l = log.FromContext(ctx).
 			With(
 				"op", fmt.Sprintf("%s static range claim", op),
@@ -81,6 +84,5 @@ func initClaimContext(ctx context.Context, op string, claim *ipambev1alpha1.IPCl
 				"range", *claim.Spec.Range,
 			)
 	}
-
 	return log.IntoContext(ctx, l)
 }

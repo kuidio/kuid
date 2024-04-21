@@ -18,6 +18,7 @@ package ipam
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -31,7 +32,6 @@ import (
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
 	ipamresv1alpha1 "github.com/kuidio/kuid/apis/resource/ipam/v1alpha1"
-	"github.com/pkg/errors"
 	"go4.org/netipx"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/utils/ptr"
@@ -47,6 +47,7 @@ type applicator struct {
 	cacheCtx *CacheContext
 }
 
+// apply only works on the main rib
 func (r *applicator) apply(ctx context.Context, claim *ipambev1alpha1.IPClaim, pis []*iputil.Prefix, networkParent bool) error {
 	log := log.FromContext(ctx)
 	// check if the prefix/claim already exists in the routing table
@@ -68,16 +69,16 @@ func (r *applicator) apply(ctx context.Context, claim *ipambev1alpha1.IPClaim, p
 		newRoute := newRoute
 		exists := false
 		var curRoute table.Route
-		for i, existingRoute := range existingRoutes {
+		for i, existingRoute := range existingRoutes[""] {
 			if existingRoute.Prefix().String() == newRoute.Prefix().String() {
 				// remove the route from the existing route list as we will delete the remaining
 				// existing routes later on
-				existingRoutes = append(existingRoutes[:i], existingRoutes[i+1:]...)
+				existingRoutes[""] = append(existingRoutes[""][:i], existingRoutes[""][i+1:]...)
 				exists = true
 				curRoute = existingRoute
 			}
 		}
-		log.Info("apply route", "newRoute", newRoute.Prefix().String(), "exists", exists, "existsingRoutes", getExistingRoutes(existingRoutes))
+		log.Info("apply route", "newRoute", newRoute.Prefix().String(), "exists", exists, "existsingRoutes", getExistingRoutes(existingRoutes[""]))
 		if exists {
 			// update
 			if err := r.updateRib(ctx, newRoute, curRoute); err != nil {
@@ -90,7 +91,7 @@ func (r *applicator) apply(ctx context.Context, claim *ipambev1alpha1.IPClaim, p
 			}
 		}
 	}
-	for _, existingRoute := range existingRoutes {
+	for _, existingRoute := range existingRoutes[""] {
 		log.Info("delete existsingRoute", "route", existingRoute.Prefix().String())
 		if err := r.cacheCtx.rib.Delete(existingRoute); err != nil {
 			log.Error("cannot delete route from rib", "route", existingRoute, "error", err.Error())
@@ -120,7 +121,16 @@ func (r *applicator) applyAddressInRange(ctx context.Context, claim *ipambev1alp
 		return err
 	}
 	routes := getRoutesFromClaim(ctx, claim, pi, false)
-	return ipTable.Claim(pi.Addr().String(), routes[0])
+	addr := pi.Addr().String()
+	route, err := ipTable.Get(addr)
+	if err != nil {
+		ipTable.Claim(pi.Addr().String(), routes[0])
+		return nil
+	}
+	if err := claim.ValidateOwner(route.Labels()); err != nil {
+		return err
+	}
+	return ipTable.Update(addr, routes[0])
 }
 
 func (r *applicator) addRib(ctx context.Context, route table.Route) error {
@@ -128,7 +138,7 @@ func (r *applicator) addRib(ctx context.Context, route table.Route) error {
 	if err := r.cacheCtx.rib.Add(route); err != nil {
 		if !strings.Contains(err.Error(), "already exists") {
 			log.Error("cannot add prefix")
-			return errors.Wrap(err, "cannot add prefix")
+			return fmt.Errorf("cannot add prefix, err: %s", err.Error())
 		}
 	}
 	return nil
@@ -146,7 +156,7 @@ func (r *applicator) updateRib(ctx context.Context, newRoute, existingRoute tabl
 		if err := r.cacheCtx.rib.Set(newRoute); err != nil {
 			if !strings.Contains(err.Error(), "already exists") {
 				log.Error("cannot update prefix", "error", err.Error())
-				return errors.Wrap(err, "cannot update prefix")
+				return fmt.Errorf("cannot update prefix, err: %s", err.Error())
 			}
 		}
 		// this is an update where the labels changed
@@ -175,13 +185,13 @@ func (r *applicator) updateRib(ctx context.Context, newRoute, existingRoute tabl
 	return nil
 }
 
-func (r *applicator) updateClaimAddressStatus(ctx context.Context, claim *ipambev1alpha1.IPClaim, pi *iputil.Prefix) {
+func (r *applicator) updateClaimAddressStatus(ctx context.Context, claim *ipambev1alpha1.IPClaim, pi *iputil.Prefix, networkParent bool) {
 	// update the status
 	claim.Status.Address = ptr.To[string](pi.String())
-	if claim.GetType() == ipambev1alpha1.IPClaimType_Network {
-		gateway := r.getGateway(ctx, claim, *claim.Status.Prefix)
-		if gateway != "" {
-			claim.Status.Gateway = ptr.To[string](gateway)
+	if claim.GetIPPrefixType() == ipambev1alpha1.IPPrefixType_Network || networkParent {
+		defaultGateway := r.getDefaultGateway(ctx, claim, pi)
+		if defaultGateway != "" {
+			claim.Status.DefaultGateway = ptr.To[string](defaultGateway)
 		}
 	}
 	claim.SetConditions(conditionv1alpha1.Ready())
@@ -190,10 +200,10 @@ func (r *applicator) updateClaimAddressStatus(ctx context.Context, claim *ipambe
 func (r *applicator) updateClaimPrefixStatus(ctx context.Context, claim *ipambev1alpha1.IPClaim, pi *iputil.Prefix) {
 	// update the status
 	claim.Status.Prefix = ptr.To[string](pi.String())
-	if claim.GetType() == ipambev1alpha1.IPClaimType_Network {
-		gateway := r.getGateway(ctx, claim, *claim.Status.Prefix)
-		if gateway != "" {
-			claim.Status.Gateway = ptr.To[string](gateway)
+	if claim.GetIPPrefixType() == ipambev1alpha1.IPPrefixType_Network {
+		defaultGateway := r.getDefaultGateway(ctx, claim, pi)
+		if defaultGateway != "" {
+			claim.Status.DefaultGateway = ptr.To[string](defaultGateway)
 		}
 	}
 	claim.SetConditions(conditionv1alpha1.Ready())
@@ -210,9 +220,11 @@ func (r *applicator) updateClaimRangeStatus(_ context.Context, claim *ipambev1al
 func getRoutesFromClaim(_ context.Context, claim *ipambev1alpha1.IPClaim, pi *iputil.Prefix, networkParent bool) []table.Route {
 	routes := []table.Route{}
 
+	ipClaimType, _ := claim.GetIPClaimType()
 	labels := claim.Spec.GetUserDefinedLabels()
-	labels[backend.KuidIPAMTypeKey] = string(claim.GetType())
-	labels[backend.KuidIPAMInfoKey] = string(claim.GetInfo())
+	labels[backend.KuidIPAMIPPrefixTypeKey] = string(claim.GetIPPrefixType())
+	labels[backend.KuidIPAMClaimSummaryTypeKey] = string(claim.GetIPClaimSummaryType())
+	labels[backend.KuidIPAMClaimTypeKey] = string(ipClaimType)
 	labels[backend.KuidIPAMddressFamilyKey] = string(pi.GetAddressFamily())
 	labels[backend.KuidIPAMSubnetKey] = pi.GetSubnetName()
 	labels[backend.KuidClaimNameKey] = claim.Name
@@ -226,9 +238,9 @@ func getRoutesFromClaim(_ context.Context, claim *ipambev1alpha1.IPClaim, pi *ip
 	}
 
 	prefix := pi.GetIPPrefix()
-	// networkParent is there for dynamic addresses as we dont know ahead of time 
+	// networkParent is there for dynamic addresses as we dont know ahead of time
 	// if the dynamic address matches a network or other parent prefix
-	if claim.GetType() == ipambev1alpha1.IPClaimType_Network || networkParent {
+	if claim.GetIPPrefixType() == ipambev1alpha1.IPPrefixType_Network || networkParent {
 		if claim.Spec.CreatePrefix != nil {
 			switch {
 			case pi.GetAddressFamily() == iputil.AddressFamilyIpv4 && pi.GetPrefixLength().Int() == 31,
@@ -275,6 +287,9 @@ func getNetworIPAddressRoute(l map[string]string, pi *iputil.Prefix) table.Route
 	for k, v := range l {
 		labels[k] = v
 	}
+	if pi.IsFirst() || pi.IsLast() {
+		delete(labels, backend.KuidIPAMDefaultGatewayKey)
+	}
 	return table.NewRoute(pi.GetIPAddressPrefix(), labels, map[string]any{})
 }
 
@@ -296,50 +311,67 @@ func getNetworLastAddressRoute(l map[string]string, pi *iputil.Prefix) table.Rou
 	return table.NewRoute(pi.GetLastIPPrefix(), labels, map[string]any{})
 }
 
-func (r *applicator) getGateway(ctx context.Context, claim *ipambev1alpha1.IPClaim, prefix string) string {
+func (r *applicator) getDefaultGateway(ctx context.Context, claim *ipambev1alpha1.IPClaim, pi *iputil.Prefix) string {
 	log := log.FromContext(ctx)
-	pi, err := iputil.New(prefix)
-	if err != nil {
-		log.Error("cannot get gateway parent rpefix", "error", err.Error())
-		return ""
-	}
+	/*
+		pi, err := iputil.New(prefix)
+		if err != nil {
+			log.Error("cannot get gateway parent rpefix", "error", err.Error())
+			return ""
+		}
+	*/
 
-	gatewaySelector, err := claim.GetDefaultGatewayLabelSelector(string(pi.GetSubnetName()))
+	defaultGatewaySelector, err := claim.GetDefaultGatewayLabelSelector(string(pi.GetSubnetName()))
 	if err != nil {
 		log.Error("cannot get gateway label selector", "error", err.Error())
 		return ""
 	}
-	log.Debug("gateway", "gatewaySelector", gatewaySelector)
-	routes := r.cacheCtx.rib.GetByLabel(gatewaySelector)
+	log.Debug("defaultGateway", "defaultGatewaySelector", defaultGatewaySelector)
+	routes := r.cacheCtx.rib.GetByLabel(defaultGatewaySelector)
 	if len(routes) > 0 {
-		log.Debug("gateway", "routes", routes)
+		log.Debug("defaultGateway", "routes", routes)
 		return routes[0].Prefix().Addr().String()
 	}
 	return ""
 }
 
-func (r *applicator) getRoutesByOwner(_ context.Context, claim *ipambev1alpha1.IPClaim) (table.Routes, error) {
+func (r *applicator) getRoutesByOwner(ctx context.Context, claim *ipambev1alpha1.IPClaim) (map[string]table.Routes, error) {
+	ribRoutes := map[string]table.Routes{}
 	// check if the prefix/claim already exists in the routing table
 	// based on the owner and the name of the claim
 	ownerSelector, err := claim.GetOwnerSelector()
 	if err != nil {
-		return []table.Route{}, err
+		return ribRoutes, err
 	}
 
-	claimInfo := claim.GetInfo()
-	claimType := claim.GetType()
+	claimSummaryType := claim.GetIPClaimSummaryType()
+	claimPrefixType := claim.GetIPPrefixType()
 
-	routes := r.cacheCtx.rib.GetByLabel(ownerSelector)
-	if len(routes) != 0 {
+	ribRoutes[""] = r.cacheCtx.rib.GetByLabel(ownerSelector)
+	if len(ribRoutes[""]) != 0 {
 		// ranges and prefixes using network type can have multiple plrefixes
-		if len(routes) > 1 && (claimInfo == ipambev1alpha1.IPClaimInfo_Address || claimInfo == ipambev1alpha1.IPClaimInfo_Prefix && claimType != ipambev1alpha1.IPClaimType_Network) {
-			return []table.Route{}, fmt.Errorf("multiple prefixes match the owner, %v", routes)
+		if len(ribRoutes[""]) > 1 && (claimSummaryType == ipambev1alpha1.IPClaimSummaryType_Address ||
+			claimSummaryType == ipambev1alpha1.IPClaimSummaryType_Prefix && claimPrefixType != ipambev1alpha1.IPPrefixType_Network) {
+			return ribRoutes, fmt.Errorf("multiple prefixes match the owner, %v", ribRoutes[""])
 		}
 		// route found
-		return routes, nil
+		//return "", routes, nil
 	}
-	// no route found
-	return []table.Route{}, nil
+	// add the search in the iptable
+	if claimSummaryType == ipambev1alpha1.IPClaimSummaryType_Address {
+		var errm error
+		r.cacheCtx.ranges.List(ctx, func(ctx context.Context, k store.Key, ipTable iptable.IPTable) {
+			ribRoutes[k.Name] = ipTable.GetByLabel(ownerSelector)
+			if len(ribRoutes[k.Name]) > 1 {
+				errm = errors.Join(errm, fmt.Errorf("multiple address match the owner, %v", ribRoutes[k.Name]))
+				return
+			}
+		})
+		if errm != nil {
+			return ribRoutes, errm
+		}
+	}
+	return ribRoutes, nil
 }
 
 func (r *applicator) getRoutesByLabel(ctx context.Context, claim *ipambev1alpha1.IPClaim) table.Routes {
@@ -363,33 +395,67 @@ func (r *applicator) Delete(ctx context.Context, claim *ipambev1alpha1.IPClaim) 
 		return err
 	}
 
-	for _, route := range existingRoutes {
-		log = log.With("route prefix", route.Prefix())
+	for ribName, existingRoutes := range existingRoutes {
+		if ribName == "" {
+			for _, existingRoute := range existingRoutes {
+				log = log.With("route prefix", existingRoute.Prefix())
+				// this is a delete
+				// only update when not initializing
+				// only update when the prefix is a non /32 or /128
+				// only update when the parent is a create prefix type
+				pi := iputil.NewPrefixInfo(existingRoute.Prefix())
+				if pi != nil && !pi.IsAddressPrefix() {
+					log.Info("inform children of the delete", "existingRoute", existingRoute.Prefix().String(), "labels", existingRoute.Labels())
+					// delete the children from the rib
+					// update the once that have a nsn different from the origin
+					childRoutesToBeUpdated := []table.Route{}
+					for _, childRoute := range existingRoute.Children(r.cacheCtx.rib) {
+						log.Info("route exists", "handle delete for route", existingRoute, "child route", childRoute)
+						if childRoute.Labels()[backend.KuidClaimNameKey] != claim.Name {
+							childRoutesToBeUpdated = append(childRoutesToBeUpdated, childRoute)
+							if err := r.cacheCtx.rib.Delete(childRoute); err != nil {
+								log.Error("cannot delete route from rib", "route", childRoute, "error", err.Error())
+							}
+						}
+					}
+					// handler watch update to the source owner controller
+					log.Info("route exists", "handle update for route", existingRoute, "child routes", childRoutesToBeUpdated)
+				}
 
-		// this is a delete
-		// only update when not initializing
-		// only update when the prefix is a non /32 or /128
-		// only update when the parent is a create prefix type
-		if !iputil.NewPrefixInfo(route.Prefix()).IsAddressPrefix() && (claim.Spec.CreatePrefix != nil) {
-			log.Info("route exists", "handle update for route", route)
-			// delete the children from the rib
-			// update the once that have a nsn different from the origin
-			childRoutesToBeUpdated := []table.Route{}
-			for _, childRoute := range route.Children(r.cacheCtx.rib) {
-				log.Info("route exists", "handle update for route", route, "child route", childRoute)
-				if childRoute.Labels()[backend.KuidClaimNameKey] != claim.Name {
-					childRoutesToBeUpdated = append(childRoutesToBeUpdated, childRoute)
-					if err := r.cacheCtx.rib.Delete(childRoute); err != nil {
-						log.Error("cannot delete route from rib", "route", childRoute, "error", err.Error())
+				if err := r.cacheCtx.rib.Delete(existingRoute); err != nil {
+					return err
+				}
+
+				// check if the route was a range -> if so delete the range table
+				routeLabels := existingRoute.Labels()
+				//parentClaimType := ipambev1alpha1.GetIPClaimTypeFromString(routeLabels[backend.KuidIPAMTypeKey])
+				parentSummaryType := ipambev1alpha1.GetIPClaimSummaryTypeFromString(routeLabels[backend.KuidIPAMClaimSummaryTypeKey])
+				parentClaimName := routeLabels[backend.KuidClaimNameKey]
+
+				if parentSummaryType == ipambev1alpha1.IPClaimSummaryType_Range {
+					k := store.ToKey(parentClaimName) // this is the name of the range
+					if _, err := r.cacheCtx.ranges.Get(ctx, k); err == nil {
+						// the table exists -> delete it
+						if err := r.cacheCtx.ranges.Delete(ctx, k); err != nil {
+							return err
+						}
 					}
 				}
 			}
-			// handler watch update to the source owner controller
-			log.Info("route exists", "handle update for route", route, "child routes", childRoutesToBeUpdated)
-		}
-
-		if err := r.cacheCtx.rib.Delete(route); err != nil {
-			return err
+		} else {
+			k := store.ToKey(ribName)
+			if len(existingRoutes) > 0 {
+				if ipTable, err := r.cacheCtx.ranges.Get(ctx, k); err == nil {
+					// the table exists
+					for _, existingRoute := range existingRoutes {
+						if _, err := ipTable.Get(existingRoute.Prefix().Addr().String()); err == nil {
+							if err := ipTable.Release(existingRoute.Prefix().Addr().String()); err != nil {
+								return err
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	return nil
