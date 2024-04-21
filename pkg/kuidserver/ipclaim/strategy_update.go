@@ -46,9 +46,21 @@ func (r *strategy) AllowUnconditionalUpdate() bool { return false }
 func (r *strategy) ValidateUpdate(ctx context.Context, obj, old runtime.Object) field.ErrorList {
 	var allErrs field.ErrorList
 
-	// TODO what can be modified ?
-
-	return allErrs
+	claim, ok := obj.(*ipambe1v1alpha1.IPClaim)
+	if !ok {
+		allErrs = append(allErrs, field.Invalid(
+			field.NewPath(""),
+			claim,
+			fmt.Errorf("unexpected new object, expecting: %s, got: %s", ipambe1v1alpha1.IPClaimKind, reflect.TypeOf(obj)).Error(),
+		))
+		return allErrs
+	}
+	allErrs = claim.ValidateSyntax()
+	if len(allErrs) != 0 {
+		return allErrs
+	}
+	// TODO validate mutations
+	return claim.ValidateSyntax()
 }
 
 func (r *strategy) Update(ctx context.Context, key types.NamespacedName, obj, old runtime.Object, dryrun bool) (runtime.Object, error) {

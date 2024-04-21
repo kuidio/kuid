@@ -19,21 +19,19 @@ package ipam
 import (
 	"context"
 	"errors"
+	"fmt"
 
-	"github.com/hansthienpondt/nipam/pkg/table"
+	"github.com/henderiw/idxtable/pkg/iptable"
 	"github.com/henderiw/logger/log"
 	"github.com/henderiw/store"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
-	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
 	ipamresv1alpha1 "github.com/kuidio/kuid/apis/resource/ipam/v1alpha1"
 	"github.com/kuidio/kuid/pkg/backend"
-	"github.com/kuidio/kuid/pkg/reconcilers/resource"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func NewStore(c client.Client, cache backend.Cache[*table.RIB]) backend.Store {
+func NewStore(c client.Client, cache backend.Cache[*CacheContext]) backend.Store {
 	return &bestore{
 		client: c,
 		cache:  cache,
@@ -42,39 +40,73 @@ func NewStore(c client.Client, cache backend.Cache[*table.RIB]) backend.Store {
 
 type bestore struct {
 	client client.Client
-	cache  backend.Cache[*table.RIB]
+	cache  backend.Cache[*CacheContext]
 }
 
 func (r *bestore) Restore(ctx context.Context, k store.Key) error {
-	//log := log.FromContext(ctx).With("key", k.String())
-	ipIndex := ipambev1alpha1.IPIndex{}
-	if err := r.client.Get(ctx, k.NamespacedName, &ipIndex); err != nil {
-		if resource.IgnoreNotFound(err) != nil {
-			return err
-		}
-		// delete entries if they exist
-		return r.deleteEntries(ctx, k)
+	log := log.FromContext(ctx).With("key", k.String())
+
+	cacheCtx, err := r.cache.Get(ctx, k, true)
+	if err != nil {
+		log.Error("cannot get index", "error", err.Error())
+		return err
 	}
-	return r.restoreEntries(ctx, k)
+	// Fetch the current entries that were stored
+	curIPEntries, err := r.listEntries(ctx, k)
+	if err != nil {
+		return err
+	}
+
+	// fetch the NI, IP(s) and IPClaims
+	ni, niPrefixes, err := r.getNIPrefixes(ctx, k)
+	if err != nil {
+		return nil
+	}
+
+	ipmap, err := r.listIPs(ctx, k)
+	if err != nil {
+		return nil
+	}
+	ipclaimmap, err := r.listClaims(ctx, k)
+	if err != nil {
+		return nil
+	}
+
+	if err := r.restoreNiPrefixes(ctx, cacheCtx, curIPEntries, ni, niPrefixes); err != nil {
+		return err
+	}
+	if err := r.restoreIPs(ctx, cacheCtx, curIPEntries, ipambev1alpha1.IPClaimType_StaticPrefix, ipmap); err != nil {
+		return err
+	}
+	if err := r.restoreIPClaims(ctx, cacheCtx, curIPEntries, ipambev1alpha1.IPClaimType_StaticPrefix, ipclaimmap); err != nil {
+		return err
+	}
+	if err := r.restoreIPClaims(ctx, cacheCtx, curIPEntries, ipambev1alpha1.IPClaimType_StaticRange, ipclaimmap); err != nil {
+		return err
+	}
+	if err := r.restoreIPClaims(ctx, cacheCtx, curIPEntries, ipambev1alpha1.IPClaimType_DynamicPrefix, ipclaimmap); err != nil {
+		return err
+	}
+	if err := r.restoreIPs(ctx, cacheCtx, curIPEntries, ipambev1alpha1.IPClaimType_StaticAddress, ipmap); err != nil {
+		return err
+	}
+	if err := r.restoreIPClaims(ctx, cacheCtx, curIPEntries, ipambev1alpha1.IPClaimType_StaticAddress, ipclaimmap); err != nil {
+		return err
+	}
+	if err := r.restoreIPClaims(ctx, cacheCtx, curIPEntries, ipambev1alpha1.IPClaimType_DynamicAddress, ipclaimmap); err != nil {
+		return err
+	}
+
+	log.Info("restore prefixes entries left", "items", len(curIPEntries.Items))
+
+	return nil
+
 }
 
 // only used in configmap
 func (r *bestore) SaveAll(ctx context.Context, k store.Key) error {
 	log := log.FromContext(ctx)
-	ipIndex := ipambev1alpha1.IPIndex{}
-	if err := r.client.Get(ctx, k.NamespacedName, &ipIndex); err != nil {
-		if resource.IgnoreNotFound(err) != nil {
-			return err
-		}
-		// TBD if this is an OK scenario or we should error
-		if err := r.client.Create(ctx, ipambev1alpha1.BuildIPIndex(metav1.ObjectMeta{
-			Namespace: k.Namespace,
-			Name:      k.Name,
-		}, nil, nil)); err != nil {
-			return err
-		}
 
-	}
 	newIPEntries, err := r.getEntriesFromCache(ctx, k)
 	if err != nil {
 		return err
@@ -85,9 +117,13 @@ func (r *bestore) SaveAll(ctx context.Context, k store.Key) error {
 	}
 	// debug end
 	for _, newIPEntry := range newIPEntries {
+		newIPEntry := newIPEntry
 		found := false
 		var ipEntry *ipambev1alpha1.IPEntry
 		for idx, curIPEntry := range curIPEntries.Items {
+			idx := idx
+			curIPEntry := curIPEntry
+			//fmt.Println("saveAll entries", newIPEntry.Name, curIPEntry.Name)
 			if curIPEntry.Namespace == newIPEntry.Namespace &&
 				curIPEntry.Name == newIPEntry.Name {
 				curIPEntries.Items = append(curIPEntries.Items[:idx], curIPEntries.Items[idx+1:]...)
@@ -96,8 +132,10 @@ func (r *bestore) SaveAll(ctx context.Context, k store.Key) error {
 				break
 			}
 		}
+		//fmt.Println("saveAll entries", found, newIPEntry.Name)
 		if !found {
 			if err := r.client.Create(ctx, newIPEntry); err != nil {
+				log.Error("saveAll create failed", "name", newIPEntry.Name, "error", err.Error())
 				return err
 			}
 			continue
@@ -119,80 +157,34 @@ func (r *bestore) SaveAll(ctx context.Context, k store.Key) error {
 // Destroy removes the store db
 func (r *bestore) Destroy(ctx context.Context, k store.Key) error {
 	// no need to delete the ip index as this is what this fn is supposed to do
-
 	return r.deleteEntries(ctx, k)
 }
 
 func (r *bestore) getEntriesFromCache(ctx context.Context, k store.Key) ([]*ipambev1alpha1.IPEntry, error) {
 	log := log.FromContext(ctx).With("key", k.String())
-	rib, err := r.cache.Get(ctx, k, false)
+	cacheCtx, err := r.cache.Get(ctx, k, false)
 	if err != nil {
 		log.Error("cannot get index", "error", err.Error())
 		return nil, err
 	}
 
-	ipEntries := make([]*ipambev1alpha1.IPEntry, 0, rib.Size())
-	for _, route := range rib.GetTable() {
+	ipEntries := make([]*ipambev1alpha1.IPEntry, 0, cacheCtx.Size())
+	// add the main rib entry
+	for _, route := range cacheCtx.rib.GetTable() {
+		//fmt.Println("getEntriesFromCache rib entry", route.Prefix().String())
+		route := route
 		ipEntries = append(ipEntries, ipambev1alpha1.GetIPEntry(ctx, k, route.Prefix(), route.Labels()))
 	}
-	return ipEntries, nil
-}
-
-func (r *bestore) restoreEntries(ctx context.Context, k store.Key) error {
-	//log := log.FromContext(ctx)
-
-	// debug start
-	/*
-		ipEntries, err := r.listEntries(ctx, k)
-		if err != nil {
-			return err
+	// add all the range entries
+	cacheCtx.ranges.List(ctx, func(ctx context.Context, key store.Key, i iptable.IPTable) {
+		for _, route := range i.GetAll() {
+			//fmt.Println("getEntriesFromCache range", key.Name, route.Prefix().String())
+			route := route
+			ipEntries = append(ipEntries, ipambev1alpha1.GetIPEntry(ctx, k, route.Prefix(), route.Labels()))
 		}
-		//for _, ipEntry := range ipEntries.Items {
-		//	log.Info("ip entry", "nsn", ipEntry.GetNamespacedName().String())
-		//}
-		// debug end
-	*/
+	})
 
-	rib, err := r.cache.Get(ctx, k, true) // return a rib even when not initialized
-	if err != nil {
-		return err
-	}
-
-	claims, err := r.listClaims(ctx, k)
-	if err != nil {
-		return err
-	}
-
-	// we restore in order right now
-	// 1st network instance
-	// 2nd prefixes
-	// 3rd claims
-	niGvk := schema.GroupVersionKind{
-		Group:   ipamresv1alpha1.Group,
-		Version: ipamresv1alpha1.Version,
-		Kind:    ipamresv1alpha1.NetworkInstanceKind,
-	}
-	if err := r.restorePrefixes(ctx, claims, niGvk, rib); err != nil {
-		return err
-	}
-	pfxGvk := schema.GroupVersionKind{
-		Group:   ipamresv1alpha1.Group,
-		Version: ipamresv1alpha1.Version,
-		Kind:    ipamresv1alpha1.IPPrefixKind,
-	}
-	if err := r.restorePrefixes(ctx, claims, pfxGvk, rib); err != nil {
-		return err
-	}
-	claimGvk := schema.GroupVersionKind{
-		Group:   ipambev1alpha1.Group,
-		Version: ipambev1alpha1.Version,
-		Kind:    ipambev1alpha1.IPClaimKind,
-	}
-	if err := r.restorePrefixes(ctx, claims, claimGvk, rib); err != nil {
-		return err
-	}
-
-	return nil
+	return ipEntries, nil
 }
 
 func (r *bestore) deleteEntries(ctx context.Context, k store.Key) error {
@@ -232,7 +224,19 @@ func (r *bestore) listEntries(ctx context.Context, _ store.Key) (*ipambev1alpha1
 	return &ipEntries, nil
 }
 
-func (r *bestore) listClaims(ctx context.Context, _ store.Key) (*ipambev1alpha1.IPClaimList, error) {
+func (r *bestore) getNIPrefixes(ctx context.Context, k store.Key) (*ipamresv1alpha1.NetworkInstance, map[string]ipamresv1alpha1.Prefix, error) {
+	ni := &ipamresv1alpha1.NetworkInstance{}
+	if err := r.client.Get(ctx, k.NamespacedName, ni); err != nil {
+		return nil, nil, err
+	}
+	niPrefixes := make(map[string]ipamresv1alpha1.Prefix)
+	for _, prefix := range ni.Spec.Prefixes {
+		niPrefixes[prefix.Prefix] = prefix
+	}
+	return ni, niPrefixes, nil
+}
+
+func (r *bestore) listClaims(ctx context.Context, _ store.Key) (map[string]*ipambev1alpha1.IPClaim, error) {
 	opt := []client.ListOption{
 		/*
 			client.MatchingFields{
@@ -246,26 +250,137 @@ func (r *bestore) listClaims(ctx context.Context, _ store.Key) (*ipambev1alpha1.
 		return nil, err
 	}
 
-	return &claims, nil
+	claimmap := map[string]*ipambev1alpha1.IPClaim{}
+	for _, claim := range claims.Items {
+		claim := claim
+		claimmap[(&claim).GetNamespacedName().String()] = &claim
+	}
+
+	return claimmap, nil
 }
 
-func (r *bestore) restorePrefixes(ctx context.Context, claims *ipambev1alpha1.IPClaimList, gvk schema.GroupVersionKind, rib *table.RIB) error {
-	log := log.FromContext(ctx)
-	for _, claim := range claims.Items {
-		if claim.GetCondition(conditionv1alpha1.ConditionTypeReady).Status == metav1.ConditionTrue {
-			if claim.Spec.Owner.Group == gvk.Group && claim.Spec.Owner.Version == gvk.Version && claim.Spec.Owner.Kind == gvk.Kind {
-				var a Applicator
-				if claim.Spec.Prefix != nil {
-					a = &prefixApplicator{applicator: applicator{rib: rib}}
-				} else {
-					a = &dynamicApplicator{applicator: applicator{rib: rib}}
+func (r *bestore) listIPs(ctx context.Context, _ store.Key) (map[string]*ipamresv1alpha1.IP, error) {
+	opt := []client.ListOption{
+		/*
+			client.MatchingFields{
+				"spec.networkInstance": k.Name,
+			},
+		*/
+	}
+
+	ipList := ipamresv1alpha1.IPList{}
+	if err := r.client.List(ctx, &ipList, opt...); err != nil {
+		return nil, err
+	}
+
+	ipmap := map[string]*ipamresv1alpha1.IP{}
+	for _, ip := range ipList.Items {
+		ip := ip
+		ipmap[(&ip).GetNamespacedName().String()] = &ip
+	}
+
+	return ipmap, nil
+}
+
+func (r *bestore) restoreNiPrefixes(ctx context.Context, cacheCtx *CacheContext, ipEntries *ipambev1alpha1.IPEntryList, ni *ipamresv1alpha1.NetworkInstance, niPrefixes map[string]ipamresv1alpha1.Prefix) error {
+	//log := log.FromContext(ctx)
+	for i := len(ipEntries.Items) - 1; i >= 0; i-- {
+		ipEntry := ipEntries.Items[i]
+		if ipEntry.Spec.Owner.Group == ipamresv1alpha1.SchemeGroupVersion.Group &&
+			ipEntry.Spec.Owner.Version == ipamresv1alpha1.SchemeGroupVersion.Version &&
+			ipEntry.Spec.Owner.Kind == ipamresv1alpha1.NetworkInstanceKind {
+
+			niPrefix, ok := niPrefixes[ipEntry.Spec.Prefix]
+			if ok {
+				claim, err := ni.GetIPClaim(niPrefix)
+				if err != nil {
+					return nil
 				}
-				log.Info("restore claim", "name", claim.Name, "prefix", claim.Status.Prefix)
-				if err := a.Apply(ctx, &claim); err != nil {
+				if err := r.restoreClaim(ctx, cacheCtx, claim); err != nil {
 					return err
+				}
+				// remove the entry since it is processed
+				ipEntries.Items = append(ipEntries.Items[:i], ipEntries.Items[i+1:]...)
+				delete(niPrefixes, ipEntry.Spec.Prefix)
+			}
+		}
+	}
+	return nil
+}
+
+func (r *bestore) restoreIPs(ctx context.Context, cacheCtx *CacheContext, ipEntries *ipambev1alpha1.IPEntryList, claimType ipambev1alpha1.IPClaimType, ipmap map[string]*ipamresv1alpha1.IP) error {
+
+	for i := len(ipEntries.Items) - 1; i >= 0; i-- {
+		ipEntry := ipEntries.Items[i]
+		if ipEntry.Spec.Owner.Group == ipamresv1alpha1.SchemeGroupVersion.Group &&
+			ipEntry.Spec.Owner.Version == ipamresv1alpha1.SchemeGroupVersion.Version &&
+			ipEntry.Spec.Owner.Kind == ipamresv1alpha1.IPKind {
+
+			if claimType == ipEntry.Spec.ClaimType {
+				nsn := types.NamespacedName{Namespace: ipEntry.Spec.Owner.Namespace, Name: ipEntry.Spec.Owner.Name}
+
+				ip, ok := ipmap[nsn.String()]
+				if ok {
+					claim, err := ip.GetIPClaim()
+					if err != nil {
+						return nil
+					}
+					if err := r.restoreClaim(ctx, cacheCtx, claim); err != nil {
+						return err
+					}
+					// remove the entry since it is processed
+					ipEntries.Items = append(ipEntries.Items[:i], ipEntries.Items[i+1:]...)
+					delete(ipmap, nsn.String()) // delete the entry to optimize
 				}
 			}
 		}
+	}
+	return nil
+}
+
+func (r *bestore) restoreIPClaims(ctx context.Context, cacheCtx *CacheContext, ipEntries *ipambev1alpha1.IPEntryList, claimType ipambev1alpha1.IPClaimType, ipclaimmap map[string]*ipambev1alpha1.IPClaim) error {
+
+	for i := len(ipEntries.Items) - 1; i >= 0; i-- {
+		ipEntry := ipEntries.Items[i]
+		if ipEntry.Spec.Owner.Group == ipambev1alpha1.SchemeGroupVersion.Group &&
+			ipEntry.Spec.Owner.Version == ipambev1alpha1.SchemeGroupVersion.Version &&
+			ipEntry.Spec.Owner.Kind == ipambev1alpha1.IPClaimKind {
+
+			if claimType == ipEntry.Spec.ClaimType {
+				nsn := types.NamespacedName{Namespace: ipEntry.Spec.Owner.Namespace, Name: ipEntry.Spec.Owner.Name}
+
+				claim, ok := ipclaimmap[nsn.String()]
+				if ok {
+					if err := r.restoreClaim(ctx, cacheCtx, claim); err != nil {
+						return err
+					}
+					// remove the entry since it is processed
+					ipEntries.Items = append(ipEntries.Items[:i], ipEntries.Items[i+1:]...)
+					delete(ipclaimmap, nsn.String()) // delete the entry to optimize
+				}
+			}
+		}
+	}
+	return nil
+}
+
+func (r *bestore) restoreClaim(ctx context.Context, cacheCtx *CacheContext, claim *ipambev1alpha1.IPClaim) error {
+	ctx = initClaimContext(ctx, "restore", claim)
+	a, err := getApplicator(ctx, cacheCtx, claim)
+	if err != nil {
+		return err
+	}
+	// validate is needed, mainly for addresses since the parent route determines
+	// e.g. the fact the address belongs to a range or not
+	errList := claim.ValidateSyntax() // needed to expand the createPrefix/prefixLength and owner
+	if len(errList) != 0 {
+		return fmt.Errorf("invalid syntax %v", errList)
+	}
+	if err := a.Validate(ctx, claim); err != nil {
+		return err
+	}
+	if err := a.Apply(ctx, claim); err != nil {
+		return err
 	}
 	return nil
 }

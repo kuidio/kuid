@@ -19,10 +19,10 @@ package ipentry
 import (
 	"github.com/henderiw/apiserver-store/pkg/generic/registry"
 	ipambe1v1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
+	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
 )
 
 func NewTableConvertor(gr schema.GroupResource) registry.TableConvertor {
@@ -37,21 +37,20 @@ func NewTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 				ipentry.Name,
 				ipentry.GetCondition(conditionv1alpha1.ConditionTypeReady).Status,
 				ipentry.Spec.NetworkInstance,
-				ipentry.Spec.Kind,
-				ipentry.Spec.AddressFamily,
-				ipentry.Spec.Prefix,
-				ipentry.Spec.Gateway,
-				
+				ipentry.Spec.ClaimType,
+				string(ipentry.GetIPPrefixType()),
+				ipentry.GetIPPrefix(),
+				ipentry.Spec.DefaultGateway,
 			}
 		},
 		Columns: []metav1.TableColumnDefinition{
 			{Name: "Name", Type: "string"},
 			{Name: "Ready", Type: "string"},
 			{Name: "NetworkInstance", Type: "string"},
-			{Name: "Kind", Type: "string"},
-			{Name: "AF", Type: "string"},
+			{Name: "ClaimType", Type: "string"},
+			{Name: "PrefixType", Type: "string"},
 			{Name: "Prefix", Type: "string"},
-			{Name: "Gateway", Type: "string"},
+			{Name: "DefaultGateway", Type: "string"},
 		},
 	}
 }

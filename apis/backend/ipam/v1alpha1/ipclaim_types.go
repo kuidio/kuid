@@ -27,53 +27,52 @@ import (
 
 // IPClaimSpec defines the desired state of IPClaim
 type IPClaimSpec struct {
-	// Kind defines the kind of prefix for the IP Claim
+	// NetworkInstance defines the networkInstance context of the IPAddress.
+	// A NetworkInstance is a dedicated routing table instance
+	NetworkInstance string `json:"networkInstance" yaml:"networkInstance" protobuf:"bytes,1,opt,name=networkInstance"`
+	// PrefixType defines the prefixtype of IPEntry; for address and range claims this is not relevant
 	// - network kind is used for physical, virtual nics on a device
-	// - loopback kind is used for loopback interfaces within a device
-	// - pool kind is used for pools for dhcp/radius/bng/upf/etc
-	// - aggregate kind is used for claiming an aggregate prefix
-	// +kubebuilder:validation:Enum=`network`;`loopback`;`pool`;`aggregate`
-	// +kubebuilder:default=network
-	Kind PrefixKind `json:"kind" yaml:"kind" protobuf:"bytes,1,opt,name=kind"`
-	// NetworkInstance defines the networkInstance context for the IP claim
-	// The NetworkInstance must exist within the IPClaim namespace to succeed
-	// in claiming the ip
-	NetworkInstance string `json:"networkInstance" yaml:"networkInstance" protobuf:"bytes,2,opt,name=networkInstance"`
+	// - pool kind is used for allocating dedicated IP addresses
+	// - aggregate kind is used for claiming an aggregate prefix; only used for networkInstance prefixes
+	// +kubebuilder:validation:Enum=`network`;`aggregate`;`pool`;
+	// +optional
+	PrefixType *IPPrefixType `json:"prefixType,omitempty" yaml:"prefixType,omitempty" protobuf:"bytes,2,opt,name=prefixType"`
+	// Prefix defines the prefix for the IP claim
+	// +optional
+	Prefix *string `json:"prefix,omitempty" yaml:"prefix,omitempty" protobuf:"bytes,3,opt,name=prefix"`
+	// Address defines the address for the IP claim
+	// +optional
+	Address *string `json:"address,omitempty" yaml:"address,omitempty" protobuf:"bytes,4,opt,name=address"`
+	// Range defines the range for the IP claim
+	// +optional
+	Range *string `json:"range,omitempty" yaml:"range,omitempty" protobuf:"bytes,5,opt,name=range"`
+	// DefaultGateway defines if the address acts as a default gateway
+	// +optional
+	DefaultGateway *bool `json:"defaultGateway,omitempty" yaml:"defaultGateway,omitempty" protobuf:"varint,6,opt,name=defaultGateway"`
+	// CreatePrefix defines if this prefix must be created. Only used for dynamic prefixes
+	// e.g. non /32 ipv4 and non /128 ipv6 prefixes
+	// +optional
+	CreatePrefix *bool `json:"createPrefix,omitempty" yaml:"createPrefix,omitempty" protobuf:"varint,7,opt,name=createPrefix"`
+	// PrefixLength defines the prefix length for the IP Claim, Must be set when CreatePrefic is set
+	// If not present we use assume /32 for ipv4 and /128 for ipv6
+	// +optional
+	PrefixLength *uint32 `json:"prefixLength,omitempty" yaml:"prefixLength,omitempty" protobuf:"varint,8,opt,name=prefixLength"`
 	// AddressFamily defines the address family for the IP claim
 	// +kubebuilder:validation:Enum=`ipv4`;`ipv6`
 	// +kubebuilder:validation:Optional
 	// +optional
-	AddressFamily *iputil.AddressFamily `json:"addressFamily,omitempty" yaml:"addressFamily,omitempty" protobuf:"bytes,3,opt,name=addressFamily"`
-	// Prefix defines the prefix for the IP claim
-	// Used for specific prefix claim or used as a hint for a dynamic prefix claim in case of restart
-	// +kubebuilder:validation:Pattern=`(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/(([0-9])|([1-2][0-9])|(3[0-2]))|((:|[0-9a-fA-F]{0,4}):)([0-9a-fA-F]{0,4}:){0,5}((([0-9a-fA-F]{0,4}:)?(:|[0-9a-fA-F]{0,4}))|(((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])))(/(([0-9])|([0-9]{2})|(1[0-1][0-9])|(12[0-8])))`
-	// +kubebuilder:validation:Optional
-	// +optional
-	Prefix *string `json:"prefix,omitempty" yaml:"prefix,omitempty" protobuf:"bytes,4,opt,name=prefix"`
-	// Gateway defines if the prefix/address is a gateway
-	// +kubebuilder:validation:Optional
-	// +optional
-	Gateway *bool `json:"gateway,omitempty" yaml:"gateway,omitempty" protobuf:"varint,5,opt,name=gateway"`
-	// PrefixLength defines the prefix length for the IP Claim
-	// If not present we use assume /32 for ipv4 and /128 for ipv6
-	// +kubebuilder:validation:Optional
-	// +optional
-	PrefixLength *uint32 `json:"prefixLength,omitempty" yaml:"prefixLength,omitempty" protobuf:"varint,6,opt,name=prefixLength"`
+	AddressFamily *iputil.AddressFamily `json:"addressFamily,omitempty" yaml:"addressFamily,omitempty" protobuf:"bytes,9,opt,name=addressFamily"`
 	// Index defines the index of the IP Claim, used to get a deterministic IP from a prefix
 	// If not present we claim a random prefix from a prefix
 	// +kubebuilder:validation:Optional
 	// +optional
-	Index *uint32 `json:"index,omitempty" yaml:"index,omitempty" protobuf:"varint,7,opt,name=index"`
-	// CreatePrefix defines if this prefix must be created. Only used for non address prefixes
-	// e.g. non /32 ipv4 and non /128 ipv6 prefixes
-	// +kubebuilder:validation:Optional
-	// +optional
-	CreatePrefix *bool `json:"createPrefix,omitempty" yaml:"createPrefix,omitempty" protobuf:"varint,8,opt,name=createPrefix"`
+	Index *uint32 `json:"index,omitempty" yaml:"index,omitempty" protobuf:"varint,10,opt,name=index"`
 	// ClaimLabels define the user defined labels and selector labels used
 	// in resource claim
-	commonv1alpha1.ClaimLabels `json:",inline" yaml:",inline" protobuf:"bytes,9,opt,name=claimLabels"`
-
-	Owner *commonv1alpha1.OwnerReference `json:"owner,omitempty" yaml:"owner,omitempty" protobuf:"bytes,10,opt,name=owner"`
+	commonv1alpha1.ClaimLabels `json:",inline" yaml:",inline" protobuf:"bytes,11,opt,name=claimLabels"`
+	// Owner defines the ownerReference of the IPClaim
+	// Allow for different namesapces, hence it is part of the spec
+	Owner *commonv1alpha1.OwnerReference `json:"owner,omitempty" yaml:"owner,omitempty" protobuf:"bytes,12,opt,name=owner"`
 }
 
 // IPClaimStatus defines the observed state of IPClaim
@@ -81,19 +80,23 @@ type IPClaimStatus struct {
 	// ConditionedStatus provides the status of the IPClain using conditions
 	// - a ready condition indicates the overall status of the resource
 	conditionv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=conditionedStatus"`
+	// Range defines the range, claimed through the IPAM backend
+	// +optional
+	Range *string `json:"range,omitempty" yaml:"range,omitempty" protobuf:"bytes,2,opt,name=range"`
+	// Address defines the address, claimed through the IPAM backend
+	// +optional
+	Address *string `json:"address,omitempty" yaml:"address,omitempty" protobuf:"bytes,3,opt,name=address"`
 	// Prefix defines the prefix, claimed through the IPAM backend
-	// +kubebuilder:validation:Optional
 	// +optional
-	Prefix *string `json:"prefix,omitempty" yaml:"prefix,omitempty" protobuf:"bytes,2,opt,name=prefix"`
-	// Gateway defines the gateway IP for the claimed prefix
-	// Gateway is only relevant for prefix kind = network
-	// +kubebuilder:validation:Optional
+	Prefix *string `json:"prefix,omitempty" yaml:"prefix,omitempty" protobuf:"bytes,4,opt,name=prefix"`
+	// DefaultGateway defines the default gateway IP for the claimed prefix
+	// DefaultGateway is only relevant for prefix kind = network
 	// +optional
-	Gateway *string `json:"gateway,omitempty" yaml:"gateway,omitempty" protobuf:"bytes,3,opt,name=gateway"`
+	DefaultGateway *string `json:"defaultGateway,omitempty" yaml:"defaultGateway,omitempty" protobuf:"bytes,5,opt,name=defaultGateway"`
 	// ExpiryTime defines when the claim expires
 	// +kubebuilder:validation:Optional
 	// +optional
-	ExpiryTime *string `json:"expiryTime,omitempty" yaml:"expiryTime,omitempty" protobuf:"bytes,4,opt,name=expiryTime"`
+	ExpiryTime *string `json:"expiryTime,omitempty" yaml:"expiryTime,omitempty" protobuf:"bytes,6,opt,name=expiryTime"`
 }
 
 // +genclient

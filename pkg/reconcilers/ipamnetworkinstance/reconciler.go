@@ -19,18 +19,22 @@ package ipamnetworkinstance
 import (
 	"context"
 	"fmt"
+	"reflect"
+	"strings"
+	"time"
 
 	"github.com/henderiw/logger/log"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
 	ipamresv1alpha1 "github.com/kuidio/kuid/apis/resource/ipam/v1alpha1"
+	"github.com/kuidio/kuid/pkg/backend"
+	"github.com/kuidio/kuid/pkg/backend/ipam"
 	"github.com/kuidio/kuid/pkg/reconcilers"
 	"github.com/kuidio/kuid/pkg/reconcilers/ctrlconfig"
-	"github.com/kuidio/kuid/pkg/reconcilers/resource"
 	"github.com/kuidio/kuid/pkg/reconcilers/ipentryeventhandler"
+	"github.com/kuidio/kuid/pkg/reconcilers/resource"
 	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -62,16 +66,16 @@ type adder interface {
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *reconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manager, c interface{}) (map[schema.GroupVersionKind]chan event.GenericEvent, error) {
-	/*
-		cfg, ok := c.(*ctrlconfig.ControllerConfig)
-		if !ok {
-			return nil, fmt.Errorf("cannot initialize, expecting controllerConfig, got: %s", reflect.TypeOf(c).Name())
-		}
-	*/
+
+	cfg, ok := c.(*ctrlconfig.ControllerConfig)
+	if !ok {
+		return nil, fmt.Errorf("cannot initialize, expecting controllerConfig, got: %s", reflect.TypeOf(c).Name())
+	}
 
 	r.Client = mgr.GetClient()
 	r.finalizer = resource.NewAPIFinalizer(mgr.GetClient(), finalizer)
 	r.recorder = mgr.GetEventRecorderFor(controllerName)
+	r.be = cfg.IPAMBackend
 
 	return nil, ctrl.NewControllerManagedBy(mgr).
 		Named(controllerName).
@@ -88,6 +92,7 @@ type reconciler struct {
 	client.Client
 	finalizer *resource.APIFinalizer
 	recorder  record.EventRecorder
+	be        backend.Backend[*ipam.CacheContext]
 }
 
 func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
@@ -148,7 +153,7 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		}
 		if !found {
 			if err := r.deleteIPClaim(ctx, cr, claimedPrefix); err != nil {
-				return ctrl.Result{Requeue: true}, errors.Wrap(r.Status().Update(ctx, cr), errUpdateStatus)
+				return ctrl.Result{RequeueAfter: 1 * time.Second}, errors.Wrap(r.Status().Update(ctx, cr), errUpdateStatus)
 			}
 		}
 	}
@@ -156,7 +161,7 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 	// aggregate prefixes.
 	for _, prefix := range cr.Spec.Prefixes {
 		if err := r.applyIPClaim(ctx, cr, prefix); err != nil {
-			return ctrl.Result{Requeue: true}, errors.Wrap(r.Status().Update(ctx, cr), errUpdateStatus)
+			return ctrl.Result{RequeueAfter: 1 * time.Second}, errors.Wrap(r.Status().Update(ctx, cr), errUpdateStatus)
 		}
 	}
 
@@ -179,72 +184,31 @@ func (r *reconciler) handleError(ctx context.Context, cr *ipamresv1alpha1.Networ
 }
 
 func (r *reconciler) deleteIndex(ctx context.Context, cr *ipamresv1alpha1.NetworkInstance) error {
-	nsn := cr.GetNamespacedName()
-	ipindex := &ipambev1alpha1.IPIndex{}
-	if err := r.Client.Get(ctx, nsn, ipindex); err != nil {
-		if resource.IgnoreNotFound(err) != nil {
-			r.handleError(ctx, cr, "cannot get index", err)
-			return err
-		}
-		return nil
-	}
-	if err := r.Client.Delete(ctx, ipindex); err != nil {
-		r.handleError(ctx, cr, "cannot update index", err)
+	if err := r.be.DeleteIndex(ctx, cr); err != nil {
+		r.handleError(ctx, cr, "cannot delete index", err)
 		return err
 	}
 	return nil
 }
 
 func (r *reconciler) applyIndex(ctx context.Context, cr *ipamresv1alpha1.NetworkInstance) error {
-	nsn := cr.GetNamespacedName()
-	ipindex := &ipambev1alpha1.IPIndex{}
-	if err := r.Client.Get(ctx, nsn, ipindex); err != nil {
-		if resource.IgnoreNotFound(err) != nil {
-			r.handleError(ctx, cr, "cannot get index", err)
-			return err
-		}
-		ipindex = ipambev1alpha1.BuildIPIndex(metav1.ObjectMeta{Namespace: cr.GetNamespace(), Name: cr.GetName()}, nil, nil)
-		if err := r.Client.Create(ctx, ipindex); err != nil {
-			r.handleError(ctx, cr, "cannot create index", err)
-			return err
-		}
-		return nil
+	if err := r.be.CreateIndex(ctx, cr); err != nil {
+		r.handleError(ctx, cr, "cannot create index", err)
+		return err
 	}
-	// An update on an index does not make sense as the spec is empty
 	return nil
 }
 
 func (r *reconciler) applyIPClaim(ctx context.Context, cr *ipamresv1alpha1.NetworkInstance, prefix ipamresv1alpha1.Prefix) error {
-	ipclaim, err := ipambev1alpha1.GetIPClaimFromPrefix(ipambev1alpha1.PrefixKindAggregate, cr.GetName(), prefix.Prefix, prefix.UserDefinedLabels, cr)
+	ipclaim, err := cr.GetIPClaim(prefix)
 	if err != nil { // strange if this happens since the prefix was already processed
 		r.handleError(ctx, cr, "build ipclaim", err)
 		return err
 	}
-	if err := r.Client.Get(ctx, ipclaim.GetNamespacedName(), ipclaim); err != nil {
-		if resource.IgnoreNotFound(err) != nil {
-			msg := fmt.Sprintf("cannot get ipclaim %s", ipclaim.GetNamespacedName())
-			r.handleError(ctx, cr, msg, err)
-			return err
-		}
-		if err := r.Client.Create(ctx, ipclaim); err != nil {
-			msg := fmt.Sprintf("cannot create ipclaim %s", ipclaim.GetNamespacedName())
-			r.handleError(ctx, cr, msg, err)
-			return err
-		}
-		return nil
-	}
-	// update the ipClaim with the latest spec information
-	if err = ipclaim.UpdateSpecFromPrefix(ipambev1alpha1.PrefixKindAggregate, cr.GetName(), prefix.Prefix, prefix.UserDefinedLabels, cr); err != nil {
-		msg := fmt.Sprintf("cannot create ipclaim %s", ipclaim.GetNamespacedName())
-		r.handleError(ctx, cr, msg, err)
+	if err := r.be.Claim(ctx, ipclaim); err != nil {
+		r.handleError(ctx, cr, "cannot claim ip", err)
 		return err
 	}
-	if err := r.Client.Update(ctx, ipclaim); err != nil {
-		msg := fmt.Sprintf("cannot update ipclaim %s", ipclaim.GetNamespacedName())
-		r.handleError(ctx, cr, msg, err)
-		return err
-	}
-
 	if ipclaim.Status.Prefix == nil || *ipclaim.Status.Prefix != prefix.Prefix {
 		//we got a different prefix than requested one
 		msg := fmt.Sprintf("ip prefix not ready: req/rsp %s/%v", prefix.Prefix, ipclaim.Status.Prefix)
@@ -256,24 +220,14 @@ func (r *reconciler) applyIPClaim(ctx context.Context, cr *ipamresv1alpha1.Netwo
 
 func (r *reconciler) deleteIPClaim(ctx context.Context, cr *ipamresv1alpha1.NetworkInstance, prefix ipamresv1alpha1.Prefix) error {
 	//ipclaim, err := buildIPClaim(ctx, cr, prefix)
-	ipclaim, err := ipambev1alpha1.GetIPClaimFromPrefix(ipambev1alpha1.PrefixKindAggregate, cr.GetName(), prefix.Prefix, prefix.UserDefinedLabels, cr)
+	ipclaim, err := cr.GetIPClaim(prefix)
 	if err != nil { // strange if this happens since the prefix was already processed
 		r.handleError(ctx, cr, "cannot build ipclaim", err)
 		return err
 	}
-	if err := r.Client.Get(ctx, ipclaim.GetNamespacedName(), ipclaim); err != nil {
-		if resource.IgnoreNotFound(err) != nil {
-			msg := fmt.Sprintf("cannot get ipclaim %s", ipclaim.GetNamespacedName())
-			r.handleError(ctx, cr, msg, err)
-			return err
-		}
-		return nil
-	}
-	if err := r.Client.Delete(ctx, ipclaim); err != nil {
-		if resource.IgnoreNotFound(err) != nil {
-			msg := fmt.Sprintf("cannot get ipclaim %s", ipclaim.GetNamespacedName())
-			r.handleError(ctx, cr, msg, err)
-			return err
+	if err := r.be.Release(ctx, ipclaim); err != nil {
+		if !strings.Contains(err.Error(), "not initialized") {
+			r.handleError(ctx, cr, "cannot delete ipclaim", err)
 		}
 	}
 	return nil

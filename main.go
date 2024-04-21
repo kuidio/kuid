@@ -34,7 +34,6 @@ import (
 	"github.com/kuidio/kuid/pkg/backend/ipam"
 	"github.com/kuidio/kuid/pkg/kuidserver/ipclaim"
 	"github.com/kuidio/kuid/pkg/kuidserver/ipentry"
-	"github.com/kuidio/kuid/pkg/kuidserver/ipindex"
 	serverstore "github.com/kuidio/kuid/pkg/kuidserver/store"
 	"github.com/kuidio/kuid/pkg/reconcilers"
 	_ "github.com/kuidio/kuid/pkg/reconcilers/all"
@@ -124,11 +123,6 @@ func main() {
 			WithServerName("kuid-server").
 			WithEtcdPath(defaultEtcdPathPrefix).
 			WithOpenAPIDefinitions("Kuid", "v1alpha1", kuidopenapi.GetOpenAPIDefinitions).
-			WithResourceAndHandler(ctx, &ipambev1alpha1.IPIndex{}, ipindex.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
-				Prefix: configDir,
-				Type:   serverstore.StorageType_KV,
-				DB:     db,
-			}, ipbe)).
 			WithResourceAndHandler(ctx, &ipambev1alpha1.IPClaim{}, ipclaim.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
 				Prefix: configDir,
 				Type:   serverstore.StorageType_KV,

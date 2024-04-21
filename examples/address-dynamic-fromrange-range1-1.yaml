@@ -1,0 +1,10 @@
+apiVersion: ipam.be.kuid.dev/v1alpha1
+kind: IPClaim
+metadata:
+  name: range1-claim1
+spec:
+  networkInstance: vpc1
+  selector:
+    matchLabels:
+      be.kuid.dev/claim-name: vpc1.10.0.0.10-10.0.0.19
+    

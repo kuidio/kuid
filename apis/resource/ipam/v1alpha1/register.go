@@ -56,8 +56,8 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 	// +kubebuilder:scaffold:install
 
 	scheme.AddKnownTypes(SchemeGroupVersion,
-		&IPPrefix{},
-		&IPPrefixList{},
+		&IP{},
+		&IPList{},
 		&NetworkInstance{},
 		&NetworkInstanceList{},
 	)

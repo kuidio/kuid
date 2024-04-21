@@ -63,7 +63,7 @@ func (r *IPEntryEventHandler) add(ctx context.Context, obj runtime.Object, queue
 	}
 
 	log := log.FromContext(ctx)
-	log.Info("event", "gvk", ipambev1alpha1.SchemeGroupVersion.WithKind(ipambev1alpha1.IPEntryKind).String(), "name", cr.GetName())
+	//log.Info("event", "gvk", ipambev1alpha1.SchemeGroupVersion.WithKind(ipambev1alpha1.IPEntryKind).String(), "name", cr.GetName())
 
 	opts := []client.ListOption{
 		client.InNamespace(cr.Namespace),
@@ -75,7 +75,7 @@ func (r *IPEntryEventHandler) add(ctx context.Context, obj runtime.Object, queue
 	}
 	for _, obj := range objList.GetItems() {
 		// check if the connection profile is referenced in the discoveryProfile
-		log.Info("event", "objOwnerRef", obj.GetOwnerReference().String(), "crOwnerRef", cr.GetOwnerReference().String())
+		//log.Info("event", "objOwnerRef", obj.GetOwnerReference().String(), "crOwnerRef", cr.GetOwnerReference().String())
 		if *obj.GetOwnerReference() == *cr.GetOwnerReference() {
 			key := types.NamespacedName{
 				Namespace: obj.GetNamespace(),

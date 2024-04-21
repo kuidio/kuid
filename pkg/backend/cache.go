@@ -50,8 +50,6 @@ func (r *cache[T1]) Create(ctx context.Context, k store.Key, i T1) {
 	if cacheCtx == nil {
 		_ = r.store.Create(ctx, k, newCacheContext(i))
 	}
-	//_ = r.store.Delete(ctx, k)
-	//_ = r.store.Create(ctx, k, newCacheContext(i))
 }
 
 func (r *cache[T1]) Delete(ctx context.Context, k store.Key) {

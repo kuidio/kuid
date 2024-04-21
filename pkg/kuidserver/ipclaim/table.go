@@ -19,10 +19,10 @@ package ipclaim
 import (
 	"github.com/henderiw/apiserver-store/pkg/generic/registry"
 	ipambe1v1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
+	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
 )
 
 func NewTableConvertor(gr schema.GroupResource) registry.TableConvertor {
@@ -33,29 +33,27 @@ func NewTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 			if !ok {
 				return nil
 			}
+			ipClaimType, _ := ipclaim.GetIPClaimType()
 			return []interface{}{
 				ipclaim.Name,
 				ipclaim.GetCondition(conditionv1alpha1.ConditionTypeReady).Status,
 				ipclaim.Spec.NetworkInstance,
-				ipclaim.Spec.Kind,
-				ipclaim.Spec.AddressFamily,
-				ipclaim.Spec.PrefixLength,
-				ipclaim.Spec.Prefix,
-				ipclaim.Status.Prefix,
-				ipclaim.Status.Gateway,
-				
+				string(ipClaimType),
+				string(ipclaim.GetIPPrefixType()),
+				ipclaim.GetClaimRequest(),
+				ipclaim.GetClaimResponse(),
+				ipclaim.Status.DefaultGateway,
 			}
 		},
 		Columns: []metav1.TableColumnDefinition{
 			{Name: "Name", Type: "string"},
 			{Name: "Ready", Type: "string"},
 			{Name: "NetworkInstance", Type: "string"},
-			{Name: "Kind", Type: "string"},
-			{Name: "AF", Type: "string"},
-			{Name: "PrefixLength", Type: "string"},
-			{Name: "PrefixReq", Type: "string"},
-			{Name: "PrefixAlloc", Type: "string"},
-			{Name: "Gateway", Type: "string"},
+			{Name: "ClaimType", Type: "string"},
+			{Name: "PrefixType", Type: "string"},
+			{Name: "ClaimReq", Type: "string"},
+			{Name: "ClaimRsp", Type: "string"},
+			{Name: "DefaultGateway", Type: "string"},
 		},
 	}
 }

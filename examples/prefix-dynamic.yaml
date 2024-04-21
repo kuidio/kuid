@@ -1,0 +1,15 @@
+apiVersion: ipam.be.kuid.dev/v1alpha1
+kind: IPClaim
+metadata:
+  name: vpc1.prefix-claim1
+spec:
+  networkInstance: vpc1
+  prefixType: network
+  createPrefix: true
+  prefixLength: 24
+  labels:
+    inv.kuid.dev/network: dyn-net1
+#  selector:
+#    matchLabels:
+#      inv.kuid.dev/test: a
+    

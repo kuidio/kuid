@@ -20,12 +20,7 @@ import (
 	"context"
 
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
-	"k8s.io/apimachinery/pkg/util/validation/field"
 )
-
-type SyntaxValidator interface {
-	ValidateSyntax(ctx context.Context, claim *ipambev1alpha1.IPClaim) field.ErrorList
-}
 
 type Validator interface {
 	Validate(ctx context.Context, claim *ipambev1alpha1.IPClaim) error

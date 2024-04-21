@@ -19,77 +19,41 @@ package ipam
 import (
 	"context"
 	"fmt"
-	"log/slog"
 	"reflect"
 
-	"github.com/hansthienpondt/nipam/pkg/table"
 	"github.com/henderiw/logger/log"
 	"github.com/henderiw/store"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
-	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
+	ipamresv1alpha1 "github.com/kuidio/kuid/apis/resource/ipam/v1alpha1"
 
 	"github.com/kuidio/kuid/pkg/backend"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/apimachinery/pkg/util/validation/field"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func New(c client.Client) backend.Backend[*table.RIB] {
-	cache := backend.NewCache[*table.RIB]()
+func New(c client.Client) backend.Backend[*CacheContext] {
+	cache := backend.NewCache[*CacheContext]()
+
+	store := backend.NewNopStore()
+	if c != nil {
+		store = NewStore(c, cache)
+	}
 	return &be{
-		cache:  cache,
-		client: c,
-		store:  NewStore(c, cache),
+		cache: cache,
+		store: store,
 	}
 }
 
 type be struct {
-	cache  backend.Cache[*table.RIB]
-	client client.Client
-	store  backend.Store
+	cache backend.Cache[*CacheContext]
+	store backend.Store
 }
-
-func initIndexContext(ctx context.Context, op string, idx *ipambev1alpha1.IPIndex) context.Context {
-	l := log.FromContext(ctx).
-		With(
-			"op", fmt.Sprintf("%s index", op),
-			"nsn", idx.GetNamespacedName().String(),
-		)
-	return log.IntoContext(ctx, l)
-}
-
-func initClaimContext(ctx context.Context, op string, claim *ipambev1alpha1.IPClaim) context.Context {
-	var l *slog.Logger
-	if claim.Spec.Prefix != nil {
-		l = log.FromContext(ctx).
-			With(
-				"op", fmt.Sprintf("%s prefix claim", op),
-				"nsn", claim.GetNamespacedName().String(),
-				"ni", claim.Spec.NetworkInstance,
-				"prefix", claim.Spec.Prefix,
-			)
-	} else {
-		l = log.FromContext(ctx).
-			With(
-				"op", fmt.Sprintf("%s dynamic claim", op),
-				"nsn", claim.GetNamespacedName().String(),
-				"ni", claim.Spec.NetworkInstance,
-			)
-	}
-	return log.IntoContext(ctx, l)
-}
-
-/*
-log := log.FromContext(ctx).With("name", claim.GetName(), "networkInstance", claim.Spec.NetworkInstance, "prefix", claim.Spec.Prefix)
-	log.Info("ipclaim create")
-*/
 
 // CreateIndex creates a backend index
 func (r *be) CreateIndex(ctx context.Context, obj runtime.Object) error {
-	cr, ok := obj.(*ipambev1alpha1.IPIndex)
+	cr, ok := obj.(*ipamresv1alpha1.NetworkInstance)
 	if !ok {
-		return fmt.Errorf("cannot create index expecting %s, got %s", ipambev1alpha1.IPIndexKind, reflect.TypeOf(obj).Name())
+		return fmt.Errorf("cannot create index expecting %s, got %s", ipamresv1alpha1.NetworkInstanceKind, reflect.TypeOf(obj).Name())
 	}
 	ctx = initIndexContext(ctx, "create", cr)
 	log := log.FromContext(ctx)
@@ -100,7 +64,7 @@ func (r *be) CreateIndex(ctx context.Context, obj runtime.Object) error {
 	log.Info("start", "isInitialized", r.cache.IsInitialized(ctx, key))
 	// if the Cache is not initialized -> restore the cache
 	// this happens upon initialization or backend restart
-	r.cache.Create(ctx, key, table.NewRIB())
+	r.cache.Create(ctx, key, NewCacheContext())
 	if r.cache.IsInitialized(ctx, key) {
 		log.Info("already initialized")
 		return nil
@@ -115,9 +79,9 @@ func (r *be) CreateIndex(ctx context.Context, obj runtime.Object) error {
 
 // DeleteIndex deletes a backend index
 func (r *be) DeleteIndex(ctx context.Context, obj runtime.Object) error {
-	cr, ok := obj.(*ipambev1alpha1.IPIndex)
+	cr, ok := obj.(*ipamresv1alpha1.NetworkInstance)
 	if !ok {
-		return fmt.Errorf("cannot delete index expecting %s, got %s", ipambev1alpha1.IPIndexKind, reflect.TypeOf(obj).Name())
+		return fmt.Errorf("cannot delete index expecting %s, got %s", ipamresv1alpha1.NetworkInstanceKind, reflect.TypeOf(obj).Name())
 	}
 	ctx = initIndexContext(ctx, "delete", cr)
 	log := log.FromContext(ctx)
@@ -141,14 +105,22 @@ func (r *be) DeleteIndex(ctx context.Context, obj runtime.Object) error {
 func (r *be) Claim(ctx context.Context, obj runtime.Object) error {
 	claim, ok := obj.(*ipambev1alpha1.IPClaim)
 	if !ok {
-		return fmt.Errorf("cannot claim ip expecting %s, got %s", ipambev1alpha1.IPIndexKind, reflect.TypeOf(obj).Name())
+		return fmt.Errorf("cannot claim ip expecting %s, got %s", ipambev1alpha1.IPClaimKind, reflect.TypeOf(obj).Name())
 	}
 	ctx = initClaimContext(ctx, "create", claim)
 	log := log.FromContext(ctx)
 	log.Debug("start")
 
-	a, err := r.getApplicator(ctx, claim)
+	cacheCtx, err := r.cache.Get(ctx, claim.GetKey(), false)
 	if err != nil {
+		return err
+	}
+
+	a, err := getApplicator(ctx, cacheCtx, claim)
+	if err != nil {
+		return err
+	}
+	if err := a.Validate(ctx, claim); err != nil {
 		return err
 	}
 	if err := a.Apply(ctx, claim); err != nil {
@@ -159,18 +131,23 @@ func (r *be) Claim(ctx context.Context, obj runtime.Object) error {
 	return r.store.SaveAll(ctx, claim.GetKey())
 }
 
-// DeleteClaim delete a claim in the backend index
-func (r *be) DeleteClaim(ctx context.Context, obj runtime.Object) error {
+// Release delete a claim in the backend index
+func (r *be) Release(ctx context.Context, obj runtime.Object) error {
 	claim, ok := obj.(*ipambev1alpha1.IPClaim)
 	if !ok {
-		return fmt.Errorf("cannot delete ip cliam expecting %s, got %s", ipambev1alpha1.IPIndexKind, reflect.TypeOf(obj).Name())
+		return fmt.Errorf("cannot delete ip cliam expecting %s, got %s", ipamresv1alpha1.NetworkInstanceKind, reflect.TypeOf(obj).Name())
 	}
 	ctx = initClaimContext(ctx, "delete", claim)
 	log := log.FromContext(ctx)
 	log.Debug("start")
 
+	cacheCtx, err := r.cache.Get(ctx, claim.GetKey(), false)
+	if err != nil {
+		return err
+	}
+
 	// ip claim delete and store
-	a, err := r.getApplicator(ctx, claim)
+	a, err := getApplicator(ctx, cacheCtx, claim)
 	if err != nil {
 		// error gets returned when rib is not initialized -> this means we can safely return
 		// and pretend nothing is wrong (hence return nil) since the cleanup already happened
@@ -183,93 +160,30 @@ func (r *be) DeleteClaim(ctx context.Context, obj runtime.Object) error {
 	return r.store.SaveAll(ctx, claim.GetKey())
 }
 
-func (r *be) GetCache(ctx context.Context, key store.Key) (*table.RIB, error) {
+func (r *be) GetCache(ctx context.Context, key store.Key) (*CacheContext, error) {
 	return r.cache.Get(ctx, key, false)
 }
 
-func (r *be) ValidateClaimSyntax(ctx context.Context, obj runtime.Object) field.ErrorList {
-	var allErrs field.ErrorList
-	claim, ok := obj.(*ipambev1alpha1.IPClaim)
-	if !ok {
-		allErrs = append(allErrs, field.Invalid(
-			field.NewPath(""),
-			obj,
-			fmt.Errorf("unexpected new object, expecting: %s, got: %s", ipambev1alpha1.IPClaimKind, reflect.TypeOf(obj)).Error(),
-		))
-		return allErrs
-	}
-	gv, err := schema.ParseGroupVersion(claim.APIVersion)
-	if err != nil {
-		allErrs = append(allErrs, field.Invalid(
-			field.NewPath("apiVersion"),
-			obj,
-			fmt.Errorf("invalid apiVersion: err: %s", err.Error()).Error(),
-		))
-		return allErrs
-	}
-
-	if claim.Spec.Owner == nil {
-		claim.Spec.Owner = &commonv1alpha1.OwnerReference{
-			Group:     gv.Group,
-			Version:   gv.Version,
-			Kind:      claim.Kind,
-			Namespace: claim.Namespace,
-			Name:      claim.Name,
-		}
-	}
-
-	var v SyntaxValidator
-	if claim.Spec.Prefix == nil {
-		v = &dynamicClaimSyntaxValidator{}
-	} else {
-		v = &prefixClaimSyntaxValidator{}
-
-	}
-	return v.ValidateSyntax(ctx, claim)
-}
-
-func (r *be) ValidateClaim(ctx context.Context, obj runtime.Object) error {
-	claim, ok := obj.(*ipambev1alpha1.IPClaim)
-	if !ok {
-		return fmt.Errorf("unexpected new object, expecting: %s, got: %s", ipambev1alpha1.IPClaimKind, reflect.TypeOf(obj))
-	}
-
-	rib, err := r.GetCache(ctx, claim.GetKey())
-	if err != nil {
-		return fmt.Errorf("rib not ready, initializing: err: %s", err.Error())
-	}
-
-	if claim.Spec.Prefix != nil {
-		v := &prefixClaimValidator{rib: rib}
-		return v.Validate(ctx, claim)
-	}
-	return nil
-}
-
-func (r *be) getApplicator(ctx context.Context, claim *ipambev1alpha1.IPClaim) (Applicator, error) {
-	rib, err := r.cache.Get(ctx, claim.GetKey(), false)
+func getApplicator(_ context.Context, cacheCtx *CacheContext, claim *ipambev1alpha1.IPClaim) (Applicator, error) {
+	ipClaimType, err := claim.GetIPClaimType()
 	if err != nil {
 		return nil, err
 	}
-
-	// validate - happened before
-	if claim.Spec.Prefix != nil {
-		/*
-			pi, err := iputil.New(*claim.Spec.Prefix)
-			if err != nil {
-				return nil, err
-			}
-		*/
-		return &prefixApplicator{
-			applicator: applicator{
-				rib: rib,
-				//pi:  pi,
-			},
-		}, nil
+	var a Applicator
+	switch ipClaimType {
+	case ipambev1alpha1.IPClaimType_StaticAddress:
+		a = &staticAddressApplicator{name: string(ipambev1alpha1.IPClaimType_StaticAddress), applicator: applicator{cacheCtx: cacheCtx}}
+	case ipambev1alpha1.IPClaimType_StaticPrefix:
+		a = &staticPrefixApplicator{name: string(ipambev1alpha1.IPClaimType_StaticPrefix), applicator: applicator{cacheCtx: cacheCtx}}
+	case ipambev1alpha1.IPClaimType_StaticRange:
+		a = &staticRangeApplicator{name: string(ipambev1alpha1.IPClaimType_StaticRange), applicator: applicator{cacheCtx: cacheCtx}}
+	case ipambev1alpha1.IPClaimType_DynamicAddress:
+		a = &dynamicAddressApplicator{name: string(ipambev1alpha1.IPClaimType_DynamicAddress), applicator: applicator{cacheCtx: cacheCtx}}
+	case ipambev1alpha1.IPClaimType_DynamicPrefix:
+		a = &dynamicPrefixApplicator{name: string(ipambev1alpha1.IPClaimType_DynamicPrefix), applicator: applicator{cacheCtx: cacheCtx}}
+	default:
+		return nil, fmt.Errorf("invalid addressing, got: %s", string(ipClaimType))
 	}
-	return &dynamicApplicator{
-		applicator: applicator{
-			rib: rib,
-		},
-	}, nil
+
+	return a, nil
 }

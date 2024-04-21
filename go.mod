@@ -1,6 +1,8 @@
 module github.com/kuidio/kuid
 
-go 1.21.4
+go 1.22.0
+
+toolchain go1.22.2
 
 replace github.com/google/cel-go => github.com/google/cel-go v0.16.1
 
@@ -31,19 +33,21 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/hansthienpondt/nipam v0.0.5
 	github.com/henderiw/apiserver-builder v0.0.2-0.20240414132730-35630f41575d
-	github.com/henderiw/apiserver-store v0.0.0-20240223013812-a4101101019f
+	github.com/henderiw/apiserver-store v0.0.0-20240419050621-a69e6046534c
+	github.com/henderiw/idxtable v0.0.0-20240419114134-1426f5d5425c
 	github.com/henderiw/iputil v0.0.0-20231218081610-37f78ad9c81c
 	github.com/henderiw/logger v0.0.0-20230911123436-8655829b1abe
 	github.com/henderiw/store v0.0.0-20240311135319-eb32ab80594b
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.8.0
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 	go.opentelemetry.io/otel v1.20.0
 	go.uber.org/zap v1.27.0
+	go4.org/netipx v0.0.0-20231129151722-fdeea329fbba
 	golang.org/x/mod v0.14.0
 	golang.org/x/sync v0.6.0
 	k8s.io/api v0.29.3
-	k8s.io/apimachinery v0.29.3
+	k8s.io/apimachinery v0.30.0
 	k8s.io/apiserver v0.29.3
 	k8s.io/client-go v0.29.3
 	k8s.io/code-generator v0.29.3
@@ -119,7 +123,6 @@ require (
 	go.opentelemetry.io/otel/trace v1.20.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.0.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	go4.org/netipx v0.0.0-20231129151722-fdeea329fbba // indirect
 	golang.org/x/crypto v0.19.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
 	golang.org/x/net v0.21.0 // indirect
@@ -142,7 +145,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/apiextensions-apiserver v0.29.0 // indirect
 	k8s.io/gengo v0.0.0-20230829151522-9cce18d56c01 // indirect
-	k8s.io/klog/v2 v2.110.1 // indirect
+	k8s.io/klog/v2 v2.120.1 // indirect
 	k8s.io/kms v0.29.3 // indirect
 	sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.28.0 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect

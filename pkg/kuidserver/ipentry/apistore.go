@@ -19,12 +19,12 @@ package ipentry
 import (
 	"context"
 
-	"github.com/hansthienpondt/nipam/pkg/table"
 	builderrest "github.com/henderiw/apiserver-builder/pkg/builder/rest"
 	"github.com/henderiw/apiserver-store/pkg/generic/registry"
 	"github.com/henderiw/apiserver-store/pkg/storebackend"
 	ipambe1v1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 	"github.com/kuidio/kuid/pkg/backend"
+	"github.com/kuidio/kuid/pkg/backend/ipam"
 	"github.com/kuidio/kuid/pkg/kuidserver/store"
 	"go.opentelemetry.io/otel"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -34,14 +34,14 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func NewProvider(ctx context.Context, client client.Client, storeConfig *store.Config, be backend.Backend[*table.RIB]) builderrest.ResourceHandlerProvider {
+func NewProvider(ctx context.Context, client client.Client, storeConfig *store.Config, be backend.Backend[*ipam.CacheContext]) builderrest.ResourceHandlerProvider {
 	return func(ctx context.Context, scheme *runtime.Scheme, getter generic.RESTOptionsGetter) (rest.Storage, error) {
 		return NewREST(ctx, scheme, getter, client, storeConfig, be)
 	}
 }
 
 // NewPackageRevisionREST returns a RESTStorage object that will work against API services.
-func NewREST(ctx context.Context, scheme *runtime.Scheme, optsGetter generic.RESTOptionsGetter, client client.Client, storeConfig *store.Config, be backend.Backend[*table.RIB]) (rest.Storage, error) {
+func NewREST(ctx context.Context, scheme *runtime.Scheme, optsGetter generic.RESTOptionsGetter, client client.Client, storeConfig *store.Config, be backend.Backend[*ipam.CacheContext]) (rest.Storage, error) {
 	scheme.AddFieldLabelConversionFunc(
 		schema.GroupVersionKind{
 			Group:   ipambe1v1alpha1.Group,
