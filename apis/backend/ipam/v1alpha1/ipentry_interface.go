@@ -136,6 +136,19 @@ func (r *IPEntry) GetClaimName() string {
 	return r.Spec.IPClaim
 }
 
+func (r *IPEntry) GetClaimSummaryType() IPClaimSummaryType {
+	switch r.Spec.ClaimType {
+	case IPClaimType_DynamicAddress, IPClaimType_StaticAddress:
+		return IPClaimSummaryType_Address
+	case IPClaimType_DynamicPrefix, IPClaimType_StaticPrefix:
+		return IPClaimSummaryType_Prefix
+	case IPClaimType_StaticRange:
+		return IPClaimSummaryType_Range
+	default:
+		return IPClaimSummaryType_Invalid
+	}
+}
+
 func (r *IPEntry) GetIPPrefixType() IPPrefixType {
 	if r.Spec.PrefixType == nil {
 		return IPPrefixType_Other
