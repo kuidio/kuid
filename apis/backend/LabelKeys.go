@@ -38,6 +38,7 @@ const (
 	KuidINVNetworkKey  = "inv.kuid.dev/network"
 	KuidINVEndpointKey = "inv.kuid.dev/endpoint-name"
 	KuidINVHeadlessKey = "inv.kuid.dev/headless-name"
+	KuidINVAliasKey    = "inv.kuid.dev/alias-name"
 	KuidINVPortNS      = "port.kuid.dev"
 )
 
