@@ -48,7 +48,7 @@ type applicator struct {
 }
 
 // apply only works on the main rib
-func (r *applicator) apply(ctx context.Context, claim *ipambev1alpha1.IPClaim, pis []*iputil.Prefix, networkParent bool) error {
+func (r *applicator) apply(ctx context.Context, claim *ipambev1alpha1.IPClaim, pis []*iputil.Prefix, networkParent bool, parentLabels map[string]string) error {
 	log := log.FromContext(ctx)
 	// check if the prefix/claim already exists in the routing table
 	// based on the name of the claim
@@ -61,7 +61,7 @@ func (r *applicator) apply(ctx context.Context, claim *ipambev1alpha1.IPClaim, p
 	newRoutes := table.Routes{}
 	for _, pi := range pis {
 		pi := pi
-		newRoutes = append(newRoutes, getRoutesFromClaim(ctx, claim, pi, networkParent)...)
+		newRoutes = append(newRoutes, getRoutesFromClaim(ctx, claim, pi, networkParent, parentLabels)...)
 
 	}
 	for _, newRoute := range newRoutes {
@@ -114,13 +114,13 @@ func (r *applicator) applyRange(ctx context.Context, claim *ipambev1alpha1.IPCla
 	return nil
 }
 
-func (r *applicator) applyAddressInRange(ctx context.Context, claim *ipambev1alpha1.IPClaim, pi *iputil.Prefix, rangeName string) error {
+func (r *applicator) applyAddressInRange(ctx context.Context, claim *ipambev1alpha1.IPClaim, pi *iputil.Prefix, rangeName string, labels map[string]string) error {
 	k := store.ToKey(rangeName)
 	ipTable, err := r.cacheCtx.ranges.Get(ctx, k)
 	if err != nil {
 		return err
 	}
-	routes := getRoutesFromClaim(ctx, claim, pi, false)
+	routes := getRoutesFromClaim(ctx, claim, pi, false, labels)
 	addr := pi.Addr().String()
 	route, err := ipTable.Get(addr)
 	if err != nil {
@@ -217,11 +217,15 @@ func (r *applicator) updateClaimRangeStatus(_ context.Context, claim *ipambev1al
 
 // getRoutesFromClaim return the reoutes with the assocated labels from the claim
 // for network based prefixes multiple routes can be returned as they might get expanded
-func getRoutesFromClaim(_ context.Context, claim *ipambev1alpha1.IPClaim, pi *iputil.Prefix, networkParent bool) []table.Route {
+func getRoutesFromClaim(_ context.Context, claim *ipambev1alpha1.IPClaim, pi *iputil.Prefix, networkParent bool, parentLabels map[string]string) []table.Route {
 	routes := []table.Route{}
 
 	ipClaimType, _ := claim.GetIPClaimType()
 	labels := claim.Spec.GetUserDefinedLabels()
+	for k, v := range parentLabels {
+		labels[k] = v
+	}
+	// system defined labels
 	labels[backend.KuidIPAMIPPrefixTypeKey] = string(claim.GetIPPrefixType())
 	labels[backend.KuidIPAMClaimSummaryTypeKey] = string(claim.GetIPClaimSummaryType())
 	labels[backend.KuidIPAMClaimTypeKey] = string(ipClaimType)
@@ -496,4 +500,19 @@ func validateNoParent(ipClaim *ipambev1alpha1.IPClaim) error {
 		return fmt.Errorf("an agregate route is required %s/%s", ipClaim.Spec.Owner.String(), ownerRef)
 	}
 	return nil // an aggregate coming from a network Instance can be created
+}
+
+func getUserDefinedLabels(labels map[string]string) map[string]string {
+	udmLabels := map[string]string{}
+	for k, v := range labels {
+		fmt.Println("getUserDefinedLabels", k, v)
+		if backend.BackendIPAMSystemKeys.Has(k) {
+			continue
+		}
+		if backend.BackendSystemKeys.Has(k) {
+			continue
+		}
+		udmLabels[k] = v
+	}
+	return udmLabels
 }

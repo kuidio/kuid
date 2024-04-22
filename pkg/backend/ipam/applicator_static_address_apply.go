@@ -32,13 +32,13 @@ func (r *staticAddressApplicator) Apply(ctx context.Context, claim *ipambev1alph
 	if err != nil {
 		return err
 	}
-	fmt.Println("applyAddress", *claim.Spec.Address, r.parentClaimSummaryType, r.parentRangeName, r.parentNetwork)
+	fmt.Println("applyAddress", *claim.Spec.Address, r.parentClaimSummaryType, r.parentRangeName, r.parentNetwork, r.parentLabels)
 	if r.parentClaimSummaryType == ipambev1alpha1.IPClaimSummaryType_Range {
-		if err := r.applyAddressInRange(ctx, claim, pi, r.parentRangeName); err != nil {
+		if err := r.applyAddressInRange(ctx, claim, pi, r.parentRangeName, r.parentLabels); err != nil {
 			return err
 		}
 	} else {
-		if err := r.apply(ctx, claim, []*iputil.Prefix{pi}, false); err != nil {
+		if err := r.apply(ctx, claim, []*iputil.Prefix{pi}, false, r.parentLabels); err != nil {
 			return err
 		}
 	}

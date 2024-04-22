@@ -34,6 +34,7 @@ type staticAddressApplicator struct {
 	parentClaimSummaryType ipambev1alpha1.IPClaimSummaryType
 	parentRangeName        string
 	parentNetwork          bool
+	parentLabels           map[string]string
 }
 
 func (r *staticAddressApplicator) Validate(ctx context.Context, claim *ipambev1alpha1.IPClaim) error {
@@ -115,6 +116,7 @@ func (r *staticAddressApplicator) validateExistingParent(ctx context.Context, cl
 	// update the context such that the applicator can use this information to apply the IP
 	r.parentClaimSummaryType = parentClaimSummaryType
 	r.parentRangeName = parentClaimName
+	r.parentLabels = getUserDefinedLabels(routeLabels)
 
 	if pi.IsAddressPrefix() {
 		// 32 or /128 -> cannot be claimed in a network or aggregate

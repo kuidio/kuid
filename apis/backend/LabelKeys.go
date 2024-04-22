@@ -34,8 +34,10 @@ const (
 	KuidIPAMSubnetKey           = "ipam.be.kuid.dev/subnet" // this is the subnet in prefix annotation used for GW selection
 	KuidIPAMDefaultGatewayKey   = "ipam.be.kuid.dev/default-gateway"
 	KuidIPAMIndexKey            = "ipam.be.kuid.dev/index"
-	// user defined common
-
+	// DNS used keys
+	KuidINVNetworkKey  = "inv.kuid.dev/network"
+	KuidINVEndpointKey = "inv.kuid.dev/endpoint-name"
+	KuidINVPortNS      = "port.kuid.dev"
 )
 
 var BackendSystemKeys = sets.New[string](KuidOwnerGroupKey,

@@ -7,4 +7,6 @@ spec:
   selector:
     matchLabels:
       inv.kuid.dev/network: net1
+  labels:
+    dns.kuid.dev/endpoint-name: claim2
     

@@ -38,7 +38,7 @@ func (r *staticRangeApplicator) Apply(ctx context.Context, claim *ipambev1alpha1
 	for _, prefix := range ipRange.Prefixes() {
 		pis = append(pis, iputil.NewPrefixInfo(prefix))
 	}
-	if err := r.apply(ctx, claim, pis, false); err != nil {
+	if err := r.apply(ctx, claim, pis, false, map[string]string{}); err != nil {
 		return err
 	}
 	if err := r.applyRange(ctx, claim, ipRange); err != nil {

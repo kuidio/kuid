@@ -32,7 +32,7 @@ func (r *staticPrefixApplicator) Apply(ctx context.Context, claim *ipambev1alpha
 		return err
 	}
 
-	if err := r.apply(ctx, claim, []*iputil.Prefix{pi}, false); err != nil {
+	if err := r.apply(ctx, claim, []*iputil.Prefix{pi}, false, map[string]string{}); err != nil {
 		return err
 	}
 	r.updateClaimPrefixStatus(ctx, claim, pi)

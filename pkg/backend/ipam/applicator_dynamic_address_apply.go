@@ -38,14 +38,14 @@ func (r *dynamicAddressApplicator) Apply(ctx context.Context, claim *ipambev1alp
 	if err != nil {
 		return err
 	}
-	fmt.Println("claimAddress", pi.Prefix.String(), r.parentClaimSummaryType, r.parentRangeName, r.parentNetwork)
+	fmt.Println("claimAddress", pi.Prefix.String(), r.parentClaimSummaryType, r.parentRangeName, r.parentNetwork, r.parentLabels)
 	if r.parentClaimSummaryType == ipambev1alpha1.IPClaimSummaryType_Range {
-		if err := r.applyAddressInRange(ctx, claim, pi, r.parentRangeName); err != nil {
+		if err := r.applyAddressInRange(ctx, claim, pi, r.parentRangeName, r.parentLabels); err != nil {
 			return err
 		}
 	} else {
 		// the claimType is coming from the parent for addresses
-		if err := r.apply(ctx, claim, []*iputil.Prefix{pi}, r.parentNetwork); err != nil {
+		if err := r.apply(ctx, claim, []*iputil.Prefix{pi}, r.parentNetwork, r.parentLabels); err != nil {
 			return err
 		}
 	}
@@ -83,7 +83,8 @@ func (r *dynamicAddressApplicator) claimAddress(ctx context.Context, claim *ipam
 					// 10.0.0.1/24
 					fmt.Println("claim Address", spi.Addr().String(), existingRoute.Prefix().Addr().String())
 					if spi.Addr().String() == existingRoute.Prefix().Addr().String() {
-						if spi.GetPrefixLength() != spi.GetAddressPrefixLength() {
+						if spi.GetPrefixLength() != spi.GetAddressPrefixLength() {							
+							r.parentLabels = getUserDefinedLabels(findParent(existingRoute.Parents(r.cacheCtx.rib)).Labels())
 							r.parentNetwork = true
 						}
 						return spi, nil
@@ -146,6 +147,7 @@ func (r *dynamicAddressApplicator) selectAddress(ctx context.Context, claim *ipa
 		// update the context such that the applicator can use this information to apply the IP
 		r.parentClaimSummaryType = parentClaimSummaryType
 		r.parentRangeName = parentClaimName
+		r.parentLabels = getUserDefinedLabels(routeLabels)
 		if parentIPPrefixType != nil && *parentIPPrefixType == ipambev1alpha1.IPPrefixType_Network {
 			r.parentNetwork = true
 		}

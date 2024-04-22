@@ -28,6 +28,7 @@ type dynamicAddressApplicator struct {
 	parentClaimSummaryType ipambev1alpha1.IPClaimSummaryType
 	parentRangeName        string
 	parentNetwork          bool
+	parentLabels           map[string]string
 }
 
 func (r *dynamicAddressApplicator) Validate(ctx context.Context, claim *ipambev1alpha1.IPClaim) error {
