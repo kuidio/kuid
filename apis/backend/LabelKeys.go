@@ -37,6 +37,7 @@ const (
 	// DNS used keys
 	KuidINVNetworkKey  = "inv.kuid.dev/network"
 	KuidINVEndpointKey = "inv.kuid.dev/endpoint-name"
+	KuidINVHeadlessKey = "inv.kuid.dev/headless-name"
 	KuidINVPortNS      = "port.kuid.dev"
 )
 
