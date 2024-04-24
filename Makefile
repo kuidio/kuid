@@ -62,7 +62,7 @@ genclients:
 		-g openapi-gen \
 		-g go-to-protobuf \
 		--module $(REPO) \
-		--versions $(REPO)/apis/backend/ipam/v1alpha1,$(REPO)/apis/condition/v1alpha1,,$(REPO)/apis/common/v1alpha1
+		--versions $(REPO)/apis/backend/ipam/v1alpha1,$(REPO)/apis/backend/vlan/v1alpha1,$(REPO)/apis/condition/v1alpha1,,$(REPO)/apis/common/v1alpha1
 
 .PHONY: generate
 generate: controller-gen 

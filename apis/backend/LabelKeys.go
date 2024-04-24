@@ -34,6 +34,8 @@ const (
 	KuidIPAMSubnetKey           = "ipam.be.kuid.dev/subnet" // this is the subnet in prefix annotation used for GW selection
 	KuidIPAMDefaultGatewayKey   = "ipam.be.kuid.dev/default-gateway"
 	KuidIPAMIndexKey            = "ipam.be.kuid.dev/index"
+	// system defined vlan
+	KuidVLANClaimTypeKey        = "vlan.be.kuid.dev/claim-type"
 	// DNS used keys
 	KuidINVNetworkKey  = "inv.kuid.dev/network"
 	KuidINVEndpointKey = "inv.kuid.dev/endpoint-name"
@@ -58,4 +60,8 @@ var BackendIPAMSystemKeys = sets.New[string](KuidOwnerGroupKey,
 	KuidIPAMSubnetKey,
 	KuidIPAMDefaultGatewayKey,
 	KuidIPAMIndexKey,
+)
+
+var BackendVLANSystemKeys = sets.New[string](KuidOwnerGroupKey,
+	KuidVLANClaimTypeKey,
 )

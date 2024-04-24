@@ -56,7 +56,9 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: status.hostIP
-        - name: ENABLE_IPAMIP
+        - name: ENABLE_VLANINDEX
+          value: "true"
+        - name: ENABLE_VLANCLAIM
           value: "true"
         - name: ENABLE_IPAMNETWORKINSTANCE
           value: "true"

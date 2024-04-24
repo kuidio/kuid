@@ -97,7 +97,7 @@ func (r *bestore) Restore(ctx context.Context, k store.Key) error {
 		return err
 	}
 
-	log.Info("restore prefixes entries left", "items", len(curIPEntries.Items))
+	log.Info("restore prefixes entries left", "items", len(curIPEntries))
 
 	return nil
 
@@ -106,6 +106,7 @@ func (r *bestore) Restore(ctx context.Context, k store.Key) error {
 // only used in configmap
 func (r *bestore) SaveAll(ctx context.Context, k store.Key) error {
 	log := log.FromContext(ctx)
+	log.Info("SaveAll", "key", k.String())
 
 	newIPEntries, err := r.getEntriesFromCache(ctx, k)
 	if err != nil {
@@ -120,15 +121,15 @@ func (r *bestore) SaveAll(ctx context.Context, k store.Key) error {
 		newIPEntry := newIPEntry
 		found := false
 		var ipEntry *ipambev1alpha1.IPEntry
-		for idx, curIPEntry := range curIPEntries.Items {
+		for idx, curIPEntry := range curIPEntries {
 			idx := idx
 			curIPEntry := curIPEntry
 			//fmt.Println("saveAll entries", newIPEntry.Name, curIPEntry.Name)
 			if curIPEntry.Namespace == newIPEntry.Namespace &&
 				curIPEntry.Name == newIPEntry.Name {
-				curIPEntries.Items = append(curIPEntries.Items[:idx], curIPEntries.Items[idx+1:]...)
+				curIPEntries = append(curIPEntries[:idx], curIPEntries[idx+1:]...)
 				found = true
-				ipEntry = &curIPEntry
+				ipEntry = curIPEntry
 				break
 			}
 		}
@@ -146,8 +147,8 @@ func (r *bestore) SaveAll(ctx context.Context, k store.Key) error {
 			return err
 		}
 	}
-	for _, curIPEntry := range curIPEntries.Items {
-		if err := r.client.Delete(ctx, &curIPEntry); err != nil {
+	for _, curIPEntry := range curIPEntries {
+		if err := r.client.Delete(ctx, curIPEntry); err != nil {
 			return err
 		}
 	}
@@ -197,8 +198,8 @@ func (r *bestore) deleteEntries(ctx context.Context, k store.Key) error {
 	}
 
 	var errm error
-	for _, ipEntry := range ipEntries.Items {
-		if err := r.client.Delete(ctx, &ipEntry); err != nil {
+	for _, ipEntry := range ipEntries {
+		if err := r.client.Delete(ctx, ipEntry); err != nil {
 			log.Error("cannot delete entry", "error", err)
 			errm = errors.Join(errm, err)
 			continue
@@ -207,21 +208,26 @@ func (r *bestore) deleteEntries(ctx context.Context, k store.Key) error {
 	return errm
 }
 
-func (r *bestore) listEntries(ctx context.Context, _ store.Key) (*ipambev1alpha1.IPEntryList, error) {
+func (r *bestore) listEntries(ctx context.Context, k store.Key) ([]*ipambev1alpha1.IPEntry, error) {
 	opt := []client.ListOption{
-		/*
-			client.MatchingFields{
-				"spec.networkInstance": k.Name,
-			},
-		*/
+		//client.MatchingFields{
+		//	"spec.networkInstance": k.Name,
+		//},
 	}
 
 	ipEntries := ipambev1alpha1.IPEntryList{}
 	if err := r.client.List(ctx, &ipEntries, opt...); err != nil {
 		return nil, err
 	}
+	ipentries := []*ipambev1alpha1.IPEntry{}
+	for _, ipEntry := range ipEntries.Items {
+		ipEntry := ipEntry
+		if ipEntry.Spec.NetworkInstance == k.Name {
+			ipentries = append(ipentries, &ipEntry)
+		}
+	}
 
-	return &ipEntries, nil
+	return ipentries, nil
 }
 
 func (r *bestore) getNIPrefixes(ctx context.Context, k store.Key) (*ipamresv1alpha1.NetworkInstance, map[string]ipamresv1alpha1.Prefix, error) {
@@ -236,7 +242,7 @@ func (r *bestore) getNIPrefixes(ctx context.Context, k store.Key) (*ipamresv1alp
 	return ni, niPrefixes, nil
 }
 
-func (r *bestore) listClaims(ctx context.Context, _ store.Key) (map[string]*ipambev1alpha1.IPClaim, error) {
+func (r *bestore) listClaims(ctx context.Context, k store.Key) (map[string]*ipambev1alpha1.IPClaim, error) {
 	opt := []client.ListOption{
 		/*
 			client.MatchingFields{
@@ -253,13 +259,16 @@ func (r *bestore) listClaims(ctx context.Context, _ store.Key) (map[string]*ipam
 	claimmap := map[string]*ipambev1alpha1.IPClaim{}
 	for _, claim := range claims.Items {
 		claim := claim
-		claimmap[(&claim).GetNamespacedName().String()] = &claim
+		if claim.Spec.NetworkInstance == k.Name {
+			claimmap[(&claim).GetNamespacedName().String()] = &claim
+		}
+
 	}
 
 	return claimmap, nil
 }
 
-func (r *bestore) listIPs(ctx context.Context, _ store.Key) (map[string]*ipamresv1alpha1.IP, error) {
+func (r *bestore) listIPs(ctx context.Context, k store.Key) (map[string]*ipamresv1alpha1.IP, error) {
 	opt := []client.ListOption{
 		/*
 			client.MatchingFields{
@@ -276,16 +285,18 @@ func (r *bestore) listIPs(ctx context.Context, _ store.Key) (map[string]*ipamres
 	ipmap := map[string]*ipamresv1alpha1.IP{}
 	for _, ip := range ipList.Items {
 		ip := ip
-		ipmap[(&ip).GetNamespacedName().String()] = &ip
+		if ip.Spec.NetworkInstance == k.Name {
+			ipmap[(&ip).GetNamespacedName().String()] = &ip
+		}
 	}
 
 	return ipmap, nil
 }
 
-func (r *bestore) restoreNiPrefixes(ctx context.Context, cacheCtx *CacheContext, ipEntries *ipambev1alpha1.IPEntryList, ni *ipamresv1alpha1.NetworkInstance, niPrefixes map[string]ipamresv1alpha1.Prefix) error {
+func (r *bestore) restoreNiPrefixes(ctx context.Context, cacheCtx *CacheContext, ipEntries []*ipambev1alpha1.IPEntry, ni *ipamresv1alpha1.NetworkInstance, niPrefixes map[string]ipamresv1alpha1.Prefix) error {
 	//log := log.FromContext(ctx)
-	for i := len(ipEntries.Items) - 1; i >= 0; i-- {
-		ipEntry := ipEntries.Items[i]
+	for i := len(ipEntries) - 1; i >= 0; i-- {
+		ipEntry := ipEntries[i]
 		if ipEntry.Spec.Owner.Group == ipamresv1alpha1.SchemeGroupVersion.Group &&
 			ipEntry.Spec.Owner.Version == ipamresv1alpha1.SchemeGroupVersion.Version &&
 			ipEntry.Spec.Owner.Kind == ipamresv1alpha1.NetworkInstanceKind {
@@ -300,7 +311,7 @@ func (r *bestore) restoreNiPrefixes(ctx context.Context, cacheCtx *CacheContext,
 					return err
 				}
 				// remove the entry since it is processed
-				ipEntries.Items = append(ipEntries.Items[:i], ipEntries.Items[i+1:]...)
+				ipEntries = append(ipEntries[:i], ipEntries[i+1:]...)
 				delete(niPrefixes, ipEntry.Spec.Prefix)
 			}
 		}
@@ -308,10 +319,10 @@ func (r *bestore) restoreNiPrefixes(ctx context.Context, cacheCtx *CacheContext,
 	return nil
 }
 
-func (r *bestore) restoreIPs(ctx context.Context, cacheCtx *CacheContext, ipEntries *ipambev1alpha1.IPEntryList, claimType ipambev1alpha1.IPClaimType, ipmap map[string]*ipamresv1alpha1.IP) error {
+func (r *bestore) restoreIPs(ctx context.Context, cacheCtx *CacheContext, ipEntries []*ipambev1alpha1.IPEntry, claimType ipambev1alpha1.IPClaimType, ipmap map[string]*ipamresv1alpha1.IP) error {
 
-	for i := len(ipEntries.Items) - 1; i >= 0; i-- {
-		ipEntry := ipEntries.Items[i]
+	for i := len(ipEntries) - 1; i >= 0; i-- {
+		ipEntry := ipEntries[i]
 		if ipEntry.Spec.Owner.Group == ipamresv1alpha1.SchemeGroupVersion.Group &&
 			ipEntry.Spec.Owner.Version == ipamresv1alpha1.SchemeGroupVersion.Version &&
 			ipEntry.Spec.Owner.Kind == ipamresv1alpha1.IPKind {
@@ -329,7 +340,7 @@ func (r *bestore) restoreIPs(ctx context.Context, cacheCtx *CacheContext, ipEntr
 						return err
 					}
 					// remove the entry since it is processed
-					ipEntries.Items = append(ipEntries.Items[:i], ipEntries.Items[i+1:]...)
+					ipEntries = append(ipEntries[:i], ipEntries[i+1:]...)
 					delete(ipmap, nsn.String()) // delete the entry to optimize
 				}
 			}
@@ -338,10 +349,10 @@ func (r *bestore) restoreIPs(ctx context.Context, cacheCtx *CacheContext, ipEntr
 	return nil
 }
 
-func (r *bestore) restoreIPClaims(ctx context.Context, cacheCtx *CacheContext, ipEntries *ipambev1alpha1.IPEntryList, claimType ipambev1alpha1.IPClaimType, ipclaimmap map[string]*ipambev1alpha1.IPClaim) error {
+func (r *bestore) restoreIPClaims(ctx context.Context, cacheCtx *CacheContext, ipEntries []*ipambev1alpha1.IPEntry, claimType ipambev1alpha1.IPClaimType, ipclaimmap map[string]*ipambev1alpha1.IPClaim) error {
 
-	for i := len(ipEntries.Items) - 1; i >= 0; i-- {
-		ipEntry := ipEntries.Items[i]
+	for i := len(ipEntries) - 1; i >= 0; i-- {
+		ipEntry := ipEntries[i]
 		if ipEntry.Spec.Owner.Group == ipambev1alpha1.SchemeGroupVersion.Group &&
 			ipEntry.Spec.Owner.Version == ipambev1alpha1.SchemeGroupVersion.Version &&
 			ipEntry.Spec.Owner.Kind == ipambev1alpha1.IPClaimKind {
@@ -355,7 +366,7 @@ func (r *bestore) restoreIPClaims(ctx context.Context, cacheCtx *CacheContext, i
 						return err
 					}
 					// remove the entry since it is processed
-					ipEntries.Items = append(ipEntries.Items[:i], ipEntries.Items[i+1:]...)
+					ipEntries = append(ipEntries[:i], ipEntries[i+1:]...)
 					delete(ipclaimmap, nsn.String()) // delete the entry to optimize
 				}
 			}

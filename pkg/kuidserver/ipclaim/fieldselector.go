@@ -33,6 +33,8 @@ type Filter struct {
 
 	// Namespace filters by the namespace of the objects
 	Namespace string
+
+	NetworkInstance string
 }
 
 // parseFieldSelector parses client-provided fields.Selector into a packageFilter
@@ -65,6 +67,8 @@ func parseFieldSelector(ctx context.Context, fieldSelector fields.Selector) (*Fi
 			filter.Name = requirement.Value
 		case "metadata.namespace":
 			filter.Namespace = requirement.Value
+		case "spec.networkInstance":
+			filter.NetworkInstance = requirement.Value
 		default:
 			return filter, apierrors.NewBadRequest(fmt.Sprintf("unknown fieldSelector field %q", requirement.Field))
 		}

@@ -1,0 +1,5 @@
+apiVersion: vlan.be.kuid.dev/v1alpha1
+kind: VLANIndex
+metadata:
+  name: index1
+spec:

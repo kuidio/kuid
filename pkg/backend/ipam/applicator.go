@@ -37,6 +37,10 @@ import (
 	"k8s.io/utils/ptr"
 )
 
+type Validator interface {
+	Validate(ctx context.Context, claim *ipambev1alpha1.IPClaim) error
+}
+
 type Applicator interface {
 	Validate(ctx context.Context, claim *ipambev1alpha1.IPClaim) error
 	Apply(ctx context.Context, claim *ipambev1alpha1.IPClaim) error
@@ -283,6 +287,7 @@ func getNetworkNetRoute(l map[string]string, pi *iputil.Prefix) table.Route {
 		labels[k] = v
 	}
 	delete(labels, backend.KuidIPAMDefaultGatewayKey)
+	delete(labels, backend.KuidINVEndpointKey)
 	return table.NewRoute(pi.GetIPSubnet(), labels, map[string]any{})
 }
 
@@ -303,6 +308,7 @@ func getNetworFirstAddressRoute(l map[string]string, pi *iputil.Prefix) table.Ro
 		labels[k] = v
 	}
 	delete(labels, backend.KuidIPAMDefaultGatewayKey)
+	delete(labels, backend.KuidINVEndpointKey)
 	return table.NewRoute(pi.GetFirstIPPrefix(), labels, map[string]any{})
 }
 
@@ -312,6 +318,7 @@ func getNetworLastAddressRoute(l map[string]string, pi *iputil.Prefix) table.Rou
 		labels[k] = v
 	}
 	delete(labels, backend.KuidIPAMDefaultGatewayKey)
+	delete(labels, backend.KuidINVEndpointKey)
 	return table.NewRoute(pi.GetLastIPPrefix(), labels, map[string]any{})
 }
 

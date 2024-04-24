@@ -14,8 +14,27 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package ipentryeventhandler
+package vlan
 
-type adder interface {
-	Add(item interface{})
+import (
+	"github.com/henderiw/idxtable/pkg/vlantable"
+)
+
+type CacheContext struct {
+	table vlantable.VLANTable
+}
+
+func NewCacheContext() (*CacheContext, error) {
+	table, err := vlantable.New()
+	if err != nil {
+		return nil, err
+	}
+	return &CacheContext{
+		table: table,
+	}, nil
+
+}
+
+func (r *CacheContext) Size() int {
+	return r.table.Count()
 }

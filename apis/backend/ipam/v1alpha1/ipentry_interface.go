@@ -105,6 +105,8 @@ func ConvertIPEntryFieldSelector(label, value string) (internalLabel, internalVa
 		return label, value, nil
 	case "metadata.namespace":
 		return label, value, nil
+	case "spec.networkInstance":
+		return label, value, nil
 	default:
 		return "", "", fmt.Errorf("%q is not a known field selector", label)
 	}
@@ -133,7 +135,7 @@ func (r *IPEntry) GetOwnerReference() *commonv1alpha1.OwnerReference {
 }
 
 func (r *IPEntry) GetClaimName() string {
-	return r.Spec.IPClaim
+	return r.Spec.Claim
 }
 
 func (r *IPEntry) GetClaimSummaryType() IPClaimSummaryType {
@@ -178,7 +180,7 @@ func GetIPEntry(ctx context.Context, k store.Key, prefix netip.Prefix, labels ma
 		ClaimType:       GetIPClaimTypeFromString(labels[backend.KuidIPAMClaimTypeKey]),
 		AddressFamily:   ptr.To[iputil.AddressFamily](pi.GetAddressFamily()),
 		Prefix:          pi.String(),
-		IPClaim:         labels[backend.KuidClaimNameKey],
+		Claim:           labels[backend.KuidClaimNameKey],
 		Owner: &commonv1alpha1.OwnerReference{
 			Group:     labels[backend.KuidOwnerGroupKey],
 			Version:   labels[backend.KuidOwnerVersionKey],
@@ -204,7 +206,7 @@ func GetIPEntry(ctx context.Context, k store.Key, prefix netip.Prefix, labels ma
 
 	return BuildIPEntry(
 		metav1.ObjectMeta{
-			Name:      pi.GetSubnetName(),
+			Name:      fmt.Sprintf("%s.%s", ni, pi.GetSubnetName()),
 			Namespace: ns,
 		},
 		spec,

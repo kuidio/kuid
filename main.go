@@ -28,13 +28,18 @@ import (
 	"github.com/henderiw/apiserver-store/pkg/db/badgerdb"
 	"github.com/henderiw/logger/log"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
+	vlanbev1alpha1 "github.com/kuidio/kuid/apis/backend/vlan/v1alpha1"
 	"github.com/kuidio/kuid/apis/generated/clientset/versioned/scheme"
 	kuidopenapi "github.com/kuidio/kuid/apis/generated/openapi"
 	ipamresv1alpha1 "github.com/kuidio/kuid/apis/resource/ipam/v1alpha1"
 	"github.com/kuidio/kuid/pkg/backend/ipam"
+	"github.com/kuidio/kuid/pkg/backend/vlan"
 	"github.com/kuidio/kuid/pkg/kuidserver/ipclaim"
 	"github.com/kuidio/kuid/pkg/kuidserver/ipentry"
 	serverstore "github.com/kuidio/kuid/pkg/kuidserver/store"
+	"github.com/kuidio/kuid/pkg/kuidserver/vlanclaim"
+	"github.com/kuidio/kuid/pkg/kuidserver/vlanentry"
+	"github.com/kuidio/kuid/pkg/kuidserver/vlanindex"
 	"github.com/kuidio/kuid/pkg/reconcilers"
 	_ "github.com/kuidio/kuid/pkg/reconcilers/all"
 	"github.com/kuidio/kuid/pkg/reconcilers/ctrlconfig"
@@ -45,6 +50,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
+	"sigs.k8s.io/controller-runtime/pkg/manager"
 )
 
 const (
@@ -81,6 +87,7 @@ func main() {
 		clientgoscheme.AddToScheme,
 		ipambev1alpha1.AddToScheme,
 		ipamresv1alpha1.AddToScheme,
+		vlanbev1alpha1.AddToScheme,
 	}) {
 		if err := api(runScheme); err != nil {
 			log.Error("cannot add scheme", "err", err)
@@ -88,7 +95,24 @@ func main() {
 		}
 	}
 
-	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
+	runScheme.AddFieldLabelConversionFunc(
+		ipambev1alpha1.SchemeGroupVersion.WithKind(ipambev1alpha1.IPClaimKind),
+		ipambev1alpha1.ConvertIPClaimFieldSelector,
+	)
+	runScheme.AddFieldLabelConversionFunc(
+		ipambev1alpha1.SchemeGroupVersion.WithKind(ipambev1alpha1.IPEntryKind),
+		ipambev1alpha1.ConvertIPEntryFieldSelector,
+	)
+	runScheme.AddFieldLabelConversionFunc(
+		vlanbev1alpha1.SchemeGroupVersion.WithKind(vlanbev1alpha1.VLANClaimKind),
+		vlanbev1alpha1.ConvertVLANClaimFieldSelector,
+	)
+	runScheme.AddFieldLabelConversionFunc(
+		vlanbev1alpha1.SchemeGroupVersion.WithKind(vlanbev1alpha1.VLANEntryKind),
+		vlanbev1alpha1.ConvertVLANEntryFieldSelector,
+	)
+
+	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), manager.Options{
 		Scheme: runScheme,
 	})
 	if err != nil {
@@ -97,9 +121,11 @@ func main() {
 	}
 
 	ipbe := ipam.New(mgr.GetClient())
+	vlanbe := vlan.New(mgr.GetClient())
 
 	ctrlCfg := &ctrlconfig.ControllerConfig{
 		IPAMBackend: ipbe,
+		VLANBackend: vlanbe,
 	}
 	for name, reconciler := range reconcilers.Reconcilers {
 		log.Info("reconciler", "name", name, "enabled", IsReconcilerEnabled(name))
@@ -133,6 +159,21 @@ func main() {
 				Type:   serverstore.StorageType_KV,
 				DB:     db,
 			}, ipbe)).
+			WithResourceAndHandler(ctx, &vlanbev1alpha1.VLANClaim{}, vlanclaim.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
+				Prefix: configDir,
+				Type:   serverstore.StorageType_KV,
+				DB:     db,
+			}, vlanbe)).
+			WithResourceAndHandler(ctx, &vlanbev1alpha1.VLANEntry{}, vlanentry.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
+				Prefix: configDir,
+				Type:   serverstore.StorageType_KV,
+				DB:     db,
+			}, vlanbe)).
+			WithResourceAndHandler(ctx, &vlanbev1alpha1.VLANIndex{}, vlanindex.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
+				Prefix: configDir,
+				Type:   serverstore.StorageType_KV,
+				DB:     db,
+			}, vlanbe)).
 			WithoutEtcd().
 			Execute(ctx); err != nil {
 			log.Info("cannot start config-server")

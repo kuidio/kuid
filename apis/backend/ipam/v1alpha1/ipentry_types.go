@@ -49,13 +49,14 @@ type IPEntrySpec struct {
 	// +kubebuilder:validation:Enum=`ipv4`;`ipv6`
 	// +kubebuilder:validation:Optional
 	// +optional
-	AddressFamily *iputil.AddressFamily `json:"addressFamily,omitempty" yaml:"addressFamily,omitempty" protobuf:"bytes,8,opt,name=addressFamily"`
-	// IPClaim defines the name of the ip claim that is the origin of this ip entry
-	IPClaim string `json:"ipClaim" yaml:"ipClaim" protobuf:"bytes,10,opt,name=ipClaim"`
+	AddressFamily *iputil.AddressFamily `json:"addressFamily,omitempty" yaml:"addressFamily,omitempty" protobuf:"bytes,6,opt,name=addressFamily"`
 	// UserDefinedLabels define the user defined labels
-	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,11,opt,name=userDefinedLabels"`
-
-	Owner *commonv1alpha1.OwnerReference `json:"owner,omitempty" yaml:"owner,omitempty" protobuf:"bytes,12,opt,name=owner"`
+	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,7,opt,name=userDefinedLabels"`
+	// Claim defines the name of the ip claim that is the origin of this ip entry
+	Claim string `json:"claim" yaml:"claim" protobuf:"bytes,8,opt,name=claim"`
+	// Owner defines the ownerReference of the IPENtry
+	// Allow for different namesapces, hence it is part of the spec
+	Owner *commonv1alpha1.OwnerReference `json:"owner,omitempty" yaml:"owner,omitempty" protobuf:"bytes,9,opt,name=owner"`
 }
 
 // IPEntryStatus defines the observed state of IPEntry

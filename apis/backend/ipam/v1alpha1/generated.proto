@@ -184,15 +184,17 @@ message IPEntrySpec {
   // +kubebuilder:validation:Enum=`ipv4`;`ipv6`
   // +kubebuilder:validation:Optional
   // +optional
-  optional string addressFamily = 8;
-
-  // IPClaim defines the name of the ip claim that is the origin of this ip entry
-  optional string ipClaim = 10;
+  optional string addressFamily = 6;
 
   // UserDefinedLabels define the user defined labels
-  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 11;
+  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 7;
 
-  optional github.com.kuidio.kuid.apis.common.v1alpha1.OwnerReference owner = 12;
+  // Claim defines the name of the ip claim that is the origin of this ip entry
+  optional string claim = 8;
+
+  // Owner defines the ownerReference of the IPENtry
+  // Allow for different namesapces, hence it is part of the spec
+  optional github.com.kuidio.kuid.apis.common.v1alpha1.OwnerReference owner = 9;
 }
 
 // IPEntryStatus defines the observed state of IPEntry

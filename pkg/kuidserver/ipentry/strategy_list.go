@@ -23,6 +23,7 @@ import (
 
 	"github.com/henderiw/apiserver-store/pkg/storebackend"
 	"github.com/henderiw/logger/log"
+	ipambe1v1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metainternalversion "k8s.io/apimachinery/pkg/apis/meta/internalversion"
 	"k8s.io/apimachinery/pkg/conversion"
@@ -51,6 +52,12 @@ func (r *strategy) List(ctx context.Context, options *metainternalversion.ListOp
 			return
 		}
 
+		ipentry, ok := obj.(*ipambe1v1alpha1.IPEntry)
+		if !ok {
+			log.Error("cannot get object")
+			return
+		}
+
 		if options.LabelSelector != nil || filter != nil {
 			f := true
 			if options.LabelSelector != nil {
@@ -72,6 +79,13 @@ func (r *strategy) List(ctx context.Context, options *metainternalversion.ListOp
 				}
 				if filter.Namespace != "" {
 					if accessor.GetNamespace() == filter.Namespace {
+						f = false
+					} else {
+						f = true
+					}
+				}
+				if filter.NetworkInstance != "" {
+					if ipentry.Spec.NetworkInstance == filter.NetworkInstance {
 						f = false
 					} else {
 						f = true

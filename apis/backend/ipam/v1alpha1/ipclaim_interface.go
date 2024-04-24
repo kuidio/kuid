@@ -124,6 +124,8 @@ func ConvertIPClaimFieldSelector(label, value string) (internalLabel, internalVa
 		return label, value, nil
 	case "metadata.namespace":
 		return label, value, nil
+	case "spec.networkInstance":
+		return label, value, nil
 	default:
 		return "", "", fmt.Errorf("%q is not a known field selector", label)
 	}
@@ -211,12 +213,12 @@ func (r *IPClaim) GetClaimResponse() string {
 }
 
 func (r *IPClaim) GetIPClaimType() (IPClaimType, error) {
-	addressing := IPClaimType_Invalid
+	claimType := IPClaimType_Invalid
 	var sb strings.Builder
 	count := 0
 	if r.Spec.Address != nil {
 		sb.WriteString(fmt.Sprintf("address: %s", *r.Spec.Address))
-		addressing = IPClaimType_StaticAddress
+		claimType = IPClaimType_StaticAddress
 		count++
 
 	}
@@ -225,7 +227,7 @@ func (r *IPClaim) GetIPClaimType() (IPClaimType, error) {
 			sb.WriteString(", ")
 		}
 		sb.WriteString(fmt.Sprintf("prefix: %s", *r.Spec.Prefix))
-		addressing = IPClaimType_StaticPrefix
+		claimType = IPClaimType_StaticPrefix
 		count++
 
 	}
@@ -234,11 +236,11 @@ func (r *IPClaim) GetIPClaimType() (IPClaimType, error) {
 			sb.WriteString(", ")
 		}
 		sb.WriteString(fmt.Sprintf("range: %s", *r.Spec.Range))
-		addressing = IPClaimType_StaticRange
+		claimType = IPClaimType_StaticRange
 		count++
 	}
 	if count > 1 {
-		return IPClaimType_Invalid, fmt.Errorf("an ipclaim can only have 1 addressing, got %s", sb.String())
+		return IPClaimType_Invalid, fmt.Errorf("an ipclaim can only have 1 claimType, got %s", sb.String())
 	}
 	if count == 0 {
 		if r.Spec.CreatePrefix != nil {
@@ -247,7 +249,7 @@ func (r *IPClaim) GetIPClaimType() (IPClaimType, error) {
 			return IPClaimType_DynamicAddress, nil
 		}
 	}
-	return addressing, nil
+	return claimType, nil
 }
 
 func (r *IPClaim) GetIPClaimSummaryType() IPClaimSummaryType {

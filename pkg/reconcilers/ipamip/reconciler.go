@@ -31,7 +31,7 @@ import (
 	"github.com/kuidio/kuid/pkg/backend/ipam"
 	"github.com/kuidio/kuid/pkg/reconcilers"
 	"github.com/kuidio/kuid/pkg/reconcilers/ctrlconfig"
-	"github.com/kuidio/kuid/pkg/reconcilers/ipentryeventhandler"
+	"github.com/kuidio/kuid/pkg/reconcilers/eventhandler"
 	"github.com/kuidio/kuid/pkg/reconcilers/resource"
 	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
@@ -55,12 +55,6 @@ const (
 	errUpdateStatus = "cannot update status"
 )
 
-/*
-type adder interface {
-	Add(item interface{})
-}
-*/
-
 //+kubebuilder:rbac:groups=ip.ipam.res.kuid.dev,resources=ips,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=ip.ipam.res.kuid.dev,resources=ips/status,verbs=get;update;patch
 
@@ -80,7 +74,7 @@ func (r *reconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manager, c i
 		Named(controllerName).
 		For(&ipamresv1alpha1.IP{}).
 		Watches(&ipambev1alpha1.IPEntry{},
-			&ipentryeventhandler.IPEntryEventHandler{
+			&eventhandler.IPEntryEventHandler{
 				Client:  mgr.GetClient(),
 				ObjList: &ipamresv1alpha1.IPList{},
 			}).

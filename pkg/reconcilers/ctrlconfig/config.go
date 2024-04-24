@@ -22,11 +22,13 @@ import (
 	"github.com/henderiw/logger/log"
 	"github.com/kuidio/kuid/pkg/backend"
 	"github.com/kuidio/kuid/pkg/backend/ipam"
+	"github.com/kuidio/kuid/pkg/backend/vlan"
 	"k8s.io/apimachinery/pkg/types"
 )
 
 type ControllerConfig struct {
 	IPAMBackend backend.Backend[*ipam.CacheContext]
+	VLANBackend backend.Backend[*vlan.CacheContext]
 }
 
 func InitContext(ctx context.Context, controllerName string, req types.NamespacedName) context.Context {

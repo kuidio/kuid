@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package ipentryeventhandler
+package eventhandler
 
 import (
 	"context"
@@ -80,7 +80,7 @@ func (r *IPEntryEventHandler) add(ctx context.Context, obj runtime.Object, queue
 			key := types.NamespacedName{
 				Namespace: obj.GetNamespace(),
 				Name:      obj.GetName()}
-			log.Info("event requeue target", "key", key.String())
+			log.Info("event requeue", "key", key.String())
 			queue.Add(reconcile.Request{NamespacedName: key})
 			continue
 		}

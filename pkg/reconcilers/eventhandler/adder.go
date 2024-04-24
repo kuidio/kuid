@@ -14,14 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package ipam
+package eventhandler
 
-import (
-	"context"
-
-	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
-)
-
-type Validator interface {
-	Validate(ctx context.Context, claim *ipambev1alpha1.IPClaim) error
+type adder interface {
+	Add(item interface{})
 }
