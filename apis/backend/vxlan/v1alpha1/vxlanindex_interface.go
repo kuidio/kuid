@@ -30,6 +30,8 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/validation/field"
+	"k8s.io/utils/ptr"
 )
 
 const VXLANIndexPlural = "vxlanindices"
@@ -145,6 +147,91 @@ func (r *VXLANIndex) GetOwnerReference() *commonv1alpha1.OwnerReference {
 		Namespace: r.Namespace,
 		Name:      r.Name,
 	}
+}
+
+func (r *VXLANIndex) ValidateSyntax() field.ErrorList {
+	var allErrs field.ErrorList
+
+	if r.Spec.MinID != nil {
+		if err := validateVXLANID(int(*r.Spec.MinID)); err != nil {
+			allErrs = append(allErrs, field.Invalid(
+				field.NewPath("spec.minID"),
+				r,
+				fmt.Errorf("invalid vlan ID %d", *r.Spec.MinID).Error(),
+			))
+		}
+	}
+	if r.Spec.MaxID != nil {
+		if err := validateVXLANID(int(*r.Spec.MaxID)); err != nil {
+			allErrs = append(allErrs, field.Invalid(
+				field.NewPath("spec.maxID"),
+				r,
+				fmt.Errorf("invalid vlan ID %d", *r.Spec.MaxID).Error(),
+			))
+		}
+	}
+	if r.Spec.MinID != nil && r.Spec.MaxID != nil {
+		if *r.Spec.MinID > *r.Spec.MaxID {
+			allErrs = append(allErrs, field.Invalid(
+				field.NewPath("spec.maxID"),
+				r,
+				fmt.Errorf("min vlan ID %d cannot be bigger than max vlan ID %d", *r.Spec.MinID, *r.Spec.MaxID).Error(),
+			))
+		}
+	}
+	return allErrs
+}
+
+func GetMinClaimRange(id uint32) string {
+	return fmt.Sprintf("0-%d", id-1)
+}
+
+func GetMaxClaimRange(id uint32) string {
+	return fmt.Sprintf("%d-4095", id+1)
+}
+
+func (r *VXLANIndex) GetMinClaimNSN() types.NamespacedName {
+	return types.NamespacedName{
+		Namespace: r.Namespace,
+		Name:      fmt.Sprintf("%s.%s", r.Name, VXLANIndexReservedMinName),
+	}
+}
+
+func (r *VXLANIndex) GetMaxClaimNSN() types.NamespacedName {
+	return types.NamespacedName{
+		Namespace: r.Namespace,
+		Name:      fmt.Sprintf("%s.%s", r.Name, VXLANIndexReservedMaxName),
+	}
+}
+
+func (r *VXLANIndex) GetMinClaim() *VXLANClaim {
+	return BuildVXLANClaim(
+		metav1.ObjectMeta{
+			Namespace: r.GetNamespace(),
+			Name:      r.GetMinClaimNSN().Name,
+		},
+		&VXLANClaimSpec{
+			Index: r.Name,
+			Range: ptr.To[string](GetMinClaimRange(*r.Spec.MinID)),
+			Owner: commonv1alpha1.GetOwnerReference(r),
+		},
+		nil,
+	)
+}
+
+func (r *VXLANIndex) GetMaxClaim() *VXLANClaim {
+	return BuildVXLANClaim(
+		metav1.ObjectMeta{
+			Namespace: r.GetNamespace(),
+			Name:      r.GetMaxClaimNSN().Name,
+		},
+		&VXLANClaimSpec{
+			Index: r.Name,
+			Range: ptr.To[string](GetMaxClaimRange(*r.Spec.MaxID)),
+			Owner: commonv1alpha1.GetOwnerReference(r),
+		},
+		nil,
+	)
 }
 
 // BuildVXLANIndex returns a reource from a client Object a Spec/Status

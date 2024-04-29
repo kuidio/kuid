@@ -113,7 +113,9 @@ func (r *dynamicVLANApplicator) getParentContext(ctx context.Context, claim *vla
 func (r *dynamicVLANApplicator) Apply(ctx context.Context, claim *vlanbev1alpha1.VLANClaim) error {
 	log := log.FromContext(ctx).With("name", claim.GetName())
 	log.Info("dynamic vlan claim")
-
+	if isReserved(r.parentTreeName, claim.Spec.Index) {
+		return fmt.Errorf("cannot claim from a reserved range")
+	}
 	if r.parentTreeName == "" {
 		if r.claimID != nil {
 			if err := r.cacheCtx.tree.Update(id32.NewID(*r.claimID, 32), claim.GetClaimLabels()); err != nil {

@@ -41,6 +41,8 @@ import (
 
 const VXLANClaimPlural = "vxlanclaims"
 const VXLANClaimSingular = "vxlanclaim"
+const VXLANID_Min = 0
+const VXLANID_Max = 16777215
 
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &VXLANClaim{}
@@ -240,11 +242,11 @@ func (r *VXLANClaim) ValidateVXLANClaimType() error {
 }
 
 func validateVXLANID(id int) error {
-	if id <= 0 {
-		return fmt.Errorf("invalid VXLAN id, got %d", id)
+	if id < VXLANID_Min {
+		return fmt.Errorf("invalid id, got %d", id)
 	}
-	if id >= 4095 {
-		return fmt.Errorf("invalid VXLAN id, got %d", id)
+	if id > VXLANID_Max {
+		return fmt.Errorf("invalid id, got %d", id)
 	}
 	return nil
 }

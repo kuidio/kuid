@@ -41,6 +41,8 @@ import (
 
 const VLANClaimPlural = "vlanclaims"
 const VLANClaimSingular = "vlanclaim"
+const VLANID_Min = 0
+const VLANID_Max = 4095
 
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &VLANClaim{}
@@ -240,10 +242,10 @@ func (r *VLANClaim) ValidateVLANClaimType() error {
 }
 
 func validateVLANID(id int) error {
-	if id <= 1 {
+	if id < VLANID_Min {
 		return fmt.Errorf("invalid vlan id, got %d", id)
 	}
-	if id >= 4095 {
+	if id > VLANID_Max {
 		return fmt.Errorf("invalid vlan id, got %d", id)
 	}
 	return nil

@@ -127,6 +127,9 @@ func (r *staticVLANApplicator) getParentContext(ctx context.Context, claim *vlan
 }
 
 func (r *staticVLANApplicator) Apply(ctx context.Context, claim *vlanbev1alpha1.VLANClaim) error {
+	if isReserved(r.parentTreeName, claim.Spec.Index) {
+		return fmt.Errorf("cannot claim from a reserved range")
+	}
 	if r.parentTreeName == "" {
 		// a vlan claim in the main tree
 		if r.claimID != nil {

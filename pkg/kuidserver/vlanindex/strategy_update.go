@@ -46,7 +46,17 @@ func (r *strategy) AllowUnconditionalUpdate() bool { return false }
 func (r *strategy) ValidateUpdate(ctx context.Context, obj, old runtime.Object) field.ErrorList {
 	var allErrs field.ErrorList
 
-	return allErrs
+	claim, ok := obj.(*vlanbe1v1alpha1.VLANIndex)
+	if !ok {
+		allErrs = append(allErrs, field.Invalid(
+			field.NewPath(""),
+			claim,
+			fmt.Errorf("unexpected new object, expecting: %s, got: %s", vlanbe1v1alpha1.VLANIndexKind, reflect.TypeOf(obj)).Error(),
+		))
+		return allErrs
+	}
+
+	return claim.ValidateSyntax()
 }
 
 func (r *strategy) Update(ctx context.Context, key types.NamespacedName, obj, old runtime.Object, dryrun bool) (runtime.Object, error) {

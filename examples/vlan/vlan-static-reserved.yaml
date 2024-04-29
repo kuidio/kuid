@@ -1,0 +1,8 @@
+apiVersion: vlan.be.kuid.dev/v1alpha1
+kind: VLANClaim
+metadata:
+  name: index1.reserved-4094
+spec:
+  index: index1
+  id: 4094
+    

@@ -18,15 +18,16 @@ package vlanindex
 
 import (
 	"context"
+	"fmt"
+	"reflect"
 
 	"github.com/henderiw/apiserver-store/pkg/storebackend"
+	vlanbe1v1alpha1 "github.com/kuidio/kuid/apis/backend/vlan/v1alpha1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 	"k8s.io/apimachinery/pkg/watch"
-	"sigs.k8s.io/controller-runtime/pkg/log"
 )
 
 func (r *strategy) BeginCreate(ctx context.Context) error { return nil }
@@ -37,21 +38,17 @@ func (r *strategy) PrepareForCreate(ctx context.Context, obj runtime.Object) {
 func (r *strategy) Validate(ctx context.Context, obj runtime.Object) field.ErrorList {
 	var allErrs field.ErrorList
 
-	log := log.FromContext(ctx)
-
-	accessor, err := meta.Accessor(obj)
-	if err != nil {
+	claim, ok := obj.(*vlanbe1v1alpha1.VLANIndex)
+	if !ok {
 		allErrs = append(allErrs, field.Invalid(
 			field.NewPath(""),
-			obj,
-			err.Error(),
+			claim,
+			fmt.Errorf("unexpected new object, expecting: %s, got: %s", vlanbe1v1alpha1.VLANIndexKind, reflect.TypeOf(obj)).Error(),
 		))
 		return allErrs
 	}
 
-	log.Info("validate create", "name", accessor.GetName(), "resourceVersion", accessor.GetResourceVersion())
-
-	return allErrs
+	return claim.ValidateSyntax()
 }
 
 func (r *strategy) Create(ctx context.Context, key types.NamespacedName, obj runtime.Object, dryrun bool) (runtime.Object, error) {

@@ -93,7 +93,6 @@ func (r *NetworkInstance) GetIPClaim(prefix Prefix) (*ipambev1alpha1.IPClaim, er
 		},
 		nil,
 	), nil
-
 }
 
 func BuildNetworkInstance(meta metav1.ObjectMeta, spec *NetworkInstanceSpec, status *NetworkInstanceStatus) *NetworkInstance {

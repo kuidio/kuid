@@ -2063,6 +2063,20 @@ func schema_apis_backend_vlan_v1alpha1_VLANIndexStatus(ref common.ReferenceCallb
 				Description: "VLANIndexStatus defines the observed state of VLANIndex",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
+					"minID": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MinID defines the min VLAN ID the index supports",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"maxID": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MaxID defines the max VLAN ID the index supports",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
 					"conditions": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Conditions of the resource.",

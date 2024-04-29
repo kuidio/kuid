@@ -175,8 +175,16 @@ message VLANIndexSpec {
 
 // VLANIndexStatus defines the observed state of VLANIndex
 message VLANIndexStatus {
+  // MinID defines the min VLAN ID the index supports
+  // +optional
+  optional uint32 minID = 1;
+
+  // MaxID defines the max VLAN ID the index supports
+  // +optional
+  optional uint32 maxID = 2;
+
   // ConditionedStatus provides the status of the VLANIndex using conditions
   // - a ready condition indicates the overall status of the resource
-  optional github.com.kuidio.kuid.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
+  optional github.com.kuidio.kuid.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 3;
 }
 

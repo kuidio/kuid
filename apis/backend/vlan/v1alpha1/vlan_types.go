@@ -37,3 +37,8 @@ func GetIPClaimTypeFromString(s string) VLANClaimType {
 		return VLANClaimType_Invalid
 	}
 }
+
+const (
+	VLANIndexReservedMinName = "rangeReservedMin"
+	VLANIndexReservedMaxName = "rangeReservedMax"
+)

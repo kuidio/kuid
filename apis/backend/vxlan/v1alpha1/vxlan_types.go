@@ -37,3 +37,8 @@ func GetClaimTypeFromString(s string) VXLANClaimType {
 		return VXLANClaimType_Invalid
 	}
 }
+
+const (
+	VXLANIndexReservedMinName = "rangeReservedMin"
+	VXLANIndexReservedMaxName = "rangeReservedMax"
+)
