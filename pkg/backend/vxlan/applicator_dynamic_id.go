@@ -113,6 +113,9 @@ func (r *dynamicVXLANApplicator) getParentContext(ctx context.Context, claim *vx
 func (r *dynamicVXLANApplicator) Apply(ctx context.Context, claim *vxlanbev1alpha1.VXLANClaim) error {
 	log := log.FromContext(ctx).With("name", claim.GetName())
 	log.Info("dynamic vxlan claim")
+	if isReserved(r.parentTreeName, claim.Spec.Index) {
+		return fmt.Errorf("cannot claim from a reserved range")
+	}
 
 	if r.parentTreeName == "" {
 		if r.claimID != nil {

@@ -120,12 +120,24 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
 	}
 
-	// create ip index
+	if r.hasMinMaxRangeChanged(cr) {
+		// delete index
+		if err := r.deleteIndex(ctx, cr); err != nil {
+			return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+		}
+	}
+	// create index
 	if err := r.applyIndex(ctx, cr); err != nil {
 		return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
 	}
 
+	if err := r.applyMinMaxRange(ctx, cr); err != nil {
+		return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+	}
+
 	cr.SetConditions(conditionv1alpha1.Ready())
+	cr.Status.MinID = cr.Spec.MinID
+	cr.Status.MaxID = cr.Spec.MaxID
 	r.recorder.Eventf(cr, corev1.EventTypeNormal, crName, "ready")
 	return ctrl.Result{}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
 }
@@ -155,6 +167,41 @@ func (r *reconciler) applyIndex(ctx context.Context, cr *vlanbev1alpha1.VLANInde
 	if err := r.be.CreateIndex(ctx, cr); err != nil {
 		r.handleError(ctx, cr, "cannot create index", err)
 		return err
+	}
+	return nil
+}
+
+func (r *reconciler) hasMinMaxRangeChanged(cr *vlanbev1alpha1.VLANIndex) bool {
+	return changed(cr.Status.MinID, cr.Spec.MinID) || changed(cr.Status.MaxID, cr.Spec.MaxID)
+}
+
+func changed(status, spec *uint32) bool {
+	if status != nil {
+		if spec == nil {
+			return true
+		} else {
+			if *status != *spec {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (r *reconciler) applyMinMaxRange(ctx context.Context, cr *vlanbev1alpha1.VLANIndex) error {
+	if cr.Spec.MinID != nil && *cr.Spec.MinID != vlanbev1alpha1.VLANID_Min {
+		claim := cr.GetMinClaim()
+		if err := r.be.Claim(ctx, claim); err != nil {
+			r.handleError(ctx, cr, "cannot claim min reserved range", err)
+			return err
+		}
+	}
+	if cr.Spec.MaxID != nil && *cr.Spec.MaxID != vlanbev1alpha1.VLANID_Max {
+		claim := cr.GetMaxClaim()
+		if err := r.be.Claim(ctx, claim); err != nil {
+			r.handleError(ctx, cr, "cannot claim max reserved range", err)
+			return err
+		}
 	}
 	return nil
 }

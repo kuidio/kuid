@@ -61,6 +61,16 @@ func (r *bestore) Restore(ctx context.Context, k store.Key) error {
 		return nil
 	}
 
+	// retrieve the index to be able to restore the min/max values
+	index := &vxlanbev1alpha1.VXLANIndex{}
+	if err := r.client.Get(ctx, k.NamespacedName, index); err != nil {
+		return err
+	}
+
+	if err := r.restoreMinMaxRanges(ctx, cacheCtx, curEntries, index); err != nil {
+		return err
+	}
+
 	if err := r.restoreClaims(ctx, cacheCtx, curEntries, vxlanbev1alpha1.VXLANClaimType_Range, claimmap); err != nil {
 		return err
 	}
@@ -228,6 +238,32 @@ func (r *bestore) listClaims(ctx context.Context, k store.Key) (map[string]*vxla
 	}
 
 	return claimmap, nil
+}
+
+func (r *bestore) restoreMinMaxRanges(ctx context.Context, cacheCtx *CacheContext, entries []*vxlanbev1alpha1.VXLANEntry, index *vxlanbev1alpha1.VXLANIndex) error {
+	for i := len(entries) - 1; i >= 0; i-- {
+		entry := entries[i]
+		if entry.Spec.Owner.Group == vxlanbev1alpha1.SchemeGroupVersion.Group &&
+			entry.Spec.Owner.Version == vxlanbev1alpha1.SchemeGroupVersion.Version &&
+			entry.Spec.Owner.Kind == vxlanbev1alpha1.VXLANIndexKind {
+
+			entries = append(entries[:i], entries[i+1:]...)
+		}
+	}
+
+	if index.Spec.MinID != nil && *index.Spec.MinID != vxlanbev1alpha1.VXLANID_Min {
+		claim := index.GetMinClaim()
+		if err := r.restoreClaim(ctx, cacheCtx, claim); err != nil {
+			return err
+		}
+	}
+	if index.Spec.MaxID != nil && *index.Spec.MaxID != vxlanbev1alpha1.VXLANID_Max {
+		claim := index.GetMaxClaim()
+		if err := r.restoreClaim(ctx, cacheCtx, claim); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (r *bestore) restoreClaims(ctx context.Context, cacheCtx *CacheContext, entries []*vxlanbev1alpha1.VXLANEntry, claimType vxlanbev1alpha1.VXLANClaimType, claimmap map[string]*vxlanbev1alpha1.VXLANClaim) error {

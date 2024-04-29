@@ -21,8 +21,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/henderiw/idxtable/pkg/tree"
 	"github.com/henderiw/idxtable/pkg/table12"
+	"github.com/henderiw/idxtable/pkg/tree"
 	"github.com/henderiw/logger/log"
 	"github.com/henderiw/store"
 	vlanbev1alpha1 "github.com/kuidio/kuid/apis/backend/vlan/v1alpha1"
@@ -143,4 +143,9 @@ func claimIDFromExisitingEntries(existingEntries map[string]tree.Entries) (*uint
 		}
 	}
 	return nil, ""
+}
+
+func isReserved(parentName, index string) bool {
+	return parentName == fmt.Sprintf("%s.%s", index, vlanbev1alpha1.VLANIndexReservedMaxName) ||
+		parentName == fmt.Sprintf("%s.%s", index, vlanbev1alpha1.VLANIndexReservedMinName)
 }

@@ -126,6 +126,10 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 
 	if err := r.be.Claim(ctx, cr); err != nil {
 		r.handleError(ctx, cr, "cannot claim vlan", err)
+		if strings.Contains(err.Error(), "reserved range") {
+			// a user need to intervene to recover
+			return ctrl.Result{}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+		}
 		return ctrl.Result{RequeueAfter: 5 * time.Second}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
 	}
 

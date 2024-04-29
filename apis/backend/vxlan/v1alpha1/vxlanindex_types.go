@@ -26,16 +26,28 @@ import (
 
 // VXLANIndexSpec defines the desired state of VXLANIndex
 type VXLANIndexSpec struct {
+	// MinID defines the min VLAN ID the index supports
+	// +optional
+	MinID *uint32 `json:"minID,omitempty" yaml:"minID,omitempty" protobuf:"bytes,1,opt,name=minID"`
+	// MaxID defines the max VLAN ID the index supports
+	// +optional
+	MaxID *uint32 `json:"maxID,omitempty" yaml:"maxID,omitempty" protobuf:"bytes,2,opt,name=maxID"`
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
-	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=userDefinedLabels"`
+	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,3,opt,name=userDefinedLabels"`
 }
 
 // VXLANIndexStatus defines the observed state of VXLANIndex
 type VXLANIndexStatus struct {
-	// ConditionedStatus provides the status of the VXLANIndex using conditions
+	// MinID defines the min VLAN ID the index supports
+	// +optional
+	MinID *uint32 `json:"minID,omitempty" yaml:"minID,omitempty" protobuf:"bytes,1,opt,name=minID"`
+	// MaxID defines the max VLAN ID the index supports
+	// +optional
+	MaxID *uint32 `json:"maxID,omitempty" yaml:"maxID,omitempty" protobuf:"bytes,2,opt,name=maxID"`
+	// ConditionedStatus provides the status of the VLANIndex using conditions
 	// - a ready condition indicates the overall status of the resource
-	conditionv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=conditionedStatus"`
+	conditionv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,3,opt,name=conditionedStatus"`
 }
 
 // +genclient

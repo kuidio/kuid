@@ -127,6 +127,9 @@ func (r *staticVXLANApplicator) getParentContext(ctx context.Context, claim *vxl
 }
 
 func (r *staticVXLANApplicator) Apply(ctx context.Context, claim *vxlanbev1alpha1.VXLANClaim) error {
+	if isReserved(r.parentTreeName, claim.Spec.Index) {
+		return fmt.Errorf("cannot claim from a reserved range")
+	}
 	if r.parentTreeName == "" {
 		// a claim in the main tree
 		if r.claimID != nil {
