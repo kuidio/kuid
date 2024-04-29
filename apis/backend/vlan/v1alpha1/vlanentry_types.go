@@ -24,14 +24,14 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// IPEntrySpec defines the desired state of IPEntry
+// VLANEntrySpec defines the desired state of VLANEntry
 type VLANEntrySpec struct {
 	// VLANIndex defines the vlan index for the VLAN Claim
 	Index string `json:"index" yaml:"index" protobuf:"bytes,1,opt,name=index"`
 	// ClaimType defines the claimType of the VLAN Entry
 	ClaimType VLANClaimType `json:"claimType,omitempty" yaml:"claimType,omitempty" protobuf:"bytes,2,opt,name=claimType"`
-	// VLANID defines the vlan id for the VLAN entry
-	ID uint32 `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,3,opt,name=id"`
+	// ID defines the id of the VLAN entry in the tree
+	ID string `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,3,opt,name=id"`
 	// ClaimLabels define the user defined labels and selector labels used
 	// in resource claim
 	commonv1alpha1.ClaimLabels `json:",inline" yaml:",inline" protobuf:"bytes,4,opt,name=claimLabels"`

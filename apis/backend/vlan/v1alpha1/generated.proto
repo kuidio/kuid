@@ -52,24 +52,22 @@ message VLANClaimSpec {
   optional string index = 1;
 
   // VLANID defines the vlan for the VLAN claim
+  // +optional
   optional uint32 id = 2;
 
   // Range defines the vlan range for the VLAN claim
   // The following notation is used: start-end <start-vlanID>-<end-vlanID>
   // the vlans in the range must be consecutive
+  // +optional
   optional string range = 3;
-
-  // Size defines the size of a VLAN Claim
-  // The result could be a non consecutive block of vlans
-  optional uint32 size = 4;
 
   // ClaimLabels define the user defined labels and selector labels used
   // in resource claim
-  optional github.com.kuidio.kuid.apis.common.v1alpha1.ClaimLabels claimLabels = 5;
+  optional github.com.kuidio.kuid.apis.common.v1alpha1.ClaimLabels claimLabels = 4;
 
   // Owner defines the ownerReference of the VLANClaim
   // Allow for different namesapces, hence it is part of the spec
-  optional github.com.kuidio.kuid.apis.common.v1alpha1.OwnerReference owner = 6;
+  optional github.com.kuidio.kuid.apis.common.v1alpha1.OwnerReference owner = 5;
 }
 
 // VLANClaimStatus defines the observed state of VLANClaim
@@ -111,7 +109,7 @@ message VLANEntryList {
   repeated VLANEntry items = 2;
 }
 
-// IPEntrySpec defines the desired state of IPEntry
+// VLANEntrySpec defines the desired state of VLANEntry
 message VLANEntrySpec {
   // VLANIndex defines the vlan index for the VLAN Claim
   optional string index = 1;
@@ -119,8 +117,8 @@ message VLANEntrySpec {
   // ClaimType defines the claimType of the VLAN Entry
   optional string claimType = 2;
 
-  // VLANID defines the vlan id for the VLAN entry
-  optional uint32 id = 3;
+  // ID defines the id of the VLAN entry in the tree
+  optional string id = 3;
 
   // ClaimLabels define the user defined labels and selector labels used
   // in resource claim
@@ -162,9 +160,17 @@ message VLANIndexList {
 
 // VLANIndexSpec defines the desired state of VLANIndex
 message VLANIndexSpec {
+  // MinID defines the min VLAN ID the index supports
+  // +optional
+  optional uint32 minID = 1;
+
+  // MaxID defines the max VLAN ID the index supports
+  // +optional
+  optional uint32 maxID = 2;
+
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 1;
+  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
 }
 
 // VLANIndexStatus defines the observed state of VLANIndex

@@ -25,4 +25,6 @@ import (
 	_ "github.com/kuidio/kuid/pkg/reconcilers/ipamnetworkinstance"
 	_ "github.com/kuidio/kuid/pkg/reconcilers/vlanclaim"
 	_ "github.com/kuidio/kuid/pkg/reconcilers/vlanindex"
+	_ "github.com/kuidio/kuid/pkg/reconcilers/vxlanclaim"
+	_ "github.com/kuidio/kuid/pkg/reconcilers/vxlanindex"
 )

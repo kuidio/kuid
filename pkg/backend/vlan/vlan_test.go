@@ -5,8 +5,10 @@ import (
 	"testing"
 
 	"github.com/henderiw/store"
+	"github.com/kuidio/kuid/apis/backend"
 	vlanbev1alpha1 "github.com/kuidio/kuid/apis/backend/vlan/v1alpha1"
 	"github.com/stretchr/testify/assert"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/utils/ptr"
 )
@@ -19,10 +21,28 @@ func TestVLAN(t *testing.T) {
 		"VLANMix": {
 			index: "a",
 			vlans: []testvlan{
-				{claimType: vlanDynamic, name: "claim1", expectedError: false, expectedVLAN: ptr.To[uint32](2)},
+				{claimType: vlanDynamic, name: "claim1", expectedError: false, expectedVLAN: ptr.To[uint32](0)},
 				{claimType: vlanStatic, name: "claim2", id: 100, expectedError: false},
 				{claimType: vlanStatic, name: "claim3", id: 4000, expectedError: false},
 				{claimType: vlanRange, name: "claim4", vlanRange: "10-19", expectedError: false},
+				{claimType: vlanRange, name: "claim4", vlanRange: "11-19", expectedError: false}, // reclaim
+				{claimType: vlanRange, name: "claim5", vlanRange: "5-10", expectedError: false},  // claim a new entry
+				{claimType: vlanRange, name: "claim6", vlanRange: "19-100", expectedError: true}, // overlap
+				{claimType: vlanStatic, name: "claim7", id: 12, expectedError: false},
+				{claimType: vlanStatic, name: "claim7", id: 13, expectedError: false}, // reclaim an existing id
+				{claimType: vlanDynamic, name: "claim8", selector: &metav1.LabelSelector{
+					MatchLabels: map[string]string{backend.KuidClaimNameKey: "claim4"},
+				}, expectedError: false, expectedVLAN: ptr.To[uint32](11)}, // a dynamic claim from a range
+				{claimType: vlanDynamic, name: "claim9", selector: &metav1.LabelSelector{
+					MatchLabels: map[string]string{backend.KuidClaimNameKey: "claim4"},
+				}, expectedError: false, expectedVLAN: ptr.To[uint32](12)}, // a dynamic claim from a range that was claimed before
+				{claimType: vlanDynamic, name: "claim10", selector: &metav1.LabelSelector{
+					MatchLabels: map[string]string{backend.KuidClaimNameKey: "claim4"},
+				}, expectedError: false, expectedVLAN: ptr.To[uint32](14)}, 
+				{claimType: vlanDynamic, name: "claim10", selector: &metav1.LabelSelector{
+					MatchLabels: map[string]string{backend.KuidClaimNameKey: "claim4"}, // update
+				}, expectedError: false, expectedVLAN: ptr.To[uint32](14)}, 
+				{claimType: vlanRange, name: "claim4", vlanRange: "11-19", expectedError: false}, // update
 			},
 		},
 	}
@@ -52,8 +72,6 @@ func TestVLAN(t *testing.T) {
 					claim, err = v.getDynamicVLANClaim(tc.index)
 				case vlanRange:
 					claim, err = v.getRangeVLANClaim(tc.index)
-				case vlanSize:
-					claim, err = v.getSizeVLANClaim(tc.index)
 				}
 				assert.NoError(t, err)
 				if err != nil {
@@ -63,6 +81,7 @@ func TestVLAN(t *testing.T) {
 				err = be.Claim(ctx, claim)
 				if v.expectedError {
 					assert.Error(t, err)
+					continue
 				} else {
 					assert.NoError(t, err)
 				}

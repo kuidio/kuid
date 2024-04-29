@@ -35,13 +35,25 @@ const (
 	KuidIPAMDefaultGatewayKey   = "ipam.be.kuid.dev/default-gateway"
 	KuidIPAMIndexKey            = "ipam.be.kuid.dev/index"
 	// system defined vlan
-	KuidVLANClaimTypeKey        = "vlan.be.kuid.dev/claim-type"
+	KuidVLANClaimTypeKey = "vlan.be.kuid.dev/claim-type"
+	// system defined vxlan
+	KuidVXLANClaimTypeKey = "vxlan.be.kuid.dev/claim-type"
+	// system defined AS
+	KuidASClaimTypeKey = "as.be.kuid.dev/claim-type"
 	// DNS used keys
 	KuidINVNetworkKey  = "inv.kuid.dev/network"
 	KuidINVEndpointKey = "inv.kuid.dev/endpoint-name"
 	KuidINVHeadlessKey = "inv.kuid.dev/headless-name"
 	KuidINVAliasKey    = "inv.kuid.dev/alias-name"
 	KuidINVPortNS      = "port.kuid.dev"
+	// Inventory
+	KuidINVRegionKey           = "inv.kuid.dev/region"
+	KuidINVAvailabilityZoneKey = "inv.kuid.dev/availability-zone"
+	KuidINVSiteKey             = "inv.kuid.dev/site"
+	KuidINVLocationKey         = "inv.kuid.dev/location"
+	KuidINVRackKey             = "inv.kuid.dev/rack"
+	KuidINVNodeKey             = "inv.kuid.dev/node"
+	KuidINVLinkKey             = "inv.kuid.dev/link"
 )
 
 var BackendSystemKeys = sets.New[string](KuidOwnerGroupKey,
@@ -64,4 +76,12 @@ var BackendIPAMSystemKeys = sets.New[string](KuidOwnerGroupKey,
 
 var BackendVLANSystemKeys = sets.New[string](KuidOwnerGroupKey,
 	KuidVLANClaimTypeKey,
+)
+
+var BackendVXLANSystemKeys = sets.New[string](KuidOwnerGroupKey,
+	KuidVXLANClaimTypeKey,
+)
+
+var BackendASSystemKeys = sets.New[string](KuidOwnerGroupKey,
+	KuidASClaimTypeKey,
 )

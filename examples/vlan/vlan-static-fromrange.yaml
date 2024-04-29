@@ -1,0 +1,8 @@
+apiVersion: vlan.be.kuid.dev/v1alpha1
+kind: VLANClaim
+metadata:
+  name: claim.index1.200
+spec:
+  index: index1
+  id: 200
+    

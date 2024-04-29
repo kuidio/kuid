@@ -21,6 +21,7 @@ import (
 	"crypto/sha1"
 	"encoding/json"
 	"fmt"
+	strings "strings"
 
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
 	"github.com/henderiw/store"
@@ -135,7 +136,7 @@ func (r *VLANEntry) GetClaimName() string {
 	return r.Spec.Claim
 }
 
-func GetVLANEntry(ctx context.Context, k store.Key, id uint32, labels map[string]string) *VLANEntry {
+func GetVLANEntry(ctx context.Context, k store.Key, vrange, id string, labels map[string]string) *VLANEntry {
 	//log := log.FromContext(ctx)
 
 	index := k.Name
@@ -166,9 +167,15 @@ func GetVLANEntry(ctx context.Context, k store.Key, id uint32, labels map[string
 	status := &VLANEntryStatus{}
 	status.SetConditions(conditionv1alpha1.Ready())
 
+	id = strings.ReplaceAll(id, "/", "-")
+	name := fmt.Sprintf("%s.%s", index, id)
+	if vrange != "" {
+		name = fmt.Sprintf("%s.%s.%s", index, vrange, id)
+	}
+
 	return BuildVLANEntry(
 		metav1.ObjectMeta{
-			Name:      fmt.Sprintf("%s.%d", index, id),
+			Name:      name,
 			Namespace: ns,
 		},
 		spec,

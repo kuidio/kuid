@@ -18,9 +18,14 @@ package vlan
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
+	"github.com/henderiw/idxtable/pkg/tree"
+	"github.com/henderiw/idxtable/pkg/table12"
+	"github.com/henderiw/logger/log"
+	"github.com/henderiw/store"
 	vlanbev1alpha1 "github.com/kuidio/kuid/apis/backend/vlan/v1alpha1"
-	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/utils/ptr"
 )
 
@@ -34,224 +39,108 @@ type applicator struct {
 	cacheCtx *CacheContext
 }
 
-type dynamicVLANApplicator struct {
-	name string
-	applicator
-}
-
-func (r *dynamicVLANApplicator) Validate(ctx context.Context, claim *vlanbev1alpha1.VLANClaim) error {
-	return nil
-}
-
-func (r *dynamicVLANApplicator) Apply(ctx context.Context, claim *vlanbev1alpha1.VLANClaim) error {
-	entries, err := r.getEntriesByOwner(ctx, claim)
-	if err != nil {
-		return err
-	}
-
-	claimedID := getEntry(entries, claim)
-	for id := range entries { // release the unallocated items
-		if id != claimedID {
-			if err := r.cacheCtx.table.Release(id); err != nil {
-				return err
-			}
-		}
-	}
-	if claimedID != -1 {
-		// claim id can be reused -> reapply claim to update labels
-		if err := r.cacheCtx.table.Update(claimedID, claim.GetClaimLabels()); err != nil {
-			return err
-		}
-		claim.Status.ID = ptr.To[uint32](uint32(claimedID))
-		return nil
-	}
-	// dynamic claim
-	id, err := r.cacheCtx.table.ClaimDynamic(claim.GetClaimLabels())
-	if err != nil {
-		return err
-	}
-	claim.Status.ID = ptr.To[uint32](uint32(id))
-	return nil
-}
-
-func (r *dynamicVLANApplicator) Delete(ctx context.Context, claim *vlanbev1alpha1.VLANClaim) error {
-	return r.delete(ctx, claim)
-}
-
-type staticVLANApplicator struct {
-	name string
-	applicator
-}
-
-func (r *staticVLANApplicator) Validate(ctx context.Context, claim *vlanbev1alpha1.VLANClaim) error {
-	return nil
-}
-
-func (r *staticVLANApplicator) Apply(ctx context.Context, claim *vlanbev1alpha1.VLANClaim) error {
-	entries, err := r.getEntriesByOwner(ctx, claim)
-	if err != nil {
-		return err
-	}
-
-	claimedID := getStaticEntry(entries, claim)
-	for id := range entries { // release the unallocated items
-		if id != claimedID {
-			if err := r.cacheCtx.table.Release(id); err != nil {
-				return err
-			}
-		}
-	}
-	if claimedID != -1 {
-		// claim id can be reused -> reapply claim to update labels
-		if err := r.cacheCtx.table.Update(claimedID, claim.GetClaimLabels()); err != nil {
-			return err
-		}
-		claim.Status.ID = ptr.To[uint32](uint32(claimedID))
-		return nil
-	}
-	// static claim
-	if err := r.cacheCtx.table.Claim(int64(*claim.Spec.ID), claim.GetClaimLabels()); err != nil {
-		return err
-	}
-	claim.Status.ID = claim.Spec.ID
-	return nil
-}
-
-func (r *staticVLANApplicator) Delete(ctx context.Context, claim *vlanbev1alpha1.VLANClaim) error {
-	return r.delete(ctx, claim)
-}
-
-type rangeVLANApplicator struct {
-	name string
-	applicator
-}
-
-func (r *rangeVLANApplicator) Validate(ctx context.Context, claim *vlanbev1alpha1.VLANClaim) error {
-	return nil
-}
-
-func (r *rangeVLANApplicator) Apply(ctx context.Context, claim *vlanbev1alpha1.VLANClaim) error {
-	entries, err := r.getEntriesByOwner(ctx, claim)
-	if err != nil {
-		return err
-	}
-	start, end := claim.GetVLANRange()
-	if len(entries) == (end - start + 1) {
-		_, startok := entries[int64(start)]
-		_, endok := entries[int64(start)]
-		if startok && endok {
-			for id := range entries {
-				if err := r.cacheCtx.table.Update(id, claim.GetClaimLabels()); err != nil {
-					return err
-				}
-			}
-			claim.Status.Range = claim.Spec.Range
-			return nil
-		}
-	}
-	// there was a change, delete the entries and reclaim if possible
-	for id := range entries {
-		if err := r.cacheCtx.table.Release(id); err != nil {
-			return err
-		}
-	}
-	size := end - start + 1
-	if err := r.cacheCtx.table.ClaimRange(int64(start), int64(size), claim.GetClaimLabels()); err != nil {
-		return err
-	}
-	claim.Status.Range = claim.Spec.Range
-	return nil
-}
-
-func (r *rangeVLANApplicator) Delete(ctx context.Context, claim *vlanbev1alpha1.VLANClaim) error {
-	return r.delete(ctx, claim)
-}
-
-type sizeVLANApplicator struct {
-	name string
-	applicator
-}
-
-func (r *sizeVLANApplicator) Validate(ctx context.Context, claim *vlanbev1alpha1.VLANClaim) error {
-	return nil
-}
-
-func (r *sizeVLANApplicator) Apply(ctx context.Context, claim *vlanbev1alpha1.VLANClaim) error {
-	entries, err := r.getEntriesByOwner(ctx, claim)
-	if err != nil {
-		return err
-	}
-	size := *claim.Spec.VLANSize
-
-	if len(entries) == int(size) {
-		for id := range entries {
-			if err := r.cacheCtx.table.Update(id, claim.GetClaimLabels()); err != nil {
-				return err
-			}
-		}
-		// TODO how to reflect status
-		return nil
-	}
-	// there was a change, delete the entries and reclaim if possible
-	for id := range entries {
-		if err := r.cacheCtx.table.Release(id); err != nil {
-			return err
-		}
-	}
-	if err := r.cacheCtx.table.ClaimSize(int64(size), claim.GetClaimLabels()); err != nil {
-		return err
-	}
-	// TODO how to reflect status
-	return nil
-
-}
-
-func (r *sizeVLANApplicator) Delete(ctx context.Context, claim *vlanbev1alpha1.VLANClaim) error {
-	return r.delete(ctx, claim)
-}
-
-func (r *applicator) getEntriesByOwner(_ context.Context, claim *vlanbev1alpha1.VLANClaim) (map[int64]labels.Set, error) {
+func (r *applicator) getEntriesByOwner(ctx context.Context, claim *vlanbev1alpha1.VLANClaim) (map[string]tree.Entries, error) {
+	treeEntries := map[string]tree.Entries{}
 	ownerSelector, err := claim.GetOwnerSelector()
 	if err != nil {
 		return nil, err
 	}
-	entries := r.cacheCtx.table.GetByLabel(ownerSelector)
-	if len(entries) != 0 {
-		return entries, nil
-	}
-	return map[int64]labels.Set{}, nil
-}
-
-func getEntry(entries map[int64]labels.Set, claim *vlanbev1alpha1.VLANClaim) int64 {
-	if claim.Status.ID != nil {
-		if _, ok := entries[int64(*claim.Status.ID)]; ok {
-			return int64(*claim.Status.ID)
+	claimType := claim.GetClaimType()
+	treeEntries[""] = r.cacheCtx.tree.GetByLabel(ownerSelector)
+	if len(treeEntries) != 0 {
+		// ranges and prefixes using network type can have multiple plrefixes
+		if len(treeEntries[""]) > 1 && (claimType != vlanbev1alpha1.VLANClaimType_Range) {
+			return treeEntries, fmt.Errorf("multiple entries match the owner, %v", treeEntries[""])
 		}
 	}
-	for id := range entries {
-		return id
-	}
-	return -1
-}
-
-func getStaticEntry(entries map[int64]labels.Set, claim *vlanbev1alpha1.VLANClaim) int64 {
-	if claim.Spec.ID != nil {
-		if _, ok := entries[int64(*claim.Spec.ID)]; ok {
-			return int64(*claim.Spec.ID)
+	// for id based claims we should also check the range tables
+	if claimType != vlanbev1alpha1.VLANClaimType_Range {
+		var errs error
+		r.cacheCtx.ranges.List(ctx, func(ctx context.Context, k store.Key, t *table12.Table12) {
+			treeEntries[k.Name] = t.GetByLabel(ownerSelector)
+			if len(treeEntries[k.Name]) > 1 {
+				errs = errors.Join(errs, fmt.Errorf("multiple entries match the owner, %v", treeEntries[k.Name]))
+				return
+			}
+		})
+		if errs != nil {
+			return treeEntries, errs
 		}
 	}
-	return -1
+	return treeEntries, nil
 }
 
 func (r *applicator) delete(ctx context.Context, claim *vlanbev1alpha1.VLANClaim) error {
-	entries, err := r.getEntriesByOwner(ctx, claim)
+	existingEntries, err := r.getEntriesByOwner(ctx, claim)
 	if err != nil {
 		return err
 	}
-	for id := range entries {
-		if err := r.cacheCtx.table.Release(id); err != nil {
-			return err
+
+	for treeName, existingEntries := range existingEntries {
+		for _, existingEntry := range existingEntries {
+			if treeName == "" {
+				r.cacheCtx.tree.ReleaseID(existingEntry.ID())
+			} else {
+				k := store.ToKey(treeName)
+				if table, err := r.cacheCtx.ranges.Get(ctx, k); err == nil {
+					if err := table.Release(uint16(existingEntry.ID().ID())); err != nil {
+						return err
+					}
+				}
+			}
 		}
 	}
 	return nil
+}
+
+func (r *applicator) getEntriesByLabelSelector(ctx context.Context, claim *vlanbev1alpha1.VLANClaim) tree.Entries {
+	log := log.FromContext(ctx)
+	labelSelector, err := claim.GetLabelSelector()
+	if err != nil {
+		log.Error("cannot get label selector", "error", err.Error())
+		return nil
+	}
+	return r.cacheCtx.tree.GetByLabel(labelSelector)
+}
+
+func (r *applicator) deleteNonClaimedEntries(ctx context.Context, existingEntries map[string]tree.Entries, id *uint32, reclaimTreeName string) error {
+	for treeName, existingEntries := range existingEntries {
+		fmt.Println("deleteNonClaimedEntries", treeName, existingEntries)
+		for _, existingEntry := range existingEntries {
+			if id != nil && *id == uint32(existingEntry.ID().ID()) && reclaimTreeName == treeName {
+				continue
+			}
+			if treeName == "" {
+				r.cacheCtx.tree.ReleaseID(existingEntry.ID())
+			} else {
+				k := store.ToKey(treeName)
+				if table, err := r.cacheCtx.ranges.Get(ctx, k); err == nil {
+					if err := table.Release(uint16(existingEntry.ID().ID())); err != nil {
+						return err
+					}
+				}
+			}
+		}
+	}
+	return nil
+}
+
+func reclaimIDFromExisitingEntries(existingEntries map[string]tree.Entries, id uint32) (*uint32, string) {
+	for treeName, existingEntries := range existingEntries {
+		for _, existingEntry := range existingEntries {
+			if id == uint32(existingEntry.ID().ID()) {
+				return &id, treeName
+			}
+		}
+	}
+	return nil, ""
+}
+
+func claimIDFromExisitingEntries(existingEntries map[string]tree.Entries) (*uint32, string) {
+	for treeName, existingEntries := range existingEntries {
+		for _, existingEntry := range existingEntries {
+			return ptr.To[uint32](uint32(existingEntry.ID().ID())), treeName
+		}
+	}
+	return nil, ""
 }

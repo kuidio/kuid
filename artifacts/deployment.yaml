@@ -60,6 +60,10 @@ spec:
           value: "true"
         - name: ENABLE_VLANCLAIM
           value: "true"
+        - name: ENABLE_VXLANINDEX
+          value: "true"
+        - name: ENABLE_VXLANCLAIM
+          value: "true"
         - name: ENABLE_IPAMNETWORKINSTANCE
           value: "true"
         - name: ENABLE_IPAMIPCLAIM

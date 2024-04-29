@@ -42,7 +42,7 @@ func (r *CacheContext) Size() int {
 	var size int
 	size += r.rib.Size()
 	r.ranges.List(context.Background(), func(ctx context.Context, k store.Key, i iptable.IPTable) {
-        size +=i.Count()
+        size +=i.Size()
     })
     return size
 }

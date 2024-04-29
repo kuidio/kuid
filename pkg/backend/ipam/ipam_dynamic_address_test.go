@@ -7,7 +7,7 @@ import (
 	"github.com/kuidio/kuid/apis/backend"
 	"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 	"github.com/stretchr/testify/assert"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func TestIPAMDynamicAddress(t *testing.T) {
@@ -62,13 +62,13 @@ func TestIPAMDynamicAddress(t *testing.T) {
 				{claimType: staticPrefix, ip: "10.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "10.0.0.0/24", expectedError: false},
 				{claimType: staticRange, name: "range1", ip: "10.0.0.10-10.0.0.100", expectedError: false},
-				{claimType: dynamicAddress, name: "addrClaim1", expectedError: false,  expectedIP: "10.0.0.10/32", selector: &v1.LabelSelector{
+				{claimType: dynamicAddress, name: "addrClaim1", expectedError: false,  expectedIP: "10.0.0.10/32", selector: &metav1.LabelSelector{
 					MatchLabels: map[string]string{backend.KuidClaimNameKey: "range1"},
 				}},
-				{claimType: dynamicAddress, name: "addrClaim1", expectedError: false, expectedIP: "10.0.0.10/32", selector: &v1.LabelSelector{
+				{claimType: dynamicAddress, name: "addrClaim1", expectedError: false, expectedIP: "10.0.0.10/32", selector: &metav1.LabelSelector{
 					MatchLabels: map[string]string{backend.KuidClaimNameKey: "range1"}, // we explicitly reclaim the same ip
 				}},
-				{claimType: dynamicAddress, name: "addrClaim2", expectedError: false, expectedIP: "10.0.0.11/32", selector: &v1.LabelSelector{
+				{claimType: dynamicAddress, name: "addrClaim2", expectedError: false, expectedIP: "10.0.0.11/32", selector: &metav1.LabelSelector{
 					MatchLabels: map[string]string{backend.KuidClaimNameKey: "range1"},
 				}},
 			},

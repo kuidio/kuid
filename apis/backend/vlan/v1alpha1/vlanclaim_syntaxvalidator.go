@@ -66,19 +66,3 @@ func (r *vlanStaticIDSyntaxValidator) Validate(claim *VLANClaim) field.ErrorList
 	}
 	return allErrs
 }
-
-type vlanSizeSyntaxValidator struct {
-	name string
-}
-
-func (r *vlanSizeSyntaxValidator) Validate(claim *VLANClaim) field.ErrorList {
-	var allErrs field.ErrorList
-	if err := claim.ValidateVLANSize(); err != nil {
-		allErrs = append(allErrs, field.Invalid(
-			field.NewPath("spec.size"),
-			claim,
-			fmt.Errorf("invalid vlan id %s", r.name).Error(),
-		))
-	}
-	return allErrs
-}

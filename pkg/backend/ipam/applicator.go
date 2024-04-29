@@ -36,10 +36,11 @@ import (
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/utils/ptr"
 )
-
+/*
 type Validator interface {
 	Validate(ctx context.Context, claim *ipambev1alpha1.IPClaim) error
 }
+*/
 
 type Applicator interface {
 	Validate(ctx context.Context, claim *ipambev1alpha1.IPClaim) error
@@ -107,10 +108,7 @@ func (r *applicator) apply(ctx context.Context, claim *ipambev1alpha1.IPClaim, p
 func (r *applicator) applyRange(ctx context.Context, claim *ipambev1alpha1.IPClaim, ipRange netipx.IPRange) error {
 	k := store.ToKey(claim.Name)
 	if _, err := r.cacheCtx.ranges.Get(ctx, k); err != nil {
-		ipTable, err := iptable.New(ipRange.From(), ipRange.To())
-		if err != nil {
-			return err
-		}
+		ipTable := iptable.New(ipRange.From(), ipRange.To())
 		if err := r.cacheCtx.ranges.Create(ctx, k, ipTable); err != nil {
 			return err
 		}
@@ -365,8 +363,6 @@ func (r *applicator) getRoutesByOwner(ctx context.Context, claim *ipambev1alpha1
 			claimSummaryType == ipambev1alpha1.IPClaimSummaryType_Prefix && claimPrefixType != ipambev1alpha1.IPPrefixType_Network) {
 			return ribRoutes, fmt.Errorf("multiple prefixes match the owner, %v", ribRoutes[""])
 		}
-		// route found
-		//return "", routes, nil
 	}
 	// add the search in the iptable
 	if claimSummaryType == ipambev1alpha1.IPClaimSummaryType_Address {

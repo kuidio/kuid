@@ -3,3 +3,7 @@ kind: VLANIndex
 metadata:
   name: index1
 spec:
+  minID: 2
+  maxID: 4094
+  labels:
+    inv.kuid.dev/site: us-west-1

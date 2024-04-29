@@ -33,7 +33,7 @@ func NewTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 			if !ok {
 				return nil
 			}
-			claimType := claim.GetVLANClaimType()
+			claimType := claim.GetClaimType()
 			return []interface{}{
 				claim.Name,
 				claim.GetCondition(conditionv1alpha1.ConditionTypeReady).Status,

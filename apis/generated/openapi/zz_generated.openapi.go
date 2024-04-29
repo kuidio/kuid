@@ -31,98 +31,752 @@ import (
 
 func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenAPIDefinition {
 	return map[string]common.OpenAPIDefinition{
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaim":                       schema_apis_backend_ipam_v1alpha1_IPClaim(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaimList":                   schema_apis_backend_ipam_v1alpha1_IPClaimList(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaimSpec":                   schema_apis_backend_ipam_v1alpha1_IPClaimSpec(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaimStatus":                 schema_apis_backend_ipam_v1alpha1_IPClaimStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntry":                       schema_apis_backend_ipam_v1alpha1_IPEntry(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntryList":                   schema_apis_backend_ipam_v1alpha1_IPEntryList(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntrySpec":                   schema_apis_backend_ipam_v1alpha1_IPEntrySpec(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntryStatus":                 schema_apis_backend_ipam_v1alpha1_IPEntryStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndex":                       schema_apis_backend_ipam_v1alpha1_IPIndex(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndexList":                   schema_apis_backend_ipam_v1alpha1_IPIndexList(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndexSpec":                   schema_apis_backend_ipam_v1alpha1_IPIndexSpec(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndexStatus":                 schema_apis_backend_ipam_v1alpha1_IPIndexStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.dynamicAddressSyntaxValidator": schema_apis_backend_ipam_v1alpha1_dynamicAddressSyntaxValidator(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.dynamicPrefixSyntaxValidator":  schema_apis_backend_ipam_v1alpha1_dynamicPrefixSyntaxValidator(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.staticAddressSyntaxValidator":  schema_apis_backend_ipam_v1alpha1_staticAddressSyntaxValidator(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.staticPrefixSyntaxValidator":   schema_apis_backend_ipam_v1alpha1_staticPrefixSyntaxValidator(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.staticRangeSyntaxValidator":    schema_apis_backend_ipam_v1alpha1_staticRangeSyntaxValidator(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANClaim":                     schema_apis_backend_vlan_v1alpha1_VLANClaim(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANClaimList":                 schema_apis_backend_vlan_v1alpha1_VLANClaimList(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANClaimSpec":                 schema_apis_backend_vlan_v1alpha1_VLANClaimSpec(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANClaimStatus":               schema_apis_backend_vlan_v1alpha1_VLANClaimStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANEntry":                     schema_apis_backend_vlan_v1alpha1_VLANEntry(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANEntryList":                 schema_apis_backend_vlan_v1alpha1_VLANEntryList(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANEntrySpec":                 schema_apis_backend_vlan_v1alpha1_VLANEntrySpec(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANEntryStatus":               schema_apis_backend_vlan_v1alpha1_VLANEntryStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndex":                     schema_apis_backend_vlan_v1alpha1_VLANIndex(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndexList":                 schema_apis_backend_vlan_v1alpha1_VLANIndexList(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndexSpec":                 schema_apis_backend_vlan_v1alpha1_VLANIndexSpec(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndexStatus":               schema_apis_backend_vlan_v1alpha1_VLANIndexStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.vlanDynamicIDSyntaxValidator":  schema_apis_backend_vlan_v1alpha1_vlanDynamicIDSyntaxValidator(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.vlanRangeSyntaxValidator":      schema_apis_backend_vlan_v1alpha1_vlanRangeSyntaxValidator(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.vlanSizeSyntaxValidator":       schema_apis_backend_vlan_v1alpha1_vlanSizeSyntaxValidator(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.vlanStaticIDSyntaxValidator":   schema_apis_backend_vlan_v1alpha1_vlanStaticIDSyntaxValidator(ref),
-		"github.com/kuidio/kuid/apis/common/v1alpha1.ClaimLabels":                         schema_kuid_apis_common_v1alpha1_ClaimLabels(ref),
-		"github.com/kuidio/kuid/apis/common/v1alpha1.OwnerReference":                      schema_kuid_apis_common_v1alpha1_OwnerReference(ref),
-		"github.com/kuidio/kuid/apis/common/v1alpha1.UserDefinedLabels":                   schema_kuid_apis_common_v1alpha1_UserDefinedLabels(ref),
-		"github.com/kuidio/kuid/apis/condition/v1alpha1.Condition":                        schema_kuid_apis_condition_v1alpha1_Condition(ref),
-		"github.com/kuidio/kuid/apis/condition/v1alpha1.ConditionedStatus":                schema_kuid_apis_condition_v1alpha1_ConditionedStatus(ref),
-		"k8s.io/apimachinery/pkg/api/resource.Quantity":                                   schema_apimachinery_pkg_api_resource_Quantity(ref),
-		"k8s.io/apimachinery/pkg/api/resource.int64Amount":                                schema_apimachinery_pkg_api_resource_int64Amount(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIGroup":                                   schema_pkg_apis_meta_v1_APIGroup(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIGroupList":                               schema_pkg_apis_meta_v1_APIGroupList(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIResource":                                schema_pkg_apis_meta_v1_APIResource(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIResourceList":                            schema_pkg_apis_meta_v1_APIResourceList(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIVersions":                                schema_pkg_apis_meta_v1_APIVersions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ApplyOptions":                               schema_pkg_apis_meta_v1_ApplyOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Condition":                                  schema_pkg_apis_meta_v1_Condition(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.CreateOptions":                              schema_pkg_apis_meta_v1_CreateOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.DeleteOptions":                              schema_pkg_apis_meta_v1_DeleteOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Duration":                                   schema_pkg_apis_meta_v1_Duration(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.FieldsV1":                                   schema_pkg_apis_meta_v1_FieldsV1(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GetOptions":                                 schema_pkg_apis_meta_v1_GetOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupKind":                                  schema_pkg_apis_meta_v1_GroupKind(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupResource":                              schema_pkg_apis_meta_v1_GroupResource(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersion":                               schema_pkg_apis_meta_v1_GroupVersion(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionForDiscovery":                   schema_pkg_apis_meta_v1_GroupVersionForDiscovery(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionKind":                           schema_pkg_apis_meta_v1_GroupVersionKind(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionResource":                       schema_pkg_apis_meta_v1_GroupVersionResource(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.InternalEvent":                              schema_pkg_apis_meta_v1_InternalEvent(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector":                              schema_pkg_apis_meta_v1_LabelSelector(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelectorRequirement":                   schema_pkg_apis_meta_v1_LabelSelectorRequirement(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.List":                                       schema_pkg_apis_meta_v1_List(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta":                                   schema_pkg_apis_meta_v1_ListMeta(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ListOptions":                                schema_pkg_apis_meta_v1_ListOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ManagedFieldsEntry":                         schema_pkg_apis_meta_v1_ManagedFieldsEntry(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.MicroTime":                                  schema_pkg_apis_meta_v1_MicroTime(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta":                                 schema_pkg_apis_meta_v1_ObjectMeta(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.OwnerReference":                             schema_pkg_apis_meta_v1_OwnerReference(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.PartialObjectMetadata":                      schema_pkg_apis_meta_v1_PartialObjectMetadata(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.PartialObjectMetadataList":                  schema_pkg_apis_meta_v1_PartialObjectMetadataList(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Patch":                                      schema_pkg_apis_meta_v1_Patch(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.PatchOptions":                               schema_pkg_apis_meta_v1_PatchOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Preconditions":                              schema_pkg_apis_meta_v1_Preconditions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.RootPaths":                                  schema_pkg_apis_meta_v1_RootPaths(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ServerAddressByClientCIDR":                  schema_pkg_apis_meta_v1_ServerAddressByClientCIDR(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Status":                                     schema_pkg_apis_meta_v1_Status(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.StatusCause":                                schema_pkg_apis_meta_v1_StatusCause(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.StatusDetails":                              schema_pkg_apis_meta_v1_StatusDetails(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Table":                                      schema_pkg_apis_meta_v1_Table(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TableColumnDefinition":                      schema_pkg_apis_meta_v1_TableColumnDefinition(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TableOptions":                               schema_pkg_apis_meta_v1_TableOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TableRow":                                   schema_pkg_apis_meta_v1_TableRow(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TableRowCondition":                          schema_pkg_apis_meta_v1_TableRowCondition(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Time":                                       schema_pkg_apis_meta_v1_Time(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Timestamp":                                  schema_pkg_apis_meta_v1_Timestamp(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TypeMeta":                                   schema_pkg_apis_meta_v1_TypeMeta(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.UpdateOptions":                              schema_pkg_apis_meta_v1_UpdateOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.WatchEvent":                                 schema_pkg_apis_meta_v1_WatchEvent(ref),
-		"k8s.io/apimachinery/pkg/runtime.RawExtension":                                    schema_k8sio_apimachinery_pkg_runtime_RawExtension(ref),
-		"k8s.io/apimachinery/pkg/runtime.TypeMeta":                                        schema_k8sio_apimachinery_pkg_runtime_TypeMeta(ref),
-		"k8s.io/apimachinery/pkg/runtime.Unknown":                                         schema_k8sio_apimachinery_pkg_runtime_Unknown(ref),
-		"k8s.io/apimachinery/pkg/version.Info":                                            schema_k8sio_apimachinery_pkg_version_Info(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaim":                          schema_apis_backend_as_v1alpha1_ASClaim(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaimList":                      schema_apis_backend_as_v1alpha1_ASClaimList(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaimSpec":                      schema_apis_backend_as_v1alpha1_ASClaimSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaimStatus":                    schema_apis_backend_as_v1alpha1_ASClaimStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASDynamicIDSyntaxValidator":       schema_apis_backend_as_v1alpha1_ASDynamicIDSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntry":                          schema_apis_backend_as_v1alpha1_ASEntry(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntryList":                      schema_apis_backend_as_v1alpha1_ASEntryList(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntrySpec":                      schema_apis_backend_as_v1alpha1_ASEntrySpec(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntryStatus":                    schema_apis_backend_as_v1alpha1_ASEntryStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndex":                          schema_apis_backend_as_v1alpha1_ASIndex(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexList":                      schema_apis_backend_as_v1alpha1_ASIndexList(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexSpec":                      schema_apis_backend_as_v1alpha1_ASIndexSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexStatus":                    schema_apis_backend_as_v1alpha1_ASIndexStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASRangeSyntaxValidator":           schema_apis_backend_as_v1alpha1_ASRangeSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASStaticIDSyntaxValidator":        schema_apis_backend_as_v1alpha1_ASStaticIDSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaim":                        schema_apis_backend_ipam_v1alpha1_IPClaim(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaimList":                    schema_apis_backend_ipam_v1alpha1_IPClaimList(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaimSpec":                    schema_apis_backend_ipam_v1alpha1_IPClaimSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaimStatus":                  schema_apis_backend_ipam_v1alpha1_IPClaimStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntry":                        schema_apis_backend_ipam_v1alpha1_IPEntry(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntryList":                    schema_apis_backend_ipam_v1alpha1_IPEntryList(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntrySpec":                    schema_apis_backend_ipam_v1alpha1_IPEntrySpec(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntryStatus":                  schema_apis_backend_ipam_v1alpha1_IPEntryStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndex":                        schema_apis_backend_ipam_v1alpha1_IPIndex(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndexList":                    schema_apis_backend_ipam_v1alpha1_IPIndexList(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndexSpec":                    schema_apis_backend_ipam_v1alpha1_IPIndexSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndexStatus":                  schema_apis_backend_ipam_v1alpha1_IPIndexStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.dynamicAddressSyntaxValidator":  schema_apis_backend_ipam_v1alpha1_dynamicAddressSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.dynamicPrefixSyntaxValidator":   schema_apis_backend_ipam_v1alpha1_dynamicPrefixSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.staticAddressSyntaxValidator":   schema_apis_backend_ipam_v1alpha1_staticAddressSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.staticPrefixSyntaxValidator":    schema_apis_backend_ipam_v1alpha1_staticPrefixSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.staticRangeSyntaxValidator":     schema_apis_backend_ipam_v1alpha1_staticRangeSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANClaim":                      schema_apis_backend_vlan_v1alpha1_VLANClaim(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANClaimList":                  schema_apis_backend_vlan_v1alpha1_VLANClaimList(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANClaimSpec":                  schema_apis_backend_vlan_v1alpha1_VLANClaimSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANClaimStatus":                schema_apis_backend_vlan_v1alpha1_VLANClaimStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANEntry":                      schema_apis_backend_vlan_v1alpha1_VLANEntry(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANEntryList":                  schema_apis_backend_vlan_v1alpha1_VLANEntryList(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANEntrySpec":                  schema_apis_backend_vlan_v1alpha1_VLANEntrySpec(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANEntryStatus":                schema_apis_backend_vlan_v1alpha1_VLANEntryStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndex":                      schema_apis_backend_vlan_v1alpha1_VLANIndex(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndexList":                  schema_apis_backend_vlan_v1alpha1_VLANIndexList(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndexSpec":                  schema_apis_backend_vlan_v1alpha1_VLANIndexSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndexStatus":                schema_apis_backend_vlan_v1alpha1_VLANIndexStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.vlanDynamicIDSyntaxValidator":   schema_apis_backend_vlan_v1alpha1_vlanDynamicIDSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.vlanRangeSyntaxValidator":       schema_apis_backend_vlan_v1alpha1_vlanRangeSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.vlanStaticIDSyntaxValidator":    schema_apis_backend_vlan_v1alpha1_vlanStaticIDSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANClaim":                    schema_apis_backend_vxlan_v1alpha1_VXLANClaim(ref),
+		"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANClaimList":                schema_apis_backend_vxlan_v1alpha1_VXLANClaimList(ref),
+		"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANClaimSpec":                schema_apis_backend_vxlan_v1alpha1_VXLANClaimSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANClaimStatus":              schema_apis_backend_vxlan_v1alpha1_VXLANClaimStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANDynamicIDSyntaxValidator": schema_apis_backend_vxlan_v1alpha1_VXLANDynamicIDSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANEntry":                    schema_apis_backend_vxlan_v1alpha1_VXLANEntry(ref),
+		"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANEntryList":                schema_apis_backend_vxlan_v1alpha1_VXLANEntryList(ref),
+		"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANEntrySpec":                schema_apis_backend_vxlan_v1alpha1_VXLANEntrySpec(ref),
+		"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANEntryStatus":              schema_apis_backend_vxlan_v1alpha1_VXLANEntryStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANIndex":                    schema_apis_backend_vxlan_v1alpha1_VXLANIndex(ref),
+		"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANIndexList":                schema_apis_backend_vxlan_v1alpha1_VXLANIndexList(ref),
+		"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANIndexSpec":                schema_apis_backend_vxlan_v1alpha1_VXLANIndexSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANIndexStatus":              schema_apis_backend_vxlan_v1alpha1_VXLANIndexStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANRangeSyntaxValidator":     schema_apis_backend_vxlan_v1alpha1_VXLANRangeSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANStaticIDSyntaxValidator":  schema_apis_backend_vxlan_v1alpha1_VXLANStaticIDSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/common/v1alpha1.ClaimLabels":                          schema_kuid_apis_common_v1alpha1_ClaimLabels(ref),
+		"github.com/kuidio/kuid/apis/common/v1alpha1.OwnerReference":                       schema_kuid_apis_common_v1alpha1_OwnerReference(ref),
+		"github.com/kuidio/kuid/apis/common/v1alpha1.UserDefinedLabels":                    schema_kuid_apis_common_v1alpha1_UserDefinedLabels(ref),
+		"github.com/kuidio/kuid/apis/condition/v1alpha1.Condition":                         schema_kuid_apis_condition_v1alpha1_Condition(ref),
+		"github.com/kuidio/kuid/apis/condition/v1alpha1.ConditionedStatus":                 schema_kuid_apis_condition_v1alpha1_ConditionedStatus(ref),
+		"k8s.io/apimachinery/pkg/api/resource.Quantity":                                    schema_apimachinery_pkg_api_resource_Quantity(ref),
+		"k8s.io/apimachinery/pkg/api/resource.int64Amount":                                 schema_apimachinery_pkg_api_resource_int64Amount(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIGroup":                                    schema_pkg_apis_meta_v1_APIGroup(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIGroupList":                                schema_pkg_apis_meta_v1_APIGroupList(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIResource":                                 schema_pkg_apis_meta_v1_APIResource(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIResourceList":                             schema_pkg_apis_meta_v1_APIResourceList(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIVersions":                                 schema_pkg_apis_meta_v1_APIVersions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ApplyOptions":                                schema_pkg_apis_meta_v1_ApplyOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Condition":                                   schema_pkg_apis_meta_v1_Condition(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.CreateOptions":                               schema_pkg_apis_meta_v1_CreateOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.DeleteOptions":                               schema_pkg_apis_meta_v1_DeleteOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Duration":                                    schema_pkg_apis_meta_v1_Duration(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.FieldsV1":                                    schema_pkg_apis_meta_v1_FieldsV1(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GetOptions":                                  schema_pkg_apis_meta_v1_GetOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupKind":                                   schema_pkg_apis_meta_v1_GroupKind(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupResource":                               schema_pkg_apis_meta_v1_GroupResource(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersion":                                schema_pkg_apis_meta_v1_GroupVersion(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionForDiscovery":                    schema_pkg_apis_meta_v1_GroupVersionForDiscovery(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionKind":                            schema_pkg_apis_meta_v1_GroupVersionKind(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionResource":                        schema_pkg_apis_meta_v1_GroupVersionResource(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.InternalEvent":                               schema_pkg_apis_meta_v1_InternalEvent(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector":                               schema_pkg_apis_meta_v1_LabelSelector(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelectorRequirement":                    schema_pkg_apis_meta_v1_LabelSelectorRequirement(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.List":                                        schema_pkg_apis_meta_v1_List(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta":                                    schema_pkg_apis_meta_v1_ListMeta(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ListOptions":                                 schema_pkg_apis_meta_v1_ListOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ManagedFieldsEntry":                          schema_pkg_apis_meta_v1_ManagedFieldsEntry(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.MicroTime":                                   schema_pkg_apis_meta_v1_MicroTime(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta":                                  schema_pkg_apis_meta_v1_ObjectMeta(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.OwnerReference":                              schema_pkg_apis_meta_v1_OwnerReference(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.PartialObjectMetadata":                       schema_pkg_apis_meta_v1_PartialObjectMetadata(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.PartialObjectMetadataList":                   schema_pkg_apis_meta_v1_PartialObjectMetadataList(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Patch":                                       schema_pkg_apis_meta_v1_Patch(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.PatchOptions":                                schema_pkg_apis_meta_v1_PatchOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Preconditions":                               schema_pkg_apis_meta_v1_Preconditions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.RootPaths":                                   schema_pkg_apis_meta_v1_RootPaths(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ServerAddressByClientCIDR":                   schema_pkg_apis_meta_v1_ServerAddressByClientCIDR(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Status":                                      schema_pkg_apis_meta_v1_Status(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.StatusCause":                                 schema_pkg_apis_meta_v1_StatusCause(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.StatusDetails":                               schema_pkg_apis_meta_v1_StatusDetails(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Table":                                       schema_pkg_apis_meta_v1_Table(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TableColumnDefinition":                       schema_pkg_apis_meta_v1_TableColumnDefinition(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TableOptions":                                schema_pkg_apis_meta_v1_TableOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TableRow":                                    schema_pkg_apis_meta_v1_TableRow(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TableRowCondition":                           schema_pkg_apis_meta_v1_TableRowCondition(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Time":                                        schema_pkg_apis_meta_v1_Time(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Timestamp":                                   schema_pkg_apis_meta_v1_Timestamp(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TypeMeta":                                    schema_pkg_apis_meta_v1_TypeMeta(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.UpdateOptions":                               schema_pkg_apis_meta_v1_UpdateOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.WatchEvent":                                  schema_pkg_apis_meta_v1_WatchEvent(ref),
+		"k8s.io/apimachinery/pkg/runtime.RawExtension":                                     schema_k8sio_apimachinery_pkg_runtime_RawExtension(ref),
+		"k8s.io/apimachinery/pkg/runtime.TypeMeta":                                         schema_k8sio_apimachinery_pkg_runtime_TypeMeta(ref),
+		"k8s.io/apimachinery/pkg/runtime.Unknown":                                          schema_k8sio_apimachinery_pkg_runtime_Unknown(ref),
+		"k8s.io/apimachinery/pkg/version.Info":                                             schema_k8sio_apimachinery_pkg_version_Info(ref),
+	}
+}
+
+func schema_apis_backend_as_v1alpha1_ASClaim(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "ASClaim is the Schema for the ASClaim API",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
+						},
+					},
+					"spec": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaimSpec"),
+						},
+					},
+					"status": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaimStatus"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaimSpec", "github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaimStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_apis_backend_as_v1alpha1_ASClaimList(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "ASClaimList contains a list of ASClaims",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"),
+						},
+					},
+					"items": {
+						SchemaProps: spec.SchemaProps{
+							Type: []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaim"),
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"items"},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaim", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
+	}
+}
+
+func schema_apis_backend_as_v1alpha1_ASClaimSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "ASClaimSpec defines the desired state of ASClaim",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"index": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ASIndex defines the AS index for the AS Claim",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"id": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ASID defines the AS for the AS claim",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"range": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Range defines the AS range for the AS claim The following notation is used: start-end <start-ASID>-<end-ASID> the ASs in the range must be consecutive",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"labels": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Labels as user defined labels",
+							Type:        []string{"object"},
+							AdditionalProperties: &spec.SchemaOrBool{
+								Allows: true,
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+					"selector": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Selector defines the selector criterias",
+							Ref:         ref("k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector"),
+						},
+					},
+					"owner": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Owner defines the ownerReference of the ASClaim Allow for different namesapces, hence it is part of the spec",
+							Ref:         ref("github.com/kuidio/kuid/apis/common/v1alpha1.OwnerReference"),
+						},
+					},
+				},
+				Required: []string{"index"},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/common/v1alpha1.OwnerReference", "k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector"},
+	}
+}
+
+func schema_apis_backend_as_v1alpha1_ASClaimStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "ASClaimStatus defines the observed state of ASClaim",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"conditions": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Conditions of the resource.",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"),
+									},
+								},
+							},
+						},
+					},
+					"id": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ASID defines the AS for the AS claim",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"range": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ASRange defines the AS range for the AS claim",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"expiryTime": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ExpiryTime defines when the claim expires",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"},
+	}
+}
+
+func schema_apis_backend_as_v1alpha1_ASDynamicIDSyntaxValidator(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Default: "",
+							Type:    []string{"string"},
+							Format:  "",
+						},
+					},
+				},
+				Required: []string{"name"},
+			},
+		},
+	}
+}
+
+func schema_apis_backend_as_v1alpha1_ASEntry(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "ASEntry is the Schema for the ASentry API",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
+						},
+					},
+					"spec": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntrySpec"),
+						},
+					},
+					"status": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntryStatus"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntrySpec", "github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntryStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_apis_backend_as_v1alpha1_ASEntryList(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "ASEntryList contains a list of ASEntries",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"),
+						},
+					},
+					"items": {
+						SchemaProps: spec.SchemaProps{
+							Type: []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntry"),
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"items"},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntry", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
+	}
+}
+
+func schema_apis_backend_as_v1alpha1_ASEntrySpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "ASEntrySpec defines the desired state of ASEntry",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"index": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ASIndex defines the AS index for the AS Claim",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"claimType": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ClaimType defines the claimType of the AS Entry",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"id": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ID defines the id of the AS entry in the tree",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"labels": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Labels as user defined labels",
+							Type:        []string{"object"},
+							AdditionalProperties: &spec.SchemaOrBool{
+								Allows: true,
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+					"selector": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Selector defines the selector criterias",
+							Ref:         ref("k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector"),
+						},
+					},
+					"claim": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Claim defines the name of the claim that is the origin of this  entry",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"owner": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Owner defines the ownerReference of the ASClaim Allow for different namesapces, hence it is part of the spec",
+							Ref:         ref("github.com/kuidio/kuid/apis/common/v1alpha1.OwnerReference"),
+						},
+					},
+				},
+				Required: []string{"index", "claim"},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/common/v1alpha1.OwnerReference", "k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector"},
+	}
+}
+
+func schema_apis_backend_as_v1alpha1_ASEntryStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "ASEntryStatus defines the observed state of ASEntry",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"conditions": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Conditions of the resource.",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"},
+	}
+}
+
+func schema_apis_backend_as_v1alpha1_ASIndex(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "ASIndex is the Schema for the ASIndex API",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
+						},
+					},
+					"spec": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexSpec"),
+						},
+					},
+					"status": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexStatus"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexSpec", "github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_apis_backend_as_v1alpha1_ASIndexList(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "ASIndexList contains a list of ASIndexs",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"),
+						},
+					},
+					"items": {
+						SchemaProps: spec.SchemaProps{
+							Type: []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndex"),
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"items"},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndex", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
+	}
+}
+
+func schema_apis_backend_as_v1alpha1_ASIndexSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "ASIndexSpec defines the desired state of ASIndex",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"labels": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Labels as user defined labels",
+							Type:        []string{"object"},
+							AdditionalProperties: &spec.SchemaOrBool{
+								Allows: true,
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func schema_apis_backend_as_v1alpha1_ASIndexStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "ASIndexStatus defines the observed state of ASIndex",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"conditions": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Conditions of the resource.",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"},
+	}
+}
+
+func schema_apis_backend_as_v1alpha1_ASRangeSyntaxValidator(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Default: "",
+							Type:    []string{"string"},
+							Format:  "",
+						},
+					},
+				},
+				Required: []string{"name"},
+			},
+		},
+	}
+}
+
+func schema_apis_backend_as_v1alpha1_ASStaticIDSyntaxValidator(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Default: "",
+							Type:    []string{"string"},
+							Format:  "",
+						},
+					},
+				},
+				Required: []string{"name"},
+			},
+		},
 	}
 }
 
@@ -977,13 +1631,6 @@ func schema_apis_backend_vlan_v1alpha1_VLANClaimSpec(ref common.ReferenceCallbac
 							Format:      "",
 						},
 					},
-					"size": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Size defines the size of a VLAN Claim The result could be a non consecutive block of vlans",
-							Type:        []string{"integer"},
-							Format:      "int64",
-						},
-					},
 					"labels": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Labels as user defined labels",
@@ -1171,7 +1818,7 @@ func schema_apis_backend_vlan_v1alpha1_VLANEntrySpec(ref common.ReferenceCallbac
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "IPEntrySpec defines the desired state of IPEntry",
+				Description: "VLANEntrySpec defines the desired state of VLANEntry",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"index": {
@@ -1191,9 +1838,9 @@ func schema_apis_backend_vlan_v1alpha1_VLANEntrySpec(ref common.ReferenceCallbac
 					},
 					"id": {
 						SchemaProps: spec.SchemaProps{
-							Description: "VLANID defines the vlan id for the VLAN entry",
-							Type:        []string{"integer"},
-							Format:      "int64",
+							Description: "ID defines the id of the VLAN entry in the tree",
+							Type:        []string{"string"},
+							Format:      "",
 						},
 					},
 					"labels": {
@@ -1373,6 +2020,20 @@ func schema_apis_backend_vlan_v1alpha1_VLANIndexSpec(ref common.ReferenceCallbac
 				Description: "VLANIndexSpec defines the desired state of VLANIndex",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
+					"minID": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MinID defines the min VLAN ID the index supports",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"maxID": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MaxID defines the max VLAN ID the index supports",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
 					"labels": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Labels as user defined labels",
@@ -1464,7 +2125,7 @@ func schema_apis_backend_vlan_v1alpha1_vlanRangeSyntaxValidator(ref common.Refer
 	}
 }
 
-func schema_apis_backend_vlan_v1alpha1_vlanSizeSyntaxValidator(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_apis_backend_vlan_v1alpha1_vlanStaticIDSyntaxValidator(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
@@ -1484,7 +2145,612 @@ func schema_apis_backend_vlan_v1alpha1_vlanSizeSyntaxValidator(ref common.Refere
 	}
 }
 
-func schema_apis_backend_vlan_v1alpha1_vlanStaticIDSyntaxValidator(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_apis_backend_vxlan_v1alpha1_VXLANClaim(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "VXLANClaim is the Schema for the VXLANClaim API",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
+						},
+					},
+					"spec": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANClaimSpec"),
+						},
+					},
+					"status": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANClaimStatus"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANClaimSpec", "github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANClaimStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_apis_backend_vxlan_v1alpha1_VXLANClaimList(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "VXLANClaimList contains a list of VXLANClaims",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"),
+						},
+					},
+					"items": {
+						SchemaProps: spec.SchemaProps{
+							Type: []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANClaim"),
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"items"},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANClaim", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
+	}
+}
+
+func schema_apis_backend_vxlan_v1alpha1_VXLANClaimSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "VXLANClaimSpec defines the desired state of VXLANClaim",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"index": {
+						SchemaProps: spec.SchemaProps{
+							Description: "VXLANIndex defines the VXLAN index for the VXLAN Claim",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"id": {
+						SchemaProps: spec.SchemaProps{
+							Description: "VXLANID defines the VXLAN for the VXLAN claim",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"range": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Range defines the VXLAN range for the VXLAN claim The following notation is used: start-end <start-VXLANID>-<end-VXLANID> the VXLANs in the range must be consecutive",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"labels": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Labels as user defined labels",
+							Type:        []string{"object"},
+							AdditionalProperties: &spec.SchemaOrBool{
+								Allows: true,
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+					"selector": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Selector defines the selector criterias",
+							Ref:         ref("k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector"),
+						},
+					},
+					"owner": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Owner defines the ownerReference of the VXLANClaim Allow for different namesapces, hence it is part of the spec",
+							Ref:         ref("github.com/kuidio/kuid/apis/common/v1alpha1.OwnerReference"),
+						},
+					},
+				},
+				Required: []string{"index"},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/common/v1alpha1.OwnerReference", "k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector"},
+	}
+}
+
+func schema_apis_backend_vxlan_v1alpha1_VXLANClaimStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "VXLANClaimStatus defines the observed state of VXLANClaim",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"conditions": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Conditions of the resource.",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"),
+									},
+								},
+							},
+						},
+					},
+					"id": {
+						SchemaProps: spec.SchemaProps{
+							Description: "VXLANID defines the VXLAN for the VXLAN claim",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"range": {
+						SchemaProps: spec.SchemaProps{
+							Description: "VXLANRange defines the VXLAN range for the VXLAN claim",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"expiryTime": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ExpiryTime defines when the claim expires",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"},
+	}
+}
+
+func schema_apis_backend_vxlan_v1alpha1_VXLANDynamicIDSyntaxValidator(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Default: "",
+							Type:    []string{"string"},
+							Format:  "",
+						},
+					},
+				},
+				Required: []string{"name"},
+			},
+		},
+	}
+}
+
+func schema_apis_backend_vxlan_v1alpha1_VXLANEntry(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "VXLANEntry is the Schema for the VXLANentry API",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
+						},
+					},
+					"spec": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANEntrySpec"),
+						},
+					},
+					"status": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANEntryStatus"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANEntrySpec", "github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANEntryStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_apis_backend_vxlan_v1alpha1_VXLANEntryList(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "VXLANEntryList contains a list of VXLANEntries",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"),
+						},
+					},
+					"items": {
+						SchemaProps: spec.SchemaProps{
+							Type: []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANEntry"),
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"items"},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANEntry", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
+	}
+}
+
+func schema_apis_backend_vxlan_v1alpha1_VXLANEntrySpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "VXLANEntrySpec defines the desired state of VXLANEntry",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"index": {
+						SchemaProps: spec.SchemaProps{
+							Description: "VXLANIndex defines the VXLAN index for the VXLAN Claim",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"claimType": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ClaimType defines the claimType of the VXLAN Entry",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"id": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ID defines the id of the VXLAN entry in the tree",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"labels": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Labels as user defined labels",
+							Type:        []string{"object"},
+							AdditionalProperties: &spec.SchemaOrBool{
+								Allows: true,
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+					"selector": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Selector defines the selector criterias",
+							Ref:         ref("k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector"),
+						},
+					},
+					"claim": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Claim defines the name of the claim that is the origin of this  entry",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"owner": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Owner defines the ownerReference of the VXLANClaim Allow for different namesapces, hence it is part of the spec",
+							Ref:         ref("github.com/kuidio/kuid/apis/common/v1alpha1.OwnerReference"),
+						},
+					},
+				},
+				Required: []string{"index", "claim"},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/common/v1alpha1.OwnerReference", "k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector"},
+	}
+}
+
+func schema_apis_backend_vxlan_v1alpha1_VXLANEntryStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "VXLANEntryStatus defines the observed state of VXLANEntry",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"conditions": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Conditions of the resource.",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"},
+	}
+}
+
+func schema_apis_backend_vxlan_v1alpha1_VXLANIndex(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "VXLANIndex is the Schema for the VXLANIndex API",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
+						},
+					},
+					"spec": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANIndexSpec"),
+						},
+					},
+					"status": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANIndexStatus"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANIndexSpec", "github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANIndexStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_apis_backend_vxlan_v1alpha1_VXLANIndexList(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "VXLANIndexList contains a list of VXLANIndexs",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"),
+						},
+					},
+					"items": {
+						SchemaProps: spec.SchemaProps{
+							Type: []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANIndex"),
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"items"},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1.VXLANIndex", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
+	}
+}
+
+func schema_apis_backend_vxlan_v1alpha1_VXLANIndexSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "VXLANIndexSpec defines the desired state of VXLANIndex",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"labels": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Labels as user defined labels",
+							Type:        []string{"object"},
+							AdditionalProperties: &spec.SchemaOrBool{
+								Allows: true,
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func schema_apis_backend_vxlan_v1alpha1_VXLANIndexStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "VXLANIndexStatus defines the observed state of VXLANIndex",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"conditions": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Conditions of the resource.",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"},
+	}
+}
+
+func schema_apis_backend_vxlan_v1alpha1_VXLANRangeSyntaxValidator(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Default: "",
+							Type:    []string{"string"},
+							Format:  "",
+						},
+					},
+				},
+				Required: []string{"name"},
+			},
+		},
+	}
+}
+
+func schema_apis_backend_vxlan_v1alpha1_VXLANStaticIDSyntaxValidator(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{

@@ -17,24 +17,32 @@ limitations under the License.
 package vlan
 
 import (
-	"github.com/henderiw/idxtable/pkg/vlantable"
+	"context"
+
+	"github.com/henderiw/idxtable/pkg/table12"
+	"github.com/henderiw/idxtable/pkg/tree12"
+	"github.com/henderiw/store"
+	"github.com/henderiw/store/memory"
 )
 
 type CacheContext struct {
-	table vlantable.VLANTable
+	tree   *tree12.Tree12
+	ranges store.Storer[*table12.Table12]
 }
 
-func NewCacheContext() (*CacheContext, error) {
-	table, err := vlantable.New()
-	if err != nil {
-		return nil, err
-	}
+func NewCacheContext() *CacheContext {
 	return &CacheContext{
-		table: table,
-	}, nil
+		tree:   tree12.New(),
+		ranges: memory.NewStore[*table12.Table12](),
+	}
 
 }
 
 func (r *CacheContext) Size() int {
-	return r.table.Count()
+	var size int
+	size += r.tree.Size()
+	r.ranges.List(context.Background(), func(ctx context.Context, k store.Key, t *table12.Table12) {
+		size += t.Size()
+	})
+	return size
 }

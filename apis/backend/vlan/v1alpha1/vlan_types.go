@@ -23,7 +23,6 @@ const (
 	VLANClaimType_StaticID  VLANClaimType = "staticVLANID"
 	VLANClaimType_DynamicID VLANClaimType = "dynamicVLANID"
 	VLANClaimType_Range     VLANClaimType = "vlanRange"
-	VLANClaimType_Size      VLANClaimType = "vlanSize"
 )
 
 func GetIPClaimTypeFromString(s string) VLANClaimType {
@@ -34,8 +33,6 @@ func GetIPClaimTypeFromString(s string) VLANClaimType {
 		return VLANClaimType_DynamicID
 	case string(VLANClaimType_Range):
 		return VLANClaimType_Range
-	case string(VLANClaimType_Size):
-		return VLANClaimType_Size
 	default:
 		return VLANClaimType_Invalid
 	}

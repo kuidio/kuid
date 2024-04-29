@@ -21,6 +21,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/henderiw/idxtable/pkg/table12"
 	"github.com/henderiw/logger/log"
 	"github.com/henderiw/store"
 	vlanbev1alpha1 "github.com/kuidio/kuid/apis/backend/vlan/v1alpha1"
@@ -60,13 +61,10 @@ func (r *bestore) Restore(ctx context.Context, k store.Key) error {
 		return nil
 	}
 
-	if err := r.restoreClaims(ctx, cacheCtx, curEntries, vlanbev1alpha1.VLANClaimType_StaticID, claimmap); err != nil {
-		return err
-	}
 	if err := r.restoreClaims(ctx, cacheCtx, curEntries, vlanbev1alpha1.VLANClaimType_Range, claimmap); err != nil {
 		return err
 	}
-	if err := r.restoreClaims(ctx, cacheCtx, curEntries, vlanbev1alpha1.VLANClaimType_Size, claimmap); err != nil {
+	if err := r.restoreClaims(ctx, cacheCtx, curEntries, vlanbev1alpha1.VLANClaimType_StaticID, claimmap); err != nil {
 		return err
 	}
 	if err := r.restoreClaims(ctx, cacheCtx, curEntries, vlanbev1alpha1.VLANClaimType_DynamicID, claimmap); err != nil {
@@ -147,12 +145,19 @@ func (r *bestore) getEntriesFromCache(ctx context.Context, k store.Key) ([]*vlan
 
 	entries := make([]*vlanbev1alpha1.VLANEntry, 0, cacheCtx.Size())
 	// add the main rib entry
-	for id, labels := range cacheCtx.table.GetAll() {
+	for _, entry := range cacheCtx.tree.GetAll() {
 		//fmt.Println("getEntriesFromCache rib entry", route.Prefix().String())
-		id := id
-		labels := labels
-		entries = append(entries, vlanbev1alpha1.GetVLANEntry(ctx, k, uint32(id), labels))
+		entry := entry
+		entries = append(entries, vlanbev1alpha1.GetVLANEntry(ctx, k, "", entry.ID().String(), entry.Labels()))
 	}
+	// add all the range entries
+	cacheCtx.ranges.List(ctx, func(ctx context.Context, key store.Key, t *table12.Table12) {
+		for _, entry := range t.GetAll() {
+			//fmt.Println("getEntriesFromCache range", key.Name, route.Prefix().String())
+			entry := entry
+			entries = append(entries, vlanbev1alpha1.GetVLANEntry(ctx, k, key.Name, entry.ID().String(), entry.Labels()))
+		}
+	})
 
 	return entries, nil
 }

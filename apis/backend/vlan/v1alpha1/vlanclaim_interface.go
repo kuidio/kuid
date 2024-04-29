@@ -181,9 +181,6 @@ func (r *VLANClaim) GetClaimRequest() string {
 	if r.Spec.Range != nil {
 		return *r.Spec.Range
 	}
-	if r.Spec.VLANSize != nil {
-		return strconv.Itoa(int(*r.Spec.VLANSize))
-	}
 	return ""
 }
 
@@ -198,7 +195,7 @@ func (r *VLANClaim) GetClaimResponse() string {
 	return ""
 }
 
-func (r *VLANClaim) GetVLANClaimType() VLANClaimType {
+func (r *VLANClaim) GetClaimType() VLANClaimType {
 	claimType := VLANClaimType_Invalid
 	count := 0
 	if r.Spec.ID != nil {
@@ -210,10 +207,6 @@ func (r *VLANClaim) GetVLANClaimType() VLANClaimType {
 		claimType = VLANClaimType_Range
 		count++
 
-	}
-	if r.Spec.VLANSize != nil {
-		claimType = VLANClaimType_Size
-		count++
 	}
 	if count > 1 {
 		return VLANClaimType_Invalid
@@ -240,13 +233,6 @@ func (r *VLANClaim) ValidateVLANClaimType() error {
 		count++
 
 	}
-	if r.Spec.VLANSize != nil {
-		if count > 0 {
-			sb.WriteString(", ")
-		}
-		sb.WriteString(fmt.Sprintf("size: %d", r.Spec.VLANSize))
-		count++
-	}
 	if count > 1 {
 		return fmt.Errorf("an ipclaim can only have 1 addressing, got %s", sb.String())
 	}
@@ -268,16 +254,6 @@ func (r *VLANClaim) ValidateVLANID() error {
 		return fmt.Errorf("no vlan id provided")
 	}
 	if err := validateVLANID(int(*r.Spec.ID)); err != nil {
-		return fmt.Errorf("invalid vlan id err %s", err.Error())
-	}
-	return nil
-}
-
-func (r *VLANClaim) ValidateVLANSize() error {
-	if r.Spec.VLANSize == nil {
-		return fmt.Errorf("no vlan size provided")
-	}
-	if err := validateVLANID(int(*r.Spec.VLANSize)); err != nil {
 		return fmt.Errorf("invalid vlan id err %s", err.Error())
 	}
 	return nil
@@ -367,7 +343,7 @@ func (r *VLANClaim) ValidateSyntax() field.ErrorList {
 		return allErrs
 	}
 	var v SyntaxValidator
-	claimType := r.GetVLANClaimType()
+	claimType := r.GetClaimType()
 	switch claimType {
 	case VLANClaimType_DynamicID:
 		v = &vlanDynamicIDSyntaxValidator{name: string(claimType)}
@@ -375,8 +351,6 @@ func (r *VLANClaim) ValidateSyntax() field.ErrorList {
 		v = &vlanStaticIDSyntaxValidator{name: string(claimType)}
 	case VLANClaimType_Range:
 		v = &vlanRangeSyntaxValidator{name: string(claimType)}
-	case VLANClaimType_Size:
-		v = &vlanSizeSyntaxValidator{name: string(claimType)}
 	default:
 		return allErrs
 	}
@@ -411,7 +385,7 @@ func (r *VLANClaim) GetLabelSelector() (labels.Selector, error) {
 func (r *VLANClaim) GetClaimLabels() labels.Set {
 	labels := r.Spec.GetUserDefinedLabels()
 	// system defined labels
-	labels[backend.KuidVLANClaimTypeKey] = string(r.GetVLANClaimType())
+	labels[backend.KuidVLANClaimTypeKey] = string(r.GetClaimType())
 	labels[backend.KuidClaimNameKey] = r.Name
 	labels[backend.KuidOwnerGroupKey] = r.Spec.Owner.Group
 	labels[backend.KuidOwnerVersionKey] = r.Spec.Owner.Version

@@ -37,7 +37,7 @@ func initIndexContext(ctx context.Context, op string, idx *vlanbev1alpha1.VLANIn
 func initClaimContext(ctx context.Context, op string, claim *vlanbev1alpha1.VLANClaim) context.Context {
 	var l *slog.Logger
 
-	claimType := claim.GetVLANClaimType()
+	claimType := claim.GetClaimType()
 	switch claimType {
 	case vlanbev1alpha1.VLANClaimType_DynamicID:
 		l = log.FromContext(ctx).
@@ -61,14 +61,6 @@ func initClaimContext(ctx context.Context, op string, claim *vlanbev1alpha1.VLAN
 				"nsn", claim.GetNamespacedName().String(),
 				"index", claim.Spec.Index,
 				"range", *claim.Spec.Range,
-			)
-	case vlanbev1alpha1.VLANClaimType_Size:
-		l = log.FromContext(ctx).
-			With(
-				"op", fmt.Sprintf("%s %s claim", op, string(claimType)),
-				"nsn", claim.GetNamespacedName().String(),
-				"index", claim.Spec.Index,
-				"size", *claim.Spec.VLANSize,
 			)
 	}
 	return log.IntoContext(ctx, l)

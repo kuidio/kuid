@@ -63,10 +63,7 @@ func (r *be) CreateIndex(ctx context.Context, obj runtime.Object) error {
 	log.Info("start", "isInitialized", r.cache.IsInitialized(ctx, key))
 	// if the Cache is not initialized -> restore the cache
 	// this happens upon initialization or backend restart
-	cacheCtx, err := NewCacheContext()
-	if err != nil {
-		return err
-	}
+	cacheCtx := NewCacheContext()
 	r.cache.Create(ctx, key, cacheCtx)
 	if r.cache.IsInitialized(ctx, key) {
 		log.Info("already initialized")
@@ -168,7 +165,7 @@ func (r *be) GetCache(ctx context.Context, key store.Key) (*CacheContext, error)
 }
 
 func getApplicator(_ context.Context, cacheCtx *CacheContext, claim *vlanbev1alpha1.VLANClaim) (Applicator, error) {
-	claimType := claim.GetVLANClaimType()
+	claimType := claim.GetClaimType()
 	var a Applicator
 	switch claimType {
 	case vlanbev1alpha1.VLANClaimType_DynamicID:
@@ -177,8 +174,6 @@ func getApplicator(_ context.Context, cacheCtx *CacheContext, claim *vlanbev1alp
 		a = &staticVLANApplicator{name: string(claimType), applicator: applicator{cacheCtx: cacheCtx}}
 	case vlanbev1alpha1.VLANClaimType_Range:
 		a = &rangeVLANApplicator{name: string(claimType), applicator: applicator{cacheCtx: cacheCtx}}
-	case vlanbev1alpha1.VLANClaimType_Size:
-		a = &sizeVLANApplicator{name: string(claimType), applicator: applicator{cacheCtx: cacheCtx}}
 	default:
 		return nil, fmt.Errorf("invalid addressing, got: %s", string(claimType))
 	}

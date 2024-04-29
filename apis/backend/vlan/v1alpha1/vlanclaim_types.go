@@ -29,20 +29,19 @@ type VLANClaimSpec struct {
 	// VLANIndex defines the vlan index for the VLAN Claim
 	Index string `json:"index" yaml:"index" protobuf:"bytes,1,opt,name=index"`
 	// VLANID defines the vlan for the VLAN claim
+	// +optional
 	ID *uint32 `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,2,opt,name=id"`
 	// Range defines the vlan range for the VLAN claim
 	// The following notation is used: start-end <start-vlanID>-<end-vlanID>
 	// the vlans in the range must be consecutive
+	// +optional
 	Range *string `json:"range,omitempty" yaml:"range,omitempty" protobuf:"bytes,3,opt,name=range"`
-	// Size defines the size of a VLAN Claim
-	// The result could be a non consecutive block of vlans
-	VLANSize *uint32 `json:"size,omitempty" yaml:"size,omitempty" protobuf:"bytes,4,opt,name=size"`
 	// ClaimLabels define the user defined labels and selector labels used
 	// in resource claim
-	commonv1alpha1.ClaimLabels `json:",inline" yaml:",inline" protobuf:"bytes,5,opt,name=claimLabels"`
+	commonv1alpha1.ClaimLabels `json:",inline" yaml:",inline" protobuf:"bytes,4,opt,name=claimLabels"`
 	// Owner defines the ownerReference of the VLANClaim
 	// Allow for different namesapces, hence it is part of the spec
-	Owner *commonv1alpha1.OwnerReference `json:"owner,omitempty" yaml:"owner,omitempty" protobuf:"bytes,6,opt,name=owner"`
+	Owner *commonv1alpha1.OwnerReference `json:"owner,omitempty" yaml:"owner,omitempty" protobuf:"bytes,5,opt,name=owner"`
 }
 
 // VLANClaimStatus defines the observed state of VLANClaim
