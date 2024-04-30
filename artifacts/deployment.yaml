@@ -56,6 +56,10 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: status.hostIP
+        - name: ENABLE_ASINDEX
+          value: "true"
+        - name: ENABLE_ASCLAIM
+          value: "true"
         - name: ENABLE_VLANINDEX
           value: "true"
         - name: ENABLE_VLANCLAIM

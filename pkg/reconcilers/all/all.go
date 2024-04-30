@@ -17,14 +17,12 @@ limitations under the License.
 package all
 
 import (
-	//_ "github.com/kuidio/kuid/pkg/reconcilers/ipamip"
-	//_ "github.com/kuidio/kuid/pkg/reconcilers/ipamipindex"
-	//_ "github.com/kuidio/kuid/pkg/reconcilers/ipamipprefix"
-	//_ "github.com/kuidio/kuid/pkg/reconcilers/ipamiprange"
 	_ "github.com/kuidio/kuid/pkg/reconcilers/ipamipclaim"
 	_ "github.com/kuidio/kuid/pkg/reconcilers/ipamnetworkinstance"
 	_ "github.com/kuidio/kuid/pkg/reconcilers/vlanclaim"
 	_ "github.com/kuidio/kuid/pkg/reconcilers/vlanindex"
 	_ "github.com/kuidio/kuid/pkg/reconcilers/vxlanclaim"
 	_ "github.com/kuidio/kuid/pkg/reconcilers/vxlanindex"
+	_ "github.com/kuidio/kuid/pkg/reconcilers/asclaim"
+	_ "github.com/kuidio/kuid/pkg/reconcilers/asindex"
 )

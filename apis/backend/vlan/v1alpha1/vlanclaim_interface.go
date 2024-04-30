@@ -300,8 +300,8 @@ func (r *VLANClaim) ValidateVLANRange() error {
 	if errm != nil {
 		return errm
 	}
-	if start >= end {
-		errm = errors.Join(errm, fmt.Errorf("invalid vlan range start >= end %s", *r.Spec.Range))
+	if start > end {
+		errm = errors.Join(errm, fmt.Errorf("invalid vlan range start > end %s", *r.Spec.Range))
 	}
 	if err := validateVLANID(start); err != nil {
 		errm = errors.Join(errm, fmt.Errorf("invalid vlan start err %s", err.Error()))

@@ -1,0 +1,7 @@
+apiVersion: vxlan.be.kuid.dev/v1alpha1
+kind: VXLANClaim
+metadata:
+  name: index1.range1
+spec:
+  index: index1
+  range: 1024-65535

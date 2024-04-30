@@ -34,7 +34,7 @@ require (
 	github.com/hansthienpondt/nipam v0.0.5
 	github.com/henderiw/apiserver-builder v0.0.2-0.20240414132730-35630f41575d
 	github.com/henderiw/apiserver-store v0.0.0-20240419050621-a69e6046534c
-	github.com/henderiw/idxtable v0.0.0-20240428233701-618d45381f1d
+	github.com/henderiw/idxtable v0.0.0-20240429224658-bab03f41ca36
 	github.com/henderiw/iputil v0.0.0-20231218081610-37f78ad9c81c
 	github.com/henderiw/logger v0.0.0-20230911123436-8655829b1abe
 	github.com/henderiw/store v0.0.0-20240311135319-eb32ab80594b

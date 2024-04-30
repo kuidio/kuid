@@ -170,7 +170,7 @@ func GetVLANEntry(ctx context.Context, k store.Key, vrange, id string, labels ma
 	id = strings.ReplaceAll(id, "/", "-")
 	name := fmt.Sprintf("%s.%s", index, id)
 	if vrange != "" {
-		name = fmt.Sprintf("%s.%s.%s", index, vrange, id)
+		name = fmt.Sprintf("%s.%s", vrange, id)
 	}
 
 	return BuildVLANEntry(

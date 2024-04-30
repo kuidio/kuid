@@ -23,6 +23,7 @@ import (
 	"github.com/henderiw/idxtable/pkg/tree32"
 	"github.com/henderiw/store"
 	"github.com/henderiw/store/memory"
+	vxlanbev1alpha1 "github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1"
 )
 
 type CacheContext struct {
@@ -32,7 +33,7 @@ type CacheContext struct {
 
 func NewCacheContext() *CacheContext {
 	return &CacheContext{
-		tree:   tree32.New(),
+		tree:   tree32.New(vxlanbev1alpha1.VXLANID_Max + 1, 32-24),
 		ranges: memory.NewStore[*table32.Table32](),
 	}
 

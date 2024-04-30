@@ -1,0 +1,7 @@
+apiVersion: vxlan.be.kuid.dev/v1alpha1
+kind: VXLANIndex
+metadata:
+  name: index1
+spec:
+  labels:
+    inv.kuid.dev/topology: topo1

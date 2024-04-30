@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 // +kubebuilder:object:generate=true
-// +groupName=as.res.kuid.dev
+// +groupName=as.be.kuid.dev
 package v1alpha1
 
 import (

@@ -23,7 +23,7 @@ import (
 
 	"github.com/henderiw/apiserver-store/pkg/storebackend"
 	"github.com/henderiw/logger/log"
-	vlanbe1v1alpha1 "github.com/kuidio/kuid/apis/backend/vlan/v1alpha1"
+	vxlanbe1v1alpha1 "github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metainternalversion "k8s.io/apimachinery/pkg/apis/meta/internalversion"
 	"k8s.io/apimachinery/pkg/conversion"
@@ -53,7 +53,7 @@ func (r *strategy) List(ctx context.Context, options *metainternalversion.ListOp
 			return
 		}
 
-		claim, ok := obj.(*vlanbe1v1alpha1.VLANClaim)
+		claim, ok := obj.(*vxlanbe1v1alpha1.VXLANClaim)
 		if !ok {
 			log.Error("cannot get object")
 			return

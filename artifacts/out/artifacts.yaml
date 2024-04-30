@@ -381,6 +381,22 @@ spec:
 apiVersion: apiregistration.k8s.io/v1
 kind: APIService
 metadata:
+  name: v1alpha1.as.be.kuid.dev
+spec:
+  group: as.be.kuid.dev
+  groupPriorityMinimum: 1000
+  insecureSkipTLSVerify: true
+  service:
+    name: kuid-server
+    namespace: kuid-system
+    port: 6443
+  version: v1alpha1
+  versionPriority: 15
+
+---
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
   name: v1alpha1.ipam.be.kuid.dev
 spec:
   group: ipam.be.kuid.dev
@@ -476,6 +492,10 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: status.hostIP
+        - name: ENABLE_ASINDEX
+          value: "true"
+        - name: ENABLE_ASCLAIM
+          value: "true"
         - name: ENABLE_VLANINDEX
           value: "true"
         - name: ENABLE_VLANCLAIM
@@ -686,6 +706,45 @@ rules:
   resources:
   - vxlanindices
   - vxlanindices/status
+  verbs:
+  - get
+  - watch
+  - list
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - as.be.kuid.dev
+  resources:
+  - asclaims
+  - asclaims/status
+  verbs:
+  - get
+  - watch
+  - list
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - as.be.kuid.dev
+  resources:
+  - asentries
+  - asentries/status
+  verbs:
+  - get
+  - watch
+  - list
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - as.be.kuid.dev
+  resources:
+  - asindices
+  - asindices/status
   verbs:
   - get
   - watch

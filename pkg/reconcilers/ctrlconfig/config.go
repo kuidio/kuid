@@ -21,6 +21,7 @@ import (
 
 	"github.com/henderiw/logger/log"
 	"github.com/kuidio/kuid/pkg/backend"
+	"github.com/kuidio/kuid/pkg/backend/as"
 	"github.com/kuidio/kuid/pkg/backend/ipam"
 	"github.com/kuidio/kuid/pkg/backend/vlan"
 	"github.com/kuidio/kuid/pkg/backend/vxlan"
@@ -28,9 +29,10 @@ import (
 )
 
 type ControllerConfig struct {
-	IPAMBackend backend.Backend[*ipam.CacheContext]
-	VLANBackend backend.Backend[*vlan.CacheContext]
+	IPAMBackend  backend.Backend[*ipam.CacheContext]
+	VLANBackend  backend.Backend[*vlan.CacheContext]
 	VXLANBackend backend.Backend[*vxlan.CacheContext]
+	ASBackend    backend.Backend[*as.CacheContext]
 }
 
 func InitContext(ctx context.Context, controllerName string, req types.NamespacedName) context.Context {

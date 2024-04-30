@@ -1,11 +1,9 @@
 apiVersion: vlan.be.kuid.dev/v1alpha1
 kind: VLANClaim
 metadata:
-  name: claim.index1.range-claim.1
+  name: index1.claim3
 spec:
   index: index1
   selector:
     matchLabels:
-      be.kuid.dev/claim-name: range-claim
-
-    
+      be.kuid.dev/claim-name: index1.range1
