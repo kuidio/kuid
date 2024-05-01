@@ -144,7 +144,7 @@ func GetASEntry(ctx context.Context, k store.Key, vrange, id string, labels map[
 
 	spec := &ASEntrySpec{
 		Index:     index,
-		ClaimType: GetIPClaimTypeFromString(labels[backend.KuidASClaimTypeKey]),
+		ClaimType: GetClaimTypeFromString(labels[backend.KuidASClaimTypeKey]),
 		Claim:     labels[backend.KuidClaimNameKey],
 		ID:        id,
 		Owner: &commonv1alpha1.OwnerReference{
@@ -170,7 +170,7 @@ func GetASEntry(ctx context.Context, k store.Key, vrange, id string, labels map[
 	id = strings.ReplaceAll(id, "/", "-")
 	name := fmt.Sprintf("%s.%s", index, id)
 	if vrange != "" {
-		name = fmt.Sprintf("%s.%s.%s", index, vrange, id)
+		name = fmt.Sprintf("%s.%s", vrange, id)
 	}
 
 	return BuildASEntry(

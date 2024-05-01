@@ -23,6 +23,7 @@ import (
 	"github.com/henderiw/idxtable/pkg/tree12"
 	"github.com/henderiw/store"
 	"github.com/henderiw/store/memory"
+	vlanbev1alpha1 "github.com/kuidio/kuid/apis/backend/vlan/v1alpha1"
 )
 
 type CacheContext struct {
@@ -32,7 +33,7 @@ type CacheContext struct {
 
 func NewCacheContext() *CacheContext {
 	return &CacheContext{
-		tree:   tree12.New(),
+		tree:   tree12.New(vlanbev1alpha1.VLANID_Max+1, 32-12),
 		ranges: memory.NewStore[*table12.Table12](),
 	}
 

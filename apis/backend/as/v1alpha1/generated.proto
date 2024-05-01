@@ -161,16 +161,32 @@ message ASIndexList {
 
 // ASIndexSpec defines the desired state of ASIndex
 message ASIndexSpec {
+  // MinID defines the min VLAN ID the index supports
+  // +optional
+  optional uint32 minID = 1;
+
+  // MaxID defines the max VLAN ID the index supports
+  // +optional
+  optional uint32 maxID = 2;
+
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 1;
+  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
 }
 
 // ASIndexStatus defines the observed state of ASIndex
 message ASIndexStatus {
-  // ConditionedStatus provides the status of the ASIndex using conditions
+  // MinID defines the min VLAN ID the index supports
+  // +optional
+  optional uint32 minID = 1;
+
+  // MaxID defines the max VLAN ID the index supports
+  // +optional
+  optional uint32 maxID = 2;
+
+  // ConditionedStatus provides the status of the VLANIndex using conditions
   // - a ready condition indicates the overall status of the resource
-  optional github.com.kuidio.kuid.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
+  optional github.com.kuidio.kuid.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 3;
 }
 
 message ASRangeSyntaxValidator {

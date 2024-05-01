@@ -26,10 +26,10 @@ import (
 
 // VXLANIndexSpec defines the desired state of VXLANIndex
 type VXLANIndexSpec struct {
-	// MinID defines the min VLAN ID the index supports
+	// MinID defines the min ID the index supports
 	// +optional
 	MinID *uint32 `json:"minID,omitempty" yaml:"minID,omitempty" protobuf:"bytes,1,opt,name=minID"`
-	// MaxID defines the max VLAN ID the index supports
+	// MaxID defines the max ID the index supports
 	// +optional
 	MaxID *uint32 `json:"maxID,omitempty" yaml:"maxID,omitempty" protobuf:"bytes,2,opt,name=maxID"`
 	// UserDefinedLabels define metadata to the resource.
@@ -39,10 +39,10 @@ type VXLANIndexSpec struct {
 
 // VXLANIndexStatus defines the observed state of VXLANIndex
 type VXLANIndexStatus struct {
-	// MinID defines the min VLAN ID the index supports
+	// MinID defines the min ID the index is configured with
 	// +optional
 	MinID *uint32 `json:"minID,omitempty" yaml:"minID,omitempty" protobuf:"bytes,1,opt,name=minID"`
-	// MaxID defines the max VLAN ID the index supports
+	// MaxID defines the max ID the index is configured with
 	// +optional
 	MaxID *uint32 `json:"maxID,omitempty" yaml:"maxID,omitempty" protobuf:"bytes,2,opt,name=maxID"`
 	// ConditionedStatus provides the status of the VLANIndex using conditions

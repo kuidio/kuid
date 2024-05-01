@@ -37,10 +37,13 @@ import (
 	"k8s.io/apimachinery/pkg/selection"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/validation/field"
+	"github.com/henderiw/idxtable/pkg/tree/id32"
 )
 
 const ASClaimPlural = "asclaims"
 const ASClaimSingular = "asclaim"
+const ASID_Min = 0
+const ASID_Max = 4294967295
 
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &ASClaim{}
@@ -173,24 +176,39 @@ func (r *ASClaim) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
+func getASDot(asn uint32) string {
+	if asn > 65536 {
+		a := asn / 65536
+		b := asn - (a * 65536)
+		return fmt.Sprintf("%d.%d", a, b)
+	}
+	return strconv.Itoa(int(asn))
+}
+
 func (r *ASClaim) GetClaimRequest() string {
-	// we assume validation is already done when calling this
 	if r.Spec.ID != nil {
-		return strconv.Itoa(int(*r.Spec.ID))
+		return getASDot(*r.Spec.ID)
 	}
 	if r.Spec.Range != nil {
-		return *r.Spec.Range
+		range32, err := id32.ParseRange(*r.Spec.Range)
+		if err != nil {
+			return *r.Spec.Range
+		}
+		return fmt.Sprintf("%s-%s", getASDot(uint32(range32.From().ID())), getASDot(uint32(range32.To().ID())))
 	}
 	return ""
 }
 
 func (r *ASClaim) GetClaimResponse() string {
-	// we assume validation is already done when calling this
 	if r.Status.ID != nil {
-		return strconv.Itoa(int(*r.Status.ID))
+		return getASDot(*r.Status.ID)
 	}
 	if r.Status.Range != nil {
-		return *r.Status.Range
+		range32, err := id32.ParseRange(*r.Status.Range)
+		if err != nil {
+			return *r.Status.Range
+		}
+		return fmt.Sprintf("%s-%s", getASDot(uint32(range32.From().ID())), getASDot(uint32(range32.To().ID())))
 	}
 	return ""
 }
@@ -234,27 +252,27 @@ func (r *ASClaim) ValidateASClaimType() error {
 
 	}
 	if count > 1 {
-		return fmt.Errorf("an ipclaim can only have 1 addressing, got %s", sb.String())
+		return fmt.Errorf("a claim can only have 1 type, got %s", sb.String())
 	}
 	return nil
 }
 
 func validateASID(id int) error {
-	if id <= 0 {
-		return fmt.Errorf("invalid AS id, got %d", id)
+	if id < ASID_Min {
+		return fmt.Errorf("invalid id, got %d", id)
 	}
-	if id >= 4095 {
-		return fmt.Errorf("invalid AS id, got %d", id)
+	if id > ASID_Max {
+		return fmt.Errorf("invalid id, got %d", id)
 	}
 	return nil
 }
 
 func (r *ASClaim) ValidateASID() error {
 	if r.Spec.ID == nil {
-		return fmt.Errorf("no AS id provided")
+		return fmt.Errorf("no id provided")
 	}
 	if err := validateASID(int(*r.Spec.ID)); err != nil {
-		return fmt.Errorf("invalid AS id err %s", err.Error())
+		return fmt.Errorf("invalid id err %s", err.Error())
 	}
 	return nil
 }
@@ -298,8 +316,8 @@ func (r *ASClaim) ValidateASRange() error {
 	if errm != nil {
 		return errm
 	}
-	if start >= end {
-		errm = errors.Join(errm, fmt.Errorf("invalid AS range start >= end %s", *r.Spec.Range))
+	if start > end {
+		errm = errors.Join(errm, fmt.Errorf("invalid AS range start > end %s", *r.Spec.Range))
 	}
 	if err := validateASID(start); err != nil {
 		errm = errors.Join(errm, fmt.Errorf("invalid AS start err %s", err.Error()))

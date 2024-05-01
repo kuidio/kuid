@@ -1,7 +1,7 @@
 apiVersion: vlan.be.kuid.dev/v1alpha1
 kind: VLANClaim
 metadata:
-  name: range-claim
+  name: index1.range1
 spec:
   index: index1
   range: 200-399

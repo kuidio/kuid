@@ -1,0 +1,6 @@
+apiVersion: vxlan.be.kuid.dev/v1alpha1
+kind: VXLANClaim
+metadata:
+  name: index1.claim2
+spec:
+  index: index1

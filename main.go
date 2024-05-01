@@ -27,15 +27,20 @@ import (
 	"github.com/henderiw/apiserver-builder/pkg/builder"
 	"github.com/henderiw/apiserver-store/pkg/db/badgerdb"
 	"github.com/henderiw/logger/log"
+	asbev1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 	vlanbev1alpha1 "github.com/kuidio/kuid/apis/backend/vlan/v1alpha1"
 	vxlanbev1alpha1 "github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1"
 	"github.com/kuidio/kuid/apis/generated/clientset/versioned/scheme"
 	kuidopenapi "github.com/kuidio/kuid/apis/generated/openapi"
 	ipamresv1alpha1 "github.com/kuidio/kuid/apis/resource/ipam/v1alpha1"
+	"github.com/kuidio/kuid/pkg/backend/as"
 	"github.com/kuidio/kuid/pkg/backend/ipam"
 	"github.com/kuidio/kuid/pkg/backend/vlan"
 	"github.com/kuidio/kuid/pkg/backend/vxlan"
+	"github.com/kuidio/kuid/pkg/kuidserver/asentry"
+	"github.com/kuidio/kuid/pkg/kuidserver/asindex"
+	"github.com/kuidio/kuid/pkg/kuidserver/asclaim"
 	"github.com/kuidio/kuid/pkg/kuidserver/ipclaim"
 	"github.com/kuidio/kuid/pkg/kuidserver/ipentry"
 	serverstore "github.com/kuidio/kuid/pkg/kuidserver/store"
@@ -94,6 +99,7 @@ func main() {
 		ipamresv1alpha1.AddToScheme,
 		vlanbev1alpha1.AddToScheme,
 		vxlanbev1alpha1.AddToScheme,
+		asbev1alpha1.AddToScheme,
 	}) {
 		if err := api(runScheme); err != nil {
 			log.Error("cannot add scheme", "err", err)
@@ -125,6 +131,14 @@ func main() {
 		vxlanbev1alpha1.SchemeGroupVersion.WithKind(vxlanbev1alpha1.VXLANEntryKind),
 		vxlanbev1alpha1.ConvertVXLANEntryFieldSelector,
 	)
+	runScheme.AddFieldLabelConversionFunc(
+		asbev1alpha1.SchemeGroupVersion.WithKind(asbev1alpha1.ASClaimKind),
+		asbev1alpha1.ConvertASClaimFieldSelector,
+	)
+	runScheme.AddFieldLabelConversionFunc(
+		asbev1alpha1.SchemeGroupVersion.WithKind(asbev1alpha1.ASEntryKind),
+		asbev1alpha1.ConvertASEntryFieldSelector,
+	)
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), manager.Options{
 		Scheme: runScheme,
@@ -137,11 +151,13 @@ func main() {
 	ipbe := ipam.New(mgr.GetClient())
 	vlanbe := vlan.New(mgr.GetClient())
 	vxlanbe := vxlan.New(mgr.GetClient())
+	asbe := as.New(mgr.GetClient())
 
 	ctrlCfg := &ctrlconfig.ControllerConfig{
 		IPAMBackend:  ipbe,
 		VLANBackend:  vlanbe,
 		VXLANBackend: vxlanbe,
+		ASBackend:    asbe,
 	}
 	for name, reconciler := range reconcilers.Reconcilers {
 		log.Info("reconciler", "name", name, "enabled", IsReconcilerEnabled(name))
@@ -205,6 +221,21 @@ func main() {
 				Type:   serverstore.StorageType_KV,
 				DB:     db,
 			}, vxlanbe)).
+			WithResourceAndHandler(ctx, &asbev1alpha1.ASClaim{}, asclaim.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
+				Prefix: configDir,
+				Type:   serverstore.StorageType_KV,
+				DB:     db,
+			}, asbe)).
+			WithResourceAndHandler(ctx, &asbev1alpha1.ASEntry{}, asentry.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
+				Prefix: configDir,
+				Type:   serverstore.StorageType_KV,
+				DB:     db,
+			}, asbe)).
+			WithResourceAndHandler(ctx, &asbev1alpha1.ASIndex{}, asindex.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
+				Prefix: configDir,
+				Type:   serverstore.StorageType_KV,
+				DB:     db,
+			}, asbe)).
 			WithoutEtcd().
 			Execute(ctx); err != nil {
 			log.Info("cannot start config-server")

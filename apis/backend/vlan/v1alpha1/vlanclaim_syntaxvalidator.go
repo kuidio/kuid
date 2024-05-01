@@ -36,7 +36,7 @@ func (r *vlanRangeSyntaxValidator) Validate(claim *VLANClaim) field.ErrorList {
 		allErrs = append(allErrs, field.Invalid(
 			field.NewPath("spec.range"),
 			claim,
-			fmt.Errorf("invalid vlan range %s", r.name).Error(),
+			fmt.Errorf("invalid vlan range %s, err: %s", r.name, err.Error()).Error(),
 		))
 	}
 	return allErrs

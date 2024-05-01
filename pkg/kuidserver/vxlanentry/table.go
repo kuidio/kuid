@@ -46,7 +46,7 @@ func NewTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 			{Name: "Ready", Type: "string"},
 			{Name: "Index", Type: "string"},
 			{Name: "ClaimType", Type: "string"},
-			{Name: "VXLANID", Type: "integer"},
+			{Name: "ID", Type: "integer"},
 		},
 	}
 }

@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 // +kubebuilder:object:generate=true
-// +groupName=vlan.res.kuid.dev
+// +groupName=vlan.be.kuid.dev
 package v1alpha1
 
 import (

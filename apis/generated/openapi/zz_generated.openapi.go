@@ -689,6 +689,20 @@ func schema_apis_backend_as_v1alpha1_ASIndexSpec(ref common.ReferenceCallback) c
 				Description: "ASIndexSpec defines the desired state of ASIndex",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
+					"minID": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MinID defines the min VLAN ID the index supports",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"maxID": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MaxID defines the max VLAN ID the index supports",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
 					"labels": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Labels as user defined labels",
@@ -718,6 +732,20 @@ func schema_apis_backend_as_v1alpha1_ASIndexStatus(ref common.ReferenceCallback)
 				Description: "ASIndexStatus defines the observed state of ASIndex",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
+					"minID": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MinID defines the min VLAN ID the index supports",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"maxID": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MaxID defines the max VLAN ID the index supports",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
 					"conditions": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Conditions of the resource.",
@@ -2693,6 +2721,20 @@ func schema_apis_backend_vxlan_v1alpha1_VXLANIndexSpec(ref common.ReferenceCallb
 				Description: "VXLANIndexSpec defines the desired state of VXLANIndex",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
+					"minID": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MinID defines the min VLAN ID the index supports",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"maxID": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MaxID defines the max VLAN ID the index supports",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
 					"labels": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Labels as user defined labels",
@@ -2722,6 +2764,20 @@ func schema_apis_backend_vxlan_v1alpha1_VXLANIndexStatus(ref common.ReferenceCal
 				Description: "VXLANIndexStatus defines the observed state of VXLANIndex",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
+					"minID": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MinID defines the min VLAN ID the index supports",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"maxID": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MaxID defines the max VLAN ID the index supports",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
 					"conditions": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Conditions of the resource.",

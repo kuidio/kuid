@@ -25,7 +25,7 @@ const (
 	ASClaimType_Range     ASClaimType = "asRange"
 )
 
-func GetIPClaimTypeFromString(s string) ASClaimType {
+func GetClaimTypeFromString(s string) ASClaimType {
 	switch s {
 	case string(ASClaimType_StaticID):
 		return ASClaimType_StaticID
@@ -37,3 +37,8 @@ func GetIPClaimTypeFromString(s string) ASClaimType {
 		return ASClaimType_Invalid
 	}
 }
+
+const (
+	ASIndexReservedMinName = "rangeReservedMin"
+	ASIndexReservedMaxName = "rangeReservedMax"
+)

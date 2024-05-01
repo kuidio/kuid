@@ -1,0 +1,7 @@
+apiVersion: as.be.kuid.dev/v1alpha1
+kind: ASIndex
+metadata:
+  name: index1
+spec:
+  labels:
+    inv.kuid.dev/topology: topo1

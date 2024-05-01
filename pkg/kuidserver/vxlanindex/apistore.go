@@ -73,7 +73,7 @@ func NewREST(ctx context.Context, scheme *runtime.Scheme, optsGetter generic.RES
 
 	// This is the etcd store
 	store := &registry.Store{
-		Tracer:                    otel.Tracer("vlanindex-server"),
+		Tracer:                    otel.Tracer("vxlanindex-server"),
 		NewFunc:                   func() runtime.Object { return &vxlanbe1v1alpha1.VXLANIndex{} },
 		NewListFunc:               func() runtime.Object { return &vxlanbe1v1alpha1.VXLANIndexList{} },
 		PredicateFunc:             Match,

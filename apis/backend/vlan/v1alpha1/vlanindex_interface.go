@@ -183,11 +183,11 @@ func (r *VLANIndex) ValidateSyntax() field.ErrorList {
 }
 
 func GetMinClaimRange(id uint32) string {
-	return fmt.Sprintf("0-%d", id-1)
+	return fmt.Sprintf("%d-%d", VLANID_Min, id-1)
 }
 
 func GetMaxClaimRange(id uint32) string {
-	return fmt.Sprintf("%d-4095", id+1)
+	return fmt.Sprintf("%d-%d", id+1, VLANID_Max)
 }
 
 func (r *VLANIndex) GetMinClaimNSN() types.NamespacedName {

@@ -157,7 +157,7 @@ func (r *VXLANIndex) ValidateSyntax() field.ErrorList {
 			allErrs = append(allErrs, field.Invalid(
 				field.NewPath("spec.minID"),
 				r,
-				fmt.Errorf("invalid vlan ID %d", *r.Spec.MinID).Error(),
+				fmt.Errorf("invalid id %d", *r.Spec.MinID).Error(),
 			))
 		}
 	}
@@ -166,7 +166,7 @@ func (r *VXLANIndex) ValidateSyntax() field.ErrorList {
 			allErrs = append(allErrs, field.Invalid(
 				field.NewPath("spec.maxID"),
 				r,
-				fmt.Errorf("invalid vlan ID %d", *r.Spec.MaxID).Error(),
+				fmt.Errorf("invalid id %d", *r.Spec.MaxID).Error(),
 			))
 		}
 	}
@@ -175,7 +175,7 @@ func (r *VXLANIndex) ValidateSyntax() field.ErrorList {
 			allErrs = append(allErrs, field.Invalid(
 				field.NewPath("spec.maxID"),
 				r,
-				fmt.Errorf("min vlan ID %d cannot be bigger than max vlan ID %d", *r.Spec.MinID, *r.Spec.MaxID).Error(),
+				fmt.Errorf("min id %d cannot be bigger than max id %d", *r.Spec.MinID, *r.Spec.MaxID).Error(),
 			))
 		}
 	}
@@ -183,11 +183,11 @@ func (r *VXLANIndex) ValidateSyntax() field.ErrorList {
 }
 
 func GetMinClaimRange(id uint32) string {
-	return fmt.Sprintf("0-%d", id-1)
+	return fmt.Sprintf("%d-%d", VXLANID_Min, id-1)
 }
 
 func GetMaxClaimRange(id uint32) string {
-	return fmt.Sprintf("%d-4095", id+1)
+	return fmt.Sprintf("%d-%d", id+1, VXLANID_Max)
 }
 
 func (r *VXLANIndex) GetMinClaimNSN() types.NamespacedName {

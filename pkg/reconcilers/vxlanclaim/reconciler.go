@@ -70,7 +70,7 @@ func (r *reconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manager, c i
 		Named(controllerName).
 		For(&vxlanbev1alpha1.VXLANClaim{}).
 		Watches(&vxlanbev1alpha1.VXLANEntry{},
-			&eventhandler.VXLANEntryEventHandler{
+			&eventhandler.ASEntryEventHandler{
 				Client:  mgr.GetClient(),
 				ObjList: &vxlanbev1alpha1.VXLANClaimList{},
 			}).
