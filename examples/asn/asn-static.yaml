@@ -1,0 +1,8 @@
+apiVersion: as.be.kuid.dev/v1alpha1
+kind: ASClaim
+metadata:
+  name: index1.claim1
+spec:
+  index: index1
+  id: 1499547 # 22.57755
+    

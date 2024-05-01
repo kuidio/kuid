@@ -37,6 +37,7 @@ import (
 	"k8s.io/apimachinery/pkg/selection"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/validation/field"
+	"github.com/henderiw/idxtable/pkg/tree/id32"
 )
 
 const ASClaimPlural = "asclaims"
@@ -175,24 +176,39 @@ func (r *ASClaim) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
+func getASDot(asn uint32) string {
+	if asn > 65536 {
+		a := asn / 65536
+		b := asn - (a * 65536)
+		return fmt.Sprintf("%d.%d", a, b)
+	}
+	return strconv.Itoa(int(asn))
+}
+
 func (r *ASClaim) GetClaimRequest() string {
-	// we assume validation is already done when calling this
 	if r.Spec.ID != nil {
-		return strconv.Itoa(int(*r.Spec.ID))
+		return getASDot(*r.Spec.ID)
 	}
 	if r.Spec.Range != nil {
-		return *r.Spec.Range
+		range32, err := id32.ParseRange(*r.Spec.Range)
+		if err != nil {
+			return *r.Spec.Range
+		}
+		return fmt.Sprintf("%s-%s", getASDot(uint32(range32.From().ID())), getASDot(uint32(range32.To().ID())))
 	}
 	return ""
 }
 
 func (r *ASClaim) GetClaimResponse() string {
-	// we assume validation is already done when calling this
 	if r.Status.ID != nil {
-		return strconv.Itoa(int(*r.Status.ID))
+		return getASDot(*r.Status.ID)
 	}
 	if r.Status.Range != nil {
-		return *r.Status.Range
+		range32, err := id32.ParseRange(*r.Status.Range)
+		if err != nil {
+			return *r.Status.Range
+		}
+		return fmt.Sprintf("%s-%s", getASDot(uint32(range32.From().ID())), getASDot(uint32(range32.To().ID())))
 	}
 	return ""
 }

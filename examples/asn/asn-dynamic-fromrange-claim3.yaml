@@ -1,0 +1,9 @@
+apiVersion: as.be.kuid.dev/v1alpha1
+kind: ASClaim
+metadata:
+  name: index1.claim3
+spec:
+  index: index1
+  selector:
+    matchLabels:
+      be.kuid.dev/claim-name: index1.range1
