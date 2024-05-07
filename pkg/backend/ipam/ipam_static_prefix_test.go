@@ -10,17 +10,17 @@ import (
 
 func TestIPAMStaticPrefix(t *testing.T) {
 	tests := map[string]struct {
-		niName   string
+		index   string
 		prefixes []testprefix
 	}{
 		"NotReady": {
-			niName: "",
+			index: "",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: true}, // rib not ready
 			},
 		},
 		"AggregateNormal": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "10.0.0.0/8", prefixType: aggregate, expectedError: false},
@@ -28,7 +28,7 @@ func TestIPAMStaticPrefix(t *testing.T) {
 			},
 		},
 		"AggregateNestingIPv4": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/16", prefixType: aggregate, expectedError: true}, // nesting aggregate
@@ -36,20 +36,20 @@ func TestIPAMStaticPrefix(t *testing.T) {
 			},
 		},
 		"AggregateNestingIPv6": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "2000::/48", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "2000::/32", prefixType: aggregate, expectedError: true}, // nesting aggregate
 			},
 		},
 		"NoAggregate": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", expectedError: true}, // no aggregate
 			},
 		},
 		"NormalNesting": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/16", expectedError: false},
@@ -58,7 +58,7 @@ func TestIPAMStaticPrefix(t *testing.T) {
 			},
 		},
 		"Normal2Pool": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/16", expectedError: false},
@@ -67,7 +67,7 @@ func TestIPAMStaticPrefix(t *testing.T) {
 			},
 		},
 		"Normal2Network": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/16", expectedError: false},
@@ -76,7 +76,7 @@ func TestIPAMStaticPrefix(t *testing.T) {
 			},
 		},
 		"Network2Network": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/16", expectedError: false},
@@ -85,7 +85,7 @@ func TestIPAMStaticPrefix(t *testing.T) {
 			},
 		},
 		"Network2Pool": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/16", expectedError: false},
@@ -94,7 +94,7 @@ func TestIPAMStaticPrefix(t *testing.T) {
 			},
 		},
 		"Pool2Network": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/16", expectedError: false},
@@ -103,7 +103,7 @@ func TestIPAMStaticPrefix(t *testing.T) {
 			},
 		},
 		"Pool2Pool": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/16", expectedError: false},
@@ -112,21 +112,21 @@ func TestIPAMStaticPrefix(t *testing.T) {
 			},
 		},
 		"Pool2Aggregate": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/24", prefixType: pool, expectedError: false},
 			},
 		},
 		"Network2Aggregate": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/24", prefixType: network, expectedError: false},
 			},
 		},
 		"InsertNormal2Normal": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/16", expectedError: false},
@@ -135,7 +135,7 @@ func TestIPAMStaticPrefix(t *testing.T) {
 			},
 		},
 		"InsertNormal2Pool": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/16", expectedError: false},
@@ -144,7 +144,7 @@ func TestIPAMStaticPrefix(t *testing.T) {
 			},
 		},
 		"InsertNormal2Network": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/16", expectedError: false},
@@ -153,7 +153,7 @@ func TestIPAMStaticPrefix(t *testing.T) {
 			},
 		},
 		"InsertPool": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/16", expectedError: false},
@@ -162,7 +162,7 @@ func TestIPAMStaticPrefix(t *testing.T) {
 			},
 		},
 		"InsertNetwork": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/16", expectedError: false},
@@ -171,7 +171,7 @@ func TestIPAMStaticPrefix(t *testing.T) {
 			},
 		},
 		"InsertAggregate": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/16", expectedError: false},
@@ -186,8 +186,8 @@ func TestIPAMStaticPrefix(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			be := New(nil)
 			ctx := context.Background()
-			if tc.niName != "" {
-				index := getNI(tc.niName)
+			if tc.index != "" {
+				index := getIndex(tc.index)
 				err := be.CreateIndex(ctx, index)
 				assert.NoError(t, err)
 			}
@@ -200,18 +200,18 @@ func TestIPAMStaticPrefix(t *testing.T) {
 				switch p.claimType {
 				case staticPrefix:
 					if p.prefixType != nil && *p.prefixType == *aggregate {
-						ipClaim, err = p.getIPClaimFromNetworkPrefix(tc.niName)
+						ipClaim, err = p.getIPClaimFromNetworkPrefix(tc.index)
 					} else {
-						ipClaim, err = p.getStaticPrefixIPClaim(tc.niName)
+						ipClaim, err = p.getStaticPrefixIPClaim(tc.index)
 					}
 				case staticRange:
-					ipClaim, err = p.getStaticRangeIPClaim(tc.niName)
+					ipClaim, err = p.getStaticRangeIPClaim(tc.index)
 				case staticAddress:
-					ipClaim, err = p.getStaticAddressIPClaim(tc.niName)
+					ipClaim, err = p.getStaticAddressIPClaim(tc.index)
 				case dynamicPrefix:
-					ipClaim, err = p.getDynamicPrefixIPClaim(tc.niName)
+					ipClaim, err = p.getDynamicPrefixIPClaim(tc.index)
 				case dynamicAddress:
-					ipClaim, err = p.getDynamicAddressIPClaim(tc.niName)
+					ipClaim, err = p.getDynamicAddressIPClaim(tc.index)
 				}
 				assert.NoError(t, err)
 

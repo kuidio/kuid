@@ -22,10 +22,12 @@ import (
 	"fmt"
 
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
+	"github.com/henderiw/idxtable/pkg/tree/gtree"
+	"github.com/henderiw/idxtable/pkg/tree/tree16"
 	"github.com/henderiw/store"
+	"github.com/kuidio/kuid/apis/backend"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
-	rresource "github.com/kuidio/kuid/pkg/reconcilers/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -108,8 +110,8 @@ func ConvertVLANIndexFieldSelector(label, value string) (internalLabel, internal
 	}
 }
 
-func (r *VLANIndexList) GetItems() []rresource.Object {
-	objs := []rresource.Object{}
+func (r *VLANIndexList) GetItems() []backend.Object {
+	objs := []backend.Object{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)
@@ -135,8 +137,20 @@ func (r *VLANIndex) GetNamespacedName() types.NamespacedName {
 	}
 }
 
+func (r *VLANIndex) GetTree() gtree.GTree {
+	tree, err := tree16.New(12)
+	if err != nil {
+		return nil
+	}
+	return tree
+}
+
 func (r *VLANIndex) GetKey() store.Key {
 	return store.KeyFromNSN(r.GetNamespacedName())
+}
+
+func (r *VLANIndex) GetType() string {
+	return ""
 }
 
 func (r *VLANIndex) GetOwnerReference() *commonv1alpha1.OwnerReference {
@@ -190,6 +204,20 @@ func GetMaxClaimRange(id uint32) string {
 	return fmt.Sprintf("%d-%d", id+1, VLANID_Max)
 }
 
+func (r *VLANIndex) GetMinID() *uint64 {
+	if r.Spec.MinID == nil {
+		return nil
+	}
+	return ptr.To[uint64](uint64(*r.Spec.MinID))
+}
+
+func (r *VLANIndex) GetMaxID() *uint64 {
+	if r.Spec.MaxID == nil {
+		return nil
+	}
+	return ptr.To[uint64](uint64(*r.Spec.MaxID))
+}
+
 func (r *VLANIndex) GetMinClaimNSN() types.NamespacedName {
 	return types.NamespacedName{
 		Namespace: r.Namespace,
@@ -204,7 +232,7 @@ func (r *VLANIndex) GetMaxClaimNSN() types.NamespacedName {
 	}
 }
 
-func (r *VLANIndex) GetMinClaim() *VLANClaim {
+func (r *VLANIndex) GetMinClaim() backend.ClaimObject {
 	return BuildVLANClaim(
 		metav1.ObjectMeta{
 			Namespace: r.GetNamespace(),
@@ -219,7 +247,7 @@ func (r *VLANIndex) GetMinClaim() *VLANClaim {
 	)
 }
 
-func (r *VLANIndex) GetMaxClaim() *VLANClaim {
+func (r *VLANIndex) GetMaxClaim() backend.ClaimObject {
 	return BuildVLANClaim(
 		metav1.ObjectMeta{
 			Namespace: r.GetNamespace(),

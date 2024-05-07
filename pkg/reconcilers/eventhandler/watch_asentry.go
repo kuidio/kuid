@@ -21,18 +21,18 @@ import (
 
 	"github.com/henderiw/logger/log"
 	vxlanbev1alpha1 "github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1"
-	"github.com/kuidio/kuid/pkg/reconcilers/resource"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/util/workqueue"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
+	"github.com/kuidio/kuid/apis/backend"
 )
 
 type ASEntryEventHandler struct {
 	Client  client.Client
-	ObjList resource.ObjectList
+	ObjList backend.ObjectList
 }
 
 // Create enqueues a request

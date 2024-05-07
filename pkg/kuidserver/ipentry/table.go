@@ -36,7 +36,7 @@ func NewTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 			return []interface{}{
 				ipentry.Name,
 				ipentry.GetCondition(conditionv1alpha1.ConditionTypeReady).Status,
-				ipentry.Spec.NetworkInstance,
+				ipentry.Spec.Index,
 				ipentry.Spec.ClaimType,
 				string(ipentry.GetIPPrefixType()),
 				ipentry.GetIPPrefix(),

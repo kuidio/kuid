@@ -55,12 +55,12 @@ func (r *strategy) ValidateUpdate(ctx context.Context, obj, old runtime.Object) 
 		))
 		return allErrs
 	}
-	allErrs = claim.ValidateSyntax()
+	allErrs = claim.ValidateSyntax("")
 	if len(allErrs) != 0 {
 		return allErrs
 	}
 	// TODO validate mutations
-	return claim.ValidateSyntax()
+	return claim.ValidateSyntax("")
 }
 
 func (r *strategy) Update(ctx context.Context, key types.NamespacedName, obj, old runtime.Object, dryrun bool) (runtime.Object, error) {

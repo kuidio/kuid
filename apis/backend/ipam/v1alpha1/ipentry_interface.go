@@ -48,6 +48,14 @@ func (r *IPEntryList) GetListMeta() *metav1.ListMeta {
 	return &r.ListMeta
 }
 
+func (r *IPEntryList) GetItems() []*IPEntry {
+	entries := make([]*IPEntry, 0, len(r.Items))
+	for _, entry := range r.Items {
+		entries = append(entries, &entry)
+	}
+	return entries
+}
+
 func (r *IPEntry) GetSingularName() string {
 	return IPEntrySingular
 }
@@ -171,16 +179,16 @@ func GetIPEntry(ctx context.Context, k store.Key, prefix netip.Prefix, labels ma
 	//log := log.FromContext(ctx)
 	pi := iputil.NewPrefixInfo(prefix)
 
-	ni := k.Name
+	index := k.Name
 	ns := k.Namespace
 
 	spec := &IPEntrySpec{
-		NetworkInstance: ni,
-		PrefixType:      GetIPPrefixTypeFromString(labels[backend.KuidIPAMIPPrefixTypeKey]),
-		ClaimType:       GetIPClaimTypeFromString(labels[backend.KuidIPAMClaimTypeKey]),
-		AddressFamily:   ptr.To[iputil.AddressFamily](pi.GetAddressFamily()),
-		Prefix:          pi.String(),
-		Claim:           labels[backend.KuidClaimNameKey],
+		Index:         index,
+		PrefixType:    GetIPPrefixTypeFromString(labels[backend.KuidIPAMIPPrefixTypeKey]),
+		ClaimType:     GetIPClaimTypeFromString(labels[backend.KuidClaimTypeKey]),
+		AddressFamily: ptr.To[iputil.AddressFamily](pi.GetAddressFamily()),
+		Prefix:        pi.String(),
+		Claim:         labels[backend.KuidClaimNameKey],
 		Owner: &commonv1alpha1.OwnerReference{
 			Group:     labels[backend.KuidOwnerGroupKey],
 			Version:   labels[backend.KuidOwnerVersionKey],
@@ -206,7 +214,7 @@ func GetIPEntry(ctx context.Context, k store.Key, prefix netip.Prefix, labels ma
 
 	return BuildIPEntry(
 		metav1.ObjectMeta{
-			Name:      fmt.Sprintf("%s.%s", ni, pi.GetSubnetName()),
+			Name:      fmt.Sprintf("%s.%s", index, pi.GetSubnetName()),
 			Namespace: ns,
 		},
 		spec,

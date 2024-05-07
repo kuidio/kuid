@@ -23,17 +23,7 @@ import (
 
 	"github.com/henderiw/logger/log"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
-	ipamresv1alpha1 "github.com/kuidio/kuid/apis/resource/ipam/v1alpha1"
 )
-
-func initIndexContext(ctx context.Context, op string, idx *ipamresv1alpha1.NetworkInstance) context.Context {
-	l := log.FromContext(ctx).
-		With(
-			"op", fmt.Sprintf("%s index", op),
-			"nsn", idx.GetNamespacedName().String(),
-		)
-	return log.IntoContext(ctx, l)
-}
 
 func initClaimContext(ctx context.Context, op string, claim *ipambev1alpha1.IPClaim) context.Context {
 	var l *slog.Logger
@@ -48,14 +38,14 @@ func initClaimContext(ctx context.Context, op string, claim *ipambev1alpha1.IPCl
 			With(
 				"op", fmt.Sprintf("%s dynamic address claim", op),
 				"nsn", claim.GetNamespacedName().String(),
-				"ni", claim.Spec.NetworkInstance,
+				"index", claim.Spec.Index,
 			)
 	case ipambev1alpha1.IPClaimType_DynamicPrefix:
 		l = log.FromContext(ctx).
 			With(
 				"op", fmt.Sprintf("%s dynamic prefix claim", op),
 				"nsn", claim.GetNamespacedName().String(),
-				"ni", claim.Spec.NetworkInstance,
+				"index", claim.Spec.Index,
 				"prefixType", claim.GetIPPrefixType(),
 			)
 	case ipambev1alpha1.IPClaimType_StaticAddress:
@@ -63,7 +53,7 @@ func initClaimContext(ctx context.Context, op string, claim *ipambev1alpha1.IPCl
 			With(
 				"op", fmt.Sprintf("%s static address claim", op),
 				"nsn", claim.GetNamespacedName().String(),
-				"ni", claim.Spec.NetworkInstance,
+				"index", claim.Spec.Idx,
 				"address", *claim.Spec.Address,
 			)
 	case ipambev1alpha1.IPClaimType_StaticPrefix:
@@ -71,7 +61,7 @@ func initClaimContext(ctx context.Context, op string, claim *ipambev1alpha1.IPCl
 			With(
 				"op", fmt.Sprintf("%s static prefix claim", op),
 				"nsn", claim.GetNamespacedName().String(),
-				"ni", claim.Spec.NetworkInstance,
+				"index", claim.Spec.Index,
 				"prefix", *claim.Spec.Prefix,
 				"prefixType", claim.GetIPPrefixType(),
 			)
@@ -80,7 +70,7 @@ func initClaimContext(ctx context.Context, op string, claim *ipambev1alpha1.IPCl
 			With(
 				"op", fmt.Sprintf("%s static range claim", op),
 				"nsn", claim.GetNamespacedName().String(),
-				"ni", claim.Spec.NetworkInstance,
+				"index", claim.Spec.Index,
 				"range", *claim.Spec.Range,
 			)
 	}

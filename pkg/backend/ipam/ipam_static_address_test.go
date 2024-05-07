@@ -10,24 +10,24 @@ import (
 
 func TestIPAMStaticAddress(t *testing.T) {
 	tests := map[string]struct {
-		niName   string
+		index   string
 		prefixes []testprefix
 	}{
 		"NoParent": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticAddress, ip: "172.0.0.0/32", expectedError: true},
 			},
 		},
 		"Address_AggregateParent": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticAddress, ip: "172.0.0.0/32", expectedError: true},
 			},
 		},
 		"Address_NetworkParent_OwnerClash": { // since netwotk prefixes get expanded the address is clashing
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/24", prefixType: network, expectedError: false},
@@ -35,7 +35,7 @@ func TestIPAMStaticAddress(t *testing.T) {
 			},
 		},
 		"Address_NetworkParent": { // 32 or /128 not possible in network Addresses
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/24", prefixType: network, expectedError: false},
@@ -43,7 +43,7 @@ func TestIPAMStaticAddress(t *testing.T) {
 			},
 		},
 		"Address_First_PoolParent": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/24", prefixType: pool, expectedError: false},
@@ -51,7 +51,7 @@ func TestIPAMStaticAddress(t *testing.T) {
 			},
 		},
 		"Address_PoolParent": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/24", prefixType: pool, expectedError: false},
@@ -59,7 +59,7 @@ func TestIPAMStaticAddress(t *testing.T) {
 			},
 		},
 		"Address_First_OtherParent": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/24", expectedError: false},
@@ -67,14 +67,14 @@ func TestIPAMStaticAddress(t *testing.T) {
 			},
 		},
 		"PrefixAddress_AggregateParent": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticAddress, ip: "172.0.0.1/24", expectedError: true},
 			},
 		},
 		"PrefixAddress_NetworkParent_OwnerClash": { // since netwotk prefixes get expanded the address is clashing
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/24", prefixType: network, expectedError: false},
@@ -82,7 +82,7 @@ func TestIPAMStaticAddress(t *testing.T) {
 			},
 		},
 		"PrefixAddress_NetworkParent": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/24", prefixType: network, expectedError: false},
@@ -90,7 +90,7 @@ func TestIPAMStaticAddress(t *testing.T) {
 			},
 		},
 		"PrefixAddress_NetworkParentWithAddress": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.1/24", prefixType: network, expectedError: false},
@@ -98,7 +98,7 @@ func TestIPAMStaticAddress(t *testing.T) {
 			},
 		},
 		"PrefixAddress_First_PoolParent": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/24", prefixType: pool, expectedError: false},
@@ -106,7 +106,7 @@ func TestIPAMStaticAddress(t *testing.T) {
 			},
 		},
 		"PrefixAddress_PoolParent": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/24", prefixType: pool, expectedError: false},
@@ -114,7 +114,7 @@ func TestIPAMStaticAddress(t *testing.T) {
 			},
 		},
 		"PrefixAddress_First_OtherParent": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/24", expectedError: false},
@@ -128,8 +128,8 @@ func TestIPAMStaticAddress(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			be := New(nil)
 			ctx := context.Background()
-			if tc.niName != "" {
-				index := getNI(tc.niName)
+			if tc.index != "" {
+				index := getIndex(tc.index)
 				err := be.CreateIndex(ctx, index)
 				assert.NoError(t, err)
 			}
@@ -142,18 +142,18 @@ func TestIPAMStaticAddress(t *testing.T) {
 				switch p.claimType {
 				case staticPrefix:
 					if p.prefixType != nil && *p.prefixType == *aggregate {
-						ipClaim, err = p.getIPClaimFromNetworkPrefix(tc.niName)
+						ipClaim, err = p.getIPClaimFromNetworkPrefix(tc.index)
 					} else {
-						ipClaim, err = p.getStaticPrefixIPClaim(tc.niName)
+						ipClaim, err = p.getStaticPrefixIPClaim(tc.index)
 					}
 				case staticRange:
-					ipClaim, err = p.getStaticRangeIPClaim(tc.niName)
+					ipClaim, err = p.getStaticRangeIPClaim(tc.index)
 				case staticAddress:
-					ipClaim, err = p.getStaticAddressIPClaim(tc.niName)
+					ipClaim, err = p.getStaticAddressIPClaim(tc.index)
 				case dynamicPrefix:
-					ipClaim, err = p.getDynamicPrefixIPClaim(tc.niName)
+					ipClaim, err = p.getDynamicPrefixIPClaim(tc.index)
 				case dynamicAddress:
-					ipClaim, err = p.getDynamicAddressIPClaim(tc.niName)
+					ipClaim, err = p.getDynamicAddressIPClaim(tc.index)
 				}
 				assert.NoError(t, err)
 

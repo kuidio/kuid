@@ -37,7 +37,7 @@ func NewTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 			return []interface{}{
 				ipclaim.Name,
 				ipclaim.GetCondition(conditionv1alpha1.ConditionTypeReady).Status,
-				ipclaim.Spec.NetworkInstance,
+				ipclaim.Spec.Index,
 				string(ipClaimType),
 				string(ipclaim.GetIPPrefixType()),
 				ipclaim.GetClaimRequest(),
@@ -48,7 +48,7 @@ func NewTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 		Columns: []metav1.TableColumnDefinition{
 			{Name: "Name", Type: "string"},
 			{Name: "Ready", Type: "string"},
-			{Name: "NetworkInstance", Type: "string"},
+			{Name: "Index", Type: "string"},
 			{Name: "ClaimType", Type: "string"},
 			{Name: "PrefixType", Type: "string"},
 			{Name: "ClaimReq", Type: "string"},

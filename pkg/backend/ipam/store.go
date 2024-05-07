@@ -25,8 +25,7 @@ import (
 	"github.com/henderiw/logger/log"
 	"github.com/henderiw/store"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
-	ipamresv1alpha1 "github.com/kuidio/kuid/apis/resource/ipam/v1alpha1"
-	"github.com/kuidio/kuid/pkg/backend"
+	"github.com/kuidio/kuid/pkg/backend/backend"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -58,24 +57,17 @@ func (r *bestore) Restore(ctx context.Context, k store.Key) error {
 	}
 
 	// fetch the NI, IP(s) and IPClaims
-	ni, niPrefixes, err := r.getNIPrefixes(ctx, k)
+	ni, niPrefixes, err := r.getIndexPrefixes(ctx, k)
 	if err != nil {
 		return nil
 	}
 
-	ipmap, err := r.listIPs(ctx, k)
-	if err != nil {
-		return nil
-	}
 	ipclaimmap, err := r.listClaims(ctx, k)
 	if err != nil {
 		return nil
 	}
 
-	if err := r.restoreNiPrefixes(ctx, cacheCtx, curIPEntries, ni, niPrefixes); err != nil {
-		return err
-	}
-	if err := r.restoreIPs(ctx, cacheCtx, curIPEntries, ipambev1alpha1.IPClaimType_StaticPrefix, ipmap); err != nil {
+	if err := r.restoreIndexPrefixes(ctx, cacheCtx, curIPEntries, ni, niPrefixes); err != nil {
 		return err
 	}
 	if err := r.restoreIPClaims(ctx, cacheCtx, curIPEntries, ipambev1alpha1.IPClaimType_StaticPrefix, ipclaimmap); err != nil {
@@ -85,9 +77,6 @@ func (r *bestore) Restore(ctx context.Context, k store.Key) error {
 		return err
 	}
 	if err := r.restoreIPClaims(ctx, cacheCtx, curIPEntries, ipambev1alpha1.IPClaimType_DynamicPrefix, ipclaimmap); err != nil {
-		return err
-	}
-	if err := r.restoreIPs(ctx, cacheCtx, curIPEntries, ipambev1alpha1.IPClaimType_StaticAddress, ipmap); err != nil {
 		return err
 	}
 	if err := r.restoreIPClaims(ctx, cacheCtx, curIPEntries, ipambev1alpha1.IPClaimType_StaticAddress, ipclaimmap); err != nil {
@@ -222,7 +211,7 @@ func (r *bestore) listEntries(ctx context.Context, k store.Key) ([]*ipambev1alph
 	ipentries := []*ipambev1alpha1.IPEntry{}
 	for _, ipEntry := range ipEntries.Items {
 		ipEntry := ipEntry
-		if ipEntry.Spec.NetworkInstance == k.Name {
+		if ipEntry.Spec.Index == k.Name {
 			ipentries = append(ipentries, &ipEntry)
 		}
 	}
@@ -230,12 +219,12 @@ func (r *bestore) listEntries(ctx context.Context, k store.Key) ([]*ipambev1alph
 	return ipentries, nil
 }
 
-func (r *bestore) getNIPrefixes(ctx context.Context, k store.Key) (*ipamresv1alpha1.NetworkInstance, map[string]ipamresv1alpha1.Prefix, error) {
-	ni := &ipamresv1alpha1.NetworkInstance{}
+func (r *bestore) getIndexPrefixes(ctx context.Context, k store.Key) (*ipambev1alpha1.IPIndex, map[string]ipambev1alpha1.Prefix, error) {
+	ni := &ipambev1alpha1.IPIndex{}
 	if err := r.client.Get(ctx, k.NamespacedName, ni); err != nil {
 		return nil, nil, err
 	}
-	niPrefixes := make(map[string]ipamresv1alpha1.Prefix)
+	niPrefixes := make(map[string]ipambev1alpha1.Prefix)
 	for _, prefix := range ni.Spec.Prefixes {
 		niPrefixes[prefix.Prefix] = prefix
 	}
@@ -259,7 +248,7 @@ func (r *bestore) listClaims(ctx context.Context, k store.Key) (map[string]*ipam
 	claimmap := map[string]*ipambev1alpha1.IPClaim{}
 	for _, claim := range claims.Items {
 		claim := claim
-		if claim.Spec.NetworkInstance == k.Name {
+		if claim.Spec.Index == k.Name {
 			claimmap[(&claim).GetNamespacedName().String()] = &claim
 		}
 
@@ -268,42 +257,17 @@ func (r *bestore) listClaims(ctx context.Context, k store.Key) (map[string]*ipam
 	return claimmap, nil
 }
 
-func (r *bestore) listIPs(ctx context.Context, k store.Key) (map[string]*ipamresv1alpha1.IP, error) {
-	opt := []client.ListOption{
-		/*
-			client.MatchingFields{
-				"spec.networkInstance": k.Name,
-			},
-		*/
-	}
-
-	ipList := ipamresv1alpha1.IPList{}
-	if err := r.client.List(ctx, &ipList, opt...); err != nil {
-		return nil, err
-	}
-
-	ipmap := map[string]*ipamresv1alpha1.IP{}
-	for _, ip := range ipList.Items {
-		ip := ip
-		if ip.Spec.NetworkInstance == k.Name {
-			ipmap[(&ip).GetNamespacedName().String()] = &ip
-		}
-	}
-
-	return ipmap, nil
-}
-
-func (r *bestore) restoreNiPrefixes(ctx context.Context, cacheCtx *CacheContext, ipEntries []*ipambev1alpha1.IPEntry, ni *ipamresv1alpha1.NetworkInstance, niPrefixes map[string]ipamresv1alpha1.Prefix) error {
+func (r *bestore) restoreIndexPrefixes(ctx context.Context, cacheCtx *CacheContext, ipEntries []*ipambev1alpha1.IPEntry, index *ipambev1alpha1.IPIndex, niPrefixes map[string]ipambev1alpha1.Prefix) error {
 	//log := log.FromContext(ctx)
 	for i := len(ipEntries) - 1; i >= 0; i-- {
 		ipEntry := ipEntries[i]
-		if ipEntry.Spec.Owner.Group == ipamresv1alpha1.SchemeGroupVersion.Group &&
-			ipEntry.Spec.Owner.Version == ipamresv1alpha1.SchemeGroupVersion.Version &&
-			ipEntry.Spec.Owner.Kind == ipamresv1alpha1.NetworkInstanceKind {
+		if ipEntry.Spec.Owner.Group == ipambev1alpha1.SchemeGroupVersion.Group &&
+			ipEntry.Spec.Owner.Version == ipambev1alpha1.SchemeGroupVersion.Version &&
+			ipEntry.Spec.Owner.Kind == ipambev1alpha1.IPIndexKind {
 
 			niPrefix, ok := niPrefixes[ipEntry.Spec.Prefix]
 			if ok {
-				claim, err := ni.GetIPClaim(niPrefix)
+				claim, err := index.GetClaim(niPrefix)
 				if err != nil {
 					return nil
 				}
@@ -313,36 +277,6 @@ func (r *bestore) restoreNiPrefixes(ctx context.Context, cacheCtx *CacheContext,
 				// remove the entry since it is processed
 				ipEntries = append(ipEntries[:i], ipEntries[i+1:]...)
 				delete(niPrefixes, ipEntry.Spec.Prefix)
-			}
-		}
-	}
-	return nil
-}
-
-func (r *bestore) restoreIPs(ctx context.Context, cacheCtx *CacheContext, ipEntries []*ipambev1alpha1.IPEntry, claimType ipambev1alpha1.IPClaimType, ipmap map[string]*ipamresv1alpha1.IP) error {
-
-	for i := len(ipEntries) - 1; i >= 0; i-- {
-		ipEntry := ipEntries[i]
-		if ipEntry.Spec.Owner.Group == ipamresv1alpha1.SchemeGroupVersion.Group &&
-			ipEntry.Spec.Owner.Version == ipamresv1alpha1.SchemeGroupVersion.Version &&
-			ipEntry.Spec.Owner.Kind == ipamresv1alpha1.IPKind {
-
-			if claimType == ipEntry.Spec.ClaimType {
-				nsn := types.NamespacedName{Namespace: ipEntry.Spec.Owner.Namespace, Name: ipEntry.Spec.Owner.Name}
-
-				ip, ok := ipmap[nsn.String()]
-				if ok {
-					claim, err := ip.GetIPClaim()
-					if err != nil {
-						return nil
-					}
-					if err := r.restoreClaim(ctx, cacheCtx, claim); err != nil {
-						return err
-					}
-					// remove the entry since it is processed
-					ipEntries = append(ipEntries[:i], ipEntries[i+1:]...)
-					delete(ipmap, nsn.String()) // delete the entry to optimize
-				}
 			}
 		}
 	}
@@ -383,7 +317,7 @@ func (r *bestore) restoreClaim(ctx context.Context, cacheCtx *CacheContext, clai
 	}
 	// validate is needed, mainly for addresses since the parent route determines
 	// e.g. the fact the address belongs to a range or not
-	errList := claim.ValidateSyntax() // needed to expand the createPrefix/prefixLength and owner
+	errList := claim.ValidateSyntax("") // needed to expand the createPrefix/prefixLength and owner
 	if len(errList) != 0 {
 		return fmt.Errorf("invalid syntax %v", errList)
 	}

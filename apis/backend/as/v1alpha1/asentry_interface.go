@@ -17,7 +17,6 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"context"
 	"crypto/sha1"
 	"encoding/json"
 	"fmt"
@@ -44,6 +43,14 @@ var _ resource.ObjectList = &ASEntryList{}
 // GetListMeta returns the ListMeta
 func (r *ASEntryList) GetListMeta() *metav1.ListMeta {
 	return &r.ListMeta
+}
+
+func (r *ASEntryList) GetItems() []backend.Object {
+	entries := make([]backend.Object, 0, len(r.Items))
+	for _, entry := range r.Items {
+		entries = append(entries, &entry)
+	}
+	return entries
 }
 
 func (r *ASEntry) GetSingularName() string {
@@ -128,6 +135,10 @@ func (r *ASEntry) GetNamespacedName() types.NamespacedName {
 	}
 }
 
+func (r *ASEntry) GetKey() store.Key {
+	return store.KeyFromNSN(types.NamespacedName{Namespace: r.Namespace, Name: r.Spec.Index})
+}
+
 func (r *ASEntry) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	return r.Spec.Owner
 }
@@ -136,15 +147,42 @@ func (r *ASEntry) GetClaimName() string {
 	return r.Spec.Claim
 }
 
-func GetASEntry(ctx context.Context, k store.Key, vrange, id string, labels map[string]string) *ASEntry {
-	//log := log.FromContext(ctx)
+func (r *ASEntry) GetClaimType() backend.ClaimType {
+	return r.Spec.ClaimType
+}
 
+func (r *ASEntry) GetOwnerGVK() schema.GroupVersionKind {
+	return schema.GroupVersionKind{
+		Group:   r.Spec.Owner.Group,
+		Version: r.Spec.Owner.Version,
+		Kind:    r.Spec.Owner.Kind,
+	}
+}
+
+func (r *ASEntry) GetOwnerNSN() types.NamespacedName {
+	return types.NamespacedName{
+		Namespace: r.Spec.Owner.Namespace,
+		Name:      r.Spec.Owner.Name,
+	}
+}
+
+func (r *ASEntry) GetSpec() any {
+	return r.Spec
+}
+
+func (r *ASEntry) SetSpec(s any) {
+	if spec, ok := s.(ASEntrySpec); ok {
+		r.Spec = spec
+	}
+}
+
+func GetASEntry(k store.Key, vrange, id string, labels map[string]string) backend.EntryObject {
 	index := k.Name
 	ns := k.Namespace
 
 	spec := &ASEntrySpec{
 		Index:     index,
-		ClaimType: GetClaimTypeFromString(labels[backend.KuidASClaimTypeKey]),
+		ClaimType: backend.GetClaimTypeFromString(labels[backend.KuidClaimTypeKey]),
 		Claim:     labels[backend.KuidClaimNameKey],
 		ID:        id,
 		Owner: &commonv1alpha1.OwnerReference{
@@ -158,7 +196,7 @@ func GetASEntry(ctx context.Context, k store.Key, vrange, id string, labels map[
 	// filter the system defined labels from the labels to prepare for the user defined labels
 	udLabels := map[string]string{}
 	for k, v := range labels {
-		if !backend.BackendSystemKeys.Has(k) && !backend.BackendASSystemKeys.Has(k) {
+		if !backend.BackendSystemKeys.Has(k) {
 			udLabels[k] = v
 		}
 	}
@@ -184,7 +222,7 @@ func GetASEntry(ctx context.Context, k store.Key, vrange, id string, labels map[
 }
 
 // BuildASEntry returns a reource from a client Object a Spec/Status
-func BuildASEntry(meta metav1.ObjectMeta, spec *ASEntrySpec, status *ASEntryStatus) *ASEntry {
+func BuildASEntry(meta metav1.ObjectMeta, spec *ASEntrySpec, status *ASEntryStatus) backend.EntryObject {
 	aspec := ASEntrySpec{}
 	if spec != nil {
 		aspec = *spec

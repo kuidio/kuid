@@ -6,7 +6,6 @@ import (
 	"github.com/henderiw/iputil"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
-	ipamresv1alpha1 "github.com/kuidio/kuid/apis/resource/ipam/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/utils/ptr"
 )
@@ -26,6 +25,7 @@ type testprefix struct {
 
 // alias
 const (
+	namespace    = "dummy"
 	staticPrefix   = ipambev1alpha1.IPClaimType_StaticPrefix
 	staticRange    = ipambev1alpha1.IPClaimType_StaticRange
 	staticAddress  = ipambev1alpha1.IPClaimType_StaticAddress
@@ -38,32 +38,32 @@ var network = ptr.To[ipambev1alpha1.IPPrefixType](ipambev1alpha1.IPPrefixType_Ne
 var pool = ptr.To[ipambev1alpha1.IPPrefixType](ipambev1alpha1.IPPrefixType_Pool)
 var other = ptr.To[ipambev1alpha1.IPPrefixType](ipambev1alpha1.IPPrefixType_Other)
 
-func getNI(niName string) *ipamresv1alpha1.NetworkInstance {
-	return ipamresv1alpha1.BuildNetworkInstance(
-		metav1.ObjectMeta{Namespace: "dummy", Name: niName},
+func getIndex(index string) *ipambev1alpha1.IPIndex {
+	return ipambev1alpha1.BuildIPIndex(
+		metav1.ObjectMeta{Namespace: namespace, Name: index},
 		nil,
 		nil,
 	)
 }
 
-func (r testprefix) getIPClaimFromNetworkPrefix(niName string) (*ipambev1alpha1.IPClaim, error) {
-	ni := ipamresv1alpha1.BuildNetworkInstance(
-		metav1.ObjectMeta{Namespace: "dummy", Name: niName},
+func (r testprefix) getIPClaimFromNetworkPrefix(index string) (*ipambev1alpha1.IPClaim, error) {
+	idx := ipambev1alpha1.BuildIPIndex(
+		metav1.ObjectMeta{Namespace: namespace, Name: index},
 		nil,
 		nil,
 	)
-	return ni.GetIPClaim(ipamresv1alpha1.Prefix{Prefix: r.ip, UserDefinedLabels: commonv1alpha1.UserDefinedLabels{Labels: r.labels}})
+	return idx.GetClaim(ipambev1alpha1.Prefix{Prefix: r.ip, UserDefinedLabels: commonv1alpha1.UserDefinedLabels{Labels: r.labels}})
 }
 
-func (r testprefix) getStaticPrefixIPClaim(niName string) (*ipambev1alpha1.IPClaim, error) {
+func (r testprefix) getStaticPrefixIPClaim(index string) (*ipambev1alpha1.IPClaim, error) {
 	pi, err := iputil.New(r.ip)
 	if err != nil {
 		return nil, err
 	}
 	ipClaim := ipambev1alpha1.BuildIPClaim(
-		metav1.ObjectMeta{Namespace: "dummy", Name: pi.GetSubnetName()},
+		metav1.ObjectMeta{Namespace: namespace, Name: pi.GetSubnetName()},
 		&ipambev1alpha1.IPClaimSpec{
-			NetworkInstance: niName,
+			Index: index,
 			PrefixType:      r.prefixType,
 			Prefix:          ptr.To[string](r.ip),
 			ClaimLabels: commonv1alpha1.ClaimLabels{
@@ -72,18 +72,18 @@ func (r testprefix) getStaticPrefixIPClaim(niName string) (*ipambev1alpha1.IPCla
 		},
 		nil,
 	)
-	fielErrList := ipClaim.ValidateSyntax() // this expands the ownerRef in the spec
+	fielErrList := ipClaim.ValidateSyntax("") // this expands the ownerRef in the spec
 	if len(fielErrList) != 0 {
 		return nil, fmt.Errorf("invalid syntax %v", fielErrList)
 	}
 	return ipClaim, nil
 }
 
-func (r testprefix) getDynamicPrefixIPClaim(niName string) (*ipambev1alpha1.IPClaim, error) {
+func (r testprefix) getDynamicPrefixIPClaim(index string) (*ipambev1alpha1.IPClaim, error) {
 	ipClaim := ipambev1alpha1.BuildIPClaim(
-		metav1.ObjectMeta{Namespace: "dummy", Name: r.name},
+		metav1.ObjectMeta{Namespace: namespace, Name: r.name},
 		&ipambev1alpha1.IPClaimSpec{
-			NetworkInstance: niName,
+			Index: index,
 			PrefixType:      r.prefixType,
 			CreatePrefix:    ptr.To[bool](true),
 			PrefixLength:    ptr.To[uint32](r.prefixLength),
@@ -94,14 +94,14 @@ func (r testprefix) getDynamicPrefixIPClaim(niName string) (*ipambev1alpha1.IPCl
 		},
 		nil,
 	)
-	fielErrList := ipClaim.ValidateSyntax() // this expands the ownerRef in the spec
+	fielErrList := ipClaim.ValidateSyntax("") // this expands the ownerRef in the spec
 	if len(fielErrList) != 0 {
 		return nil, fmt.Errorf("invalid syntax %v", fielErrList)
 	}
 	return ipClaim, nil
 }
 
-func (r testprefix) getStaticAddressIPClaim(niName string) (*ipambev1alpha1.IPClaim, error) {
+func (r testprefix) getStaticAddressIPClaim(index string) (*ipambev1alpha1.IPClaim, error) {
 	pi, err := iputil.New(r.ip)
 	if err != nil {
 		return nil, err
@@ -110,9 +110,9 @@ func (r testprefix) getStaticAddressIPClaim(niName string) (*ipambev1alpha1.IPCl
 	pi = iputil.NewPrefixInfo(pi.GetIPAddressPrefix())
 
 	ipClaim := ipambev1alpha1.BuildIPClaim(
-		metav1.ObjectMeta{Namespace: "dummy", Name: pi.GetSubnetName()},
+		metav1.ObjectMeta{Namespace: namespace, Name: pi.GetSubnetName()},
 		&ipambev1alpha1.IPClaimSpec{
-			NetworkInstance: niName,
+			Index: index,
 			Address:         ptr.To[string](r.ip),
 			ClaimLabels: commonv1alpha1.ClaimLabels{
 				UserDefinedLabels: commonv1alpha1.UserDefinedLabels{Labels: r.labels},
@@ -120,7 +120,7 @@ func (r testprefix) getStaticAddressIPClaim(niName string) (*ipambev1alpha1.IPCl
 		},
 		nil,
 	)
-	fielErrList := ipClaim.ValidateSyntax() // this expands the ownerRef in the spec
+	fielErrList := ipClaim.ValidateSyntax("") // this expands the ownerRef in the spec
 	if len(fielErrList) != 0 {
 		return nil, fmt.Errorf("invalid syntax %v", fielErrList)
 	}
@@ -128,11 +128,11 @@ func (r testprefix) getStaticAddressIPClaim(niName string) (*ipambev1alpha1.IPCl
 }
 
 
-func (r testprefix) getDynamicAddressIPClaim(niName string) (*ipambev1alpha1.IPClaim, error) {
+func (r testprefix) getDynamicAddressIPClaim(index string) (*ipambev1alpha1.IPClaim, error) {
 	ipClaim := ipambev1alpha1.BuildIPClaim(
-		metav1.ObjectMeta{Namespace: "dummy", Name: r.name},
+		metav1.ObjectMeta{Namespace: namespace, Name: r.name},
 		&ipambev1alpha1.IPClaimSpec{
-			NetworkInstance: niName,
+			Index: index,
 			PrefixType:      nil,
 			ClaimLabels: commonv1alpha1.ClaimLabels{
 				UserDefinedLabels: commonv1alpha1.UserDefinedLabels{Labels: r.labels},
@@ -141,18 +141,18 @@ func (r testprefix) getDynamicAddressIPClaim(niName string) (*ipambev1alpha1.IPC
 		},
 		nil,
 	)
-	fielErrList := ipClaim.ValidateSyntax() // this expands the ownerRef in the spec
+	fielErrList := ipClaim.ValidateSyntax("") // this expands the ownerRef in the spec
 	if len(fielErrList) != 0 {
 		return nil, fmt.Errorf("invalid syntax %v", fielErrList)
 	}
 	return ipClaim, nil
 }
 
-func (r testprefix) getStaticRangeIPClaim(niName string) (*ipambev1alpha1.IPClaim, error) {
+func (r testprefix) getStaticRangeIPClaim(index string) (*ipambev1alpha1.IPClaim, error) {
 	ipClaim := ipambev1alpha1.BuildIPClaim(
-		metav1.ObjectMeta{Namespace: "dummy", Name: r.name},
+		metav1.ObjectMeta{Namespace: namespace, Name: r.name},
 		&ipambev1alpha1.IPClaimSpec{
-			NetworkInstance: niName,
+			Index: index,
 			Range:           ptr.To[string](r.ip),
 			ClaimLabels: commonv1alpha1.ClaimLabels{
 				UserDefinedLabels: commonv1alpha1.UserDefinedLabels{Labels: r.labels},
@@ -160,7 +160,7 @@ func (r testprefix) getStaticRangeIPClaim(niName string) (*ipambev1alpha1.IPClai
 		},
 		nil,
 	)
-	fielErrList := ipClaim.ValidateSyntax() // this expands the ownerRef in the spec
+	fielErrList := ipClaim.ValidateSyntax("") // this expands the ownerRef in the spec
 	if len(fielErrList) != 0 {
 		return nil, fmt.Errorf("invalid syntax %v", fielErrList)
 	}

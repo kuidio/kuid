@@ -3,7 +3,7 @@ kind: IPClaim
 metadata:
   name: vpc1.prefix-claim1
 spec:
-  networkInstance: vpc1
+  index: vpc1
   prefixType: network
   createPrefix: true
   prefixLength: 24

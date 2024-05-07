@@ -25,8 +25,7 @@ import (
 	"github.com/henderiw/apiserver-store/pkg/storebackend"
 	"github.com/henderiw/logger/log"
 	vxlanbe1v1alpha1 "github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1"
-	"github.com/kuidio/kuid/pkg/backend"
-	"github.com/kuidio/kuid/pkg/backend/vxlan"
+	"github.com/kuidio/kuid/pkg/backend/backend"
 	watchermanager "github.com/kuidio/kuid/pkg/kuidserver/watcher-manager"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/labels"
@@ -40,7 +39,7 @@ import (
 )
 
 // NewStrategy creates and returns a fischerStrategy instance
-func NewStrategy(ctx context.Context, typer runtime.ObjectTyper, client client.Client, store storebackend.Storer[runtime.Object], be backend.Backend[*vxlan.CacheContext]) *strategy {
+func NewStrategy(ctx context.Context, typer runtime.ObjectTyper, client client.Client, store storebackend.Storer[runtime.Object], be backend.Backend) *strategy {
 	watcherManager := watchermanager.New(32)
 
 	go watcherManager.Start(ctx)
@@ -93,7 +92,7 @@ type strategy struct {
 	names.NameGenerator
 	client         client.Client
 	store          storebackend.Storer[runtime.Object]
-	be             backend.Backend[*vxlan.CacheContext]
+	be             backend.Backend
 	gr             schema.GroupResource
 	resource       resource.Object
 	watcherManager watchermanager.WatcherManager

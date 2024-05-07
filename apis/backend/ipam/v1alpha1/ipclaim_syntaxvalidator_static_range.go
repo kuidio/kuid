@@ -79,7 +79,7 @@ func (r *staticRangeSyntaxValidator) Validate(claim *IPClaim) field.ErrorList {
 			fmt.Errorf("%s cannot have a addressFamily", r.name).Error(),
 		))
 	}
-	if claim.Spec.Index != nil {
+	if claim.Spec.Idx != nil {
 		allErrs = append(allErrs, field.Invalid(
 			field.NewPath("spec.index"),
 			claim,

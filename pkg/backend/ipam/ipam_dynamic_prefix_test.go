@@ -10,11 +10,11 @@ import (
 
 func TestIPAMDynamicPrefix(t *testing.T) {
 	tests := map[string]struct {
-		niName   string
+		index   string
 		prefixes []testprefix
 	}{
 		"Normal": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "10.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: dynamicPrefix, name: "prefix1", prefixLength: 24, expectedError: false, expectedIP: "10.0.0.0/24"},
@@ -25,14 +25,14 @@ func TestIPAMDynamicPrefix(t *testing.T) {
 			},
 		},
 		"NoAvailable": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "10.0.0.0/24", prefixType: aggregate, expectedError: false},
 				{claimType: dynamicPrefix, name: "prefix1", prefixLength: 24, expectedError: true},
 			},
 		},
 		"NoAggregate": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: dynamicPrefix, name: "prefix1", prefixLength: 24, expectedError: true},
 			},
@@ -44,8 +44,8 @@ func TestIPAMDynamicPrefix(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			be := New(nil)
 			ctx := context.Background()
-			if tc.niName != "" {
-				index := getNI(tc.niName)
+			if tc.index != "" {
+				index := getIndex(tc.index)
 				err := be.CreateIndex(ctx, index)
 				assert.NoError(t, err)
 			}
@@ -58,18 +58,18 @@ func TestIPAMDynamicPrefix(t *testing.T) {
 				switch p.claimType {
 				case staticPrefix:
 					if p.prefixType != nil && *p.prefixType == *aggregate {
-						ipClaim, err = p.getIPClaimFromNetworkPrefix(tc.niName)
+						ipClaim, err = p.getIPClaimFromNetworkPrefix(tc.index)
 					} else {
-						ipClaim, err = p.getStaticPrefixIPClaim(tc.niName)
+						ipClaim, err = p.getStaticPrefixIPClaim(tc.index)
 					}
 				case staticRange:
-					ipClaim, err = p.getStaticRangeIPClaim(tc.niName)
+					ipClaim, err = p.getStaticRangeIPClaim(tc.index)
 				case staticAddress:
-					ipClaim, err = p.getStaticAddressIPClaim(tc.niName)
+					ipClaim, err = p.getStaticAddressIPClaim(tc.index)
 				case dynamicPrefix:
-					ipClaim, err = p.getDynamicPrefixIPClaim(tc.niName)
+					ipClaim, err = p.getDynamicPrefixIPClaim(tc.index)
 				case dynamicAddress:
-					ipClaim, err = p.getDynamicAddressIPClaim(tc.niName)
+					ipClaim, err = p.getDynamicAddressIPClaim(tc.index)
 				}
 				assert.NoError(t, err)
 

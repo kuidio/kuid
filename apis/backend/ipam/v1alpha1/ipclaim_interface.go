@@ -23,12 +23,13 @@ import (
 	"strings"
 
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
+	"github.com/henderiw/idxtable/pkg/table"
+	"github.com/henderiw/idxtable/pkg/tree"
 	"github.com/henderiw/iputil"
 	"github.com/henderiw/store"
 	"github.com/kuidio/kuid/apis/backend"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
-	rresource "github.com/kuidio/kuid/pkg/reconcilers/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -131,8 +132,8 @@ func ConvertIPClaimFieldSelector(label, value string) (internalLabel, internalVa
 	}
 }
 
-func (r *IPClaimList) GetItems() []rresource.Object {
-	objs := []rresource.Object{}
+func (r *IPClaimList) GetItems() []backend.Object {
+	objs := []backend.Object{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)
@@ -159,7 +160,15 @@ func (r *IPClaim) GetNamespacedName() types.NamespacedName {
 }
 
 func (r *IPClaim) GetKey() store.Key {
-	return store.KeyFromNSN(types.NamespacedName{Namespace: r.Namespace, Name: r.Spec.NetworkInstance})
+	return store.KeyFromNSN(types.NamespacedName{Namespace: r.Namespace, Name: r.Spec.Index})
+}
+
+func (r *IPClaim) GetIndex() string {
+	return r.Spec.Index
+}
+
+func (r *IPClaim) GetSelector() *metav1.LabelSelector {
+	return r.Spec.Selector
 }
 
 func (r *IPClaim) GetOwnerReference() *commonv1alpha1.OwnerReference {
@@ -182,6 +191,22 @@ func (r *IPClaim) GetIPPrefixType() IPPrefixType {
 	default:
 		return IPPrefixType_Invalid
 	}
+}
+
+func (r *IPClaim) GetStaticID() *uint64 { return nil }
+
+func (r *IPClaim) GetStaticTreeID(t string) tree.ID { return nil }
+
+func (r *IPClaim) GetClaimID(t string, id uint64) tree.ID { return nil }
+
+func (r *IPClaim) GetRange() *string {
+	return r.Spec.Range
+}
+
+func (r *IPClaim) GetRangeID(_ string) (tree.Range, error) { return nil, fmt.Errorf("not supported") }
+
+func (r *IPClaim) GetTable(s string, to, from uint64) table.Table {
+	return nil
 }
 
 func (r *IPClaim) GetClaimRequest() string {
@@ -269,7 +294,7 @@ func (r *IPClaim) GetIPClaimSummaryType() IPClaimSummaryType {
 	}
 }
 
-func (r *IPClaim) ValidateSyntax() field.ErrorList {
+func (r *IPClaim) ValidateSyntax(s string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	gv, err := schema.ParseGroupVersion(r.APIVersion)
@@ -359,6 +384,25 @@ func (r *IPClaim) GetLabelSelector() (labels.Selector, error) {
 	return r.Spec.GetLabelSelector()
 }
 
+func (r *IPClaim) GetClaimType() backend.ClaimType {
+	return backend.ClaimType_Invalid
+}
+
+func (r *IPClaim) GetClaimLabels() labels.Set {
+	claimType, _ := r.GetIPClaimType() // ignoring error is ok since this was validated before
+
+	labels := r.Spec.GetUserDefinedLabels()
+	// system defined labels
+	labels[backend.KuidClaimTypeKey] = string(claimType)
+	labels[backend.KuidClaimNameKey] = r.Name
+	labels[backend.KuidOwnerGroupKey] = r.Spec.Owner.Group
+	labels[backend.KuidOwnerVersionKey] = r.Spec.Owner.Version
+	labels[backend.KuidOwnerKindKey] = r.Spec.Owner.Kind
+	labels[backend.KuidOwnerNamespaceKey] = r.Spec.Owner.Namespace
+	labels[backend.KuidOwnerNameKey] = r.Spec.Owner.Name
+	return labels
+}
+
 // GetOwnerSelector returns a label selector to select the owner of the claim in the backend
 func (r *IPClaim) GetOwnerSelector() (labels.Selector, error) {
 	l := map[string]string{
@@ -418,3 +462,9 @@ func BuildIPClaim(meta metav1.ObjectMeta, spec *IPClaimSpec, status *IPClaimStat
 		Status:     astatus,
 	}
 }
+
+func (r *IPClaim) SetStatusRange(s *string) { r.Status.Range = s }
+
+func (r *IPClaim) SetStatusID(s *uint64) {}
+
+func (r *IPClaim) GetStatusID() *uint64 { return nil }

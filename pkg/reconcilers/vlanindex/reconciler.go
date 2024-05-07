@@ -24,8 +24,7 @@ import (
 	"github.com/henderiw/logger/log"
 	vlanbev1alpha1 "github.com/kuidio/kuid/apis/backend/vlan/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
-	"github.com/kuidio/kuid/pkg/backend"
-	"github.com/kuidio/kuid/pkg/backend/vlan"
+	"github.com/kuidio/kuid/pkg/backend/backend"
 	"github.com/kuidio/kuid/pkg/reconcilers"
 	"github.com/kuidio/kuid/pkg/reconcilers/ctrlconfig"
 	"github.com/kuidio/kuid/pkg/reconcilers/eventhandler"
@@ -83,7 +82,7 @@ type reconciler struct {
 	client.Client
 	finalizer *resource.APIFinalizer
 	recorder  record.EventRecorder
-	be        backend.Backend[*vlan.CacheContext]
+	be        backend.Backend
 }
 
 func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {

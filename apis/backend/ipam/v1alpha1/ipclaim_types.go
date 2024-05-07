@@ -27,9 +27,8 @@ import (
 
 // IPClaimSpec defines the desired state of IPClaim
 type IPClaimSpec struct {
-	// NetworkInstance defines the networkInstance context of the IPAddress.
-	// A NetworkInstance is a dedicated routing table instance
-	NetworkInstance string `json:"networkInstance" yaml:"networkInstance" protobuf:"bytes,1,opt,name=networkInstance"`
+	// Index defines the index for the IP Entry
+	Index string `json:"index" yaml:"index" protobuf:"bytes,1,opt,name=index"`
 	// PrefixType defines the prefixtype of IPEntry; for address and range claims this is not relevant
 	// - network kind is used for physical, virtual nics on a device
 	// - pool kind is used for allocating dedicated IP addresses
@@ -66,7 +65,7 @@ type IPClaimSpec struct {
 	// If not present we claim a random prefix from a prefix
 	// +kubebuilder:validation:Optional
 	// +optional
-	Index *uint32 `json:"index,omitempty" yaml:"index,omitempty" protobuf:"varint,10,opt,name=index"`
+	Idx *uint32 `json:"idx,omitempty" yaml:"idx,omitempty" protobuf:"varint,10,opt,name=idx"`
 	// ClaimLabels define the user defined labels and selector labels used
 	// in resource claim
 	commonv1alpha1.ClaimLabels `json:",inline" yaml:",inline" protobuf:"bytes,11,opt,name=claimLabels"`

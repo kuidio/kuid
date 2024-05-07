@@ -49,7 +49,17 @@ func (r *strategy) Validate(ctx context.Context, obj runtime.Object) field.Error
 		return allErrs
 	}
 
-	return claim.ValidateSyntax()
+	index := &asbe1v1alpha1.ASIndex{}
+	if err := r.client.Get(ctx, types.NamespacedName{Namespace: claim.GetNamespace(), Name: claim.Spec.Index}, index); err != nil {
+		allErrs = append(allErrs, field.Invalid(
+			field.NewPath("spec.index"),
+			claim,
+			fmt.Errorf("index does not exist cannot validate syntax").Error(),
+		))
+		return allErrs
+	}
+
+	return claim.ValidateSyntax(index.GetType())
 }
 
 func (r *strategy) Create(ctx context.Context, key types.NamespacedName, obj runtime.Object, dryrun bool) (runtime.Object, error) {

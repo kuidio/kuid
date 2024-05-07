@@ -48,7 +48,7 @@ message ASClaimList {
 
 // ASClaimSpec defines the desired state of ASClaim
 message ASClaimSpec {
-  // ASIndex defines the AS index for the AS Claim
+  // Index defines the index for the AS Claim
   optional string index = 1;
 
   // ASID defines the AS for the AS claim

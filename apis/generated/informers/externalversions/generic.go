@@ -20,7 +20,14 @@ package externalversions
 import (
 	"fmt"
 
-	v1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
+	v1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
+	esiv1alpha1 "github.com/kuidio/kuid/apis/backend/esi/v1alpha1"
+	extcommv1alpha1 "github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1"
+	genidv1alpha1 "github.com/kuidio/kuid/apis/backend/genid/v1alpha1"
+	infrav1alpha1 "github.com/kuidio/kuid/apis/backend/infra/v1alpha1"
+	ipamv1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
+	vlanv1alpha1 "github.com/kuidio/kuid/apis/backend/vlan/v1alpha1"
+	vxlanv1alpha1 "github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	cache "k8s.io/client-go/tools/cache"
 )
@@ -51,13 +58,85 @@ func (f *genericInformer) Lister() cache.GenericLister {
 // TODO extend this to unknown resources with a client pool
 func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource) (GenericInformer, error) {
 	switch resource {
-	// Group=ipam.be.kuid.dev, Version=v1alpha1
-	case v1alpha1.SchemeGroupVersion.WithResource("ipclaims"):
+	// Group=as.be.kuid.dev, Version=v1alpha1
+	case v1alpha1.SchemeGroupVersion.WithResource("asclaims"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.As().V1alpha1().ASClaims().Informer()}, nil
+	case v1alpha1.SchemeGroupVersion.WithResource("asentries"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.As().V1alpha1().ASEntries().Informer()}, nil
+	case v1alpha1.SchemeGroupVersion.WithResource("asindexes"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.As().V1alpha1().ASIndexes().Informer()}, nil
+
+		// Group=esi.be.kuid.dev, Version=v1alpha1
+	case esiv1alpha1.SchemeGroupVersion.WithResource("esiclaims"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Esi().V1alpha1().ESIClaims().Informer()}, nil
+	case esiv1alpha1.SchemeGroupVersion.WithResource("esientries"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Esi().V1alpha1().ESIEntries().Informer()}, nil
+	case esiv1alpha1.SchemeGroupVersion.WithResource("esiindexes"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Esi().V1alpha1().ESIIndexes().Informer()}, nil
+
+		// Group=extcomm.be.kuid.dev, Version=v1alpha1
+	case extcommv1alpha1.SchemeGroupVersion.WithResource("extcommclaims"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Extcomm().V1alpha1().EXTCOMMClaims().Informer()}, nil
+	case extcommv1alpha1.SchemeGroupVersion.WithResource("extcommentries"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Extcomm().V1alpha1().EXTCOMMEntries().Informer()}, nil
+	case extcommv1alpha1.SchemeGroupVersion.WithResource("extcommindexes"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Extcomm().V1alpha1().EXTCOMMIndexes().Informer()}, nil
+
+		// Group=genid.be.kuid.dev, Version=v1alpha1
+	case genidv1alpha1.SchemeGroupVersion.WithResource("genidclaims"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Genid().V1alpha1().GENIDClaims().Informer()}, nil
+	case genidv1alpha1.SchemeGroupVersion.WithResource("genidentries"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Genid().V1alpha1().GENIDEntries().Informer()}, nil
+	case genidv1alpha1.SchemeGroupVersion.WithResource("genidindexes"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Genid().V1alpha1().GENIDIndexes().Informer()}, nil
+
+		// Group=infra.be.kuid.dev, Version=v1alpha1
+	case infrav1alpha1.SchemeGroupVersion.WithResource("clusters"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Clusters().Informer()}, nil
+	case infrav1alpha1.SchemeGroupVersion.WithResource("domains"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Domains().Informer()}, nil
+	case infrav1alpha1.SchemeGroupVersion.WithResource("endpoints"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Endpoints().Informer()}, nil
+	case infrav1alpha1.SchemeGroupVersion.WithResource("links"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Links().Informer()}, nil
+	case infrav1alpha1.SchemeGroupVersion.WithResource("linksets"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().LinkSets().Informer()}, nil
+	case infrav1alpha1.SchemeGroupVersion.WithResource("modules"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Modules().Informer()}, nil
+	case infrav1alpha1.SchemeGroupVersion.WithResource("modulebays"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().ModuleBays().Informer()}, nil
+	case infrav1alpha1.SchemeGroupVersion.WithResource("nodes"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Nodes().Informer()}, nil
+	case infrav1alpha1.SchemeGroupVersion.WithResource("nodesets"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().NodeSets().Informer()}, nil
+	case infrav1alpha1.SchemeGroupVersion.WithResource("racks"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Racks().Informer()}, nil
+	case infrav1alpha1.SchemeGroupVersion.WithResource("sites"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Sites().Informer()}, nil
+
+		// Group=ipam.be.kuid.dev, Version=v1alpha1
+	case ipamv1alpha1.SchemeGroupVersion.WithResource("ipclaims"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Ipam().V1alpha1().IPClaims().Informer()}, nil
-	case v1alpha1.SchemeGroupVersion.WithResource("ipentries"):
+	case ipamv1alpha1.SchemeGroupVersion.WithResource("ipentries"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Ipam().V1alpha1().IPEntries().Informer()}, nil
-	case v1alpha1.SchemeGroupVersion.WithResource("ipindexes"):
+	case ipamv1alpha1.SchemeGroupVersion.WithResource("ipindexes"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Ipam().V1alpha1().IPIndexes().Informer()}, nil
+
+		// Group=vlan.be.kuid.dev, Version=v1alpha1
+	case vlanv1alpha1.SchemeGroupVersion.WithResource("vlanclaims"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Vlan().V1alpha1().VLANClaims().Informer()}, nil
+	case vlanv1alpha1.SchemeGroupVersion.WithResource("vlanentries"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Vlan().V1alpha1().VLANEntries().Informer()}, nil
+	case vlanv1alpha1.SchemeGroupVersion.WithResource("vlanindexes"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Vlan().V1alpha1().VLANIndexes().Informer()}, nil
+
+		// Group=vxlan.be.kuid.dev, Version=v1alpha1
+	case vxlanv1alpha1.SchemeGroupVersion.WithResource("vxlanclaims"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Vxlan().V1alpha1().VXLANClaims().Informer()}, nil
+	case vxlanv1alpha1.SchemeGroupVersion.WithResource("vxlanentries"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Vxlan().V1alpha1().VXLANEntries().Informer()}, nil
+	case vxlanv1alpha1.SchemeGroupVersion.WithResource("vxlanindexes"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Vxlan().V1alpha1().VXLANIndexes().Informer()}, nil
 
 	}
 

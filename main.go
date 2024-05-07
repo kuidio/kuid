@@ -33,14 +33,13 @@ import (
 	vxlanbev1alpha1 "github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1"
 	"github.com/kuidio/kuid/apis/generated/clientset/versioned/scheme"
 	kuidopenapi "github.com/kuidio/kuid/apis/generated/openapi"
-	ipamresv1alpha1 "github.com/kuidio/kuid/apis/resource/ipam/v1alpha1"
-	"github.com/kuidio/kuid/pkg/backend/as"
+	bebackend "github.com/kuidio/kuid/pkg/backend/backend"
 	"github.com/kuidio/kuid/pkg/backend/ipam"
-	"github.com/kuidio/kuid/pkg/backend/vlan"
-	"github.com/kuidio/kuid/pkg/backend/vxlan"
+	"github.com/kuidio/kuid/apis/backend"
+	"github.com/kuidio/kuid/pkg/kuidserver/asclaim"
 	"github.com/kuidio/kuid/pkg/kuidserver/asentry"
 	"github.com/kuidio/kuid/pkg/kuidserver/asindex"
-	"github.com/kuidio/kuid/pkg/kuidserver/asclaim"
+	"github.com/kuidio/kuid/pkg/kuidserver/ipindex"
 	"github.com/kuidio/kuid/pkg/kuidserver/ipclaim"
 	"github.com/kuidio/kuid/pkg/kuidserver/ipentry"
 	serverstore "github.com/kuidio/kuid/pkg/kuidserver/store"
@@ -96,7 +95,6 @@ func main() {
 	for _, api := range (runtime.SchemeBuilder{
 		clientgoscheme.AddToScheme,
 		ipambev1alpha1.AddToScheme,
-		ipamresv1alpha1.AddToScheme,
 		vlanbev1alpha1.AddToScheme,
 		vxlanbev1alpha1.AddToScheme,
 		asbev1alpha1.AddToScheme,
@@ -148,10 +146,35 @@ func main() {
 		os.Exit(1)
 	}
 
+
 	ipbe := ipam.New(mgr.GetClient())
-	vlanbe := vlan.New(mgr.GetClient())
-	vxlanbe := vxlan.New(mgr.GetClient())
-	asbe := as.New(mgr.GetClient())
+	vlanbe := bebackend.New(
+		mgr.GetClient(),
+		func() backend.IndexObject { return &vlanbev1alpha1.VLANIndex{} },
+		func() backend.ObjectList { return &vlanbev1alpha1.VLANEntryList{} },
+		func() backend.ObjectList { return &vlanbev1alpha1.VLANClaimList{} },
+		vlanbev1alpha1.GetVLANEntry,
+		vlanbev1alpha1.SchemeGroupVersion.WithKind(vlanbev1alpha1.VLANIndexKind),
+		vlanbev1alpha1.SchemeGroupVersion.WithKind(vlanbev1alpha1.VLANClaimKind),
+	)
+	vxlanbe := bebackend.New(
+		mgr.GetClient(),
+		func() backend.IndexObject { return &vxlanbev1alpha1.VXLANIndex{} },
+		func() backend.ObjectList { return &vxlanbev1alpha1.VXLANEntryList{} },
+		func() backend.ObjectList { return &vxlanbev1alpha1.VXLANClaimList{} },
+		vxlanbev1alpha1.GetVXLANEntry,
+		vxlanbev1alpha1.SchemeGroupVersion.WithKind(vxlanbev1alpha1.VXLANIndexKind),
+		vxlanbev1alpha1.SchemeGroupVersion.WithKind(vxlanbev1alpha1.VXLANClaimKind),
+	)
+	asbe := bebackend.New(
+		mgr.GetClient(),
+		func() backend.IndexObject { return &asbev1alpha1.ASIndex{} },
+		func() backend.ObjectList { return &asbev1alpha1.ASEntryList{} },
+		func() backend.ObjectList { return &asbev1alpha1.ASClaimList{} },
+		asbev1alpha1.GetASEntry,
+		asbev1alpha1.SchemeGroupVersion.WithKind(asbev1alpha1.ASIndexKind),
+		asbev1alpha1.SchemeGroupVersion.WithKind(asbev1alpha1.ASClaimKind),
+	)
 
 	ctrlCfg := &ctrlconfig.ControllerConfig{
 		IPAMBackend:  ipbe,
@@ -187,6 +210,11 @@ func main() {
 				DB:     db,
 			}, ipbe)).
 			WithResourceAndHandler(ctx, &ipambev1alpha1.IPEntry{}, ipentry.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
+				Prefix: configDir,
+				Type:   serverstore.StorageType_KV,
+				DB:     db,
+			}, ipbe)).
+			WithResourceAndHandler(ctx, &ipambev1alpha1.IPIndex{}, ipindex.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
 				Prefix: configDir,
 				Type:   serverstore.StorageType_KV,
 				DB:     db,

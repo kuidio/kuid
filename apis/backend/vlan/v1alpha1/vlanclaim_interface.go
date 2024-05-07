@@ -25,11 +25,14 @@ import (
 	"strings"
 
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
+	"github.com/henderiw/idxtable/pkg/table"
+	"github.com/henderiw/idxtable/pkg/table/table16"
+	"github.com/henderiw/idxtable/pkg/tree"
+	"github.com/henderiw/idxtable/pkg/tree/id16"
 	"github.com/henderiw/store"
 	"github.com/kuidio/kuid/apis/backend"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
-	rresource "github.com/kuidio/kuid/pkg/reconcilers/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -37,6 +40,7 @@ import (
 	"k8s.io/apimachinery/pkg/selection"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/validation/field"
+	"k8s.io/utils/ptr"
 )
 
 const VLANClaimPlural = "vlanclaims"
@@ -134,8 +138,8 @@ func ConvertVLANClaimFieldSelector(label, value string) (internalLabel, internal
 	}
 }
 
-func (r *VLANClaimList) GetItems() []rresource.Object {
-	objs := []rresource.Object{}
+func (r *VLANClaimList) GetItems() []backend.Object {
+	objs := []backend.Object{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)
@@ -165,6 +169,14 @@ func (r *VLANClaim) GetKey() store.Key {
 	return store.KeyFromNSN(types.NamespacedName{Namespace: r.Namespace, Name: r.Spec.Index})
 }
 
+func (r *VLANClaim) GetIndex() string {
+	return r.Spec.Index
+}
+
+func (r *VLANClaim) GetSelector() *metav1.LabelSelector {
+	return r.Spec.Selector
+}
+
 func (r *VLANClaim) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	return &commonv1alpha1.OwnerReference{
 		Group:     SchemeGroupVersion.Group,
@@ -173,6 +185,39 @@ func (r *VLANClaim) GetOwnerReference() *commonv1alpha1.OwnerReference {
 		Namespace: r.Namespace,
 		Name:      r.Name,
 	}
+}
+
+func (r *VLANClaim) GetStaticID() *uint64 {
+	if r.Spec.ID == nil {
+		return nil
+	}
+	return ptr.To[uint64](uint64(*r.Spec.ID))
+}
+
+func (r *VLANClaim) GetStaticTreeID(t string) tree.ID {
+	if r.Spec.ID == nil {
+		return nil
+	}
+	return id16.NewID(uint16(*r.Spec.ID), id16.IDBitSize)
+}
+
+func (r *VLANClaim) GetClaimID(t string, id uint64) tree.ID {
+	return id16.NewID(uint16(id), id16.IDBitSize)
+}
+
+func (r *VLANClaim) GetRange() *string {
+	return r.Spec.Range
+}
+
+func (r *VLANClaim) GetRangeID(_ string) (tree.Range, error) {
+	if r.Spec.Range == nil {
+		return nil, fmt.Errorf("cannot provide a range without an id")
+	}
+	return id16.ParseRange(*r.Spec.Range)
+}
+
+func (r *VLANClaim) GetTable(s string, to, from uint64) table.Table {
+	return table16.New(uint16(to), uint16(from))
 }
 
 func (r *VLANClaim) GetClaimRequest() string {
@@ -197,24 +242,24 @@ func (r *VLANClaim) GetClaimResponse() string {
 	return ""
 }
 
-func (r *VLANClaim) GetClaimType() VLANClaimType {
-	claimType := VLANClaimType_Invalid
+func (r *VLANClaim) GetClaimType() backend.ClaimType {
+	claimType := backend.ClaimType_Invalid
 	count := 0
 	if r.Spec.ID != nil {
-		claimType = VLANClaimType_StaticID
+		claimType = backend.ClaimType_StaticID
 		count++
 
 	}
 	if r.Spec.Range != nil {
-		claimType = VLANClaimType_Range
+		claimType = backend.ClaimType_Range
 		count++
 
 	}
 	if count > 1 {
-		return VLANClaimType_Invalid
+		return backend.ClaimType_Invalid
 	}
 	if count == 0 {
-		return VLANClaimType_DynamicID
+		return backend.ClaimType_DynamicID
 	}
 	return claimType
 }
@@ -236,7 +281,7 @@ func (r *VLANClaim) ValidateVLANClaimType() error {
 
 	}
 	if count > 1 {
-		return fmt.Errorf("an ipclaim can only have 1 addressing, got %s", sb.String())
+		return fmt.Errorf("a claim can only have 1 addressing, got %s", sb.String())
 	}
 	return nil
 }
@@ -312,7 +357,7 @@ func (r *VLANClaim) ValidateVLANRange() error {
 	return errm
 }
 
-func (r *VLANClaim) ValidateSyntax() field.ErrorList {
+func (r *VLANClaim) ValidateSyntax(s string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	gv, err := schema.ParseGroupVersion(r.APIVersion)
@@ -347,11 +392,11 @@ func (r *VLANClaim) ValidateSyntax() field.ErrorList {
 	var v SyntaxValidator
 	claimType := r.GetClaimType()
 	switch claimType {
-	case VLANClaimType_DynamicID:
+	case backend.ClaimType_DynamicID:
 		v = &vlanDynamicIDSyntaxValidator{name: string(claimType)}
-	case VLANClaimType_StaticID:
+	case backend.ClaimType_StaticID:
 		v = &vlanStaticIDSyntaxValidator{name: string(claimType)}
-	case VLANClaimType_Range:
+	case backend.ClaimType_Range:
 		v = &vlanRangeSyntaxValidator{name: string(claimType)}
 	default:
 		return allErrs
@@ -387,7 +432,7 @@ func (r *VLANClaim) GetLabelSelector() (labels.Selector, error) {
 func (r *VLANClaim) GetClaimLabels() labels.Set {
 	labels := r.Spec.GetUserDefinedLabels()
 	// system defined labels
-	labels[backend.KuidVLANClaimTypeKey] = string(r.GetClaimType())
+	labels[backend.KuidClaimTypeKey] = string(r.GetClaimType())
 	labels[backend.KuidClaimNameKey] = r.Name
 	labels[backend.KuidOwnerGroupKey] = r.Spec.Owner.Group
 	labels[backend.KuidOwnerVersionKey] = r.Spec.Owner.Version
@@ -438,4 +483,23 @@ func BuildVLANClaim(meta metav1.ObjectMeta, spec *VLANClaimSpec, status *VLANCla
 		Spec:       aspec,
 		Status:     astatus,
 	}
+}
+
+func (r *VLANClaim) SetStatusRange(s *string) {
+	r.Status.Range = s
+}
+
+func (r *VLANClaim) SetStatusID(s *uint64) {
+	if s == nil {
+		r.Status.ID = nil
+		return
+	}
+	r.Status.ID = ptr.To[uint32](uint32(*s))
+}
+
+func (r *VLANClaim) GetStatusID() *uint64 {
+	if r.Status.ID == nil {
+		return nil
+	}
+	return ptr.To[uint64](uint64(*r.Status.ID))
 }

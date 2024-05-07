@@ -20,8 +20,8 @@ import (
 	"context"
 
 	"github.com/henderiw/logger/log"
+	"github.com/kuidio/kuid/apis/backend"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
-	"github.com/kuidio/kuid/pkg/reconcilers/resource"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/util/workqueue"
@@ -32,7 +32,7 @@ import (
 
 type IPEntryEventHandler struct {
 	Client  client.Client
-	ObjList resource.ObjectList
+	ObjList backend.ObjectList
 }
 
 // Create enqueues a request

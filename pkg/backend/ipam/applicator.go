@@ -31,7 +31,6 @@ import (
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
-	ipamresv1alpha1 "github.com/kuidio/kuid/apis/resource/ipam/v1alpha1"
 	"go4.org/netipx"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/utils/ptr"
@@ -230,7 +229,7 @@ func getRoutesFromClaim(_ context.Context, claim *ipambev1alpha1.IPClaim, pi *ip
 	// system defined labels
 	labels[backend.KuidIPAMIPPrefixTypeKey] = string(claim.GetIPPrefixType())
 	labels[backend.KuidIPAMClaimSummaryTypeKey] = string(claim.GetIPClaimSummaryType())
-	labels[backend.KuidIPAMClaimTypeKey] = string(ipClaimType)
+	labels[backend.KuidClaimTypeKey] = string(ipClaimType)
 	labels[backend.KuidIPAMddressFamilyKey] = string(pi.GetAddressFamily())
 	labels[backend.KuidIPAMSubnetKey] = pi.GetSubnetName()
 	labels[backend.KuidClaimNameKey] = claim.Name
@@ -492,13 +491,13 @@ func findParent(routes table.Routes) table.Route {
 }
 
 func validateNoParent(ipClaim *ipambev1alpha1.IPClaim) error {
-	if ipClaim.Spec.Owner.Group != ipamresv1alpha1.SchemeGroupVersion.Group ||
-		ipClaim.Spec.Owner.Version != ipamresv1alpha1.SchemeGroupVersion.Version ||
-		ipClaim.Spec.Owner.Kind != ipamresv1alpha1.NetworkInstanceKind {
+	if ipClaim.Spec.Owner.Group != ipambev1alpha1.SchemeGroupVersion.Group ||
+		ipClaim.Spec.Owner.Version != ipambev1alpha1.SchemeGroupVersion.Version ||
+		ipClaim.Spec.Owner.Kind != ipambev1alpha1.IPIndexKind {
 		ownerRef := commonv1alpha1.OwnerReference{
-			Group:   ipamresv1alpha1.SchemeGroupVersion.Group,
-			Version: ipamresv1alpha1.SchemeGroupVersion.Version,
-			Kind:    ipamresv1alpha1.NetworkInstanceKind,
+			Group:   ipambev1alpha1.SchemeGroupVersion.Group,
+			Version: ipambev1alpha1.SchemeGroupVersion.Version,
+			Kind:    ipambev1alpha1.IPIndexKind,
 		}
 		return fmt.Errorf("an agregate route is required %s/%s", ipClaim.Spec.Owner.String(), ownerRef)
 	}

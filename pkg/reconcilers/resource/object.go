@@ -17,19 +17,19 @@ limitations under the License.
 package resource
 
 import (
-	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 type Object interface {
 	metav1.Object
 	runtime.Object
-	GetOwnerReference() *commonv1alpha1.OwnerReference
+	//GetOwnerReference() *commonv1alpha1.OwnerReference
 }
 
+/*
 type ObjectList interface {
 	GetItems() []Object
 	client.ObjectList
 }
+*/

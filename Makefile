@@ -62,7 +62,7 @@ genclients:
 		-g openapi-gen \
 		-g go-to-protobuf \
 		--module $(REPO) \
-		--versions $(REPO)/apis/backend/ipam/v1alpha1,$(REPO)/apis/backend/vlan/v1alpha1,$(REPO)/apis/backend/vxlan/v1alpha1,$(REPO)/apis/backend/as/v1alpha1,$(REPO)/apis/condition/v1alpha1,,$(REPO)/apis/common/v1alpha1
+		--versions $(REPO)/apis/condition/v1alpha1,$(REPO)/apis/common/v1alpha1,$(REPO)/apis/backend/ipam/v1alpha1,$(REPO)/apis/backend/vlan/v1alpha1,$(REPO)/apis/backend/vxlan/v1alpha1,$(REPO)/apis/backend/as/v1alpha1,$(REPO)/apis/backend/esi/v1alpha1,$(REPO)/apis/backend/extcomm/v1alpha1,$(REPO)/apis/backend/genid/v1alpha1,$(REPO)/apis/backend/infra/v1alpha1
 
 .PHONY: generate
 generate: controller-gen 
@@ -71,9 +71,9 @@ generate: controller-gen
 .PHONY: manifests
 manifests: controller-gen artifacts ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
 	mkdir -p artifacts
-	$(CONTROLLER_GEN) rbac:roleName=manager-role crd webhook paths="./apis/resource/..." output:crd:artifacts:config=artifacts
-	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./apis/resource/..."
-	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./apis/inv/..."
+	##$(CONTROLLER_GEN) rbac:roleName=manager-role crd webhook paths="./apis/resource/..." output:crd:artifacts:config=artifacts
+	##$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./apis/resource/..."
+	##$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./apis/inv/..."
 	
 .PHONY: artifacts
 artifacts: kform manifests

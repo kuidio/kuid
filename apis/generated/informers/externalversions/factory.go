@@ -23,8 +23,15 @@ import (
 	time "time"
 
 	versioned "github.com/kuidio/kuid/apis/generated/clientset/versioned"
+	as "github.com/kuidio/kuid/apis/generated/informers/externalversions/as"
+	esi "github.com/kuidio/kuid/apis/generated/informers/externalversions/esi"
+	extcomm "github.com/kuidio/kuid/apis/generated/informers/externalversions/extcomm"
+	genid "github.com/kuidio/kuid/apis/generated/informers/externalversions/genid"
+	infra "github.com/kuidio/kuid/apis/generated/informers/externalversions/infra"
 	internalinterfaces "github.com/kuidio/kuid/apis/generated/informers/externalversions/internalinterfaces"
 	ipam "github.com/kuidio/kuid/apis/generated/informers/externalversions/ipam"
+	vlan "github.com/kuidio/kuid/apis/generated/informers/externalversions/vlan"
+	vxlan "github.com/kuidio/kuid/apis/generated/informers/externalversions/vxlan"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -252,9 +259,44 @@ type SharedInformerFactory interface {
 	// client.
 	InformerFor(obj runtime.Object, newFunc internalinterfaces.NewInformerFunc) cache.SharedIndexInformer
 
+	As() as.Interface
+	Esi() esi.Interface
+	Extcomm() extcomm.Interface
+	Genid() genid.Interface
+	Infra() infra.Interface
 	Ipam() ipam.Interface
+	Vlan() vlan.Interface
+	Vxlan() vxlan.Interface
+}
+
+func (f *sharedInformerFactory) As() as.Interface {
+	return as.New(f, f.namespace, f.tweakListOptions)
+}
+
+func (f *sharedInformerFactory) Esi() esi.Interface {
+	return esi.New(f, f.namespace, f.tweakListOptions)
+}
+
+func (f *sharedInformerFactory) Extcomm() extcomm.Interface {
+	return extcomm.New(f, f.namespace, f.tweakListOptions)
+}
+
+func (f *sharedInformerFactory) Genid() genid.Interface {
+	return genid.New(f, f.namespace, f.tweakListOptions)
+}
+
+func (f *sharedInformerFactory) Infra() infra.Interface {
+	return infra.New(f, f.namespace, f.tweakListOptions)
 }
 
 func (f *sharedInformerFactory) Ipam() ipam.Interface {
 	return ipam.New(f, f.namespace, f.tweakListOptions)
+}
+
+func (f *sharedInformerFactory) Vlan() vlan.Interface {
+	return vlan.New(f, f.namespace, f.tweakListOptions)
+}
+
+func (f *sharedInformerFactory) Vxlan() vxlan.Interface {
+	return vxlan.New(f, f.namespace, f.tweakListOptions)
 }

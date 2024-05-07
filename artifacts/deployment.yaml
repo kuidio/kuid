@@ -68,9 +68,9 @@ spec:
           value: "true"
         - name: ENABLE_VXLANCLAIM
           value: "true"
-        - name: ENABLE_IPAMNETWORKINSTANCE
+        - name: ENABLE_IPINDEX
           value: "true"
-        - name: ENABLE_IPAMIPCLAIM
+        - name: ENABLE_IPCLAIM
           value: "true"
         volumeMounts:
         - name: apiserver-certs

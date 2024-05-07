@@ -22,10 +22,12 @@ import (
 	"fmt"
 
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
+	"github.com/henderiw/idxtable/pkg/tree/gtree"
+	"github.com/henderiw/idxtable/pkg/tree/tree32"
 	"github.com/henderiw/store"
+	"github.com/kuidio/kuid/apis/backend"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
-	rresource "github.com/kuidio/kuid/pkg/reconcilers/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -108,8 +110,8 @@ func ConvertVXLANIndexFieldSelector(label, value string) (internalLabel, interna
 	}
 }
 
-func (r *VXLANIndexList) GetItems() []rresource.Object {
-	objs := []rresource.Object{}
+func (r *VXLANIndexList) GetItems() []backend.Object {
+	objs := []backend.Object{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)
@@ -135,8 +137,20 @@ func (r *VXLANIndex) GetNamespacedName() types.NamespacedName {
 	}
 }
 
+func (r *VXLANIndex) GetTree() gtree.GTree {
+	tree, err := tree32.New(24)
+	if err != nil {
+		return nil
+	}
+	return tree
+}
+
 func (r *VXLANIndex) GetKey() store.Key {
 	return store.KeyFromNSN(r.GetNamespacedName())
+}
+
+func (r *VXLANIndex) GetType() string {
+	return ""
 }
 
 func (r *VXLANIndex) GetOwnerReference() *commonv1alpha1.OwnerReference {
@@ -190,6 +204,20 @@ func GetMaxClaimRange(id uint32) string {
 	return fmt.Sprintf("%d-%d", id+1, VXLANID_Max)
 }
 
+func (r *VXLANIndex) GetMinID() *uint64 {
+	if r.Spec.MinID == nil {
+		return nil
+	}
+	return ptr.To[uint64](uint64(*r.Spec.MinID))
+}
+
+func (r *VXLANIndex) GetMaxID() *uint64 {
+	if r.Spec.MaxID == nil {
+		return nil
+	}
+	return ptr.To[uint64](uint64(*r.Spec.MaxID))
+}
+
 func (r *VXLANIndex) GetMinClaimNSN() types.NamespacedName {
 	return types.NamespacedName{
 		Namespace: r.Namespace,
@@ -204,7 +232,7 @@ func (r *VXLANIndex) GetMaxClaimNSN() types.NamespacedName {
 	}
 }
 
-func (r *VXLANIndex) GetMinClaim() *VXLANClaim {
+func (r *VXLANIndex) GetMinClaim() backend.ClaimObject {
 	return BuildVXLANClaim(
 		metav1.ObjectMeta{
 			Namespace: r.GetNamespace(),
@@ -219,7 +247,7 @@ func (r *VXLANIndex) GetMinClaim() *VXLANClaim {
 	)
 }
 
-func (r *VXLANIndex) GetMaxClaim() *VXLANClaim {
+func (r *VXLANIndex) GetMaxClaim() backend.ClaimObject {
 	return BuildVXLANClaim(
 		metav1.ObjectMeta{
 			Namespace: r.GetNamespace(),

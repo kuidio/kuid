@@ -1,5 +1,5 @@
-apiVersion: ipam.res.kuid.dev/v1alpha1
-kind: NetworkInstance
+apiVersion: ipam.be.kuid.dev/v1alpha1
+kind: IPIndex
 metadata:
   name: vpc1
 spec:

@@ -2,118 +2,127 @@ package vxlan
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/henderiw/store"
 	"github.com/kuidio/kuid/apis/backend"
 	vxlanbev1alpha1 "github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1"
+	backendbe "github.com/kuidio/kuid/pkg/backend/backend"
 	"github.com/stretchr/testify/assert"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/utils/ptr"
 )
 
-func TestVXLAN(t *testing.T) {
+func Test(t *testing.T) {
 	tests := map[string]struct {
 		index string
-		vxlans []testvxlan
+		ctxs  []testCtx
 	}{
-		"VXLANMix": {
+		"Mix": {
 			index: "a",
-			vxlans: []testvxlan{
-				{claimType: vxlanDynamic, name: "claim1", expectedError: false, expectedVXLAN: ptr.To[uint32](0)},
-				{claimType: vxlanStatic, name: "claim2", id: 100, expectedError: false},
-				{claimType: vxlanStatic, name: "claim3", id: 4000, expectedError: false},
-				{claimType: vxlanRange, name: "claim4", vxlanRange: "10-19", expectedError: false},
-				{claimType: vxlanRange, name: "claim4", vxlanRange: "11-19", expectedError: false}, // reclaim
-				{claimType: vxlanRange, name: "claim5", vxlanRange: "5-10", expectedError: false},  // claim a new entry
-				{claimType: vxlanRange, name: "claim6", vxlanRange: "19-100", expectedError: true}, // overlap
-				{claimType: vxlanStatic, name: "claim7", id: 12, expectedError: false},
-				{claimType: vxlanStatic, name: "claim7", id: 13, expectedError: false}, // reclaim an existing id
-				{claimType: vxlanDynamic, name: "claim8", selector: &metav1.LabelSelector{
+			ctxs: []testCtx{
+				{claimType: dynamicClaim, name: "claim1", expectedError: false, expectedID: ptr.To[uint64](0)},
+				{claimType: staticClaim, name: "claim2", id: 100, expectedError: false},
+				{claimType: staticClaim, name: "claim3", id: 4000, expectedError: false},
+				{claimType: rangeClaim, name: "claim4", tRange: "10-19", expectedError: false},
+				{claimType: rangeClaim, name: "claim4", tRange: "11-19", expectedError: false}, // reclaim
+				{claimType: rangeClaim, name: "claim5", tRange: "5-10", expectedError: false},  // claim a new entry
+				{claimType: rangeClaim, name: "claim6", tRange: "19-100", expectedError: true}, // overlap
+				{claimType: staticClaim, name: "claim7", id: 12, expectedError: false},
+				{claimType: staticClaim, name: "claim7", id: 13, expectedError: false}, // reclaim an existing id
+				{claimType: dynamicClaim, name: "claim8", selector: &metav1.LabelSelector{
 					MatchLabels: map[string]string{backend.KuidClaimNameKey: "claim4"},
-				}, expectedError: false, expectedVXLAN: ptr.To[uint32](11)}, // a dynamic claim from a range
-				{claimType: vxlanDynamic, name: "claim9", selector: &metav1.LabelSelector{
+				}, expectedError: false, expectedID: ptr.To[uint64](11)}, // a dynamic claim from a range
+				{claimType: dynamicClaim, name: "claim9", selector: &metav1.LabelSelector{
 					MatchLabels: map[string]string{backend.KuidClaimNameKey: "claim4"},
-				}, expectedError: false, expectedVXLAN: ptr.To[uint32](12)}, // a dynamic claim from a range that was claimed before
-				{claimType: vxlanDynamic, name: "claim10", selector: &metav1.LabelSelector{
+				}, expectedError: false, expectedID: ptr.To[uint64](12)}, // a dynamic claim from a range that was claimed before
+				{claimType: dynamicClaim, name: "claim10", selector: &metav1.LabelSelector{
 					MatchLabels: map[string]string{backend.KuidClaimNameKey: "claim4"},
-				}, expectedError: false, expectedVXLAN: ptr.To[uint32](14)},
-				{claimType: vxlanDynamic, name: "claim10", selector: &metav1.LabelSelector{
+				}, expectedError: false, expectedID: ptr.To[uint64](14)},
+				{claimType: dynamicClaim, name: "claim10", selector: &metav1.LabelSelector{
 					MatchLabels: map[string]string{backend.KuidClaimNameKey: "claim4"}, // update
-				}, expectedError: false, expectedVXLAN: ptr.To[uint32](14)},
-				{claimType: vxlanRange, name: "claim4", vxlanRange: "11-19", expectedError: false}, // update
+				}, expectedError: false, expectedID: ptr.To[uint64](14)},
+				{claimType: rangeClaim, name: "claim4", tRange: "11-19", expectedError: false}, // update
 			},
 		},
 	}
 
 	for name, tc := range tests {
 		tc := tc
-		t.Run(name, func(t *testing.T) {
-			be := New(nil)
-			ctx := context.Background()
-			if tc.index != "" {
-				index := getIndex(tc.index)
-				err := be.CreateIndex(ctx, index)
-				assert.NoError(t, err)
-			}
-			cache, err := be.GetCache(ctx, store.KeyFromNSN(types.NamespacedName{Namespace: "dummy", Name: tc.index}))
-			assert.NoError(t, err)
 
-			for _, v := range tc.vxlans {
-				v := v
-				var claim *vxlanbev1alpha1.VXLANClaim
-				var err error
+		testTypes := []string{""}
 
-				switch v.claimType {
-				case vxlanStatic:
-					claim, err = v.getStaticVXLANClaim(tc.index)
-				case vxlanDynamic:
-					claim, err = v.getDynamicVXLANClaim(tc.index)
-				case vxlanRange:
-					claim, err = v.getRangeVXLANClaim(tc.index)
-				}
-				assert.NoError(t, err)
-				if err != nil {
-					return
-				}
-
-				err = be.Claim(ctx, claim)
-				if v.expectedError {
-					assert.Error(t, err)
-					continue
-				} else {
+		for _, testType := range testTypes {
+			t.Run(name, func(t *testing.T) {
+				be := backendbe.New(nil, nil, nil, nil, nil, schema.GroupVersionKind{}, schema.GroupVersionKind{})
+				ctx := context.Background()
+				if tc.index != "" {
+					index, err := getIndex(tc.index, testType)
+					assert.NoError(t, err)
+					err = be.CreateIndex(ctx, index)
 					assert.NoError(t, err)
 				}
-				switch v.claimType {
-				case vxlanStatic, vxlanDynamic:
-					if claim.Status.ID == nil {
-						t.Errorf("expecting vxlan status id got nil")
+
+				for _, v := range tc.ctxs {
+					v := v
+					var claim *vxlanbev1alpha1.VXLANClaim
+					var err error
+
+					switch v.claimType {
+					case staticClaim:
+						claim, err = v.getStaticClaim(tc.index, testType)
+					case dynamicClaim:
+						claim, err = v.getDynamicClaim(tc.index, testType)
+					case rangeClaim:
+						claim, err = v.getRangeClaim(tc.index, testType)
+					}
+					assert.NoError(t, err)
+					if err != nil {
+						return
+					}
+
+					err = be.Claim(ctx, claim)
+					if v.expectedError {
+						assert.Error(t, err)
+						continue
 					} else {
-						expectedVXLAN := v.id
-						if v.expectedVXLAN != nil {
-							expectedVXLAN = *v.expectedVXLAN
+						assert.NoError(t, err)
+					}
+					switch v.claimType {
+					case staticClaim, dynamicClaim:
+						if claim.Status.ID == nil {
+							t.Errorf("expecting status id got nil")
+						} else {
+							expectedID := v.id
+							if v.expectedID != nil {
+								expectedID = *v.expectedID
+							}
+							if uint64(*claim.Status.ID) != expectedID {
+								t.Errorf("expecting id got %d, want %d\n", *claim.Status.ID, expectedID)
+							}
 						}
-						if *claim.Status.ID != expectedVXLAN {
-							t.Errorf("expecting vxlan id got %d, want %d\n", *claim.Status.ID, expectedVXLAN)
+					case rangeClaim:
+						if claim.Status.Range == nil {
+							t.Errorf("expecting status id got nil")
+						} else {
+							expectedRange := v.tRange
+							if v.expectedRange != nil {
+								expectedRange = *v.expectedRange
+							}
+							if *claim.Status.Range != expectedRange {
+								t.Errorf("expecting range got %s, want %s\n", *claim.Status.Range, expectedRange)
+							}
 						}
 					}
-				case vxlanRange:
-					if claim.Status.Range == nil {
-						t.Errorf("expecting vxlan status id got nil")
-					} else {
-						expectedVXLANRange := v.vxlanRange
-						if v.expectedVXLANRange != nil {
-							expectedVXLANRange = *v.expectedVXLANRange
-						}
-						if *claim.Status.Range != expectedVXLANRange {
-							t.Errorf("expecting vxlan range got %s, want %s\n", *claim.Status.Range, expectedVXLANRange)
-						}
-					}
+					fmt.Println("entries after claim", v.name)
+					key := store.KeyFromNSN(types.NamespacedName{Namespace: namespace, Name: tc.index})
+					err = be.PrintEntries(ctx, key)
+					assert.NoError(t, err)
 				}
-				//fmt.Println("entries after claim", v.name)
-				printEntries(cache)
-			}
-		})
+			})
+		}
 	}
 }

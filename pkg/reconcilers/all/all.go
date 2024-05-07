@@ -17,8 +17,8 @@ limitations under the License.
 package all
 
 import (
-	_ "github.com/kuidio/kuid/pkg/reconcilers/ipamipclaim"
-	_ "github.com/kuidio/kuid/pkg/reconcilers/ipamnetworkinstance"
+	_ "github.com/kuidio/kuid/pkg/reconcilers/ipclaim"
+	_ "github.com/kuidio/kuid/pkg/reconcilers/ipindex"
 	_ "github.com/kuidio/kuid/pkg/reconcilers/vlanclaim"
 	_ "github.com/kuidio/kuid/pkg/reconcilers/vlanindex"
 	_ "github.com/kuidio/kuid/pkg/reconcilers/vxlanclaim"

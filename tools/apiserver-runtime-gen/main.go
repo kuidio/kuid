@@ -18,6 +18,7 @@ package main // nolint:revive
 
 import (
 	"fmt"
+	"io/fs"
 	"log"
 	"os"
 	"os/exec"
@@ -67,14 +68,14 @@ func runE(cmd *cobra.Command, args []string) error {
 			}
 			if gen == "go-to-protobuf" {
 				/*
-				err := run(exec.Command("go", "mod", "vendor"))
-				if err != nil {
-					return err
-				}
-				err = run(exec.Command("go", "mod", "tidy"))
-				if err != nil {
-					return err
-				}
+					err := run(exec.Command("go", "mod", "vendor"))
+					if err != nil {
+						return err
+					}
+					err = run(exec.Command("go", "mod", "tidy"))
+					if err != nil {
+						return err
+					}
 				*/
 			}
 		}
@@ -113,7 +114,8 @@ func runE(cmd *cobra.Command, args []string) error {
 func doGen() error {
 	inputs := strings.Join(versions, ",")
 	//protoInput := versions[0]
-	clientVersions := versions[:1]
+	fmt.Println("versions", versions)
+	clientVersions := versions[2:]
 	clientgenInput := strings.Join(clientVersions, ",")
 
 	fmt.Println("inputs", inputs)
@@ -157,7 +159,7 @@ func doGen() error {
 			versionsInputs = strings.Join(strippedVersions, ",")
 		}
 		fmt.Println("inputBase", inputBase)
-		fmt.Println("clientgenInput", clientgenInput)
+		//fmt.Println("clientgenInput", clientgenInput)
 		fmt.Println("versionsInputs", versionsInputs)
 		err := run(getCmd("client-gen",
 			"--clientset-name", "versioned", "--input-base", "",
@@ -169,7 +171,7 @@ func doGen() error {
 
 	if gen["lister-gen"] {
 		err := run(getCmd("lister-gen",
-			"--input-dirs", clientgenInput, "--output-package", path.Join(module, "apis/generated/listers")))
+			"--input-dirs", inputs, "--output-package", path.Join(module, "apis/generated/listers")))
 		if err != nil {
 			return err
 		}
@@ -177,7 +179,7 @@ func doGen() error {
 
 	if gen["informer-gen"] {
 		err := run(getCmd("informer-gen",
-			"--input-dirs", clientgenInput,
+			"--input-dirs", inputs,
 			"--versioned-clientset-package", path.Join(module, "apis/generated/clientset/versioned"),
 			"--listers-package", path.Join(module, "apis/generated/listers"),
 			"--output-package", path.Join(module, "apis/generated/informers")))
@@ -230,31 +232,28 @@ func main() {
 	cmd.Flags().StringVar(&module, "module", defaultModule, "Go module of the apiserver.")
 
 	// calculate the versions
-	defaultVersions := []string{"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1", "github.com/kuidio/kuid/apis/condition/v1alpha1"}
-	/*
+	//defaultVersions := []string{"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1", "github.com/kuidio/kuid/apis/condition/v1alpha1"}
 	var defaultVersions []string
-	if files, err := os.ReadDir(filepath.Join("apis")); err == nil {
-		for _, f := range files {
-			if f.IsDir() {
-				versionFiles, err := os.ReadDir(filepath.Join("apis", f.Name()))
-				if err != nil {
-					log.Fatal(err)
-				}
-				for _, v := range versionFiles {
-					if v.IsDir() {
-						match := versionRegexp.MatchString(v.Name())
-						if !match {
-							continue
-						}
-						defaultVersions = append(defaultVersions, path.Join(module, "apis", f.Name(), v.Name()))
-					}
-				}
-			}
+	if err := fs.WalkDir(os.DirFS("apis"), ".", func(p string, d fs.DirEntry, err error) error {
+		fmt.Println("path", p)
+		if err != nil {
+			return err
 		}
-	} else {
-		fmt.Fprintf(os.Stderr, "cannot parse api versions: %v\n", err)
+		if d.IsDir() {
+			if strings.HasPrefix(p, "generated") { // ship the generated directory
+				return nil
+			}
+			match := versionRegexp.MatchString(p)
+			if !match {
+				defaultVersions = append(defaultVersions, path.Join(module, "apis", p))
+			}
+
+		}
+		return nil
+	}); err != nil {
+		panic(err)
 	}
-	*/
+
 	cmd.Flags().StringSliceVar(
 		&versions, "versions", defaultVersions, "Go packages of API versions to generate code for.")
 

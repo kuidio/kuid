@@ -19,22 +19,22 @@ package v1alpha1
 type VLANClaimType string
 
 const (
-	VLANClaimType_Invalid   VLANClaimType = "invalid"
-	VLANClaimType_StaticID  VLANClaimType = "staticVLANID"
-	VLANClaimType_DynamicID VLANClaimType = "dynamicVLANID"
-	VLANClaimType_Range     VLANClaimType = "vlanRange"
+	ClaimType_Invalid   VLANClaimType = "invalid"
+	ClaimType_StaticID  VLANClaimType = "staticVLANID"
+	ClaimType_DynamicID VLANClaimType = "dynamicVLANID"
+	ClaimType_Range     VLANClaimType = "vlanRange"
 )
 
-func GetIPClaimTypeFromString(s string) VLANClaimType {
+func GetClaimTypeFromString(s string) VLANClaimType {
 	switch s {
-	case string(VLANClaimType_StaticID):
-		return VLANClaimType_StaticID
-	case string(VLANClaimType_DynamicID):
-		return VLANClaimType_DynamicID
-	case string(VLANClaimType_Range):
-		return VLANClaimType_Range
+	case string(ClaimType_StaticID):
+		return ClaimType_StaticID
+	case string(ClaimType_DynamicID):
+		return ClaimType_DynamicID
+	case string(ClaimType_Range):
+		return ClaimType_Range
 	default:
-		return VLANClaimType_Invalid
+		return ClaimType_Invalid
 	}
 }
 

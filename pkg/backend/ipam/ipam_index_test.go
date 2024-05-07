@@ -9,10 +9,10 @@ import (
 
 func TestIPAMIndexNormal(t *testing.T) {
 	tests := map[string]struct {
-		niName string
+		index string
 	}{
 		"CreateDelete": {
-			niName: "a",
+			index: "a",
 		},
 	}
 
@@ -20,7 +20,7 @@ func TestIPAMIndexNormal(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			be := New(nil)
 			ctx := context.Background()
-			index := getNI(tc.niName)
+			index := getIndex(tc.index)
 			if err := be.CreateIndex(ctx, index); err != nil {
 				assert.Error(t, err)
 			}

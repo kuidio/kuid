@@ -1,0 +1,9 @@
+apiVersion: id.be.kuid.dev/v1alpha1
+kind: IDIndex
+metadata:
+  name: index1
+spec:
+  minID: 0
+  maxID: 4095
+  labels:
+    inv.kuid.dev/node: node1

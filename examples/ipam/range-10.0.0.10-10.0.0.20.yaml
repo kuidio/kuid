@@ -3,6 +3,6 @@ kind: IPClaim
 metadata:
   name: vpc1.10.0.0.10-10.0.0.19
 spec:
-  networkInstance: vpc1
+  index: vpc1
   range: 10.0.0.10-10.0.0.19
     

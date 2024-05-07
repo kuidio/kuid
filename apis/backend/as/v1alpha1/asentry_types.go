@@ -19,6 +19,7 @@ package v1alpha1
 import (
 	"reflect"
 
+	"github.com/kuidio/kuid/apis/backend"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -29,7 +30,7 @@ type ASEntrySpec struct {
 	// ASIndex defines the AS index for the AS Claim
 	Index string `json:"index" yaml:"index" protobuf:"bytes,1,opt,name=index"`
 	// ClaimType defines the claimType of the AS Entry
-	ClaimType ASClaimType `json:"claimType,omitempty" yaml:"claimType,omitempty" protobuf:"bytes,2,opt,name=claimType"`
+	ClaimType backend.ClaimType `json:"claimType,omitempty" yaml:"claimType,omitempty" protobuf:"bytes,2,opt,name=claimType"`
 	// ID defines the id of the AS entry in the tree
 	ID string `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,3,opt,name=id"`
 	// ClaimLabels define the user defined labels and selector labels used

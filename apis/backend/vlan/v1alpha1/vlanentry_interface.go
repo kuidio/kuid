@@ -17,7 +17,6 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"context"
 	"crypto/sha1"
 	"encoding/json"
 	"fmt"
@@ -44,6 +43,14 @@ var _ resource.ObjectList = &VLANEntryList{}
 // GetListMeta returns the ListMeta
 func (r *VLANEntryList) GetListMeta() *metav1.ListMeta {
 	return &r.ListMeta
+}
+
+func (r *VLANEntryList) GetItems() []backend.Object {
+	entries := make([]backend.Object, 0, len(r.Items))
+	for _, entry := range r.Items {
+		entries = append(entries, &entry)
+	}
+	return entries
 }
 
 func (r *VLANEntry) GetSingularName() string {
@@ -136,7 +143,41 @@ func (r *VLANEntry) GetClaimName() string {
 	return r.Spec.Claim
 }
 
-func GetVLANEntry(ctx context.Context, k store.Key, vrange, id string, labels map[string]string) *VLANEntry {
+func (r *VLANEntry) GetClaimType() backend.ClaimType {
+	return r.Spec.ClaimType
+}
+
+func (r *VLANEntry) GetKey() store.Key {
+	return store.KeyFromNSN(types.NamespacedName{Namespace: r.Namespace, Name: r.Spec.Index})
+}
+
+func (r *VLANEntry) GetOwnerGVK() schema.GroupVersionKind {
+	return schema.GroupVersionKind{
+		Group:   r.Spec.Owner.Group,
+		Version: r.Spec.Owner.Version,
+		Kind:    r.Spec.Owner.Kind,
+	}
+}
+
+func (r *VLANEntry) GetOwnerNSN() types.NamespacedName {
+	return types.NamespacedName{
+		Namespace: r.Spec.Owner.Namespace,
+		Name:      r.Spec.Owner.Name,
+	}
+}
+
+func (r *VLANEntry) GetSpec() any {
+	return r.Spec
+}
+
+func (r *VLANEntry) SetSpec(spec any) {
+	s, ok := spec.(VLANEntrySpec)
+	if ok {
+		r.Spec = s
+	}
+}
+
+func GetVLANEntry(k store.Key, vrange, id string, labels map[string]string) backend.EntryObject {
 	//log := log.FromContext(ctx)
 
 	index := k.Name
@@ -144,7 +185,7 @@ func GetVLANEntry(ctx context.Context, k store.Key, vrange, id string, labels ma
 
 	spec := &VLANEntrySpec{
 		Index:     index,
-		ClaimType: GetIPClaimTypeFromString(labels[backend.KuidVLANClaimTypeKey]),
+		ClaimType: backend.GetClaimTypeFromString(labels[backend.KuidClaimTypeKey]),
 		Claim:     labels[backend.KuidClaimNameKey],
 		ID:        id,
 		Owner: &commonv1alpha1.OwnerReference{
@@ -158,7 +199,7 @@ func GetVLANEntry(ctx context.Context, k store.Key, vrange, id string, labels ma
 	// filter the system defined labels from the labels to prepare for the user defined labels
 	udLabels := map[string]string{}
 	for k, v := range labels {
-		if !backend.BackendSystemKeys.Has(k) && !backend.BackendVLANSystemKeys.Has(k) {
+		if !backend.BackendSystemKeys.Has(k) {
 			udLabels[k] = v
 		}
 	}
@@ -184,7 +225,7 @@ func GetVLANEntry(ctx context.Context, k store.Key, vrange, id string, labels ma
 }
 
 // BuildVLANEntry returns a reource from a client Object a Spec/Status
-func BuildVLANEntry(meta metav1.ObjectMeta, spec *VLANEntrySpec, status *VLANEntryStatus) *VLANEntry {
+func BuildVLANEntry(meta metav1.ObjectMeta, spec *VLANEntrySpec, status *VLANEntryStatus) backend.EntryObject {
 	aspec := VLANEntrySpec{}
 	if spec != nil {
 		aspec = *spec

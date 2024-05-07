@@ -26,20 +26,15 @@ const (
 	KuidOwnerNameKey      = "be.kuid.dev/owner-name"
 	KuidOwnerNamespaceKey = "be.kuid.dev/owner-namespace"
 	KuidClaimNameKey      = "be.kuid.dev/claim-name"
+	KuidClaimTypeKey      = "be.kuid.dev/claim-type"
 	// system defined ipam
 	KuidIPAMIPPrefixTypeKey     = "ipam.be.kuid.dev/ipprefix-type"
-	KuidIPAMClaimTypeKey        = "ipam.be.kuid.dev/claim-type"
 	KuidIPAMClaimSummaryTypeKey = "ipam.be.kuid.dev/claim-summary-type"
 	KuidIPAMddressFamilyKey     = "ipam.be.kuid.dev/address-family"
 	KuidIPAMSubnetKey           = "ipam.be.kuid.dev/subnet" // this is the subnet in prefix annotation used for GW selection
 	KuidIPAMDefaultGatewayKey   = "ipam.be.kuid.dev/default-gateway"
 	KuidIPAMIndexKey            = "ipam.be.kuid.dev/index"
-	// system defined vlan
-	KuidVLANClaimTypeKey = "vlan.be.kuid.dev/claim-type"
-	// system defined vxlan
-	KuidVXLANClaimTypeKey = "vxlan.be.kuid.dev/claim-type"
-	// system defined AS
-	KuidASClaimTypeKey = "as.be.kuid.dev/claim-type"
+
 	// DNS used keys
 	KuidINVNetworkKey  = "inv.kuid.dev/network"
 	KuidINVEndpointKey = "inv.kuid.dev/endpoint-name"
@@ -47,13 +42,13 @@ const (
 	KuidINVAliasKey    = "inv.kuid.dev/alias-name"
 	KuidINVPortNS      = "port.kuid.dev"
 	// Inventory
-	KuidINVRegionKey           = "inv.kuid.dev/region"
-	KuidINVAvailabilityZoneKey = "inv.kuid.dev/availability-zone"
-	KuidINVSiteKey             = "inv.kuid.dev/site"
-	KuidINVLocationKey         = "inv.kuid.dev/location"
-	KuidINVRackKey             = "inv.kuid.dev/rack"
-	KuidINVNodeKey             = "inv.kuid.dev/node"
-	KuidINVLinkKey             = "inv.kuid.dev/link"
+	KuidINVRegionKey           = "infra.be.kuid.dev/region"
+	KuidINVAvailabilityZoneKey = "infra.be.kuid.dev/availability-zone"
+	KuidINVSiteKey             = "infra.be.kuid.dev/site"
+	KuidINVLocationKey         = "infra.be.kuid.dev/location"
+	KuidINVRackKey             = "infra.be.kuid.dev/rack"
+	KuidINVNodeKey             = "infra.be.kuid.dev/node"
+	KuidINVLinkKey             = "infra.be.kuid.dev/link"
 )
 
 var BackendSystemKeys = sets.New[string](KuidOwnerGroupKey,
@@ -66,7 +61,6 @@ var BackendSystemKeys = sets.New[string](KuidOwnerGroupKey,
 
 var BackendIPAMSystemKeys = sets.New[string](KuidOwnerGroupKey,
 	KuidIPAMIPPrefixTypeKey,
-	KuidIPAMClaimTypeKey,
 	KuidIPAMClaimSummaryTypeKey,
 	KuidIPAMddressFamilyKey,
 	KuidIPAMSubnetKey,
@@ -74,14 +68,6 @@ var BackendIPAMSystemKeys = sets.New[string](KuidOwnerGroupKey,
 	KuidIPAMIndexKey,
 )
 
-var BackendVLANSystemKeys = sets.New[string](KuidOwnerGroupKey,
-	KuidVLANClaimTypeKey,
-)
-
-var BackendVXLANSystemKeys = sets.New[string](KuidOwnerGroupKey,
-	KuidVXLANClaimTypeKey,
-)
-
-var BackendASSystemKeys = sets.New[string](KuidOwnerGroupKey,
-	KuidASClaimTypeKey,
+var BackendSystemClaimKeys = sets.New[string](KuidOwnerGroupKey,
+	KuidClaimTypeKey,
 )

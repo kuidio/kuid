@@ -46,7 +46,7 @@ type VLANClaimSpec struct {
 
 // VLANClaimStatus defines the observed state of VLANClaim
 type VLANClaimStatus struct {
-	// ConditionedStatus provides the status of the IPClain using conditions
+	// ConditionedStatus provides the status of the Claim using conditions
 	// - a ready condition indicates the overall status of the resource
 	conditionv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=conditionedStatus"`
 	// VLANID defines the vlan for the VLAN claim

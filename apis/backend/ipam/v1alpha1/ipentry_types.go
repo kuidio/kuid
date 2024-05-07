@@ -27,9 +27,8 @@ import (
 
 // IPEntrySpec defines the desired state of IPEntry
 type IPEntrySpec struct {
-	// NetworkInstance defines the networkInstance context of the IPAddress.
-	// A NetworkInstance is a dedicated routing table instance
-	NetworkInstance string `json:"networkInstance" yaml:"networkInstance" protobuf:"bytes,1,opt,name=networkInstance"`
+	// Index defines the index for the IP Entry
+	Index string `json:"index" yaml:"index" protobuf:"bytes,1,opt,name=index"`
 	// PrefixType defines the prefixtype of IPEntry; for address and range claims this is not relevant
 	// - network kind is used for physical, virtual nics on a device
 	// - pool kind is used for allocating dedicated IP addresses

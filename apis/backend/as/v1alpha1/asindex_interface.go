@@ -22,10 +22,12 @@ import (
 	"fmt"
 
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
+	"github.com/henderiw/idxtable/pkg/tree/gtree"
+	"github.com/henderiw/idxtable/pkg/tree/tree32"
 	"github.com/henderiw/store"
+	"github.com/kuidio/kuid/apis/backend"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
-	rresource "github.com/kuidio/kuid/pkg/reconcilers/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -108,8 +110,8 @@ func ConvertASIndexFieldSelector(label, value string) (internalLabel, internalVa
 	}
 }
 
-func (r *ASIndexList) GetItems() []rresource.Object {
-	objs := []rresource.Object{}
+func (r *ASIndexList) GetItems() []backend.Object {
+	objs := []backend.Object{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)
@@ -135,8 +137,20 @@ func (r *ASIndex) GetNamespacedName() types.NamespacedName {
 	}
 }
 
+func (r *ASIndex) GetTree() gtree.GTree {
+	tree, err := tree32.New(32)
+	if err != nil {
+		panic(err)
+	}
+	return tree
+}
+
 func (r *ASIndex) GetKey() store.Key {
 	return store.KeyFromNSN(r.GetNamespacedName())
+}
+
+func (r *ASIndex) GetType() string {
+	return ""
 }
 
 func (r *ASIndex) GetOwnerReference() *commonv1alpha1.OwnerReference {
@@ -190,21 +204,35 @@ func GetMaxClaimRange(id uint32) string {
 	return fmt.Sprintf("%d-%d", id+1, ASID_Max)
 }
 
+func (r *ASIndex) GetMinID() *uint64 {
+	if r.Spec.MinID == nil {
+		return nil
+	}
+	return ptr.To[uint64](uint64(*r.Spec.MinID))
+}
+
+func (r *ASIndex) GetMaxID() *uint64 {
+	if r.Spec.MaxID == nil {
+		return nil
+	}
+	return ptr.To[uint64](uint64(*r.Spec.MaxID))
+}
+
 func (r *ASIndex) GetMinClaimNSN() types.NamespacedName {
 	return types.NamespacedName{
 		Namespace: r.Namespace,
-		Name:      fmt.Sprintf("%s.%s", r.Name, ASIndexReservedMinName),
+		Name:      fmt.Sprintf("%s.%s", r.Name, backend.IndexReservedMinName),
 	}
 }
 
 func (r *ASIndex) GetMaxClaimNSN() types.NamespacedName {
 	return types.NamespacedName{
 		Namespace: r.Namespace,
-		Name:      fmt.Sprintf("%s.%s", r.Name, ASIndexReservedMaxName),
+		Name:      fmt.Sprintf("%s.%s", r.Name, backend.IndexReservedMaxName),
 	}
 }
 
-func (r *ASIndex) GetMinClaim() *ASClaim {
+func (r *ASIndex) GetMinClaim() backend.ClaimObject {
 	return BuildASClaim(
 		metav1.ObjectMeta{
 			Namespace: r.GetNamespace(),
@@ -219,7 +247,7 @@ func (r *ASIndex) GetMinClaim() *ASClaim {
 	)
 }
 
-func (r *ASIndex) GetMaxClaim() *ASClaim {
+func (r *ASIndex) GetMaxClaim() backend.ClaimObject {
 	return BuildASClaim(
 		metav1.ObjectMeta{
 			Namespace: r.GetNamespace(),

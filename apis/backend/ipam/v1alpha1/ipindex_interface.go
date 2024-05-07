@@ -22,13 +22,18 @@ import (
 	"fmt"
 
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
+	"github.com/henderiw/idxtable/pkg/tree/gtree"
+	"github.com/henderiw/iputil"
 	"github.com/henderiw/store"
+	"github.com/kuidio/kuid/apis/backend"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/validation/field"
+	"k8s.io/utils/ptr"
 )
 
 const IPIndexPlural = "ipindices"
@@ -105,6 +110,15 @@ func ConvertIPIndexFieldSelector(label, value string) (internalLabel, internalVa
 	}
 }
 
+func (r *IPIndexList) GetItems() []backend.Object {
+	objs := []backend.Object{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
+}
+
 func (r *IPIndex) CalculateHash() ([sha1.Size]byte, error) {
 	// Convert the struct to JSON
 	jsonData, err := json.Marshal(r)
@@ -123,8 +137,17 @@ func (r *IPIndex) GetNamespacedName() types.NamespacedName {
 	}
 }
 
+// GetTree satisfies the interface but should not be used
+func (r *IPIndex) GetTree() gtree.GTree {
+	return nil
+}
+
 func (r *IPIndex) GetKey() store.Key {
 	return store.KeyFromNSN(r.GetNamespacedName())
+}
+
+func (r *IPIndex) GetType() string {
+	return ""
 }
 
 func (r *IPIndex) GetOwnerReference() *commonv1alpha1.OwnerReference {
@@ -135,6 +158,47 @@ func (r *IPIndex) GetOwnerReference() *commonv1alpha1.OwnerReference {
 		Namespace: r.Namespace,
 		Name:      r.Name,
 	}
+}
+
+func (r *IPIndex) ValidateSyntax(s string) field.ErrorList {
+	var allErrs field.ErrorList
+
+	if len(r.Spec.Prefixes) == 0 {
+		allErrs = append(allErrs, field.Invalid(
+			field.NewPath("spec.minID"),
+			r,
+			fmt.Errorf("a ipindex needs a prefix").Error(),
+		))
+
+	}
+
+	return allErrs
+}
+
+func (r *IPIndex) GetClaim(prefix Prefix) (*IPClaim, error) {
+	pi, err := iputil.New(prefix.Prefix)
+	if err != nil {
+		return nil, err
+	}
+
+	return BuildIPClaim(
+		metav1.ObjectMeta{
+			Namespace: r.GetNamespace(),
+			Name:      pi.GetSubnetName(),
+		},
+		&IPClaimSpec{
+			PrefixType:   ptr.To[IPPrefixType](IPPrefixType_Aggregate),
+			Index:        r.Name,
+			Prefix:       ptr.To[string](prefix.Prefix),
+			PrefixLength: ptr.To[uint32](uint32(pi.GetPrefixLength())),
+			CreatePrefix: ptr.To[bool](true),
+			ClaimLabels: commonv1alpha1.ClaimLabels{
+				UserDefinedLabels: prefix.UserDefinedLabels,
+			},
+			Owner: commonv1alpha1.GetOwnerReference(r),
+		},
+		nil,
+	), nil
 }
 
 // BuildIPIndex returns a reource from a client Object a Spec/Status
@@ -157,3 +221,15 @@ func BuildIPIndex(meta metav1.ObjectMeta, spec *IPIndexSpec, status *IPIndexStat
 		Status:     astatus,
 	}
 }
+
+// GetMinID satisfies the interface but should not be used
+func (r *IPIndex) GetMinID() *uint64 { return nil }
+
+// GetMaxID satisfies the interface but should not be used
+func (r *IPIndex) GetMaxID() *uint64 { return nil }
+
+// GetMinClaim satisfies the interface but should not be used
+func (r *IPIndex) GetMinClaim() backend.ClaimObject { return nil }
+
+// GetMaxClaim satisfies the interface but should not be used
+func (r *IPIndex) GetMaxClaim() backend.ClaimObject { return nil }

@@ -25,11 +25,14 @@ import (
 	"strings"
 
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
+	"github.com/henderiw/idxtable/pkg/table"
+	"github.com/henderiw/idxtable/pkg/table/table32"
+	"github.com/henderiw/idxtable/pkg/tree"
+	"github.com/henderiw/idxtable/pkg/tree/id32"
 	"github.com/henderiw/store"
 	"github.com/kuidio/kuid/apis/backend"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
-	rresource "github.com/kuidio/kuid/pkg/reconcilers/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -37,7 +40,7 @@ import (
 	"k8s.io/apimachinery/pkg/selection"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/validation/field"
-	"github.com/henderiw/idxtable/pkg/tree/id32"
+	"k8s.io/utils/ptr"
 )
 
 const ASClaimPlural = "asclaims"
@@ -135,8 +138,8 @@ func ConvertASClaimFieldSelector(label, value string) (internalLabel, internalVa
 	}
 }
 
-func (r *ASClaimList) GetItems() []rresource.Object {
-	objs := []rresource.Object{}
+func (r *ASClaimList) GetItems() []backend.Object {
+	objs := []backend.Object{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)
@@ -166,6 +169,14 @@ func (r *ASClaim) GetKey() store.Key {
 	return store.KeyFromNSN(types.NamespacedName{Namespace: r.Namespace, Name: r.Spec.Index})
 }
 
+func (r *ASClaim) GetIndex() string {
+	return r.Spec.Index
+}
+
+func (r *ASClaim) GetSelector() *metav1.LabelSelector {
+	return r.Spec.Selector
+}
+
 func (r *ASClaim) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	return &commonv1alpha1.OwnerReference{
 		Group:     SchemeGroupVersion.Group,
@@ -174,6 +185,39 @@ func (r *ASClaim) GetOwnerReference() *commonv1alpha1.OwnerReference {
 		Namespace: r.Namespace,
 		Name:      r.Name,
 	}
+}
+
+func (r *ASClaim) GetStaticID() *uint64 {
+	if r.Spec.ID == nil {
+		return nil
+	}
+	return ptr.To[uint64](uint64(*r.Spec.ID))
+}
+
+func (r *ASClaim) GetStaticTreeID(t string) tree.ID {
+	if r.Spec.ID == nil {
+		return nil
+	}
+	return id32.NewID(*r.Spec.ID, id32.IDBitSize)
+}
+
+func (r *ASClaim) GetClaimID(t string, id uint64) tree.ID {
+	return id32.NewID(uint32(id), id32.IDBitSize)
+}
+
+func (r *ASClaim) GetRange() *string {
+	return r.Spec.Range
+}
+
+func (r *ASClaim) GetRangeID(_ string) (tree.Range, error) {
+	if r.Spec.Range == nil {
+		return nil, fmt.Errorf("cannot provide a range without an id")
+	}
+	return id32.ParseRange(*r.Spec.Range)
+}
+
+func (r *ASClaim) GetTable(s string, to, from uint64) table.Table {
+	return table32.New(uint32(to), uint32(from))
 }
 
 func getASDot(asn uint32) string {
@@ -213,24 +257,24 @@ func (r *ASClaim) GetClaimResponse() string {
 	return ""
 }
 
-func (r *ASClaim) GetClaimType() ASClaimType {
-	claimType := ASClaimType_Invalid
+func (r *ASClaim) GetClaimType() backend.ClaimType {
+	claimType := backend.ClaimType_Invalid
 	count := 0
 	if r.Spec.ID != nil {
-		claimType = ASClaimType_StaticID
+		claimType = backend.ClaimType_StaticID
 		count++
 
 	}
 	if r.Spec.Range != nil {
-		claimType = ASClaimType_Range
+		claimType = backend.ClaimType_Range
 		count++
 
 	}
 	if count > 1 {
-		return ASClaimType_Invalid
+		return backend.ClaimType_Invalid
 	}
 	if count == 0 {
-		return ASClaimType_DynamicID
+		return backend.ClaimType_DynamicID
 	}
 	return claimType
 }
@@ -328,7 +372,7 @@ func (r *ASClaim) ValidateASRange() error {
 	return errm
 }
 
-func (r *ASClaim) ValidateSyntax() field.ErrorList {
+func (r *ASClaim) ValidateSyntax(s string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	gv, err := schema.ParseGroupVersion(r.APIVersion)
@@ -363,11 +407,11 @@ func (r *ASClaim) ValidateSyntax() field.ErrorList {
 	var v SyntaxValidator
 	claimType := r.GetClaimType()
 	switch claimType {
-	case ASClaimType_DynamicID:
+	case backend.ClaimType_DynamicID:
 		v = &ASDynamicIDSyntaxValidator{name: string(claimType)}
-	case ASClaimType_StaticID:
+	case backend.ClaimType_StaticID:
 		v = &ASStaticIDSyntaxValidator{name: string(claimType)}
-	case ASClaimType_Range:
+	case backend.ClaimType_Range:
 		v = &ASRangeSyntaxValidator{name: string(claimType)}
 	default:
 		return allErrs
@@ -403,7 +447,7 @@ func (r *ASClaim) GetLabelSelector() (labels.Selector, error) {
 func (r *ASClaim) GetClaimLabels() labels.Set {
 	labels := r.Spec.GetUserDefinedLabels()
 	// system defined labels
-	labels[backend.KuidASClaimTypeKey] = string(r.GetClaimType())
+	labels[backend.KuidClaimTypeKey] = string(r.GetClaimType())
 	labels[backend.KuidClaimNameKey] = r.Name
 	labels[backend.KuidOwnerGroupKey] = r.Spec.Owner.Group
 	labels[backend.KuidOwnerVersionKey] = r.Spec.Owner.Version
@@ -454,4 +498,23 @@ func BuildASClaim(meta metav1.ObjectMeta, spec *ASClaimSpec, status *ASClaimStat
 		Spec:       aspec,
 		Status:     astatus,
 	}
+}
+
+func (r *ASClaim) SetStatusRange(s *string) {
+	r.Status.Range = s
+}
+
+func (r *ASClaim) SetStatusID(s *uint64) {
+	if s == nil {
+		r.Status.ID = nil
+		return
+	}
+	r.Status.ID = ptr.To[uint32](uint32(*s))
+}
+
+func (r *ASClaim) GetStatusID() *uint64 {
+	if r.Status.ID == nil {
+		return nil
+	}
+	return ptr.To[uint64](uint64(*r.Status.ID))
 }

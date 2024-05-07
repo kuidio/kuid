@@ -1,0 +1,6 @@
+apiVersion: genid.be.kuid.dev/v1alpha1
+kind: GENIDClaim
+metadata:
+  name: index1.claim2
+spec:
+  index: index1

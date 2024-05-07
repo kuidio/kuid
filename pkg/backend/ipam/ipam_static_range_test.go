@@ -10,11 +10,11 @@ import (
 
 func TestIPAMStaticRange(t *testing.T) {
 	tests := map[string]struct {
-		niName   string
+		index   string
 		prefixes []testprefix
 	}{
 		"Normal": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "10.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "10.0.0.0/24", expectedError: false},
@@ -25,7 +25,7 @@ func TestIPAMStaticRange(t *testing.T) {
 			},
 		},
 		"Ranges": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "10.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "10.0.0.0/24", expectedError: false},
@@ -40,7 +40,7 @@ func TestIPAMStaticRange(t *testing.T) {
 			},
 		},
 		"Overlap": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "10.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "10.0.0.0/24", expectedError: false},
@@ -49,14 +49,14 @@ func TestIPAMStaticRange(t *testing.T) {
 			},
 		},
 		"Range2Aggregate": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "10.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticRange, name: "range1", ip: "10.0.0.10-10.0.0.100", expectedError: true},
 			},
 		},
 		"Range2Network": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "10.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "10.0.0.0/24", prefixType: network, expectedError: false},
@@ -64,7 +64,7 @@ func TestIPAMStaticRange(t *testing.T) {
 			},
 		},
 		"Range2Pool": {
-			niName: "a",
+			index: "a",
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "10.0.0.0/8", prefixType: aggregate, expectedError: false},
 				{claimType: staticPrefix, ip: "10.0.0.0/24", prefixType: pool, expectedError: false},
@@ -78,8 +78,8 @@ func TestIPAMStaticRange(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			be := New(nil)
 			ctx := context.Background()
-			if tc.niName != "" {
-				index := getNI(tc.niName)
+			if tc.index != "" {
+				index := getIndex(tc.index)
 				err := be.CreateIndex(ctx, index)
 				assert.NoError(t, err)
 			}
@@ -92,18 +92,18 @@ func TestIPAMStaticRange(t *testing.T) {
 				switch p.claimType {
 				case staticPrefix:
 					if p.prefixType != nil && *p.prefixType == *aggregate {
-						ipClaim, err = p.getIPClaimFromNetworkPrefix(tc.niName)
+						ipClaim, err = p.getIPClaimFromNetworkPrefix(tc.index)
 					} else {
-						ipClaim, err = p.getStaticPrefixIPClaim(tc.niName)
+						ipClaim, err = p.getStaticPrefixIPClaim(tc.index)
 					}
 				case staticRange:
-					ipClaim, err = p.getStaticRangeIPClaim(tc.niName)
+					ipClaim, err = p.getStaticRangeIPClaim(tc.index)
 				case staticAddress:
-					ipClaim, err = p.getStaticAddressIPClaim(tc.niName)
+					ipClaim, err = p.getStaticAddressIPClaim(tc.index)
 				case dynamicPrefix:
-					ipClaim, err = p.getDynamicPrefixIPClaim(tc.niName)
+					ipClaim, err = p.getDynamicPrefixIPClaim(tc.index)
 				case dynamicAddress:
-					ipClaim, err = p.getDynamicAddressIPClaim(tc.niName)
+					ipClaim, err = p.getDynamicAddressIPClaim(tc.index)
 				}
 				assert.NoError(t, err)
 

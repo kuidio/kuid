@@ -25,11 +25,14 @@ import (
 	"strings"
 
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
+	"github.com/henderiw/idxtable/pkg/table"
+	"github.com/henderiw/idxtable/pkg/table/table32"
+	"github.com/henderiw/idxtable/pkg/tree"
+	"github.com/henderiw/idxtable/pkg/tree/id32"
 	"github.com/henderiw/store"
 	"github.com/kuidio/kuid/apis/backend"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
-	rresource "github.com/kuidio/kuid/pkg/reconcilers/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -37,6 +40,7 @@ import (
 	"k8s.io/apimachinery/pkg/selection"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/validation/field"
+	"k8s.io/utils/ptr"
 )
 
 const VXLANClaimPlural = "vxlanclaims"
@@ -134,8 +138,8 @@ func ConvertVXLANClaimFieldSelector(label, value string) (internalLabel, interna
 	}
 }
 
-func (r *VXLANClaimList) GetItems() []rresource.Object {
-	objs := []rresource.Object{}
+func (r *VXLANClaimList) GetItems() []backend.Object {
+	objs := []backend.Object{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)
@@ -165,6 +169,14 @@ func (r *VXLANClaim) GetKey() store.Key {
 	return store.KeyFromNSN(types.NamespacedName{Namespace: r.Namespace, Name: r.Spec.Index})
 }
 
+func (r *VXLANClaim) GetIndex() string {
+	return r.Spec.Index
+}
+
+func (r *VXLANClaim) GetSelector() *metav1.LabelSelector {
+	return r.Spec.Selector
+}
+
 func (r *VXLANClaim) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	return &commonv1alpha1.OwnerReference{
 		Group:     SchemeGroupVersion.Group,
@@ -173,6 +185,39 @@ func (r *VXLANClaim) GetOwnerReference() *commonv1alpha1.OwnerReference {
 		Namespace: r.Namespace,
 		Name:      r.Name,
 	}
+}
+
+func (r *VXLANClaim) GetStaticID() *uint64 {
+	if r.Spec.ID == nil {
+		return nil
+	}
+	return ptr.To[uint64](uint64(*r.Spec.ID))
+}
+
+func (r *VXLANClaim) GetStaticTreeID(t string) tree.ID {
+	if r.Spec.ID == nil {
+		return nil
+	}
+	return id32.NewID(uint32(*r.Spec.ID), id32.IDBitSize)
+}
+
+func (r *VXLANClaim) GetClaimID(t string, id uint64) tree.ID {
+	return id32.NewID(uint32(id), id32.IDBitSize)
+}
+
+func (r *VXLANClaim) GetRange() *string {
+	return r.Spec.Range
+}
+
+func (r *VXLANClaim) GetRangeID(_ string) (tree.Range, error) {
+	if r.Spec.Range == nil {
+		return nil, fmt.Errorf("cannot provide a range without an id")
+	}
+	return id32.ParseRange(*r.Spec.Range)
+}
+
+func (r *VXLANClaim) GetTable(s string, to, from uint64) table.Table {
+	return table32.New(uint32(to), uint32(from))
 }
 
 func (r *VXLANClaim) GetClaimRequest() string {
@@ -197,24 +242,24 @@ func (r *VXLANClaim) GetClaimResponse() string {
 	return ""
 }
 
-func (r *VXLANClaim) GetClaimType() VXLANClaimType {
-	claimType := VXLANClaimType_Invalid
+func (r *VXLANClaim) GetClaimType() backend.ClaimType {
+	claimType := backend.ClaimType_Invalid
 	count := 0
 	if r.Spec.ID != nil {
-		claimType = VXLANClaimType_StaticID
+		claimType = backend.ClaimType_StaticID
 		count++
 
 	}
 	if r.Spec.Range != nil {
-		claimType = VXLANClaimType_Range
+		claimType = backend.ClaimType_Range
 		count++
 
 	}
 	if count > 1 {
-		return VXLANClaimType_Invalid
+		return backend.ClaimType_Invalid
 	}
 	if count == 0 {
-		return VXLANClaimType_DynamicID
+		return backend.ClaimType_DynamicID
 	}
 	return claimType
 }
@@ -312,7 +357,7 @@ func (r *VXLANClaim) ValidateVXLANRange() error {
 	return errm
 }
 
-func (r *VXLANClaim) ValidateSyntax() field.ErrorList {
+func (r *VXLANClaim) ValidateSyntax(s string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	gv, err := schema.ParseGroupVersion(r.APIVersion)
@@ -347,11 +392,11 @@ func (r *VXLANClaim) ValidateSyntax() field.ErrorList {
 	var v SyntaxValidator
 	claimType := r.GetClaimType()
 	switch claimType {
-	case VXLANClaimType_DynamicID:
+	case backend.ClaimType_DynamicID:
 		v = &VXLANDynamicIDSyntaxValidator{name: string(claimType)}
-	case VXLANClaimType_StaticID:
+	case backend.ClaimType_StaticID:
 		v = &VXLANStaticIDSyntaxValidator{name: string(claimType)}
-	case VXLANClaimType_Range:
+	case backend.ClaimType_Range:
 		v = &VXLANRangeSyntaxValidator{name: string(claimType)}
 	default:
 		return allErrs
@@ -387,7 +432,7 @@ func (r *VXLANClaim) GetLabelSelector() (labels.Selector, error) {
 func (r *VXLANClaim) GetClaimLabels() labels.Set {
 	labels := r.Spec.GetUserDefinedLabels()
 	// system defined labels
-	labels[backend.KuidVXLANClaimTypeKey] = string(r.GetClaimType())
+	labels[backend.KuidClaimTypeKey] = string(r.GetClaimType())
 	labels[backend.KuidClaimNameKey] = r.Name
 	labels[backend.KuidOwnerGroupKey] = r.Spec.Owner.Group
 	labels[backend.KuidOwnerVersionKey] = r.Spec.Owner.Version
@@ -438,4 +483,23 @@ func BuildVXLANClaim(meta metav1.ObjectMeta, spec *VXLANClaimSpec, status *VXLAN
 		Spec:       aspec,
 		Status:     astatus,
 	}
+}
+
+func (r *VXLANClaim) SetStatusRange(s *string) {
+	r.Status.Range = s
+}
+
+func (r *VXLANClaim) SetStatusID(s *uint64) {
+	if s == nil {
+		r.Status.ID = nil
+		return
+	}
+	r.Status.ID = ptr.To[uint32](uint32(*s))
+}
+
+func (r *VXLANClaim) GetStatusID() *uint64 {
+	if r.Status.ID == nil {
+		return nil
+	}
+	return ptr.To[uint64](uint64(*r.Status.ID))
 }

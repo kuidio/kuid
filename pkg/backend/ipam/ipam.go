@@ -21,20 +21,19 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/henderiw/idxtable/pkg/iptable"
 	"github.com/henderiw/logger/log"
 	"github.com/henderiw/store"
+	"github.com/kuidio/kuid/apis/backend"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
-	ipamresv1alpha1 "github.com/kuidio/kuid/apis/resource/ipam/v1alpha1"
-
-	"github.com/kuidio/kuid/pkg/backend"
-	"k8s.io/apimachinery/pkg/runtime"
+	bebackend "github.com/kuidio/kuid/pkg/backend/backend"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func New(c client.Client) backend.Backend[*CacheContext] {
-	cache := backend.NewCache[*CacheContext]()
+func New(c client.Client) bebackend.Backend {
+	cache := bebackend.NewCache[*CacheContext]()
 
-	store := backend.NewNopStore()
+	store := bebackend.NewNopStore()
 	if c != nil {
 		store = NewStore(c, cache)
 	}
@@ -45,20 +44,20 @@ func New(c client.Client) backend.Backend[*CacheContext] {
 }
 
 type be struct {
-	cache backend.Cache[*CacheContext]
-	store backend.Store
+	cache bebackend.Cache[*CacheContext]
+	store bebackend.Store
 }
 
 // CreateIndex creates a backend index
-func (r *be) CreateIndex(ctx context.Context, obj runtime.Object) error {
-	cr, ok := obj.(*ipamresv1alpha1.NetworkInstance)
-	if !ok {
-		return fmt.Errorf("cannot create index expecting %s, got %s", ipamresv1alpha1.NetworkInstanceKind, reflect.TypeOf(obj).Name())
-	}
-	ctx = initIndexContext(ctx, "create", cr)
+func (r *be) CreateIndex(ctx context.Context, idx backend.IndexObject) error {
+	//cr, ok := obj.(*ipamresv1alpha1.NetworkInstance)
+	//if !ok {
+	//	return fmt.Errorf("cannot create index expecting %s, got %s", ipamresv1alpha1.NetworkInstanceKind, reflect.TypeOf(obj).Name())
+	//}
+	ctx = bebackend.InitIndexContext(ctx, "create", idx)
 	log := log.FromContext(ctx)
 	log.Info("start")
-	key := cr.GetKey()
+	key := idx.GetKey()
 	//log := log.FromContext(ctx).With("key", key)
 
 	log.Info("start", "isInitialized", r.cache.IsInitialized(ctx, key))
@@ -78,15 +77,15 @@ func (r *be) CreateIndex(ctx context.Context, obj runtime.Object) error {
 }
 
 // DeleteIndex deletes a backend index
-func (r *be) DeleteIndex(ctx context.Context, obj runtime.Object) error {
-	cr, ok := obj.(*ipamresv1alpha1.NetworkInstance)
-	if !ok {
-		return fmt.Errorf("cannot delete index expecting %s, got %s", ipamresv1alpha1.NetworkInstanceKind, reflect.TypeOf(obj).Name())
-	}
-	ctx = initIndexContext(ctx, "delete", cr)
+func (r *be) DeleteIndex(ctx context.Context, idx backend.IndexObject) error {
+	//cr, ok := obj.(*ipamresv1alpha1.NetworkInstance)
+	//if !ok {
+	//	return fmt.Errorf("cannot delete index expecting %s, got %s", ipamresv1alpha1.NetworkInstanceKind, reflect.TypeOf(obj).Name())
+	//}
+	ctx = bebackend.InitIndexContext(ctx, "delete", idx)
 	log := log.FromContext(ctx)
 	log.Debug("start")
-	key := cr.GetKey()
+	key := idx.GetKey()
 
 	log.Debug("start", "isInitialized", r.cache.IsInitialized(ctx, key))
 	// delete the data from the backend
@@ -102,7 +101,7 @@ func (r *be) DeleteIndex(ctx context.Context, obj runtime.Object) error {
 }
 
 // Claim claims an entry in the backend index
-func (r *be) Claim(ctx context.Context, obj runtime.Object) error {
+func (r *be) Claim(ctx context.Context, obj backend.ClaimObject) error {
 	claim, ok := obj.(*ipambev1alpha1.IPClaim)
 	if !ok {
 		return fmt.Errorf("cannot claim ip expecting %s, got %s", ipambev1alpha1.IPClaimKind, reflect.TypeOf(obj).Name())
@@ -132,10 +131,10 @@ func (r *be) Claim(ctx context.Context, obj runtime.Object) error {
 }
 
 // Release delete a claim in the backend index
-func (r *be) Release(ctx context.Context, obj runtime.Object) error {
+func (r *be) Release(ctx context.Context, obj backend.ClaimObject) error {
 	claim, ok := obj.(*ipambev1alpha1.IPClaim)
 	if !ok {
-		return fmt.Errorf("cannot delete ip cliam expecting %s, got %s", ipamresv1alpha1.NetworkInstanceKind, reflect.TypeOf(obj).Name())
+		return fmt.Errorf("cannot delete claimm expecting %s, got %s", ipambev1alpha1.IPClaimKind, reflect.TypeOf(obj).Name())
 	}
 	ctx = initClaimContext(ctx, "delete", claim)
 	log := log.FromContext(ctx)
@@ -186,4 +185,27 @@ func getApplicator(_ context.Context, cacheCtx *CacheContext, claim *ipambev1alp
 	}
 
 	return a, nil
+}
+
+func (r *be) PrintEntries(ctx context.Context, k store.Key) error {
+	cachectx, err := r.cache.Get(ctx, k, false)
+	if err != nil {
+		return fmt.Errorf("key not found: %s", err.Error())
+	}
+	fmt.Println("---------")
+	for _, entry := range cachectx.rib.GetTable() {
+		entry := entry
+		fmt.Println("entry", entry.String())
+	}
+	cachectx.ranges.List(ctx, func(ctx context.Context, k store.Key, t iptable.IPTable) {
+		fmt.Println("range", k.Name)
+		if t != nil {
+			for _, entry := range t.GetAll() {
+				entry := entry
+				fmt.Println("entry", entry.String())
+			}
+		}
+
+	})
+	return nil
 }

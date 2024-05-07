@@ -85,8 +85,8 @@ func (r *strategy) List(ctx context.Context, options *metainternalversion.ListOp
 						f = true
 					}
 				}
-				if filter.NetworkInstance != "" {
-					if claim.Spec.NetworkInstance == filter.NetworkInstance {
+				if filter.Index != "" {
+					if claim.Spec.Index == filter.Index {
 						f = false
 					} else {
 						f = true

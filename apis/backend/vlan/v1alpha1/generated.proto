@@ -72,7 +72,7 @@ message VLANClaimSpec {
 
 // VLANClaimStatus defines the observed state of VLANClaim
 message VLANClaimStatus {
-  // ConditionedStatus provides the status of the IPClain using conditions
+  // ConditionedStatus provides the status of the Claim using conditions
   // - a ready condition indicates the overall status of the resource
   optional github.com.kuidio.kuid.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 

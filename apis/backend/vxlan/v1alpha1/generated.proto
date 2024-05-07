@@ -161,11 +161,11 @@ message VXLANIndexList {
 
 // VXLANIndexSpec defines the desired state of VXLANIndex
 message VXLANIndexSpec {
-  // MinID defines the min VLAN ID the index supports
+  // MinID defines the min ID the index supports
   // +optional
   optional uint32 minID = 1;
 
-  // MaxID defines the max VLAN ID the index supports
+  // MaxID defines the max ID the index supports
   // +optional
   optional uint32 maxID = 2;
 
@@ -176,11 +176,11 @@ message VXLANIndexSpec {
 
 // VXLANIndexStatus defines the observed state of VXLANIndex
 message VXLANIndexStatus {
-  // MinID defines the min VLAN ID the index supports
+  // MinID defines the min ID the index is configured with
   // +optional
   optional uint32 minID = 1;
 
-  // MaxID defines the max VLAN ID the index supports
+  // MaxID defines the max ID the index is configured with
   // +optional
   optional uint32 maxID = 2;
 

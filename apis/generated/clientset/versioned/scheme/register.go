@@ -18,7 +18,14 @@ limitations under the License.
 package scheme
 
 import (
+	asv1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
+	esiv1alpha1 "github.com/kuidio/kuid/apis/backend/esi/v1alpha1"
+	extcommv1alpha1 "github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1"
+	genidv1alpha1 "github.com/kuidio/kuid/apis/backend/genid/v1alpha1"
+	infrav1alpha1 "github.com/kuidio/kuid/apis/backend/infra/v1alpha1"
 	ipamv1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
+	vlanv1alpha1 "github.com/kuidio/kuid/apis/backend/vlan/v1alpha1"
+	vxlanv1alpha1 "github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -30,7 +37,14 @@ var Scheme = runtime.NewScheme()
 var Codecs = serializer.NewCodecFactory(Scheme)
 var ParameterCodec = runtime.NewParameterCodec(Scheme)
 var localSchemeBuilder = runtime.SchemeBuilder{
+	asv1alpha1.AddToScheme,
+	esiv1alpha1.AddToScheme,
+	extcommv1alpha1.AddToScheme,
+	genidv1alpha1.AddToScheme,
+	infrav1alpha1.AddToScheme,
 	ipamv1alpha1.AddToScheme,
+	vlanv1alpha1.AddToScheme,
+	vxlanv1alpha1.AddToScheme,
 }
 
 // AddToScheme adds all types of this clientset into the given scheme. This allows composition

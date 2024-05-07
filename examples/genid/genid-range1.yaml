@@ -1,0 +1,7 @@
+apiVersion: genid.be.kuid.dev/v1alpha1
+kind: GENIDClaim
+metadata:
+  name: index1.range1
+spec:
+  index: index1
+  range: 64512-65534

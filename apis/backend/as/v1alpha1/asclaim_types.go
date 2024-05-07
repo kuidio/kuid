@@ -26,7 +26,7 @@ import (
 
 // ASClaimSpec defines the desired state of ASClaim
 type ASClaimSpec struct {
-	// ASIndex defines the AS index for the AS Claim
+	// Index defines the index for the AS Claim
 	Index string `json:"index" yaml:"index" protobuf:"bytes,1,opt,name=index"`
 	// ASID defines the AS for the AS claim
 	ID *uint32 `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,2,opt,name=id"`

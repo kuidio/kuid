@@ -15,30 +15,3 @@ limitations under the License.
 */
 
 package v1alpha1
-
-type ASClaimType string
-
-const (
-	ASClaimType_Invalid   ASClaimType = "invalid"
-	ASClaimType_StaticID  ASClaimType = "staticASID"
-	ASClaimType_DynamicID ASClaimType = "dynamicASID"
-	ASClaimType_Range     ASClaimType = "asRange"
-)
-
-func GetClaimTypeFromString(s string) ASClaimType {
-	switch s {
-	case string(ASClaimType_StaticID):
-		return ASClaimType_StaticID
-	case string(ASClaimType_DynamicID):
-		return ASClaimType_DynamicID
-	case string(ASClaimType_Range):
-		return ASClaimType_Range
-	default:
-		return ASClaimType_Invalid
-	}
-}
-
-const (
-	ASIndexReservedMinName = "rangeReservedMin"
-	ASIndexReservedMaxName = "rangeReservedMax"
-)

@@ -19,8 +19,22 @@ package fake
 
 import (
 	clientset "github.com/kuidio/kuid/apis/generated/clientset/versioned"
+	asv1alpha1 "github.com/kuidio/kuid/apis/generated/clientset/versioned/typed/as/v1alpha1"
+	fakeasv1alpha1 "github.com/kuidio/kuid/apis/generated/clientset/versioned/typed/as/v1alpha1/fake"
+	esiv1alpha1 "github.com/kuidio/kuid/apis/generated/clientset/versioned/typed/esi/v1alpha1"
+	fakeesiv1alpha1 "github.com/kuidio/kuid/apis/generated/clientset/versioned/typed/esi/v1alpha1/fake"
+	extcommv1alpha1 "github.com/kuidio/kuid/apis/generated/clientset/versioned/typed/extcomm/v1alpha1"
+	fakeextcommv1alpha1 "github.com/kuidio/kuid/apis/generated/clientset/versioned/typed/extcomm/v1alpha1/fake"
+	genidv1alpha1 "github.com/kuidio/kuid/apis/generated/clientset/versioned/typed/genid/v1alpha1"
+	fakegenidv1alpha1 "github.com/kuidio/kuid/apis/generated/clientset/versioned/typed/genid/v1alpha1/fake"
+	infrav1alpha1 "github.com/kuidio/kuid/apis/generated/clientset/versioned/typed/infra/v1alpha1"
+	fakeinfrav1alpha1 "github.com/kuidio/kuid/apis/generated/clientset/versioned/typed/infra/v1alpha1/fake"
 	ipamv1alpha1 "github.com/kuidio/kuid/apis/generated/clientset/versioned/typed/ipam/v1alpha1"
 	fakeipamv1alpha1 "github.com/kuidio/kuid/apis/generated/clientset/versioned/typed/ipam/v1alpha1/fake"
+	vlanv1alpha1 "github.com/kuidio/kuid/apis/generated/clientset/versioned/typed/vlan/v1alpha1"
+	fakevlanv1alpha1 "github.com/kuidio/kuid/apis/generated/clientset/versioned/typed/vlan/v1alpha1/fake"
+	vxlanv1alpha1 "github.com/kuidio/kuid/apis/generated/clientset/versioned/typed/vxlan/v1alpha1"
+	fakevxlanv1alpha1 "github.com/kuidio/kuid/apis/generated/clientset/versioned/typed/vxlan/v1alpha1/fake"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/discovery"
@@ -78,7 +92,42 @@ var (
 	_ testing.FakeClient  = &Clientset{}
 )
 
+// AsV1alpha1 retrieves the AsV1alpha1Client
+func (c *Clientset) AsV1alpha1() asv1alpha1.AsV1alpha1Interface {
+	return &fakeasv1alpha1.FakeAsV1alpha1{Fake: &c.Fake}
+}
+
+// EsiV1alpha1 retrieves the EsiV1alpha1Client
+func (c *Clientset) EsiV1alpha1() esiv1alpha1.EsiV1alpha1Interface {
+	return &fakeesiv1alpha1.FakeEsiV1alpha1{Fake: &c.Fake}
+}
+
+// ExtcommV1alpha1 retrieves the ExtcommV1alpha1Client
+func (c *Clientset) ExtcommV1alpha1() extcommv1alpha1.ExtcommV1alpha1Interface {
+	return &fakeextcommv1alpha1.FakeExtcommV1alpha1{Fake: &c.Fake}
+}
+
+// GenidV1alpha1 retrieves the GenidV1alpha1Client
+func (c *Clientset) GenidV1alpha1() genidv1alpha1.GenidV1alpha1Interface {
+	return &fakegenidv1alpha1.FakeGenidV1alpha1{Fake: &c.Fake}
+}
+
+// InfraV1alpha1 retrieves the InfraV1alpha1Client
+func (c *Clientset) InfraV1alpha1() infrav1alpha1.InfraV1alpha1Interface {
+	return &fakeinfrav1alpha1.FakeInfraV1alpha1{Fake: &c.Fake}
+}
+
 // IpamV1alpha1 retrieves the IpamV1alpha1Client
 func (c *Clientset) IpamV1alpha1() ipamv1alpha1.IpamV1alpha1Interface {
 	return &fakeipamv1alpha1.FakeIpamV1alpha1{Fake: &c.Fake}
+}
+
+// VlanV1alpha1 retrieves the VlanV1alpha1Client
+func (c *Clientset) VlanV1alpha1() vlanv1alpha1.VlanV1alpha1Interface {
+	return &fakevlanv1alpha1.FakeVlanV1alpha1{Fake: &c.Fake}
+}
+
+// VxlanV1alpha1 retrieves the VxlanV1alpha1Client
+func (c *Clientset) VxlanV1alpha1() vxlanv1alpha1.VxlanV1alpha1Interface {
+	return &fakevxlanv1alpha1.FakeVxlanV1alpha1{Fake: &c.Fake}
 }
