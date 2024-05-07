@@ -17,11 +17,14 @@ limitations under the License.
 package backend
 
 import (
+	"crypto/sha1"
+
 	"github.com/henderiw/idxtable/pkg/table"
 	"github.com/henderiw/idxtable/pkg/tree"
 	"github.com/henderiw/idxtable/pkg/tree/gtree"
 	"github.com/henderiw/store"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
+	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -32,20 +35,17 @@ import (
 
 type IndexObject interface {
 	Object
-	GetNamespacedName() types.NamespacedName
-	GetKey() store.Key
 	GetTree() gtree.GTree
 	GetType() string
 	GetMinID() *uint64
 	GetMaxID() *uint64
 	GetMinClaim() ClaimObject
 	GetMaxClaim() ClaimObject
+	ValidateSyntax() field.ErrorList
 }
 
 type ClaimObject interface {
 	Object
-	GetNamespacedName() types.NamespacedName
-	GetKey() store.Key
 	GetIndex() string                   // implement
 	GetSelector() *metav1.LabelSelector // implement
 	GetOwnerSelector() (labels.Selector, error)
@@ -53,33 +53,40 @@ type ClaimObject interface {
 	GetLabelSelector() (labels.Selector, error)
 	GetClaimLabels() labels.Set
 	ValidateOwner(labels labels.Set) error
-	GetStaticID() *uint64                           // implement
-	GetStaticTreeID(t string) tree.ID               // implement
-	GetClaimID(t string, id uint64) tree.ID         // implement
-	GetRange() *string                              // implement
-	GetRangeID(t string) (tree.Range, error)        // implement
-	GetTable(t string, to, from uint64) table.Table // implement
-	SetStatusRange(*string)                         // implement
-	SetStatusID(*uint64)                            // implement
-	GetStatusID() *uint64                           // implement
+	GetStaticID() *uint64
+	GetStaticTreeID(t string) tree.ID
+	GetClaimID(t string, id uint64) tree.ID
+	GetRange() *string
+	GetRangeID(t string) (tree.Range, error)
+	GetTable(t string, to, from uint64) table.Table
+	SetStatusRange(*string)
+	SetStatusID(*uint64)
+	GetStatusID() *uint64
 	ValidateSyntax(s string) field.ErrorList
-	
+	GetClaimRequest() string
+	GetClaimResponse() string
 }
 
 type EntryObject interface {
 	Object
-	GetNamespacedName() types.NamespacedName
-	GetKey() store.Key
+	GetIndex() string
 	GetClaimType() ClaimType
 	GetOwnerGVK() schema.GroupVersionKind
 	GetOwnerNSN() types.NamespacedName
 	SetSpec(x any)
 	GetSpec() any
+	GetSpecID() string
 }
 
 type Object interface {
 	client.Object
+	GetNamespacedName() types.NamespacedName
+	GetKey() store.Key
 	GetOwnerReference() *commonv1alpha1.OwnerReference
+	GetObjectMeta() *metav1.ObjectMeta
+	GetCondition(t conditionv1alpha1.ConditionType) conditionv1alpha1.Condition
+	SetConditions(c ...conditionv1alpha1.Condition)
+	CalculateHash() ([sha1.Size]byte, error)
 }
 
 type ObjectList interface {

@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package ipindex
+package indexserver
 
 import (
 	"context"
@@ -22,7 +22,7 @@ import (
 	"reflect"
 
 	"github.com/henderiw/apiserver-store/pkg/storebackend"
-	ipambe1v1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
+	"github.com/kuidio/kuid/apis/backend"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
@@ -38,17 +38,19 @@ func (r *strategy) PrepareForCreate(ctx context.Context, obj runtime.Object) {
 func (r *strategy) Validate(ctx context.Context, obj runtime.Object) field.ErrorList {
 	var allErrs field.ErrorList
 
-	claim, ok := obj.(*ipambe1v1alpha1.IPIndex)
+	fmt.Println("Validate index create", obj)
+
+	index, ok := obj.(backend.IndexObject)
 	if !ok {
 		allErrs = append(allErrs, field.Invalid(
 			field.NewPath(""),
-			claim,
-			fmt.Errorf("unexpected new object, expecting: %s, got: %s", ipambe1v1alpha1.IPIndexKind, reflect.TypeOf(obj)).Error(),
+			obj,
+			fmt.Errorf("unexpected new object got: %s", reflect.TypeOf(obj)).Error(),
 		))
 		return allErrs
 	}
 
-	return claim.ValidateSyntax()
+	return index.ValidateSyntax()
 }
 
 func (r *strategy) Create(ctx context.Context, key types.NamespacedName, obj runtime.Object, dryrun bool) (runtime.Object, error) {

@@ -151,6 +151,10 @@ func (r *VXLANEntry) GetKey() store.Key {
 	return store.KeyFromNSN(types.NamespacedName{Namespace: r.Namespace, Name: r.Spec.Index})
 }
 
+func (r *VXLANEntry) GetIndex() string {
+	return r.Spec.Index
+}
+
 func (r *VXLANEntry) GetOwnerGVK() schema.GroupVersionKind {
 	return schema.GroupVersionKind{
 		Group:   r.Spec.Owner.Group,
@@ -168,6 +172,10 @@ func (r *VXLANEntry) GetOwnerNSN() types.NamespacedName {
 
 func (r *VXLANEntry) GetSpec() any {
 	return r.Spec
+}
+
+func (r *VXLANEntry) GetSpecID() string {
+	return r.Spec.ID
 }
 
 func (r *VXLANEntry) SetSpec(spec any) {

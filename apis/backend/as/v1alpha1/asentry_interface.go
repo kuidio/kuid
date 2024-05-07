@@ -151,6 +151,10 @@ func (r *ASEntry) GetClaimType() backend.ClaimType {
 	return r.Spec.ClaimType
 }
 
+func (r *ASEntry) GetIndex() string {
+	return r.Spec.Index
+}
+
 func (r *ASEntry) GetOwnerGVK() schema.GroupVersionKind {
 	return schema.GroupVersionKind{
 		Group:   r.Spec.Owner.Group,
@@ -168,6 +172,10 @@ func (r *ASEntry) GetOwnerNSN() types.NamespacedName {
 
 func (r *ASEntry) GetSpec() any {
 	return r.Spec
+}
+
+func (r *ASEntry) GetSpecID() string {
+	return r.Spec.ID
 }
 
 func (r *ASEntry) SetSpec(s any) {

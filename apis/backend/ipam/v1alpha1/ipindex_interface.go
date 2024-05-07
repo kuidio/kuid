@@ -160,7 +160,7 @@ func (r *IPIndex) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
-func (r *IPIndex) ValidateSyntax(s string) field.ErrorList {
+func (r *IPIndex) ValidateSyntax() field.ErrorList {
 	var allErrs field.ErrorList
 
 	if len(r.Spec.Prefixes) == 0 {

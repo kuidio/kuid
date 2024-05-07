@@ -136,12 +136,20 @@ func (r *ESIEntry) GetNamespacedName() types.NamespacedName {
 	}
 }
 
+func (r *ESIEntry) GetIndex() string {
+	return r.Spec.Index
+}
+
 func (r *ESIEntry) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	return r.Spec.Owner
 }
 
 func (r *ESIEntry) GetClaimName() string {
 	return r.Spec.Claim
+}
+
+func (r *ESIEntry) GetSpecID() string {
+	return r.Spec.ID
 }
 
 func GetESIEntry(ctx context.Context, k store.Key, vrange, id string, labels map[string]string) *ESIEntry {

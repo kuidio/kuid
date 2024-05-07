@@ -139,6 +139,10 @@ func (r *EXTCOMMEntry) GetKey() store.Key {
 	return store.KeyFromNSN(types.NamespacedName{Namespace: r.Namespace, Name: r.Spec.Index})
 }
 
+func (r *EXTCOMMEntry) GetIndex() string {
+	return r.Spec.Index
+}
+
 func (r *EXTCOMMEntry) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	return r.Spec.Owner
 }
@@ -168,6 +172,10 @@ func (r *EXTCOMMEntry) GetOwnerNSN() types.NamespacedName {
 
 func (r *EXTCOMMEntry) GetSpec() EXTCOMMEntrySpec {
 	return r.Spec
+}
+
+func (r *EXTCOMMEntry) GetSpecID() string {
+	return r.Spec.ID
 }
 
 func (r *EXTCOMMEntry) SetSpec(s any) {

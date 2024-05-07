@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package ipindex
+package indexserver
 
 import (
 	"context"
@@ -25,7 +25,7 @@ import (
 
 	"github.com/henderiw/apiserver-store/pkg/storebackend"
 	"github.com/henderiw/logger/log"
-	ipambe1v1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
+	"github.com/kuidio/kuid/apis/backend"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -45,12 +45,12 @@ func (r *strategy) AllowUnconditionalUpdate() bool { return false }
 
 func (r *strategy) ValidateUpdate(ctx context.Context, obj, old runtime.Object) field.ErrorList {
 	var allErrs field.ErrorList
-	index, ok := obj.(*ipambe1v1alpha1.IPIndex)
+	index, ok := obj.(backend.IndexObject)
 	if !ok {
 		allErrs = append(allErrs, field.Invalid(
 			field.NewPath(""),
 			index,
-			fmt.Errorf("unexpected new object, expecting: %s, got: %s", ipambe1v1alpha1.IPIndexKind, reflect.TypeOf(obj)).Error(),
+			fmt.Errorf("unexpected new object got: %s", reflect.TypeOf(obj)).Error(),
 		))
 		return allErrs
 	}
@@ -61,13 +61,13 @@ func (r *strategy) ValidateUpdate(ctx context.Context, obj, old runtime.Object) 
 func (r *strategy) Update(ctx context.Context, key types.NamespacedName, obj, old runtime.Object, dryrun bool) (runtime.Object, error) {
 	log := log.FromContext(ctx)
 	// check if there is a change
-	newObj, ok := obj.(*ipambe1v1alpha1.IPIndex)
+	newObj, ok := obj.(backend.IndexObject)
 	if !ok {
-		return obj, fmt.Errorf("unexpected new object, expecting: %s, got: %s", ipambe1v1alpha1.IPIndexKind, reflect.TypeOf(obj))
+		return obj, fmt.Errorf("unexpected new object, got: %s", reflect.TypeOf(obj))
 	}
-	oldObj, ok := old.(*ipambe1v1alpha1.IPIndex)
+	oldObj, ok := old.(backend.IndexObject)
 	if !ok {
-		return obj, fmt.Errorf("unexpected old object, expecting: %s, got: %s", ipambe1v1alpha1.IPIndexKind, reflect.TypeOf(obj))
+		return obj, fmt.Errorf("unexpected old object, got: %s", reflect.TypeOf(obj))
 	}
 
 	newHash, err := newObj.CalculateHash()

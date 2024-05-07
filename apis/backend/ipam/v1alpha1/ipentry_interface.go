@@ -138,6 +138,10 @@ func (r *IPEntry) GetNamespacedName() types.NamespacedName {
 	}
 }
 
+func (r *IPEntry) GetIndex() string {
+	return r.Spec.Index
+}
+
 func (r *IPEntry) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	return r.Spec.Owner
 }
@@ -172,6 +176,10 @@ func (r *IPEntry) GetIPPrefixType() IPPrefixType {
 }
 
 func (r *IPEntry) GetIPPrefix() string {
+	return r.Spec.Prefix
+}
+
+func (r *IPEntry) GetSpecID() string {
 	return r.Spec.Prefix
 }
 
