@@ -30,6 +30,7 @@ type ControllerConfig struct {
 	VXLANBackend   backend.Backend
 	ASBackend      backend.Backend
 	EXTCOMMBackend backend.Backend
+	GENIDBackend   backend.Backend
 }
 
 func InitContext(ctx context.Context, controllerName string, req types.NamespacedName) context.Context {

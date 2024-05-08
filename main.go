@@ -30,6 +30,8 @@ import (
 	"github.com/kuidio/kuid/apis/backend"
 	asbev1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
 	extcommbev1alpha1 "github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1"
+	genidbev1alpha1 "github.com/kuidio/kuid/apis/backend/genid/v1alpha1"
+	infrabev1alpha1 "github.com/kuidio/kuid/apis/backend/infra/v1alpha1"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 	vlanbev1alpha1 "github.com/kuidio/kuid/apis/backend/vlan/v1alpha1"
 	vxlanbev1alpha1 "github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1"
@@ -86,11 +88,13 @@ func main() {
 	// add the core object to the scheme
 	for _, api := range (runtime.SchemeBuilder{
 		clientgoscheme.AddToScheme,
+		infrabev1alpha1.AddToScheme,
 		ipambev1alpha1.AddToScheme,
 		vlanbev1alpha1.AddToScheme,
 		vxlanbev1alpha1.AddToScheme,
 		asbev1alpha1.AddToScheme,
 		extcommbev1alpha1.AddToScheme,
+		genidbev1alpha1.AddToScheme,
 	}) {
 		if err := api(runScheme); err != nil {
 			log.Error("cannot add scheme", "err", err)
@@ -138,6 +142,14 @@ func main() {
 		extcommbev1alpha1.SchemeGroupVersion.WithKind(extcommbev1alpha1.EXTCOMMEntryKind),
 		extcommbev1alpha1.EXTCOMMEntryConvertFieldSelector,
 	)
+	runScheme.AddFieldLabelConversionFunc(
+		genidbev1alpha1.SchemeGroupVersion.WithKind(genidbev1alpha1.GENIDClaimKind),
+		genidbev1alpha1.GENIDClaimConvertFieldSelector,
+	)
+	runScheme.AddFieldLabelConversionFunc(
+		genidbev1alpha1.SchemeGroupVersion.WithKind(genidbev1alpha1.GENIDEntryKind),
+		genidbev1alpha1.GENIDEntryConvertFieldSelector,
+	)
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), manager.Options{
 		Scheme: runScheme,
@@ -184,6 +196,15 @@ func main() {
 		extcommbev1alpha1.SchemeGroupVersion.WithKind(extcommbev1alpha1.EXTCOMMIndexKind),
 		extcommbev1alpha1.SchemeGroupVersion.WithKind(extcommbev1alpha1.EXTCOMMClaimKind),
 	)
+	genidbe := bebackend.New(
+		mgr.GetClient(),
+		func() backend.IndexObject { return &genidbev1alpha1.GENIDIndex{} },
+		func() backend.ObjectList { return &genidbev1alpha1.GENIDEntryList{} },
+		func() backend.ObjectList { return &genidbev1alpha1.GENIDClaimList{} },
+		genidbev1alpha1.GetGENIDEntry,
+		genidbev1alpha1.SchemeGroupVersion.WithKind(genidbev1alpha1.GENIDIndexKind),
+		genidbev1alpha1.SchemeGroupVersion.WithKind(genidbev1alpha1.GENIDClaimKind),
+	)
 
 	ctrlCfg := &ctrlconfig.ControllerConfig{
 		IPAMBackend:    ipbe,
@@ -191,6 +212,7 @@ func main() {
 		VXLANBackend:   vxlanbe,
 		ASBackend:      asbe,
 		EXTCOMMBackend: extcommbe,
+		GENIDBackend:   genidbe,
 	}
 	for name, reconciler := range reconcilers.Reconcilers {
 		log.Info("reconciler", "name", name, "enabled", IsReconcilerEnabled(name))
@@ -214,24 +236,6 @@ func main() {
 			WithServerName("kuid-server").
 			WithEtcdPath(defaultEtcdPathPrefix).
 			WithOpenAPIDefinitions("Kuid", "v1alpha1", kuidopenapi.GetOpenAPIDefinitions).
-			/*
-				WithResourceAndHandler(ctx, &ipambev1alpha1.IPClaim{}, ipclaim.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
-					Prefix: configDir,
-					Type:   serverstore.StorageType_KV,
-					DB:     db,
-				}, ipbe)).
-				WithResourceAndHandler(ctx, &ipambev1alpha1.IPEntry{}, ipentry.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
-					Prefix: configDir,
-					Type:   serverstore.StorageType_KV,
-					DB:     db,
-				}, ipbe)).
-				WithResourceAndHandler(ctx, &ipambev1alpha1.IPIndex{}, ipindex.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
-					Prefix: configDir,
-					Type:   serverstore.StorageType_KV,
-					DB:     db,
-				}, ipbe)).
-			*/
-
 			WithResourceAndHandler(ctx, &ipambev1alpha1.IPClaim{}, claimserver.NewProvider(
 				ctx,
 				mgr.GetClient(),
@@ -281,9 +285,8 @@ func main() {
 				ctx,
 				mgr.GetClient(),
 				&claimserver.ServerObjContext{
-					TracerString: "vlanclaim-server",
-					Obj:          &vlanbev1alpha1.VLANClaim{},
-					//NewIndexFn:   func() backend.IndexObject { return &vlanbev1alpha1.VLANIndex{} },
+					TracerString:   "vlanclaim-server",
+					Obj:            &vlanbev1alpha1.VLANClaim{},
 					ConversionFunc: vlanbev1alpha1.VLANClaimConvertFieldSelector,
 				},
 				&serverstore.Config{
@@ -296,9 +299,8 @@ func main() {
 				ctx,
 				mgr.GetClient(),
 				&entryserver.ServerObjContext{
-					TracerString: "vlanentry-server",
-					Obj:          &vlanbev1alpha1.VLANEntry{},
-					//NewIndexFn:   func() backend.IndexObject { return &vlanbev1alpha1.VLANIndex{} },
+					TracerString:   "vlanentry-server",
+					Obj:            &vlanbev1alpha1.VLANEntry{},
 					ConversionFunc: vlanbev1alpha1.VLANEntryConvertFieldSelector,
 				},
 				&serverstore.Config{
@@ -453,6 +455,50 @@ func main() {
 					DB:     db,
 				},
 				extcommbe)).
+				WithResourceAndHandler(ctx, &genidbev1alpha1.GENIDClaim{}, claimserver.NewProvider(
+					ctx,
+					mgr.GetClient(),
+					&claimserver.ServerObjContext{
+						TracerString:   "genidclaim-server",
+						Obj:            &genidbev1alpha1.GENIDClaim{},
+						NewIndexFn:     func() backend.IndexObject { return &genidbev1alpha1.GENIDIndex{} },
+						ConversionFunc: genidbev1alpha1.GENIDClaimConvertFieldSelector,
+					},
+					&serverstore.Config{
+						Prefix: configDir,
+						Type:   serverstore.StorageType_KV,
+						DB:     db,
+					},
+					genidbe)).
+				WithResourceAndHandler(ctx, &genidbev1alpha1.GENIDEntry{}, entryserver.NewProvider(
+					ctx,
+					mgr.GetClient(),
+					&entryserver.ServerObjContext{
+						TracerString:   "genidentry-server",
+						Obj:            &genidbev1alpha1.GENIDEntry{},
+						ConversionFunc: genidbev1alpha1.GENIDEntryConvertFieldSelector,
+					},
+					&serverstore.Config{
+						Prefix: configDir,
+						Type:   serverstore.StorageType_KV,
+						DB:     db,
+					},
+					genidbe)).
+				WithResourceAndHandler(ctx, &genidbev1alpha1.GENIDIndex{}, indexserver.NewProvider(
+					ctx,
+					mgr.GetClient(),
+					&indexserver.ServerObjContext{
+						TracerString:   "genidindex-server",
+						Obj:            &genidbev1alpha1.GENIDIndex{},
+						ConversionFunc: genidbev1alpha1.GENIDIndexConvertFieldSelector,
+						TableConverter: genidbev1alpha1.GENIDIndexTableConvertor,
+					},
+					&serverstore.Config{
+						Prefix: configDir,
+						Type:   serverstore.StorageType_KV,
+						DB:     db,
+					},
+					genidbe)).
 			WithoutEtcd().
 			Execute(ctx); err != nil {
 			log.Info("cannot start config-server")

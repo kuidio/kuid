@@ -41,6 +41,22 @@ spec:
 apiVersion: apiregistration.k8s.io/v1
 kind: APIService
 metadata:
+  name: v1alpha1.genid.be.kuid.dev
+spec:
+  group: genid.be.kuid.dev
+  groupPriorityMinimum: 1000
+  insecureSkipTLSVerify: true
+  service:
+    name: kuid-server
+    namespace: kuid-system
+    port: 6443
+  version: v1alpha1
+  versionPriority: 15
+
+---
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
   name: v1alpha1.ipam.be.kuid.dev
 spec:
   group: ipam.be.kuid.dev
@@ -155,6 +171,10 @@ spec:
         - name: ENABLE_EXTCOMMINDEX
           value: "true"
         - name: ENABLE_EXTCOMMCLAIM
+          value: "true"
+        - name: ENABLE_GENIDINDEX
+          value: "true"
+        - name: ENABLE_GENIDCLAIM
           value: "true"
         image: europe-docker.pkg.dev/srlinux/eu.gcr.io/kuid-server:latest
         imagePullPolicy: Always
@@ -419,6 +439,45 @@ rules:
   resources:
   - extcommindices
   - extcommindices/status
+  verbs:
+  - get
+  - watch
+  - list
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - genid.be.kuid.dev
+  resources:
+  - genidclaims
+  - genidclaims/status
+  verbs:
+  - get
+  - watch
+  - list
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - genid.be.kuid.dev
+  resources:
+  - genidentries
+  - genidentries/status
+  verbs:
+  - get
+  - watch
+  - list
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - genid.be.kuid.dev
+  resources:
+  - genidindices
+  - genidindices/status
   verbs:
   - get
   - watch

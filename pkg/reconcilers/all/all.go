@@ -27,4 +27,6 @@ import (
 	_ "github.com/kuidio/kuid/pkg/reconcilers/vlanindex"
 	_ "github.com/kuidio/kuid/pkg/reconcilers/vxlanclaim"
 	_ "github.com/kuidio/kuid/pkg/reconcilers/vxlanindex"
+	_ "github.com/kuidio/kuid/pkg/reconcilers/genidclaim"
+	_ "github.com/kuidio/kuid/pkg/reconcilers/genidindex"
 )

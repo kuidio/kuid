@@ -144,7 +144,7 @@ func (r *GENIDClaim) SetConditions(c ...conditionv1alpha1.Condition) {
 }
 
 // GENIDConvertClaimFieldSelector is the schema conversion function for normalizing the FieldSelector for GENIDClaim
-func GENIDConvertClaimFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+func GENIDClaimConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil

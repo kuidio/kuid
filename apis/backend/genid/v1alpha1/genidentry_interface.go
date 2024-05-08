@@ -17,7 +17,6 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"context"
 	"crypto/sha1"
 	"encoding/json"
 	"fmt"
@@ -46,8 +45,8 @@ func (r *GENIDEntryList) GetListMeta() *metav1.ListMeta {
 	return &r.ListMeta
 }
 
-func (r *GENIDEntryList) GetItems() []*GENIDEntry {
-	entries := make([]*GENIDEntry, 0, len(r.Items))
+func (r *GENIDEntryList) GetItems() []backend.Object {
+	entries := make([]backend.Object, 0, len(r.Items))
 	for _, entry := range r.Items {
 		entries = append(entries, &entry)
 	}
@@ -148,6 +147,10 @@ func (r *GENIDEntry) GetClaimType() backend.ClaimType {
 	return r.Spec.ClaimType
 }
 
+func (r *GENIDEntry) GetKey() store.Key {
+	return store.KeyFromNSN(types.NamespacedName{Namespace: r.Namespace, Name: r.Spec.Index})
+}
+
 func (r *GENIDEntry) GetIndex() string {
 	return r.Spec.Index
 }
@@ -167,7 +170,7 @@ func (r *GENIDEntry) GetOwnerNSN() types.NamespacedName {
 	}
 }
 
-func (r *GENIDEntry) GetSpec() GENIDEntrySpec {
+func (r *GENIDEntry) GetSpec() any {
 	return r.Spec
 }
 
@@ -181,7 +184,7 @@ func (r *GENIDEntry) SetSpec(s any) {
 	}
 }
 
-func GetGENIDEntry(ctx context.Context, k store.Key, vrange, id string, labels map[string]string) *GENIDEntry {
+func GetGENIDEntry(k store.Key, vrange, id string, labels map[string]string) backend.EntryObject {
 	//log := log.FromContext(ctx)
 
 	index := k.Name

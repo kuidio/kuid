@@ -22,6 +22,7 @@ import (
 	"fmt"
 
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
+	"github.com/henderiw/apiserver-store/pkg/generic/registry"
 	"github.com/henderiw/idxtable/pkg/tree/gtree"
 	"github.com/henderiw/idxtable/pkg/tree/tree16"
 	"github.com/henderiw/idxtable/pkg/tree/tree32"
@@ -313,5 +314,31 @@ func BuildGENIDIndex(meta metav1.ObjectMeta, spec *GENIDIndexSpec, status *GENID
 		ObjectMeta: meta,
 		Spec:       aspec,
 		Status:     astatus,
+	}
+}
+
+func GENIDIndexTableConvertor(gr schema.GroupResource) registry.TableConvertor {
+	return registry.TableConvertor{
+		Resource: gr,
+		Cells: func(obj runtime.Object) []interface{} {
+			index, ok := obj.(*GENIDIndex)
+			if !ok {
+				return nil
+			}
+			return []interface{}{
+				index.GetName(),
+				index.GetCondition(conditionv1alpha1.ConditionTypeReady).Status,
+				index.Spec.Type,
+				index.GetMinID(),
+				index.GetMaxID(),
+			}
+		},
+		Columns: []metav1.TableColumnDefinition{
+			{Name: "Name", Type: "string"},
+			{Name: "Ready", Type: "string"},
+			{Name: "Type", Type: "string"},
+			{Name: "MinID", Type: "integer"},
+			{Name: "MaxID", Type: "integer"},
+		},
 	}
 }

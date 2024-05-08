@@ -76,6 +76,10 @@ spec:
           value: "true"
         - name: ENABLE_EXTCOMMCLAIM
           value: "true"
+        - name: ENABLE_GENIDINDEX
+          value: "true"
+        - name: ENABLE_GENIDCLAIM
+          value: "true"
         volumeMounts:
         - name: apiserver-certs
           mountPath: /apiserver.local.config/certificates
