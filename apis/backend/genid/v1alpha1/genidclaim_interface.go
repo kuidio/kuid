@@ -37,7 +37,6 @@ import (
 	"github.com/kuidio/kuid/apis/backend"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
-	rresource "github.com/kuidio/kuid/pkg/reconcilers/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -57,10 +56,10 @@ var GENIDID_MaxBits = map[GENIDType]int{
 	GENIDType_16bit:   16,
 	GENIDType_32bit:   32,
 	GENIDType_48bit:   48,
-	GENIDType_64bit:   64,
+	GENIDType_64bit:   63, // workaround for apiserver issue with uint64
 }
 
-var GENIDID_MaxValue = map[GENIDType]uint64{
+var GENIDID_MaxValue = map[GENIDType]int64{
 	GENIDType_Invalid: 0,
 	GENIDType_16bit:   1<<GENIDID_MaxBits[GENIDType_16bit] - 1,
 	GENIDType_32bit:   1<<GENIDID_MaxBits[GENIDType_32bit] - 1,
@@ -144,8 +143,8 @@ func (r *GENIDClaim) SetConditions(c ...conditionv1alpha1.Condition) {
 	r.Status.SetConditions(c...)
 }
 
-// ConvertGENIDClaimFieldSelector is the schema conversion function for normalizing the FieldSelector for GENIDClaim
-func ConvertGENIDClaimFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+// GENIDConvertClaimFieldSelector is the schema conversion function for normalizing the FieldSelector for GENIDClaim
+func GENIDConvertClaimFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil
@@ -158,8 +157,8 @@ func ConvertGENIDClaimFieldSelector(label, value string) (internalLabel, interna
 	}
 }
 
-func (r *GENIDClaimList) GetItems() []rresource.Object {
-	objs := []rresource.Object{}
+func (r *GENIDClaimList) GetItems() []backend.Object {
+	objs := []backend.Object{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)
@@ -351,7 +350,7 @@ func (r *GENIDClaim) ValidateGENIDClaimType() error {
 	return nil
 }
 
-func validateGENIDID(genidType GENIDType, id uint64) error {
+func validateGENIDID(genidType GENIDType, id int64) error {
 	if id < GENIDID_Min {
 		return fmt.Errorf("invalid id, got %d", id)
 	}
@@ -413,10 +412,10 @@ func (r *GENIDClaim) ValidateGENIDRange(genidType GENIDType) error {
 	if start > end {
 		errm = errors.Join(errm, fmt.Errorf("invalid GENID range start > end %s", *r.Spec.Range))
 	}
-	if err := validateGENIDID(genidType, uint64(start)); err != nil {
+	if err := validateGENIDID(genidType, int64(start)); err != nil {
 		errm = errors.Join(errm, fmt.Errorf("invalid GENID start err %s", err.Error()))
 	}
-	if err := validateGENIDID(genidType, uint64(end)); err != nil {
+	if err := validateGENIDID(genidType, int64(end)); err != nil {
 		errm = errors.Join(errm, fmt.Errorf("invalid GENID end err %s", err.Error()))
 	}
 	return errm
@@ -559,7 +558,7 @@ func (r *GENIDClaim) SetStatusID(s *uint64) {
 		r.Status.ID = nil
 		return
 	}
-	r.Status.ID = ptr.To[uint64](uint64(*s))
+	r.Status.ID = ptr.To[int64](int64(*s))
 }
 
 func (r *GENIDClaim) GetStatusID() *uint64 {

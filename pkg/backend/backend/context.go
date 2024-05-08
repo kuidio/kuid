@@ -30,7 +30,7 @@ func InitIndexContext(ctx context.Context, op string, idx backend.IndexObject) c
 		With(
 			"op", fmt.Sprintf("%s index", op),
 			"gvk", idx.GetObjectKind().GroupVersionKind().String(),
-			"nsn", idx.GetNamespacedName().String,
+			"nsn", idx.GetNamespacedName().String(),
 		)
 	return log.IntoContext(ctx, l)
 }

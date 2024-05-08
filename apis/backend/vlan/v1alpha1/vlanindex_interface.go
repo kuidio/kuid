@@ -98,8 +98,8 @@ func (r *VLANIndex) SetConditions(c ...conditionv1alpha1.Condition) {
 	r.Status.SetConditions(c...)
 }
 
-// ConvertVLANIndexFieldSelector is the schema conversion function for normalizing the FieldSelector for VLANIndex
-func ConvertVLANIndexFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+// VLANIndexConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for VLANIndex
+func VLANIndexConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil

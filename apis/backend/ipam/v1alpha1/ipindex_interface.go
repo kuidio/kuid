@@ -22,6 +22,7 @@ import (
 	"fmt"
 
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
+	"github.com/henderiw/apiserver-store/pkg/generic/registry"
 	"github.com/henderiw/idxtable/pkg/tree/gtree"
 	"github.com/henderiw/iputil"
 	"github.com/henderiw/store"
@@ -98,8 +99,8 @@ func (r *IPIndex) SetConditions(c ...conditionv1alpha1.Condition) {
 	r.Status.SetConditions(c...)
 }
 
-// ConvertIPIndexFieldSelector is the schema conversion function for normalizing the FieldSelector for IPIndex
-func ConvertIPIndexFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+// IPIndexConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for IPIndex
+func IPIndexConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil
@@ -233,3 +234,42 @@ func (r *IPIndex) GetMinClaim() backend.ClaimObject { return nil }
 
 // GetMaxClaim satisfies the interface but should not be used
 func (r *IPIndex) GetMaxClaim() backend.ClaimObject { return nil }
+
+func IPIndexTableConvertor(gr schema.GroupResource) registry.TableConvertor {
+	return registry.TableConvertor{
+		Resource: gr,
+		Cells: func(obj runtime.Object) []interface{} {
+			index, ok := obj.(*IPIndex)
+			if !ok {
+				return nil
+			}
+
+			prefixes := make([]string, 5)
+			for i, prefix := range index.Spec.Prefixes {
+				if i >= 5 {
+					break
+				}
+				prefixes[i] = prefix.Prefix
+			}
+
+			return []interface{}{
+				index.Name,
+				index.GetCondition(conditionv1alpha1.ConditionTypeReady).Status,
+				prefixes[0],
+				prefixes[1],
+				prefixes[2],
+				prefixes[3],
+				prefixes[4],
+			}
+		},
+		Columns: []metav1.TableColumnDefinition{
+			{Name: "Name", Type: "string"},
+			{Name: "Ready", Type: "string"},
+			{Name: "Prefix0", Type: "string"},
+			{Name: "Prefix1", Type: "string"},
+			{Name: "Prefix2", Type: "string"},
+			{Name: "Prefix3", Type: "string"},
+			{Name: "Prefix4", Type: "string"},
+		},
+	}
+}

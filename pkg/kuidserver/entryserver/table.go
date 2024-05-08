@@ -25,7 +25,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
-func NewTableConvertor(gr schema.GroupResource) registry.TableConvertor {
+func DefaultTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 	return registry.TableConvertor{
 		Resource: gr,
 		Cells: func(obj runtime.Object) []interface{} {

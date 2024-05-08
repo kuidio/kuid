@@ -103,8 +103,8 @@ func (r *ASEntry) SetConditions(c ...conditionv1alpha1.Condition) {
 	r.Status.SetConditions(c...)
 }
 
-// ConvertASEntryFieldSelector is the schema conversion function for normalizing the FieldSelector for ASEntry
-func ConvertASEntryFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+// ASEntryConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for ASEntry
+func ASEntryConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil

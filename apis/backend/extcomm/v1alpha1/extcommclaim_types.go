@@ -29,7 +29,7 @@ type EXTCOMMClaimSpec struct {
 	// EXTCOMMIndex defines the EXTCOMM index for the EXTCOMM Claim
 	Index string `json:"index" yaml:"index" protobuf:"bytes,1,opt,name=index"`
 	// EXTCOMMID defines the EXTCOMM for the EXTCOMM claim
-	ID *uint64 `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,2,opt,name=id"`
+	ID *int64 `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,2,opt,name=id"`
 	// Range defines the EXTCOMM range for the EXTCOMM claim
 	// The following notation is used: start-end <start-EXTCOMMID>-<end-EXTCOMMID>
 	// the EXTCOMMs in the range must be consecutive
@@ -49,7 +49,7 @@ type EXTCOMMClaimStatus struct {
 	conditionv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=conditionedStatus"`
 	// EXTCOMMID defines the EXTCOMM for the EXTCOMM claim
 	// +optional
-	ID *uint64 `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,2,opt,name=id"`
+	ID *int64 `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,2,opt,name=id"`
 	// EXTCOMMRange defines the EXTCOMM range for the EXTCOMM claim
 	// +optional
 	Range *string `json:"range,omitempty" yaml:"range,omitempty" protobuf:"bytes,3,opt,name=range"`

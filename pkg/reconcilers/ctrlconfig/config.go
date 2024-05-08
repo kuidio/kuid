@@ -25,10 +25,11 @@ import (
 )
 
 type ControllerConfig struct {
-	IPAMBackend  backend.Backend
-	VLANBackend  backend.Backend
-	VXLANBackend backend.Backend
-	ASBackend    backend.Backend
+	IPAMBackend    backend.Backend
+	VLANBackend    backend.Backend
+	VXLANBackend   backend.Backend
+	ASBackend      backend.Backend
+	EXTCOMMBackend backend.Backend
 }
 
 func InitContext(ctx context.Context, controllerName string, req types.NamespacedName) context.Context {

@@ -28,31 +28,36 @@ import (
 type EXTCOMMIndexSpec struct {
 	// MinID defines the min EXTCOMM ID the index supports
 	// +optional
-	MinID *uint64 `json:"minID,omitempty" yaml:"minID,omitempty" protobuf:"bytes,1,opt,name=minID"`
+	MinID *int64 `json:"minID,omitempty" yaml:"minID,omitempty" protobuf:"bytes,1,opt,name=minID"`
 	// MaxID defines the max EXTCOMM ID the index supports
 	// +optional
-	MaxID *uint64 `json:"maxID,omitempty" yaml:"maxID,omitempty" protobuf:"bytes,2,opt,name=maxID"`
+	MaxID *int64 `json:"maxID,omitempty" yaml:"maxID,omitempty" protobuf:"bytes,2,opt,name=maxID"`
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
 	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,3,opt,name=userDefinedLabels"`
+	// Transitive defines the transative nature of the extended community
+	Transitive bool `json:"transitive,omitempty" yaml:"transitive,omitempty" protobuf:"bytes,4,opt,name=transitive"`
 	// Type defines the type of the extended community
 	// 2byteAS, 4byteAS, ipv4Address, opaque
-	Type string `json:"type,omitempty" yaml:"type,omitempty" protobuf:"bytes,4,opt,name=type"`
+	Type string `json:"type" yaml:"type" protobuf:"bytes,5,opt,name=type"`
 	// SubType defines the subTyoe of the extended community
 	// routeTarget, routeOrigin;
-	SubType string `json:"subType,omitempty" yaml:"subType,omitempty" protobuf:"bytes,5,opt,name=subType"`
-	// Transitive defines the transative nature of the extended community
-	Transitive bool `json:"transitive,omitempty" yaml:"transitive,omitempty" protobuf:"bytes,6,opt,name=transitive"`
+	SubType string `json:"subType" yaml:"subType" protobuf:"bytes,6,opt,name=subType"`
+	// GlobalID is interpreted dependeing on the type
+	// AS in case of 2byteAS, 4byteAS
+	// IPV4 addrress
+	// irrelevant for the opaque type
+	GlobalID string `json:"globalID,omitempty" yaml:"globalID,omitempty" protobuf:"bytes,7,opt,name=globalID"`
 }
 
 // EXTCOMMIndexStatus defines the observed state of EXTCOMMIndex
 type EXTCOMMIndexStatus struct {
 	// MinID defines the min EXTCOMM ID the index supports
 	// +optional
-	MinID *uint64 `json:"minID,omitempty" yaml:"minID,omitempty" protobuf:"bytes,1,opt,name=minID"`
+	MinID *int64 `json:"minID,omitempty" yaml:"minID,omitempty" protobuf:"bytes,1,opt,name=minID"`
 	// MaxID defines the max EXTCOMM ID the index supports
 	// +optional
-	MaxID *uint64 `json:"maxID,omitempty" yaml:"maxID,omitempty" protobuf:"bytes,2,opt,name=maxID"`
+	MaxID *int64 `json:"maxID,omitempty" yaml:"maxID,omitempty" protobuf:"bytes,2,opt,name=maxID"`
 	// ConditionedStatus provides the status of the EXTCOMMIndex using conditions
 	// - a ready condition indicates the overall status of the resource
 	conditionv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,3,opt,name=conditionedStatus"`

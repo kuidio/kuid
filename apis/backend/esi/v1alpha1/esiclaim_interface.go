@@ -33,7 +33,6 @@ import (
 	"github.com/kuidio/kuid/apis/backend"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
-	rresource "github.com/kuidio/kuid/pkg/reconcilers/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -139,8 +138,8 @@ func ConvertESIClaimFieldSelector(label, value string) (internalLabel, internalV
 	}
 }
 
-func (r *ESIClaimList) GetItems() []rresource.Object {
-	objs := []rresource.Object{}
+func (r *ESIClaimList) GetItems() []backend.Object {
+	objs := []backend.Object{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)

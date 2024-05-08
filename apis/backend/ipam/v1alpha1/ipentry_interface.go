@@ -24,6 +24,7 @@ import (
 	"net/netip"
 
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
+	"github.com/henderiw/apiserver-store/pkg/generic/registry"
 	"github.com/henderiw/iputil"
 	"github.com/henderiw/store"
 	"github.com/kuidio/kuid/apis/backend"
@@ -48,8 +49,8 @@ func (r *IPEntryList) GetListMeta() *metav1.ListMeta {
 	return &r.ListMeta
 }
 
-func (r *IPEntryList) GetItems() []*IPEntry {
-	entries := make([]*IPEntry, 0, len(r.Items))
+func (r *IPEntryList) GetItems() []backend.Object {
+	entries := make([]backend.Object, 0, len(r.Items))
 	for _, entry := range r.Items {
 		entries = append(entries, &entry)
 	}
@@ -106,8 +107,8 @@ func (r *IPEntry) SetConditions(c ...conditionv1alpha1.Condition) {
 	r.Status.SetConditions(c...)
 }
 
-// ConvertIPEntryFieldSelector is the schema conversion function for normalizing the FieldSelector for IPEntry
-func ConvertIPEntryFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+// IPEntryConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for IPEntry
+func IPEntryConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil
@@ -138,6 +139,10 @@ func (r *IPEntry) GetNamespacedName() types.NamespacedName {
 	}
 }
 
+func (r *IPEntry) GetKey() store.Key {
+	return store.KeyFromNSN(types.NamespacedName{Namespace: r.Namespace, Name: r.Spec.Index})
+}
+
 func (r *IPEntry) GetIndex() string {
 	return r.Spec.Index
 }
@@ -148,6 +153,12 @@ func (r *IPEntry) GetOwnerReference() *commonv1alpha1.OwnerReference {
 
 func (r *IPEntry) GetClaimName() string {
 	return r.Spec.Claim
+}
+
+
+// dummy to satisfy the interface
+func (r *IPEntry) GetClaimType() backend.ClaimType {
+	return backend.ClaimType_Invalid
 }
 
 func (r *IPEntry) GetClaimSummaryType() IPClaimSummaryType {
@@ -179,11 +190,37 @@ func (r *IPEntry) GetIPPrefix() string {
 	return r.Spec.Prefix
 }
 
+func (r *IPEntry) GetOwnerGVK() schema.GroupVersionKind {
+	return schema.GroupVersionKind{
+		Group:   r.Spec.Owner.Group,
+		Version: r.Spec.Owner.Version,
+		Kind:    r.Spec.Owner.Kind,
+	}
+}
+
+func (r *IPEntry) GetOwnerNSN() types.NamespacedName {
+	return types.NamespacedName{
+		Namespace: r.Spec.Owner.Namespace,
+		Name:      r.Spec.Owner.Name,
+	}
+}
+
 func (r *IPEntry) GetSpecID() string {
 	return r.Spec.Prefix
 }
 
-func GetIPEntry(ctx context.Context, k store.Key, prefix netip.Prefix, labels map[string]string) *IPEntry {
+func (r *IPEntry) GetSpec() any {
+	return r.Spec
+}
+
+
+func (r *IPEntry) SetSpec(s any) {
+	if spec, ok := s.(IPEntrySpec); ok {
+		r.Spec = spec
+	}
+}
+
+func GetIPEntry(ctx context.Context, k store.Key, prefix netip.Prefix, labels map[string]string) backend.EntryObject {
 	//log := log.FromContext(ctx)
 	pi := iputil.NewPrefixInfo(prefix)
 
@@ -248,5 +285,35 @@ func BuildIPEntry(meta metav1.ObjectMeta, spec *IPEntrySpec, status *IPEntryStat
 		ObjectMeta: meta,
 		Spec:       aspec,
 		Status:     astatus,
+	}
+}
+
+func IPEntryTableConvertor(gr schema.GroupResource) registry.TableConvertor {
+	return registry.TableConvertor{
+		Resource: gr,
+		Cells: func(obj runtime.Object) []interface{} {
+			ipentry, ok := obj.(*IPEntry)
+			if !ok {
+				return nil
+			}
+			return []interface{}{
+				ipentry.Name,
+				ipentry.GetCondition(conditionv1alpha1.ConditionTypeReady).Status,
+				ipentry.Spec.Index,
+				ipentry.Spec.ClaimType,
+				string(ipentry.GetIPPrefixType()),
+				ipentry.GetIPPrefix(),
+				ipentry.Spec.DefaultGateway,
+			}
+		},
+		Columns: []metav1.TableColumnDefinition{
+			{Name: "Name", Type: "string"},
+			{Name: "Ready", Type: "string"},
+			{Name: "NetworkInstance", Type: "string"},
+			{Name: "ClaimType", Type: "string"},
+			{Name: "PrefixType", Type: "string"},
+			{Name: "Prefix", Type: "string"},
+			{Name: "DefaultGateway", Type: "string"},
+		},
 	}
 }

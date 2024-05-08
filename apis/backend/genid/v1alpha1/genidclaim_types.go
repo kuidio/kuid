@@ -29,7 +29,7 @@ type GENIDClaimSpec struct {
 	// GENIDIndex defines the GENID index for the GENID Claim
 	Index string `json:"index" yaml:"index" protobuf:"bytes,1,opt,name=index"`
 	// GENIDID defines the GENID for the GENID claim
-	ID *uint64 `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,2,opt,name=id"`
+	ID *int64 `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,2,opt,name=id"`
 	// Range defines the GENID range for the GENID claim
 	// The following notation is used: start-end <start-GENIDID>-<end-GENIDID>
 	// the GENIDs in the range must be consecutive
@@ -49,7 +49,7 @@ type GENIDClaimStatus struct {
 	conditionv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=conditionedStatus"`
 	// GENIDID defines the GENID for the GENID claim
 	// +optional
-	ID *uint64 `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,2,opt,name=id"`
+	ID *int64 `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,2,opt,name=id"`
 	// GENIDRange defines the GENID range for the GENID claim
 	// +optional
 	Range *string `json:"range,omitempty" yaml:"range,omitempty" protobuf:"bytes,3,opt,name=range"`

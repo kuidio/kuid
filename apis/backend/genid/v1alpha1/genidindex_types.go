@@ -28,10 +28,10 @@ import (
 type GENIDIndexSpec struct {
 	// MinID defines the min GENID ID the index supports
 	// +optional
-	MinID *uint64 `json:"minID,omitempty" yaml:"minID,omitempty" protobuf:"bytes,1,opt,name=minID"`
+	MinID *int64 `json:"minID,omitempty" yaml:"minID,omitempty" protobuf:"bytes,1,opt,name=minID"`
 	// MaxID defines the max GENID ID the index supports
 	// +optional
-	MaxID *uint64 `json:"maxID,omitempty" yaml:"maxID,omitempty" protobuf:"bytes,2,opt,name=maxID"`
+	MaxID *int64 `json:"maxID,omitempty" yaml:"maxID,omitempty" protobuf:"bytes,2,opt,name=maxID"`
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
 	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,3,opt,name=userDefinedLabels"`
@@ -44,10 +44,10 @@ type GENIDIndexSpec struct {
 type GENIDIndexStatus struct {
 	// MinID defines the min GENID ID the index supports
 	// +optional
-	MinID *uint64 `json:"minID,omitempty" yaml:"minID,omitempty" protobuf:"bytes,1,opt,name=minID"`
+	MinID *int64 `json:"minID,omitempty" yaml:"minID,omitempty" protobuf:"bytes,1,opt,name=minID"`
 	// MaxID defines the max GENID ID the index supports
 	// +optional
-	MaxID *uint64 `json:"maxID,omitempty" yaml:"maxID,omitempty" protobuf:"bytes,2,opt,name=maxID"`
+	MaxID *int64 `json:"maxID,omitempty" yaml:"maxID,omitempty" protobuf:"bytes,2,opt,name=maxID"`
 	// ConditionedStatus provides the status of the GENIDIndex using conditions
 	// - a ready condition indicates the overall status of the resource
 	conditionv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,3,opt,name=conditionedStatus"`

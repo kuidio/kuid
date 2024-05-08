@@ -71,7 +71,7 @@ func (r testCtx) getStaticClaim(index, testType string) (*extcommbev1alpha1.EXTC
 		metav1.ObjectMeta{Namespace: namespace, Name: r.name},
 		&extcommbev1alpha1.EXTCOMMClaimSpec{
 			Index: index,
-			ID:    ptr.To[uint64](r.id),
+			ID:    ptr.To[int64](int64(r.id)),
 			ClaimLabels: commonv1alpha1.ClaimLabels{
 				UserDefinedLabels: commonv1alpha1.UserDefinedLabels{Labels: r.labels},
 			},

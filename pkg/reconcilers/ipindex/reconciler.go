@@ -149,6 +149,7 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 	// if prefixes are provided from the network instance we treat them as
 	// aggregate prefixes.
 	for _, prefix := range cr.Spec.Prefixes {
+		prefix := prefix
 		if err := r.applyIPClaim(ctx, cr, prefix); err != nil {
 			return ctrl.Result{RequeueAfter: 1 * time.Second}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
 		}

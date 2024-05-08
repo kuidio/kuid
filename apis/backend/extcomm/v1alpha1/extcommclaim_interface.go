@@ -37,7 +37,6 @@ import (
 	"github.com/kuidio/kuid/apis/backend"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
-	rresource "github.com/kuidio/kuid/pkg/reconcilers/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -60,7 +59,7 @@ var EXTCOMMID_MaxBits = map[ExtendedCommunityType]int{
 	ExtendedCommunityType_Opaque:      48,
 }
 
-var EXTCOMMID_MaxValue = map[ExtendedCommunityType]uint64{
+var EXTCOMMID_MaxValue = map[ExtendedCommunityType]int64{
 	ExtendedCommunityType_Invalid:     1<<EXTCOMMID_MaxBits[ExtendedCommunityType_Invalid] - 1,
 	ExtendedCommunityType_2byteAS:     1<<EXTCOMMID_MaxBits[ExtendedCommunityType_2byteAS] - 1,
 	ExtendedCommunityType_4byteAS:     1<<EXTCOMMID_MaxBits[ExtendedCommunityType_4byteAS] - 1,
@@ -144,8 +143,8 @@ func (r *EXTCOMMClaim) SetConditions(c ...conditionv1alpha1.Condition) {
 	r.Status.SetConditions(c...)
 }
 
-// ConvertEXTCOMMClaimFieldSelector is the schema conversion function for normalizing the FieldSelector for EXTCOMMClaim
-func ConvertEXTCOMMClaimFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+// EXTCOMMClaimConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for EXTCOMMClaim
+func EXTCOMMClaimConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil
@@ -158,8 +157,8 @@ func ConvertEXTCOMMClaimFieldSelector(label, value string) (internalLabel, inter
 	}
 }
 
-func (r *EXTCOMMClaimList) GetItems() []rresource.Object {
-	objs := []rresource.Object{}
+func (r *EXTCOMMClaimList) GetItems() []backend.Object {
+	objs := []backend.Object{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)
@@ -343,11 +342,11 @@ func (r *EXTCOMMClaim) ValidateEXTCOMMClaimType() error {
 	return nil
 }
 
-func validateEXTCOMMID(extCommType ExtendedCommunityType, id uint64) error {
+func validateEXTCOMMID(extCommType ExtendedCommunityType, id int64) error {
 	if id < EXTCOMMID_Min {
 		return fmt.Errorf("invalid id, got %d", id)
 	}
-	if id > EXTCOMMID_MaxValue[extCommType] {
+	if id > int64(EXTCOMMID_MaxValue[extCommType]) {
 		return fmt.Errorf("invalid id, got %d", id)
 	}
 	return nil
@@ -405,10 +404,10 @@ func (r *EXTCOMMClaim) ValidateEXTCOMMRange(extCommType ExtendedCommunityType) e
 	if start > end {
 		errm = errors.Join(errm, fmt.Errorf("invalid EXTCOMM range start > end %s", *r.Spec.Range))
 	}
-	if err := validateEXTCOMMID(extCommType, uint64(start)); err != nil {
+	if err := validateEXTCOMMID(extCommType, int64(start)); err != nil {
 		errm = errors.Join(errm, fmt.Errorf("invalid EXTCOMM start err %s", err.Error()))
 	}
-	if err := validateEXTCOMMID(extCommType, uint64(end)); err != nil {
+	if err := validateEXTCOMMID(extCommType, int64(end)); err != nil {
 		errm = errors.Join(errm, fmt.Errorf("invalid EXTCOMM end err %s", err.Error()))
 	}
 	return errm
@@ -560,7 +559,7 @@ func (r *EXTCOMMClaim) SetStatusID(s *uint64) {
 		r.Status.ID = nil
 		return
 	}
-	r.Status.ID = ptr.To[uint64](uint64(*s))
+	r.Status.ID = ptr.To[int64](int64(*s))
 }
 
 func (r *EXTCOMMClaim) GetStatusID() *uint64 {

@@ -30,7 +30,6 @@ import (
 	"github.com/kuidio/kuid/apis/backend"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
-	rresource "github.com/kuidio/kuid/pkg/reconcilers/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -101,8 +100,8 @@ func (r *GENIDIndex) SetConditions(c ...conditionv1alpha1.Condition) {
 	r.Status.SetConditions(c...)
 }
 
-// ConvertGENIDIndexFieldSelector is the schema conversion function for normalizing the FieldSelector for GENIDIndex
-func ConvertGENIDIndexFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+// GENIDIndexConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for GENIDIndex
+func GENIDIndexConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil
@@ -113,8 +112,8 @@ func ConvertGENIDIndexFieldSelector(label, value string) (internalLabel, interna
 	}
 }
 
-func (r *GENIDIndexList) GetItems() []rresource.Object {
-	objs := []rresource.Object{}
+func (r *GENIDIndexList) GetItems() []backend.Object {
+	objs := []backend.Object{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)
@@ -230,11 +229,11 @@ func (r *GENIDIndex) ValidateSyntax() field.ErrorList {
 	return allErrs
 }
 
-func GetMinClaimRange(id uint64) string {
+func GetMinClaimRange(id int64) string {
 	return fmt.Sprintf("%d-%d", GENIDID_Min, id-1)
 }
 
-func GetMaxClaimRange(genidType GENIDType, id uint64) string {
+func GetMaxClaimRange(genidType GENIDType, id int64) string {
 	return fmt.Sprintf("%d-%d", id+1, GENIDID_MaxValue[genidType])
 }
 

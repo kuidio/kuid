@@ -104,8 +104,8 @@ func (r *GENIDEntry) SetConditions(c ...conditionv1alpha1.Condition) {
 	r.Status.SetConditions(c...)
 }
 
-// ConvertGENIDEntryFieldSelector is the schema conversion function for normalizing the FieldSelector for GENIDEntry
-func ConvertGENIDEntryFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+// GENIDEntryConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for GENIDEntry
+func GENIDEntryConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil

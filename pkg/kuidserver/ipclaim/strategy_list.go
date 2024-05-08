@@ -86,7 +86,7 @@ func (r *strategy) List(ctx context.Context, options *metainternalversion.ListOp
 					}
 				}
 				if filter.Index != "" {
-					if claim.Spec.Index == filter.Index {
+					if claim.GetIndex() == filter.Index {
 						f = false
 					} else {
 						f = true

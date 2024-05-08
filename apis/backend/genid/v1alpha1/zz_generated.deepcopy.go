@@ -91,7 +91,7 @@ func (in *GENIDClaimSpec) DeepCopyInto(out *GENIDClaimSpec) {
 	*out = *in
 	if in.ID != nil {
 		in, out := &in.ID, &out.ID
-		*out = new(uint64)
+		*out = new(int64)
 		**out = **in
 	}
 	if in.Range != nil {
@@ -124,7 +124,7 @@ func (in *GENIDClaimStatus) DeepCopyInto(out *GENIDClaimStatus) {
 	in.ConditionedStatus.DeepCopyInto(&out.ConditionedStatus)
 	if in.ID != nil {
 		in, out := &in.ID, &out.ID
-		*out = new(uint64)
+		*out = new(int64)
 		**out = **in
 	}
 	if in.Range != nil {
@@ -332,12 +332,12 @@ func (in *GENIDIndexSpec) DeepCopyInto(out *GENIDIndexSpec) {
 	*out = *in
 	if in.MinID != nil {
 		in, out := &in.MinID, &out.MinID
-		*out = new(uint64)
+		*out = new(int64)
 		**out = **in
 	}
 	if in.MaxID != nil {
 		in, out := &in.MaxID, &out.MaxID
-		*out = new(uint64)
+		*out = new(int64)
 		**out = **in
 	}
 	in.UserDefinedLabels.DeepCopyInto(&out.UserDefinedLabels)
@@ -359,12 +359,12 @@ func (in *GENIDIndexStatus) DeepCopyInto(out *GENIDIndexStatus) {
 	*out = *in
 	if in.MinID != nil {
 		in, out := &in.MinID, &out.MinID
-		*out = new(uint64)
+		*out = new(int64)
 		**out = **in
 	}
 	if in.MaxID != nil {
 		in, out := &in.MaxID, &out.MaxID
-		*out = new(uint64)
+		*out = new(int64)
 		**out = **in
 	}
 	in.ConditionedStatus.DeepCopyInto(&out.ConditionedStatus)

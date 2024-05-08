@@ -71,7 +71,7 @@ func (r *strategy) Create(ctx context.Context, key types.NamespacedName, obj run
 		return obj, nil
 	}
 
-	log.Info("create ipclaim storage", "key", key, "obj", obj)
+	log.Info("create claim in storage", "key", key, "obj", obj)
 
 	if err := r.store.Create(ctx, storebackend.KeyFromNSN(key), obj); err != nil {
 		return obj, apierrors.NewInternalError(err)

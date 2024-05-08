@@ -2119,20 +2119,6 @@ func schema_apis_backend_extcomm_v1alpha1_EXTCOMMIndexSpec(ref common.ReferenceC
 							},
 						},
 					},
-					"type": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Type defines the type of the extended community 2byteAS, 4byteAS, ipv4Address, opaque",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"subType": {
-						SchemaProps: spec.SchemaProps{
-							Description: "SubType defines the subTyoe of the extended community routeTarget, routeOrigin;",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
 					"transitive": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Transitive defines the transative nature of the extended community",
@@ -2140,7 +2126,31 @@ func schema_apis_backend_extcomm_v1alpha1_EXTCOMMIndexSpec(ref common.ReferenceC
 							Format:      "",
 						},
 					},
+					"type": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Type defines the type of the extended community 2byteAS, 4byteAS, ipv4Address, opaque",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"subType": {
+						SchemaProps: spec.SchemaProps{
+							Description: "SubType defines the subTyoe of the extended community routeTarget, routeOrigin;",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"globalID": {
+						SchemaProps: spec.SchemaProps{
+							Description: "GlobalID is interpreted dependeing on the type AS in case of 2byteAS, 4byteAS IPV4 addrress irrelevant for the opaque type",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
 				},
+				Required: []string{"type", "subType"},
 			},
 		},
 	}

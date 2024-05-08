@@ -1,0 +1,9 @@
+apiVersion: extcomm.be.kuid.dev/v1alpha1
+kind: EXTCOMMIndex
+metadata:
+  name: index1
+spec:
+  type: ipv4Address
+  subType: target
+  globalID: 10.0.0.1
+

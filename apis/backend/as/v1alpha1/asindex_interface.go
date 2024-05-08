@@ -98,8 +98,8 @@ func (r *ASIndex) SetConditions(c ...conditionv1alpha1.Condition) {
 	r.Status.SetConditions(c...)
 }
 
-// ConvertASIndexFieldSelector is the schema conversion function for normalizing the FieldSelector for ASIndex
-func ConvertASIndexFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+// ASIndexConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for ASIndex
+func ASIndexConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil

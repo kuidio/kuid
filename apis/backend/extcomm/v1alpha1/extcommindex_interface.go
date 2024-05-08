@@ -22,6 +22,7 @@ import (
 	"fmt"
 
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
+	"github.com/henderiw/apiserver-store/pkg/generic/registry"
 	"github.com/henderiw/idxtable/pkg/tree/gtree"
 	"github.com/henderiw/idxtable/pkg/tree/tree16"
 	"github.com/henderiw/idxtable/pkg/tree/tree32"
@@ -30,7 +31,6 @@ import (
 	"github.com/kuidio/kuid/apis/backend"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
-	rresource "github.com/kuidio/kuid/pkg/reconcilers/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -101,8 +101,8 @@ func (r *EXTCOMMIndex) SetConditions(c ...conditionv1alpha1.Condition) {
 	r.Status.SetConditions(c...)
 }
 
-// ConvertEXTCOMMIndexFieldSelector is the schema conversion function for normalizing the FieldSelector for EXTCOMMIndex
-func ConvertEXTCOMMIndexFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+// EXTCOMMIndexConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for EXTCOMMIndex
+func EXTCOMMIndexConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil
@@ -113,8 +113,8 @@ func ConvertEXTCOMMIndexFieldSelector(label, value string) (internalLabel, inter
 	}
 }
 
-func (r *EXTCOMMIndexList) GetItems() []rresource.Object {
-	objs := []rresource.Object{}
+func (r *EXTCOMMIndexList) GetItems() []backend.Object {
+	objs := []backend.Object{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)
@@ -231,11 +231,11 @@ func (r *EXTCOMMIndex) ValidateSyntax() field.ErrorList {
 	return allErrs
 }
 
-func GetMinClaimRange(id uint64) string {
+func GetMinClaimRange(id int64) string {
 	return fmt.Sprintf("%d-%d", EXTCOMMID_Min, id-1)
 }
 
-func GetMaxClaimRange(extCommType ExtendedCommunityType, id uint64) string {
+func GetMaxClaimRange(extCommType ExtendedCommunityType, id int64) string {
 	return fmt.Sprintf("%d-%d", id+1, EXTCOMMID_MaxValue[extCommType])
 }
 
@@ -315,5 +315,37 @@ func BuildEXTCOMMIndex(meta metav1.ObjectMeta, spec *EXTCOMMIndexSpec, status *E
 		ObjectMeta: meta,
 		Spec:       aspec,
 		Status:     astatus,
+	}
+}
+
+func EXTCOMMIndexTableConvertor(gr schema.GroupResource) registry.TableConvertor {
+	return registry.TableConvertor{
+		Resource: gr,
+		Cells: func(obj runtime.Object) []interface{} {
+			index, ok := obj.(*EXTCOMMIndex)
+			if !ok {
+				return nil
+			}
+			return []interface{}{
+				index.GetName(),
+				index.GetCondition(conditionv1alpha1.ConditionTypeReady).Status,
+				index.Spec.Transitive,
+				index.Spec.Type,
+				index.Spec.SubType,
+				index.Spec.GlobalID,
+				index.GetMinID(),
+				index.GetMaxID(),
+			}
+		},
+		Columns: []metav1.TableColumnDefinition{
+			{Name: "Name", Type: "string"},
+			{Name: "Ready", Type: "string"},
+			{Name: "Transitive", Type: "boolean"},
+			{Name: "Type", Type: "string"},
+			{Name: "SubType", Type: "string"},
+			{Name: "GlobalID", Type: "string"},
+			{Name: "MinID", Type: "integer"},
+			{Name: "MaxID", Type: "integer"},
+		},
 	}
 }

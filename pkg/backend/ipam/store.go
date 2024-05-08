@@ -24,13 +24,14 @@ import (
 	"github.com/henderiw/idxtable/pkg/iptable"
 	"github.com/henderiw/logger/log"
 	"github.com/henderiw/store"
+	"github.com/kuidio/kuid/apis/backend"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
-	"github.com/kuidio/kuid/pkg/backend/backend"
+	bebackend "github.com/kuidio/kuid/pkg/backend/backend"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func NewStore(c client.Client, cache backend.Cache[*CacheContext]) backend.Store {
+func NewStore(c client.Client, cache bebackend.Cache[*CacheContext]) bebackend.Store {
 	return &bestore{
 		client: c,
 		cache:  cache,
@@ -39,7 +40,7 @@ func NewStore(c client.Client, cache backend.Cache[*CacheContext]) backend.Store
 
 type bestore struct {
 	client client.Client
-	cache  backend.Cache[*CacheContext]
+	cache  bebackend.Cache[*CacheContext]
 }
 
 func (r *bestore) Restore(ctx context.Context, k store.Key) error {
@@ -105,34 +106,39 @@ func (r *bestore) SaveAll(ctx context.Context, k store.Key) error {
 	if err != nil {
 		return err
 	}
+
 	// debug end
 	for _, newIPEntry := range newIPEntries {
+		log.Info("SaveAll", "newIPEntry", newIPEntry.GetNamespacedName())
 		newIPEntry := newIPEntry
 		found := false
-		var ipEntry *ipambev1alpha1.IPEntry
+		var ipEntry backend.EntryObject
 		for idx, curIPEntry := range curIPEntries {
+			log.Info("SaveAll", "curIPEntry", *curIPEntry)
 			idx := idx
 			curIPEntry := curIPEntry
 			//fmt.Println("saveAll entries", newIPEntry.Name, curIPEntry.Name)
-			if curIPEntry.Namespace == newIPEntry.Namespace &&
-				curIPEntry.Name == newIPEntry.Name {
+			if curIPEntry.GetNamespace() == newIPEntry.GetNamespace() &&
+				curIPEntry.GetName() == newIPEntry.GetName() {
 				curIPEntries = append(curIPEntries[:idx], curIPEntries[idx+1:]...)
 				found = true
 				ipEntry = curIPEntry
 				break
 			}
 		}
+		log.Info("SaveAll", "found", found, "curIPEntry", ipEntry, "newIPEntry", newIPEntry)
 		//fmt.Println("saveAll entries", found, newIPEntry.Name)
 		if !found {
 			if err := r.client.Create(ctx, newIPEntry); err != nil {
-				log.Error("saveAll create failed", "name", newIPEntry.Name, "error", err.Error())
+				log.Error("saveAll create failed", "nsn", newIPEntry.GetNamespacedName(), "error", err.Error())
 				return err
 			}
 			continue
 		}
-		ipEntry.Spec = newIPEntry.Spec
-		log.Debug("save all ipEntry update", "ipEntry", ipEntry.Name)
+		ipEntry.SetSpec(newIPEntry.GetSpec()) 
+		log.Info("save all ipEntry update", "nsn", ipEntry.GetNamespacedName())
 		if err := r.client.Update(ctx, ipEntry); err != nil {
+			log.Info("save all ipEntry failed", "nsn", ipEntry.GetNamespacedName(), "error", err.Error())
 			return err
 		}
 	}
@@ -150,7 +156,7 @@ func (r *bestore) Destroy(ctx context.Context, k store.Key) error {
 	return r.deleteEntries(ctx, k)
 }
 
-func (r *bestore) getEntriesFromCache(ctx context.Context, k store.Key) ([]*ipambev1alpha1.IPEntry, error) {
+func (r *bestore) getEntriesFromCache(ctx context.Context, k store.Key) ([]backend.EntryObject, error) {
 	log := log.FromContext(ctx).With("key", k.String())
 	cacheCtx, err := r.cache.Get(ctx, k, false)
 	if err != nil {
@@ -158,7 +164,7 @@ func (r *bestore) getEntriesFromCache(ctx context.Context, k store.Key) ([]*ipam
 		return nil, err
 	}
 
-	ipEntries := make([]*ipambev1alpha1.IPEntry, 0, cacheCtx.Size())
+	ipEntries := make([]backend.EntryObject, 0, cacheCtx.Size())
 	// add the main rib entry
 	for _, route := range cacheCtx.rib.GetTable() {
 		//fmt.Println("getEntriesFromCache rib entry", route.Prefix().String())

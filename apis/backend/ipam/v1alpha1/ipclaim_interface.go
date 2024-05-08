@@ -23,6 +23,7 @@ import (
 	"strings"
 
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
+	"github.com/henderiw/apiserver-store/pkg/generic/registry"
 	"github.com/henderiw/idxtable/pkg/table"
 	"github.com/henderiw/idxtable/pkg/tree"
 	"github.com/henderiw/iputil"
@@ -118,8 +119,8 @@ func (r *IPClaim) SetConditions(c ...conditionv1alpha1.Condition) {
 	r.Status.SetConditions(c...)
 }
 
-// ConvertIPClaimFieldSelector is the schema conversion function for normalizing the FieldSelector for IPClaim
-func ConvertIPClaimFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+// IPClaimConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for IPClaim
+func IPClaimConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil
@@ -468,3 +469,36 @@ func (r *IPClaim) SetStatusRange(s *string) { r.Status.Range = s }
 func (r *IPClaim) SetStatusID(s *uint64) {}
 
 func (r *IPClaim) GetStatusID() *uint64 { return nil }
+
+func IPClaimTableConvertor(gr schema.GroupResource) registry.TableConvertor {
+	return registry.TableConvertor{
+		Resource: gr,
+		Cells: func(obj runtime.Object) []interface{} {
+			ipclaim, ok := obj.(*IPClaim)
+			if !ok {
+				return nil
+			}
+			ipClaimType, _ := ipclaim.GetIPClaimType()
+			return []interface{}{
+				ipclaim.Name,
+				ipclaim.GetCondition(conditionv1alpha1.ConditionTypeReady).Status,
+				ipclaim.Spec.Index,
+				string(ipClaimType),
+				string(ipclaim.GetIPPrefixType()),
+				ipclaim.GetClaimRequest(),
+				ipclaim.GetClaimResponse(),
+				ipclaim.Status.DefaultGateway,
+			}
+		},
+		Columns: []metav1.TableColumnDefinition{
+			{Name: "Name", Type: "string"},
+			{Name: "Ready", Type: "string"},
+			{Name: "Index", Type: "string"},
+			{Name: "ClaimType", Type: "string"},
+			{Name: "PrefixType", Type: "string"},
+			{Name: "ClaimReq", Type: "string"},
+			{Name: "ClaimRsp", Type: "string"},
+			{Name: "DefaultGateway", Type: "string"},
+		},
+	}
+}

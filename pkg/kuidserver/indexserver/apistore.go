@@ -27,6 +27,7 @@ import (
 	"github.com/kuidio/kuid/pkg/kuidserver/store"
 	"go.opentelemetry.io/otel"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apiserver/pkg/registry/generic"
 	"k8s.io/apiserver/pkg/registry/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -36,6 +37,7 @@ type ServerObjContext struct {
 	TracerString   string
 	Obj            resource.Object
 	ConversionFunc runtime.FieldLabelConversionFunc
+	TableConverter func(gr schema.GroupResource) registry.TableConvertor
 }
 
 func NewProvider(ctx context.Context, client client.Client, serverObjContext *ServerObjContext, storeConfig *store.Config, be bebackend.Backend) builderrest.ResourceHandlerProvider {
@@ -72,6 +74,12 @@ func NewREST(ctx context.Context, scheme *runtime.Scheme, optsGetter generic.RES
 	singlularResource.Resource = serverObjContext.Obj.GetSingularName()
 	strategy := NewStrategy(ctx, scheme, client, serverObjContext, configStore, be)
 
+	// overwrite the default table convertor if specified by the user
+	tableConvertor := DefaultTableConvertor(serverObjContext.Obj.GetGroupVersionResource().GroupResource())
+	if serverObjContext.TableConverter != nil {
+		tableConvertor = serverObjContext.TableConverter(serverObjContext.Obj.GetGroupVersionResource().GroupResource())
+	}
+
 	// This is the etcd store
 	store := &registry.Store{
 		Tracer:                    otel.Tracer(serverObjContext.TracerString),
@@ -87,7 +95,7 @@ func NewREST(ctx context.Context, scheme *runtime.Scheme, optsGetter generic.RES
 		DeleteStrategy:            strategy,
 		WatchStrategy:             strategy,
 
-		TableConvertor: NewTableConvertor(serverObjContext.Obj.GetGroupVersionResource().GroupResource()),
+		TableConvertor: tableConvertor,
 	}
 	options := &generic.StoreOptions{
 		RESTOptions: optsGetter,

@@ -14,15 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package asindex
+package extcommclaim
 
 import (
 	"context"
 	"fmt"
 	"reflect"
+	"strings"
+	"time"
 
 	"github.com/henderiw/logger/log"
-	asbev1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
+	extcommbev1alpha1 "github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
 	"github.com/kuidio/kuid/pkg/backend/backend"
 	"github.com/kuidio/kuid/pkg/reconcilers"
@@ -39,13 +41,13 @@ import (
 )
 
 func init() {
-	reconcilers.Register("asindex", &reconciler{})
+	reconcilers.Register("extcommclaim", &reconciler{})
 }
 
 const (
-	crName         = "asindex"
-	controllerName = "ASIndexController"
-	finalizer      = "asindex.as.res.kuid.dev/finalizer"
+	crName         = "extcommClaim"
+	controllerName = "EXTCOMMClaimController"
+	finalizer      = "extcommclaim.extcomm.be.kuid.dev/finalizer"
 	// errors
 	errGetCr        = "cannot get cr"
 	errUpdateStatus = "cannot update status"
@@ -53,7 +55,6 @@ const (
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *reconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manager, c interface{}) (map[schema.GroupVersionKind]chan event.GenericEvent, error) {
-
 	cfg, ok := c.(*ctrlconfig.ControllerConfig)
 	if !ok {
 		return nil, fmt.Errorf("cannot initialize, expecting controllerConfig, got: %s", reflect.TypeOf(c).Name())
@@ -62,15 +63,15 @@ func (r *reconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manager, c i
 	r.Client = mgr.GetClient()
 	r.finalizer = resource.NewAPIFinalizer(mgr.GetClient(), finalizer)
 	r.recorder = mgr.GetEventRecorderFor(controllerName)
-	r.be = cfg.ASBackend
+	r.be = cfg.EXTCOMMBackend
 
 	return nil, ctrl.NewControllerManagedBy(mgr).
 		Named(controllerName).
-		For(&asbev1alpha1.ASIndex{}).
-		Watches(&asbev1alpha1.ASIndex{},
-			&eventhandler.IPEntryEventHandler{
+		For(&extcommbev1alpha1.EXTCOMMClaim{}).
+		Watches(&extcommbev1alpha1.EXTCOMMEntry{},
+			&eventhandler.EXTCOMMEntryEventHandler{
 				Client:  mgr.GetClient(),
-				ObjList: &asbev1alpha1.ASIndexList{},
+				ObjList: &extcommbev1alpha1.EXTCOMMClaimList{},
 			}).
 		Complete(r)
 }
@@ -87,7 +88,7 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 	log := log.FromContext(ctx)
 	log.Info("reconcile")
 
-	cr := &asbev1alpha1.ASIndex{}
+	cr := &extcommbev1alpha1.EXTCOMMClaim{}
 	if err := r.Get(ctx, req.NamespacedName, cr); err != nil {
 		// if the resource no longer exists the reconcile loop is done
 		if resource.IgnoreNotFound(err) != nil {
@@ -99,8 +100,11 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 	cr = cr.DeepCopy()
 
 	if !cr.GetDeletionTimestamp().IsZero() {
-		if err := r.deleteIndex(ctx, cr); err != nil {
-			return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+		if err := r.be.Release(ctx, cr); err != nil {
+			if !strings.Contains(err.Error(), "not initialized") {
+				r.handleError(ctx, cr, "cannot delete claim", err)
+				return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+			}
 		}
 
 		if err := r.finalizer.RemoveFinalizer(ctx, cr); err != nil {
@@ -116,29 +120,22 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
 	}
 
-	if r.hasMinMaxRangeChanged(cr) {
-		// delete index
-		if err := r.deleteIndex(ctx, cr); err != nil {
-			return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
-		}
-	}
-	// create index
-	if err := r.applyIndex(ctx, cr); err != nil {
-		return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
-	}
+	if err := r.be.Claim(ctx, cr); err != nil {
+		r.handleError(ctx, cr, "cannot claim resource", err)
 
-	if err := r.applyMinMaxRange(ctx, cr); err != nil {
-		return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+		if strings.Contains(err.Error(), "reserved range") {
+			// a user need to intervene to recover
+			return ctrl.Result{}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+		}
+		return ctrl.Result{RequeueAfter: 5 * time.Second}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
 	}
 
 	cr.SetConditions(conditionv1alpha1.Ready())
-	cr.Status.MinID = cr.Spec.MinID
-	cr.Status.MaxID = cr.Spec.MaxID
 	r.recorder.Eventf(cr, corev1.EventTypeNormal, crName, "ready")
 	return ctrl.Result{}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
 }
 
-func (r *reconciler) handleError(ctx context.Context, cr *asbev1alpha1.ASIndex, msg string, err error) {
+func (r *reconciler) handleError(ctx context.Context, cr *extcommbev1alpha1.EXTCOMMClaim, msg string, err error) {
 	log := log.FromContext(ctx)
 	if err == nil {
 		cr.SetConditions(conditionv1alpha1.Failed(msg))
@@ -149,55 +146,4 @@ func (r *reconciler) handleError(ctx context.Context, cr *asbev1alpha1.ASIndex, 
 		log.Error(msg, "error", err)
 		r.recorder.Eventf(cr, corev1.EventTypeWarning, crName, fmt.Sprintf("%s, err: %s", msg, err.Error()))
 	}
-}
-
-func (r *reconciler) deleteIndex(ctx context.Context, cr *asbev1alpha1.ASIndex) error {
-	if err := r.be.DeleteIndex(ctx, cr); err != nil {
-		r.handleError(ctx, cr, "cannot delete index", err)
-		return err
-	}
-	return nil
-}
-
-func (r *reconciler) applyIndex(ctx context.Context, cr *asbev1alpha1.ASIndex) error {
-	if err := r.be.CreateIndex(ctx, cr); err != nil {
-		r.handleError(ctx, cr, "cannot create index", err)
-		return err
-	}
-	return nil
-}
-
-func (r *reconciler) hasMinMaxRangeChanged(cr *asbev1alpha1.ASIndex) bool {
-	return changed(cr.Status.MinID, cr.Spec.MinID) || changed(cr.Status.MaxID, cr.Spec.MaxID)
-}
-
-func changed(status, spec *uint32) bool {
-	if status != nil {
-		if spec == nil {
-			return true
-		} else {
-			if *status != *spec {
-				return true
-			}
-		}
-	}
-	return false
-}
-
-func (r *reconciler) applyMinMaxRange(ctx context.Context, cr *asbev1alpha1.ASIndex) error {
-	if cr.Spec.MinID != nil && *cr.Spec.MinID != asbev1alpha1.ASID_Min {
-		claim := cr.GetMinClaim()
-		if err := r.be.Claim(ctx, claim); err != nil {
-			r.handleError(ctx, cr, "cannot claim min reserved range", err)
-			return err
-		}
-	}
-	if cr.Spec.MaxID != nil && *cr.Spec.MaxID != asbev1alpha1.ASID_Max {
-		claim := cr.GetMaxClaim()
-		if err := r.be.Claim(ctx, claim); err != nil {
-			r.handleError(ctx, cr, "cannot claim max reserved range", err)
-			return err
-		}
-	}
-	return nil
 }

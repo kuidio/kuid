@@ -25,6 +25,22 @@ spec:
 apiVersion: apiregistration.k8s.io/v1
 kind: APIService
 metadata:
+  name: v1alpha1.extcomm.be.kuid.dev
+spec:
+  group: extcomm.be.kuid.dev
+  groupPriorityMinimum: 1000
+  insecureSkipTLSVerify: true
+  service:
+    name: kuid-server
+    namespace: kuid-system
+    port: 6443
+  version: v1alpha1
+  versionPriority: 15
+
+---
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
   name: v1alpha1.ipam.be.kuid.dev
 spec:
   group: ipam.be.kuid.dev
@@ -135,6 +151,10 @@ spec:
         - name: ENABLE_IPINDEX
           value: "true"
         - name: ENABLE_IPCLAIM
+          value: "true"
+        - name: ENABLE_EXTCOMMINDEX
+          value: "true"
+        - name: ENABLE_EXTCOMMCLAIM
           value: "true"
         image: europe-docker.pkg.dev/srlinux/eu.gcr.io/kuid-server:latest
         imagePullPolicy: Always
@@ -360,6 +380,45 @@ rules:
   resources:
   - asindices
   - asindices/status
+  verbs:
+  - get
+  - watch
+  - list
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - extcomm.be.kuid.dev
+  resources:
+  - extcommclaims
+  - extcommclaims/status
+  verbs:
+  - get
+  - watch
+  - list
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - extcomm.be.kuid.dev
+  resources:
+  - extcommentries
+  - extcommentries/status
+  verbs:
+  - get
+  - watch
+  - list
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - extcomm.be.kuid.dev
+  resources:
+  - extcommindices
+  - extcommindices/status
   verbs:
   - get
   - watch

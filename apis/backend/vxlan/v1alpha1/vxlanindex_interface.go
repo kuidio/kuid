@@ -98,8 +98,8 @@ func (r *VXLANIndex) SetConditions(c ...conditionv1alpha1.Condition) {
 	r.Status.SetConditions(c...)
 }
 
-// ConvertVXLANIndexFieldSelector is the schema conversion function for normalizing the FieldSelector for VXLANIndex
-func ConvertVXLANIndexFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+// VXLANIndexConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for VXLANIndex
+func VXLANIndexConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil

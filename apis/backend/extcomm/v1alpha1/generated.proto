@@ -52,7 +52,7 @@ message EXTCOMMClaimSpec {
   optional string index = 1;
 
   // EXTCOMMID defines the EXTCOMM for the EXTCOMM claim
-  optional uint64 id = 2;
+  optional int64 id = 2;
 
   // Range defines the EXTCOMM range for the EXTCOMM claim
   // The following notation is used: start-end <start-EXTCOMMID>-<end-EXTCOMMID>
@@ -76,7 +76,7 @@ message EXTCOMMClaimStatus {
 
   // EXTCOMMID defines the EXTCOMM for the EXTCOMM claim
   // +optional
-  optional uint64 id = 2;
+  optional int64 id = 2;
 
   // EXTCOMMRange defines the EXTCOMM range for the EXTCOMM claim
   // +optional
@@ -163,37 +163,43 @@ message EXTCOMMIndexList {
 message EXTCOMMIndexSpec {
   // MinID defines the min EXTCOMM ID the index supports
   // +optional
-  optional uint64 minID = 1;
+  optional int64 minID = 1;
 
   // MaxID defines the max EXTCOMM ID the index supports
   // +optional
-  optional uint64 maxID = 2;
+  optional int64 maxID = 2;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
   optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
 
+  // Transitive defines the transative nature of the extended community
+  optional bool transitive = 4;
+
   // Type defines the type of the extended community
   // 2byteAS, 4byteAS, ipv4Address, opaque
-  optional string type = 4;
+  optional string type = 5;
 
   // SubType defines the subTyoe of the extended community
   // routeTarget, routeOrigin;
-  optional string subType = 5;
+  optional string subType = 6;
 
-  // Transitive defines the transative nature of the extended community
-  optional bool transitive = 6;
+  // GlobalID is interpreted dependeing on the type
+  // AS in case of 2byteAS, 4byteAS
+  // IPV4 addrress
+  // irrelevant for the opaque type
+  optional string globalID = 7;
 }
 
 // EXTCOMMIndexStatus defines the observed state of EXTCOMMIndex
 message EXTCOMMIndexStatus {
   // MinID defines the min EXTCOMM ID the index supports
   // +optional
-  optional uint64 minID = 1;
+  optional int64 minID = 1;
 
   // MaxID defines the max EXTCOMM ID the index supports
   // +optional
-  optional uint64 maxID = 2;
+  optional int64 maxID = 2;
 
   // ConditionedStatus provides the status of the EXTCOMMIndex using conditions
   // - a ready condition indicates the overall status of the resource

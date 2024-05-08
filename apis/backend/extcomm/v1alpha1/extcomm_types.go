@@ -45,8 +45,8 @@ type ExtendedCommunitySubType string
 
 const (
 	ExtendedCommunitySubType_Invalid     ExtendedCommunitySubType = "invalid"
-	ExtendedCommunitySubType_RouteTarget ExtendedCommunitySubType = "routeTarget" // 0x02
-	ExtendedCommunitySubType_RouteOrigin ExtendedCommunitySubType = "routeorigin" // 0x03
+	ExtendedCommunitySubType_RouteTarget ExtendedCommunitySubType = "target" // 0x02
+	ExtendedCommunitySubType_RouteOrigin ExtendedCommunitySubType = "origin" // 0x03
 )
 
 func GetExtendedCommunitySubType(s string) ExtendedCommunitySubType {

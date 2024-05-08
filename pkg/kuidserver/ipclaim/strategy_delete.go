@@ -33,12 +33,6 @@ func (r *strategy) Delete(ctx context.Context, key types.NamespacedName, obj run
 		return obj, nil
 	}
 
-	/*
-		if err := r.be.DeleteClaim(ctx, obj); err != nil {
-			return obj, err
-		}
-	*/
-
 	if err := r.store.Delete(ctx, storebackend.KeyFromNSN(key)); err != nil {
 		return obj, apierrors.NewInternalError(err)
 	}

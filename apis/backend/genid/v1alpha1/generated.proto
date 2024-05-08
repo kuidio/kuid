@@ -52,7 +52,7 @@ message GENIDClaimSpec {
   optional string index = 1;
 
   // GENIDID defines the GENID for the GENID claim
-  optional uint64 id = 2;
+  optional int64 id = 2;
 
   // Range defines the GENID range for the GENID claim
   // The following notation is used: start-end <start-GENIDID>-<end-GENIDID>
@@ -76,7 +76,7 @@ message GENIDClaimStatus {
 
   // GENIDID defines the GENID for the GENID claim
   // +optional
-  optional uint64 id = 2;
+  optional int64 id = 2;
 
   // GENIDRange defines the GENID range for the GENID claim
   // +optional
@@ -163,11 +163,11 @@ message GENIDIndexList {
 message GENIDIndexSpec {
   // MinID defines the min GENID ID the index supports
   // +optional
-  optional uint64 minID = 1;
+  optional int64 minID = 1;
 
   // MaxID defines the max GENID ID the index supports
   // +optional
-  optional uint64 maxID = 2;
+  optional int64 maxID = 2;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
@@ -182,11 +182,11 @@ message GENIDIndexSpec {
 message GENIDIndexStatus {
   // MinID defines the min GENID ID the index supports
   // +optional
-  optional uint64 minID = 1;
+  optional int64 minID = 1;
 
   // MaxID defines the max GENID ID the index supports
   // +optional
-  optional uint64 maxID = 2;
+  optional int64 maxID = 2;
 
   // ConditionedStatus provides the status of the GENIDIndex using conditions
   // - a ready condition indicates the overall status of the resource

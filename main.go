@@ -29,6 +29,7 @@ import (
 	"github.com/henderiw/logger/log"
 	"github.com/kuidio/kuid/apis/backend"
 	asbev1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
+	extcommbev1alpha1 "github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 	vlanbev1alpha1 "github.com/kuidio/kuid/apis/backend/vlan/v1alpha1"
 	vxlanbev1alpha1 "github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1"
@@ -39,9 +40,6 @@ import (
 	"github.com/kuidio/kuid/pkg/kuidserver/claimserver"
 	"github.com/kuidio/kuid/pkg/kuidserver/entryserver"
 	"github.com/kuidio/kuid/pkg/kuidserver/indexserver"
-	"github.com/kuidio/kuid/pkg/kuidserver/ipclaim"
-	"github.com/kuidio/kuid/pkg/kuidserver/ipentry"
-	"github.com/kuidio/kuid/pkg/kuidserver/ipindex"
 	serverstore "github.com/kuidio/kuid/pkg/kuidserver/store"
 	"github.com/kuidio/kuid/pkg/reconcilers"
 	_ "github.com/kuidio/kuid/pkg/reconcilers/all"
@@ -92,6 +90,7 @@ func main() {
 		vlanbev1alpha1.AddToScheme,
 		vxlanbev1alpha1.AddToScheme,
 		asbev1alpha1.AddToScheme,
+		extcommbev1alpha1.AddToScheme,
 	}) {
 		if err := api(runScheme); err != nil {
 			log.Error("cannot add scheme", "err", err)
@@ -101,35 +100,43 @@ func main() {
 
 	runScheme.AddFieldLabelConversionFunc(
 		ipambev1alpha1.SchemeGroupVersion.WithKind(ipambev1alpha1.IPClaimKind),
-		ipambev1alpha1.ConvertIPClaimFieldSelector,
+		ipambev1alpha1.IPClaimConvertFieldSelector,
 	)
 	runScheme.AddFieldLabelConversionFunc(
 		ipambev1alpha1.SchemeGroupVersion.WithKind(ipambev1alpha1.IPEntryKind),
-		ipambev1alpha1.ConvertIPEntryFieldSelector,
+		ipambev1alpha1.IPEntryConvertFieldSelector,
 	)
 	runScheme.AddFieldLabelConversionFunc(
 		vlanbev1alpha1.SchemeGroupVersion.WithKind(vlanbev1alpha1.VLANClaimKind),
-		vlanbev1alpha1.ConvertVLANClaimFieldSelector,
+		vlanbev1alpha1.VLANClaimConvertFieldSelector,
 	)
 	runScheme.AddFieldLabelConversionFunc(
 		vlanbev1alpha1.SchemeGroupVersion.WithKind(vlanbev1alpha1.VLANEntryKind),
-		vlanbev1alpha1.ConvertVLANEntryFieldSelector,
+		vlanbev1alpha1.VLANEntryConvertFieldSelector,
 	)
 	runScheme.AddFieldLabelConversionFunc(
 		vxlanbev1alpha1.SchemeGroupVersion.WithKind(vxlanbev1alpha1.VXLANClaimKind),
-		vxlanbev1alpha1.ConvertVXLANClaimFieldSelector,
+		vxlanbev1alpha1.VXLANClaimConvertFieldSelector,
 	)
 	runScheme.AddFieldLabelConversionFunc(
 		vxlanbev1alpha1.SchemeGroupVersion.WithKind(vxlanbev1alpha1.VXLANEntryKind),
-		vxlanbev1alpha1.ConvertVXLANEntryFieldSelector,
+		vxlanbev1alpha1.VXLANEntryConvertFieldSelector,
 	)
 	runScheme.AddFieldLabelConversionFunc(
 		asbev1alpha1.SchemeGroupVersion.WithKind(asbev1alpha1.ASClaimKind),
-		asbev1alpha1.ConvertASClaimFieldSelector,
+		asbev1alpha1.ASClaimConvertFieldSelector,
 	)
 	runScheme.AddFieldLabelConversionFunc(
 		asbev1alpha1.SchemeGroupVersion.WithKind(asbev1alpha1.ASEntryKind),
-		asbev1alpha1.ConvertASEntryFieldSelector,
+		asbev1alpha1.ASEntryConvertFieldSelector,
+	)
+	runScheme.AddFieldLabelConversionFunc(
+		extcommbev1alpha1.SchemeGroupVersion.WithKind(extcommbev1alpha1.EXTCOMMClaimKind),
+		extcommbev1alpha1.EXTCOMMClaimConvertFieldSelector,
+	)
+	runScheme.AddFieldLabelConversionFunc(
+		extcommbev1alpha1.SchemeGroupVersion.WithKind(extcommbev1alpha1.EXTCOMMEntryKind),
+		extcommbev1alpha1.EXTCOMMEntryConvertFieldSelector,
 	)
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), manager.Options{
@@ -168,12 +175,22 @@ func main() {
 		asbev1alpha1.SchemeGroupVersion.WithKind(asbev1alpha1.ASIndexKind),
 		asbev1alpha1.SchemeGroupVersion.WithKind(asbev1alpha1.ASClaimKind),
 	)
+	extcommbe := bebackend.New(
+		mgr.GetClient(),
+		func() backend.IndexObject { return &extcommbev1alpha1.EXTCOMMIndex{} },
+		func() backend.ObjectList { return &extcommbev1alpha1.EXTCOMMEntryList{} },
+		func() backend.ObjectList { return &extcommbev1alpha1.EXTCOMMClaimList{} },
+		extcommbev1alpha1.GetEXTCOMMEntry,
+		extcommbev1alpha1.SchemeGroupVersion.WithKind(extcommbev1alpha1.EXTCOMMIndexKind),
+		extcommbev1alpha1.SchemeGroupVersion.WithKind(extcommbev1alpha1.EXTCOMMClaimKind),
+	)
 
 	ctrlCfg := &ctrlconfig.ControllerConfig{
-		IPAMBackend:  ipbe,
-		VLANBackend:  vlanbe,
-		VXLANBackend: vxlanbe,
-		ASBackend:    asbe,
+		IPAMBackend:    ipbe,
+		VLANBackend:    vlanbe,
+		VXLANBackend:   vxlanbe,
+		ASBackend:      asbe,
+		EXTCOMMBackend: extcommbe,
 	}
 	for name, reconciler := range reconcilers.Reconcilers {
 		log.Info("reconciler", "name", name, "enabled", IsReconcilerEnabled(name))
@@ -197,21 +214,69 @@ func main() {
 			WithServerName("kuid-server").
 			WithEtcdPath(defaultEtcdPathPrefix).
 			WithOpenAPIDefinitions("Kuid", "v1alpha1", kuidopenapi.GetOpenAPIDefinitions).
-			WithResourceAndHandler(ctx, &ipambev1alpha1.IPClaim{}, ipclaim.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
-				Prefix: configDir,
-				Type:   serverstore.StorageType_KV,
-				DB:     db,
-			}, ipbe)).
-			WithResourceAndHandler(ctx, &ipambev1alpha1.IPEntry{}, ipentry.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
-				Prefix: configDir,
-				Type:   serverstore.StorageType_KV,
-				DB:     db,
-			}, ipbe)).
-			WithResourceAndHandler(ctx, &ipambev1alpha1.IPIndex{}, ipindex.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
-				Prefix: configDir,
-				Type:   serverstore.StorageType_KV,
-				DB:     db,
-			}, ipbe)).
+			/*
+				WithResourceAndHandler(ctx, &ipambev1alpha1.IPClaim{}, ipclaim.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				}, ipbe)).
+				WithResourceAndHandler(ctx, &ipambev1alpha1.IPEntry{}, ipentry.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				}, ipbe)).
+				WithResourceAndHandler(ctx, &ipambev1alpha1.IPIndex{}, ipindex.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				}, ipbe)).
+			*/
+
+			WithResourceAndHandler(ctx, &ipambev1alpha1.IPClaim{}, claimserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&claimserver.ServerObjContext{
+					TracerString:   "ipclaim-server",
+					Obj:            &ipambev1alpha1.IPClaim{},
+					ConversionFunc: ipambev1alpha1.IPClaimConvertFieldSelector,
+					TableConverter: ipambev1alpha1.IPClaimTableConvertor,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				ipbe)).
+			WithResourceAndHandler(ctx, &ipambev1alpha1.IPEntry{}, entryserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&entryserver.ServerObjContext{
+					TracerString:   "ipentry-server",
+					Obj:            &ipambev1alpha1.IPEntry{},
+					ConversionFunc: ipambev1alpha1.IPEntryConvertFieldSelector,
+					TableConverter: ipambev1alpha1.IPEntryTableConvertor,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				ipbe)).
+			WithResourceAndHandler(ctx, &ipambev1alpha1.IPIndex{}, indexserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&indexserver.ServerObjContext{
+					TracerString:   "ipindex-server",
+					Obj:            &ipambev1alpha1.IPIndex{},
+					ConversionFunc: ipambev1alpha1.IPIndexConvertFieldSelector,
+					TableConverter: ipambev1alpha1.IPIndexTableConvertor,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				ipbe)).
 			WithResourceAndHandler(ctx, &vlanbev1alpha1.VLANClaim{}, claimserver.NewProvider(
 				ctx,
 				mgr.GetClient(),
@@ -219,7 +284,7 @@ func main() {
 					TracerString: "vlanclaim-server",
 					Obj:          &vlanbev1alpha1.VLANClaim{},
 					//NewIndexFn:   func() backend.IndexObject { return &vlanbev1alpha1.VLANIndex{} },
-					ConversionFunc: vlanbev1alpha1.ConvertVLANClaimFieldSelector,
+					ConversionFunc: vlanbev1alpha1.VLANClaimConvertFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
@@ -234,7 +299,7 @@ func main() {
 					TracerString: "vlanentry-server",
 					Obj:          &vlanbev1alpha1.VLANEntry{},
 					//NewIndexFn:   func() backend.IndexObject { return &vlanbev1alpha1.VLANIndex{} },
-					ConversionFunc: vlanbev1alpha1.ConvertVLANEntryFieldSelector,
+					ConversionFunc: vlanbev1alpha1.VLANEntryConvertFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
@@ -249,7 +314,7 @@ func main() {
 					TracerString: "vlanindex-server",
 					Obj:          &vlanbev1alpha1.VLANIndex{},
 					//NewIndexFn:   func() backend.IndexObject { return &vlanbev1alpha1.VLANIndex{} },
-					ConversionFunc: vlanbev1alpha1.ConvertVLANIndexFieldSelector,
+					ConversionFunc: vlanbev1alpha1.VLANIndexConvertFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
@@ -264,7 +329,7 @@ func main() {
 					TracerString: "vxlanclaim-server",
 					Obj:          &vxlanbev1alpha1.VXLANClaim{},
 					//NewIndexFn:   func() backend.IndexObject { return &vlanbev1alpha1.VLANIndex{} },
-					ConversionFunc: vxlanbev1alpha1.ConvertVXLANClaimFieldSelector,
+					ConversionFunc: vxlanbev1alpha1.VXLANClaimConvertFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
@@ -278,7 +343,7 @@ func main() {
 				&entryserver.ServerObjContext{
 					TracerString:   "vxlanentry-server",
 					Obj:            &vxlanbev1alpha1.VXLANEntry{},
-					ConversionFunc: vxlanbev1alpha1.ConvertVXLANEntryFieldSelector,
+					ConversionFunc: vxlanbev1alpha1.VXLANEntryConvertFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
@@ -292,7 +357,7 @@ func main() {
 				&indexserver.ServerObjContext{
 					TracerString:   "vxlanindex-server",
 					Obj:            &vxlanbev1alpha1.VXLANIndex{},
-					ConversionFunc: vxlanbev1alpha1.ConvertVXLANIndexFieldSelector,
+					ConversionFunc: vxlanbev1alpha1.VXLANIndexConvertFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
@@ -307,7 +372,7 @@ func main() {
 					TracerString: "asclaim-server",
 					Obj:          &asbev1alpha1.ASClaim{},
 					//NewIndexFn:   func() backend.IndexObject { return &vlanbev1alpha1.VLANIndex{} },
-					ConversionFunc: asbev1alpha1.ConvertASClaimFieldSelector,
+					ConversionFunc: asbev1alpha1.ASClaimConvertFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
@@ -322,7 +387,7 @@ func main() {
 					TracerString: "asentry-server",
 					Obj:          &asbev1alpha1.ASEntry{},
 					//NewIndexFn:   func() backend.IndexObject { return &vlanbev1alpha1.VLANIndex{} },
-					ConversionFunc: asbev1alpha1.ConvertASEntryFieldSelector,
+					ConversionFunc: asbev1alpha1.ASEntryConvertFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
@@ -336,7 +401,7 @@ func main() {
 				&indexserver.ServerObjContext{
 					TracerString:   "asindex-server",
 					Obj:            &asbev1alpha1.ASIndex{},
-					ConversionFunc: asbev1alpha1.ConvertASIndexFieldSelector,
+					ConversionFunc: asbev1alpha1.ASIndexConvertFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
@@ -344,53 +409,50 @@ func main() {
 					DB:     db,
 				},
 				asbe)).
-			/*
-				WithResourceAndHandler(ctx, &vlanbev1alpha1.VLANClaim{}, vlanclaim.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
+			WithResourceAndHandler(ctx, &extcommbev1alpha1.EXTCOMMClaim{}, claimserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&claimserver.ServerObjContext{
+					TracerString:   "extcommclaim-server",
+					Obj:            &extcommbev1alpha1.EXTCOMMClaim{},
+					NewIndexFn:     func() backend.IndexObject { return &extcommbev1alpha1.EXTCOMMIndex{} },
+					ConversionFunc: extcommbev1alpha1.EXTCOMMClaimConvertFieldSelector,
+				},
+				&serverstore.Config{
 					Prefix: configDir,
 					Type:   serverstore.StorageType_KV,
 					DB:     db,
-				}, vlanbe)).
-				WithResourceAndHandler(ctx, &vlanbev1alpha1.VLANEntry{}, vlanentry.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
+				},
+				extcommbe)).
+			WithResourceAndHandler(ctx, &extcommbev1alpha1.EXTCOMMEntry{}, entryserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&entryserver.ServerObjContext{
+					TracerString:   "extcommentry-server",
+					Obj:            &extcommbev1alpha1.EXTCOMMEntry{},
+					ConversionFunc: extcommbev1alpha1.EXTCOMMEntryConvertFieldSelector,
+				},
+				&serverstore.Config{
 					Prefix: configDir,
 					Type:   serverstore.StorageType_KV,
 					DB:     db,
-				}, vlanbe)).
-				WithResourceAndHandler(ctx, &vlanbev1alpha1.VLANIndex{}, vlanindex.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
+				},
+				extcommbe)).
+			WithResourceAndHandler(ctx, &extcommbev1alpha1.EXTCOMMIndex{}, indexserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&indexserver.ServerObjContext{
+					TracerString:   "extcommindex-server",
+					Obj:            &extcommbev1alpha1.EXTCOMMIndex{},
+					ConversionFunc: extcommbev1alpha1.EXTCOMMIndexConvertFieldSelector,
+					TableConverter: extcommbev1alpha1.EXTCOMMIndexTableConvertor,
+				},
+				&serverstore.Config{
 					Prefix: configDir,
 					Type:   serverstore.StorageType_KV,
 					DB:     db,
-				}, vlanbe)).
-				WithResourceAndHandler(ctx, &vxlanbev1alpha1.VXLANClaim{}, vxlanclaim.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
-					Prefix: configDir,
-					Type:   serverstore.StorageType_KV,
-					DB:     db,
-				}, vxlanbe)).
-				WithResourceAndHandler(ctx, &vxlanbev1alpha1.VXLANEntry{}, vxlanentry.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
-					Prefix: configDir,
-					Type:   serverstore.StorageType_KV,
-					DB:     db,
-				}, vxlanbe)).
-				WithResourceAndHandler(ctx, &vxlanbev1alpha1.VXLANIndex{}, vxlanindex.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
-					Prefix: configDir,
-					Type:   serverstore.StorageType_KV,
-					DB:     db,
-				}, vxlanbe)).
-				WithResourceAndHandler(ctx, &asbev1alpha1.ASClaim{}, asclaim.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
-					Prefix: configDir,
-					Type:   serverstore.StorageType_KV,
-					DB:     db,
-				}, asbe)).
-				WithResourceAndHandler(ctx, &asbev1alpha1.ASEntry{}, asentry.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
-					Prefix: configDir,
-					Type:   serverstore.StorageType_KV,
-					DB:     db,
-				}, asbe)).
-				WithResourceAndHandler(ctx, &asbev1alpha1.ASIndex{}, asindex.NewProvider(ctx, mgr.GetClient(), &serverstore.Config{
-					Prefix: configDir,
-					Type:   serverstore.StorageType_KV,
-					DB:     db,
-				}, asbe)).
-			*/
+				},
+				extcommbe)).
 			WithoutEtcd().
 			Execute(ctx); err != nil {
 			log.Info("cannot start config-server")

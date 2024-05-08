@@ -78,7 +78,7 @@ func (r *watcher) listAndWatch(ctx context.Context, l rest.RESTListStrategy, opt
 		log.Debug("sending error to watch stream", "error", err)
 		ev := watch.Event{
 			Type:   watch.Error,
-			Object: &ipambe1v1alpha1.IPEntry{},
+			Object: &ipambe1v1alpha1.IPClaim{},
 		}
 		r.resultChan <- ev
 	}

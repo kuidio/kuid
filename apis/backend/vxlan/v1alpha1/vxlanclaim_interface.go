@@ -124,8 +124,8 @@ func (r *VXLANClaim) SetConditions(c ...conditionv1alpha1.Condition) {
 	r.Status.SetConditions(c...)
 }
 
-// ConvertVXLANClaimFieldSelector is the schema conversion function for normalizing the FieldSelector for VXLANClaim
-func ConvertVXLANClaimFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+// VXLANClaimConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for VXLANClaim
+func VXLANClaimConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil

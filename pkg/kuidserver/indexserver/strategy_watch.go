@@ -32,6 +32,7 @@ func (r *strategy) Watch(ctx context.Context, options *metainternalversion.ListO
 		cancel:         cancel,
 		resultChan:     make(chan watch.Event),
 		watcherManager: r.watcherManager,
+		serverObjContext: r.serverObjContext,
 	}
 
 	go w.listAndWatch(ctx, r, options)

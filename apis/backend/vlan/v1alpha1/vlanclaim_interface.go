@@ -124,8 +124,8 @@ func (r *VLANClaim) SetConditions(c ...conditionv1alpha1.Condition) {
 	r.Status.SetConditions(c...)
 }
 
-// ConvertVLANClaimFieldSelector is the schema conversion function for normalizing the FieldSelector for VLANClaim
-func ConvertVLANClaimFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+// VLANClaimConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for VLANClaim
+func VLANClaimConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil

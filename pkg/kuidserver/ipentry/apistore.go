@@ -47,7 +47,7 @@ func NewREST(ctx context.Context, scheme *runtime.Scheme, optsGetter generic.RES
 			Version: ipambe1v1alpha1.Version,
 			Kind:    ipambe1v1alpha1.IPEntryKind,
 		},
-		ipambe1v1alpha1.ConvertIPEntryFieldSelector,
+		ipambe1v1alpha1.IPEntryConvertFieldSelector,
 	)
 
 	var configStore storebackend.Storer[runtime.Object]

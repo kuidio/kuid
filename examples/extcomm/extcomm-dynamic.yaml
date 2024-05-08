@@ -1,0 +1,6 @@
+apiVersion: extcomm.be.kuid.dev/v1alpha1
+kind: EXTCOMMClaim
+metadata:
+  name: index1.claim1
+spec:
+  index: index1

@@ -45,8 +45,8 @@ func (r *EXTCOMMEntryList) GetListMeta() *metav1.ListMeta {
 	return &r.ListMeta
 }
 
-func (r *EXTCOMMEntryList) GetItems() []*EXTCOMMEntry {
-	entries := make([]*EXTCOMMEntry, 0, len(r.Items))
+func (r *EXTCOMMEntryList) GetItems() []backend.Object {
+	entries := make([]backend.Object, 0, len(r.Items))
 	for _, entry := range r.Items {
 		entries = append(entries, &entry)
 	}
@@ -103,8 +103,8 @@ func (r *EXTCOMMEntry) SetConditions(c ...conditionv1alpha1.Condition) {
 	r.Status.SetConditions(c...)
 }
 
-// ConvertEXTCOMMEntryFieldSelector is the schema conversion function for normalizing the FieldSelector for EXTCOMMEntry
-func ConvertEXTCOMMEntryFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+// EXTCOMMEntryConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for EXTCOMMEntry
+func EXTCOMMEntryConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil
@@ -170,7 +170,7 @@ func (r *EXTCOMMEntry) GetOwnerNSN() types.NamespacedName {
 	}
 }
 
-func (r *EXTCOMMEntry) GetSpec() EXTCOMMEntrySpec {
+func (r *EXTCOMMEntry) GetSpec() any {
 	return r.Spec
 }
 
@@ -184,7 +184,7 @@ func (r *EXTCOMMEntry) SetSpec(s any) {
 	}
 }
 
-func GetEXTCOMMEntry(k store.Key, vrange, id string, labels map[string]string) *EXTCOMMEntry {
+func GetEXTCOMMEntry(k store.Key, vrange, id string, labels map[string]string) backend.EntryObject {
 	//log := log.FromContext(ctx)
 
 	index := k.Name

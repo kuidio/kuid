@@ -70,7 +70,7 @@ func (r testCtx) getStaticClaim(index, testType string) (*genidbev1alpha1.GENIDC
 		metav1.ObjectMeta{Namespace: namespace, Name: r.name},
 		&genidbev1alpha1.GENIDClaimSpec{
 			Index: index,
-			ID:    ptr.To[uint64](r.id),
+			ID:    ptr.To[int64](int64(r.id)),
 			ClaimLabels: commonv1alpha1.ClaimLabels{
 				UserDefinedLabels: commonv1alpha1.UserDefinedLabels{Labels: r.labels},
 			},

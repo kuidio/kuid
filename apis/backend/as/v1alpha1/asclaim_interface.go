@@ -124,8 +124,8 @@ func (r *ASClaim) SetConditions(c ...conditionv1alpha1.Condition) {
 	r.Status.SetConditions(c...)
 }
 
-// ConvertASClaimFieldSelector is the schema conversion function for normalizing the FieldSelector for ASClaim
-func ConvertASClaimFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+// ASClaimConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for ASClaim
+func ASClaimConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil

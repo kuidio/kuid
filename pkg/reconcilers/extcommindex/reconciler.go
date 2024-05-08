@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package asindex
+package extcommindex
 
 import (
 	"context"
@@ -22,7 +22,7 @@ import (
 	"reflect"
 
 	"github.com/henderiw/logger/log"
-	asbev1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
+	extcommbev1alpha1 "github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
 	"github.com/kuidio/kuid/pkg/backend/backend"
 	"github.com/kuidio/kuid/pkg/reconcilers"
@@ -39,13 +39,13 @@ import (
 )
 
 func init() {
-	reconcilers.Register("asindex", &reconciler{})
+	reconcilers.Register("extcommindex", &reconciler{})
 }
 
 const (
-	crName         = "asindex"
-	controllerName = "ASIndexController"
-	finalizer      = "asindex.as.res.kuid.dev/finalizer"
+	crName         = "extcommindex"
+	controllerName = "EXTCOMMIndexController"
+	finalizer      = "extcommindex.extcomm.res.kuid.dev/finalizer"
 	// errors
 	errGetCr        = "cannot get cr"
 	errUpdateStatus = "cannot update status"
@@ -62,15 +62,15 @@ func (r *reconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manager, c i
 	r.Client = mgr.GetClient()
 	r.finalizer = resource.NewAPIFinalizer(mgr.GetClient(), finalizer)
 	r.recorder = mgr.GetEventRecorderFor(controllerName)
-	r.be = cfg.ASBackend
+	r.be = cfg.EXTCOMMBackend
 
 	return nil, ctrl.NewControllerManagedBy(mgr).
 		Named(controllerName).
-		For(&asbev1alpha1.ASIndex{}).
-		Watches(&asbev1alpha1.ASIndex{},
+		For(&extcommbev1alpha1.EXTCOMMIndex{}).
+		Watches(&extcommbev1alpha1.EXTCOMMIndex{},
 			&eventhandler.IPEntryEventHandler{
 				Client:  mgr.GetClient(),
-				ObjList: &asbev1alpha1.ASIndexList{},
+				ObjList: &extcommbev1alpha1.EXTCOMMIndexList{},
 			}).
 		Complete(r)
 }
@@ -87,7 +87,7 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 	log := log.FromContext(ctx)
 	log.Info("reconcile")
 
-	cr := &asbev1alpha1.ASIndex{}
+	cr := &extcommbev1alpha1.EXTCOMMIndex{}
 	if err := r.Get(ctx, req.NamespacedName, cr); err != nil {
 		// if the resource no longer exists the reconcile loop is done
 		if resource.IgnoreNotFound(err) != nil {
@@ -138,7 +138,7 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 	return ctrl.Result{}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
 }
 
-func (r *reconciler) handleError(ctx context.Context, cr *asbev1alpha1.ASIndex, msg string, err error) {
+func (r *reconciler) handleError(ctx context.Context, cr *extcommbev1alpha1.EXTCOMMIndex, msg string, err error) {
 	log := log.FromContext(ctx)
 	if err == nil {
 		cr.SetConditions(conditionv1alpha1.Failed(msg))
@@ -151,7 +151,7 @@ func (r *reconciler) handleError(ctx context.Context, cr *asbev1alpha1.ASIndex, 
 	}
 }
 
-func (r *reconciler) deleteIndex(ctx context.Context, cr *asbev1alpha1.ASIndex) error {
+func (r *reconciler) deleteIndex(ctx context.Context, cr *extcommbev1alpha1.EXTCOMMIndex) error {
 	if err := r.be.DeleteIndex(ctx, cr); err != nil {
 		r.handleError(ctx, cr, "cannot delete index", err)
 		return err
@@ -159,7 +159,7 @@ func (r *reconciler) deleteIndex(ctx context.Context, cr *asbev1alpha1.ASIndex) 
 	return nil
 }
 
-func (r *reconciler) applyIndex(ctx context.Context, cr *asbev1alpha1.ASIndex) error {
+func (r *reconciler) applyIndex(ctx context.Context, cr *extcommbev1alpha1.EXTCOMMIndex) error {
 	if err := r.be.CreateIndex(ctx, cr); err != nil {
 		r.handleError(ctx, cr, "cannot create index", err)
 		return err
@@ -167,11 +167,11 @@ func (r *reconciler) applyIndex(ctx context.Context, cr *asbev1alpha1.ASIndex) e
 	return nil
 }
 
-func (r *reconciler) hasMinMaxRangeChanged(cr *asbev1alpha1.ASIndex) bool {
+func (r *reconciler) hasMinMaxRangeChanged(cr *extcommbev1alpha1.EXTCOMMIndex) bool {
 	return changed(cr.Status.MinID, cr.Spec.MinID) || changed(cr.Status.MaxID, cr.Spec.MaxID)
 }
 
-func changed(status, spec *uint32) bool {
+func changed(status, spec *int64) bool {
 	if status != nil {
 		if spec == nil {
 			return true
@@ -184,15 +184,15 @@ func changed(status, spec *uint32) bool {
 	return false
 }
 
-func (r *reconciler) applyMinMaxRange(ctx context.Context, cr *asbev1alpha1.ASIndex) error {
-	if cr.Spec.MinID != nil && *cr.Spec.MinID != asbev1alpha1.ASID_Min {
+func (r *reconciler) applyMinMaxRange(ctx context.Context, cr *extcommbev1alpha1.EXTCOMMIndex) error {
+	if cr.Spec.MinID != nil && *cr.Spec.MinID != extcommbev1alpha1.EXTCOMMID_Min {
 		claim := cr.GetMinClaim()
 		if err := r.be.Claim(ctx, claim); err != nil {
 			r.handleError(ctx, cr, "cannot claim min reserved range", err)
 			return err
 		}
 	}
-	if cr.Spec.MaxID != nil && *cr.Spec.MaxID != asbev1alpha1.ASID_Max {
+	if cr.Spec.MaxID != nil && *cr.Spec.MaxID != extcommbev1alpha1.EXTCOMMID_MaxValue[extcommbev1alpha1.GetExtendedCommunityType(cr.Spec.Type)] {
 		claim := cr.GetMaxClaim()
 		if err := r.be.Claim(ctx, claim); err != nil {
 			r.handleError(ctx, cr, "cannot claim max reserved range", err)

@@ -72,6 +72,10 @@ spec:
           value: "true"
         - name: ENABLE_IPCLAIM
           value: "true"
+        - name: ENABLE_EXTCOMMINDEX
+          value: "true"
+        - name: ENABLE_EXTCOMMCLAIM
+          value: "true"
         volumeMounts:
         - name: apiserver-certs
           mountPath: /apiserver.local.config/certificates

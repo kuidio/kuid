@@ -103,8 +103,8 @@ func (r *VXLANEntry) SetConditions(c ...conditionv1alpha1.Condition) {
 	r.Status.SetConditions(c...)
 }
 
-// ConvertVXLANEntryFieldSelector is the schema conversion function for normalizing the FieldSelector for VXLANEntry
-func ConvertVXLANEntryFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+// VXLANEntryConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for VXLANEntry
+func VXLANEntryConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil

@@ -24,7 +24,7 @@ import (
 
 	"github.com/henderiw/apiserver-store/pkg/rest"
 	"github.com/henderiw/logger/log"
-	asbe1v1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
+	ipambe1v1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 	watchermanager "github.com/kuidio/kuid/pkg/kuidserver/watcher-manager"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metainternalversion "k8s.io/apimachinery/pkg/apis/meta/internalversion"
@@ -78,7 +78,7 @@ func (r *watcher) listAndWatch(ctx context.Context, l rest.RESTListStrategy, opt
 		log.Debug("sending error to watch stream", "error", err)
 		ev := watch.Event{
 			Type:   watch.Error,
-			Object: &asbe1v1alpha1.ASIndex{},
+			Object: &ipambe1v1alpha1.IPIndex{},
 		}
 		r.resultChan <- ev
 	}
@@ -128,7 +128,7 @@ func (r *watcher) innerListAndWatch(ctx context.Context, l rest.RESTListStrategy
 			r.setDone()
 			return err
 		}
-		cfgList, ok := obj.(*asbe1v1alpha1.ASIndexList)
+		cfgList, ok := obj.(*ipambe1v1alpha1.IPIndexList)
 		if !ok {
 			r.setDone()
 			return fmt.Errorf("expecting type, got: %s", reflect.TypeOf(obj).Name())
