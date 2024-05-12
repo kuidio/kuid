@@ -95,17 +95,16 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ClusterList":                       schema_apis_backend_infra_v1alpha1_ClusterList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ClusterSpec":                       schema_apis_backend_infra_v1alpha1_ClusterSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ClusterStatus":                     schema_apis_backend_infra_v1alpha1_ClusterStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Domain":                            schema_apis_backend_infra_v1alpha1_Domain(ref),
-		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.DomainList":                        schema_apis_backend_infra_v1alpha1_DomainList(ref),
-		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.DomainSpec":                        schema_apis_backend_infra_v1alpha1_DomainSpec(ref),
-		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.DomainStatus":                      schema_apis_backend_infra_v1alpha1_DomainStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Endpoint":                          schema_apis_backend_infra_v1alpha1_Endpoint(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointID":                        schema_apis_backend_infra_v1alpha1_EndpointID(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointList":                      schema_apis_backend_infra_v1alpha1_EndpointList(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSet":                       schema_apis_backend_infra_v1alpha1_EndpointSet(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSetList":                   schema_apis_backend_infra_v1alpha1_EndpointSetList(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSetSpec":                   schema_apis_backend_infra_v1alpha1_EndpointSetSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSetStatus":                 schema_apis_backend_infra_v1alpha1_EndpointSetStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSpec":                      schema_apis_backend_infra_v1alpha1_EndpointSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointStatus":                    schema_apis_backend_infra_v1alpha1_EndpointStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Link":                              schema_apis_backend_infra_v1alpha1_Link(ref),
-		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.LinkEndpointID":                    schema_apis_backend_infra_v1alpha1_LinkEndpointID(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.LinkList":                          schema_apis_backend_infra_v1alpha1_LinkList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.LinkSet":                           schema_apis_backend_infra_v1alpha1_LinkSet(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.LinkSetList":                       schema_apis_backend_infra_v1alpha1_LinkSetList(ref),
@@ -123,6 +122,16 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ModuleSpec":                        schema_apis_backend_infra_v1alpha1_ModuleSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ModuleStatus":                      schema_apis_backend_infra_v1alpha1_ModuleStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Node":                              schema_apis_backend_infra_v1alpha1_Node(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroup":                         schema_apis_backend_infra_v1alpha1_NodeGroup(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupID":                       schema_apis_backend_infra_v1alpha1_NodeGroupID(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupList":                     schema_apis_backend_infra_v1alpha1_NodeGroupList(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupSpec":                     schema_apis_backend_infra_v1alpha1_NodeGroupSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupStatus":                   schema_apis_backend_infra_v1alpha1_NodeGroupStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeID":                            schema_apis_backend_infra_v1alpha1_NodeID(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeItem":                          schema_apis_backend_infra_v1alpha1_NodeItem(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeItemList":                      schema_apis_backend_infra_v1alpha1_NodeItemList(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeItemSpec":                      schema_apis_backend_infra_v1alpha1_NodeItemSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeItemStatus":                    schema_apis_backend_infra_v1alpha1_NodeItemStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeList":                          schema_apis_backend_infra_v1alpha1_NodeList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeSet":                           schema_apis_backend_infra_v1alpha1_NodeSet(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeSetList":                       schema_apis_backend_infra_v1alpha1_NodeSetList(ref),
@@ -130,12 +139,16 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeSetStatus":                     schema_apis_backend_infra_v1alpha1_NodeSetStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeSpec":                          schema_apis_backend_infra_v1alpha1_NodeSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeStatus":                        schema_apis_backend_infra_v1alpha1_NodeStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ObjectReference":                   schema_apis_backend_infra_v1alpha1_ObjectReference(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Rack":                              schema_apis_backend_infra_v1alpha1_Rack(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RackList":                          schema_apis_backend_infra_v1alpha1_RackList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RackSpec":                          schema_apis_backend_infra_v1alpha1_RackSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RackStatus":                        schema_apis_backend_infra_v1alpha1_RackStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Region":                            schema_apis_backend_infra_v1alpha1_Region(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RegionList":                        schema_apis_backend_infra_v1alpha1_RegionList(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RegionSpec":                        schema_apis_backend_infra_v1alpha1_RegionSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RegionStatus":                      schema_apis_backend_infra_v1alpha1_RegionStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Site":                              schema_apis_backend_infra_v1alpha1_Site(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.SiteID":                            schema_apis_backend_infra_v1alpha1_SiteID(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.SiteList":                          schema_apis_backend_infra_v1alpha1_SiteList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.SiteSpec":                          schema_apis_backend_infra_v1alpha1_SiteSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.SiteStatus":                        schema_apis_backend_infra_v1alpha1_SiteStatus(ref),
@@ -2903,7 +2916,7 @@ func schema_apis_backend_infra_v1alpha1_Cluster(ref common.ReferenceCallback) co
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "Cluster is the Schema for the Cluster API",
+				Description: "Cluster is the Schema for the Cluster API A Cluster represents a kubernetes cluster and is typically used as a nodeGroup identifier.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -3078,165 +3091,11 @@ func schema_apis_backend_infra_v1alpha1_ClusterStatus(ref common.ReferenceCallba
 	}
 }
 
-func schema_apis_backend_infra_v1alpha1_Domain(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "Domain is the Schema for the Domain API",
-				Type:        []string{"object"},
-				Properties: map[string]spec.Schema{
-					"kind": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"apiVersion": {
-						SchemaProps: spec.SchemaProps{
-							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"metadata": {
-						SchemaProps: spec.SchemaProps{
-							Default: map[string]interface{}{},
-							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
-						},
-					},
-					"spec": {
-						SchemaProps: spec.SchemaProps{
-							Default: map[string]interface{}{},
-							Ref:     ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.DomainSpec"),
-						},
-					},
-					"status": {
-						SchemaProps: spec.SchemaProps{
-							Default: map[string]interface{}{},
-							Ref:     ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.DomainStatus"),
-						},
-					},
-				},
-			},
-		},
-		Dependencies: []string{
-			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.DomainSpec", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.DomainStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
-	}
-}
-
-func schema_apis_backend_infra_v1alpha1_DomainList(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "DomainList contains a list of Domains",
-				Type:        []string{"object"},
-				Properties: map[string]spec.Schema{
-					"kind": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"apiVersion": {
-						SchemaProps: spec.SchemaProps{
-							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"metadata": {
-						SchemaProps: spec.SchemaProps{
-							Default: map[string]interface{}{},
-							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"),
-						},
-					},
-					"items": {
-						SchemaProps: spec.SchemaProps{
-							Type: []string{"array"},
-							Items: &spec.SchemaOrArray{
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Default: map[string]interface{}{},
-										Ref:     ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Domain"),
-									},
-								},
-							},
-						},
-					},
-				},
-				Required: []string{"items"},
-			},
-		},
-		Dependencies: []string{
-			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Domain", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
-	}
-}
-
-func schema_apis_backend_infra_v1alpha1_DomainSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "DomainSpec defines the desired state of Domain",
-				Type:        []string{"object"},
-				Properties: map[string]spec.Schema{
-					"labels": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Labels as user defined labels",
-							Type:        []string{"object"},
-							AdditionalProperties: &spec.SchemaOrBool{
-								Allows: true,
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Default: "",
-										Type:    []string{"string"},
-										Format:  "",
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-	}
-}
-
-func schema_apis_backend_infra_v1alpha1_DomainStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "DomainStatus defines the observed state of Domain",
-				Type:        []string{"object"},
-				Properties: map[string]spec.Schema{
-					"conditions": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Conditions of the resource.",
-							Type:        []string{"array"},
-							Items: &spec.SchemaOrArray{
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Default: map[string]interface{}{},
-										Ref:     ref("github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"),
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-		Dependencies: []string{
-			"github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"},
-	}
-}
-
 func schema_apis_backend_infra_v1alpha1_Endpoint(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "Endpoint is the Schema for the Endpoint API",
+				Description: "Endpoint is the Schema for the Endpoint API An Endpoint represents a communication interface or connection point within a Node, facilitating network communication and data transfer between different components or systems within the environment. `Endpoints` serve as gateways for transmitting and receiving data, enabling seamless communication between Nodes.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -3285,24 +3144,47 @@ func schema_apis_backend_infra_v1alpha1_EndpointID(ref common.ReferenceCallback)
 			SchemaProps: spec.SchemaProps{
 				Type: []string{"object"},
 				Properties: map[string]spec.Schema{
-					"node": {
+					"region": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Node defines the node to which this interface belongs",
+							Description: "Region defines the region this sites belongs to",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site in which the node is deployed",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
 						},
 					},
-					"interface": {
+					"nodeGroup": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Interface defines the name of the interface",
+							Description: "NodeGroup defines the node group the resource belongs to.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"node": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Node defines the node the resource belongs to.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"endpoint": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Endpoint defines the name of the endpoint",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
 						},
 					},
 				},
-				Required: []string{"node", "interface"},
+				Required: []string{"site", "nodeGroup", "node", "endpoint"},
 			},
 		},
 	}
@@ -3357,6 +3239,197 @@ func schema_apis_backend_infra_v1alpha1_EndpointList(ref common.ReferenceCallbac
 	}
 }
 
+func schema_apis_backend_infra_v1alpha1_EndpointSet(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "EndpointSet is the Schema for the EndpointSet API A EndpointSet represents a set of endpoints that belong together within a nodeGroup. E.g. it can be used to model a logical Link Aggregation group within a node or it can be used to represent a logical multi-homing construction between a set of nodes belonging to a single nodeGroup.",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
+						},
+					},
+					"spec": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSetSpec"),
+						},
+					},
+					"status": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSetStatus"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSetSpec", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSetStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_EndpointSetList(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "EndpointSetList contains a list of EndpointSets",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"),
+						},
+					},
+					"items": {
+						SchemaProps: spec.SchemaProps{
+							Type: []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSet"),
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"items"},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSet", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_EndpointSetSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "EndpointSetSpec defines the desired state of EndpointSet An EndpointSet can be a LAG (single Homed) or ESI (multiHomed). The EndpointSet can only belong to a single NodeGroup",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"endpoints": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Endpoints defines the Endpoints that are part of the EndpointSet Min 1, Max 16",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Ref: ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointID"),
+									},
+								},
+							},
+						},
+					},
+					"lacp": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Lacp defines if the lag enabled LACP",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"labels": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Labels as user defined labels",
+							Type:        []string{"object"},
+							AdditionalProperties: &spec.SchemaOrBool{
+								Allows: true,
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"endpoints"},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointID"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_EndpointSetStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "EndpointSetStatus defines the observed state of EndpointSet",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"conditions": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Conditions of the resource.",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"),
+									},
+								},
+							},
+						},
+					},
+					"esi": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ESI defines the ethernet segment identifier of the logical link if set this is a multi-homed logical endpoint the ESI is a global unique identifier within the administrative domain",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"lagID": {
+						SchemaProps: spec.SchemaProps{
+							Description: "LagId defines the lag id for the logical single-homed or multi-homed endpoint",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"},
+	}
+}
+
 func schema_apis_backend_infra_v1alpha1_EndpointSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -3364,9 +3437,24 @@ func schema_apis_backend_infra_v1alpha1_EndpointSpec(ref common.ReferenceCallbac
 				Description: "EndpointSpec defines the desired state of Endpoint",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
-					"domain": {
+					"region": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Domain defines the administrative domain the resource belongs to.",
+							Description: "Region defines the region this sites belongs to",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site in which the node is deployed",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"nodeGroup": {
+						SchemaProps: spec.SchemaProps{
+							Description: "NodeGroup defines the node group the resource belongs to.",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
@@ -3374,15 +3462,15 @@ func schema_apis_backend_infra_v1alpha1_EndpointSpec(ref common.ReferenceCallbac
 					},
 					"node": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Node defines the node to which this interface belongs",
+							Description: "Node defines the node the resource belongs to.",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
 						},
 					},
-					"interface": {
+					"endpoint": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Interface defines the name of the interface",
+							Description: "Endpoint defines the name of the endpoint",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
@@ -3411,8 +3499,15 @@ func schema_apis_backend_infra_v1alpha1_EndpointSpec(ref common.ReferenceCallbac
 							},
 						},
 					},
+					"speed": {
+						SchemaProps: spec.SchemaProps{
+							Description: "(Gbps)",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
 				},
-				Required: []string{"domain", "node", "interface"},
+				Required: []string{"site", "nodeGroup", "node", "endpoint"},
 			},
 		},
 	}
@@ -3451,7 +3546,7 @@ func schema_apis_backend_infra_v1alpha1_Link(ref common.ReferenceCallback) commo
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "Link is the Schema for the Link API",
+				Description: "Link is the Schema for the Link API A link represents a physical/logical connection that enables communication and data transfer between 2 endpoints of a node.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -3491,43 +3586,6 @@ func schema_apis_backend_infra_v1alpha1_Link(ref common.ReferenceCallback) commo
 		},
 		Dependencies: []string{
 			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.LinkSpec", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.LinkStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
-	}
-}
-
-func schema_apis_backend_infra_v1alpha1_LinkEndpointID(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Type: []string{"object"},
-				Properties: map[string]spec.Schema{
-					"domain": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Domain defines the administrative domain the resource belongs to.",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"node": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Node defines the node to which this interface belongs",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"interface": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Interface defines the name of the interface",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-				},
-				Required: []string{"domain", "node", "interface"},
-			},
-		},
 	}
 }
 
@@ -3584,7 +3642,7 @@ func schema_apis_backend_infra_v1alpha1_LinkSet(ref common.ReferenceCallback) co
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "LinkSet is the Schema for the LinkSet API",
+				Description: "LinkSet is the Schema for the LinkSet API A linkSet represents a set of links that belong together within a node group or accross nodeGroups. E.g. it can be used to model a logical Link Aggregation group between 2 nodes or it can be used to represent a logical multi-homing construction between a set of nodes belonging to 1 or multiple nodeGroups/Topologies.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -3773,12 +3831,12 @@ func schema_apis_backend_infra_v1alpha1_LinkSpec(ref common.ReferenceCallback) c
 				Properties: map[string]spec.Schema{
 					"endpoints": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Endpoints define the 2 endpoint identifiers of the link",
+							Description: "Endpoints define the 2 endpoint identifiers of the link Can only have 2 endpoints",
 							Type:        []string{"array"},
 							Items: &spec.SchemaOrArray{
 								Schema: &spec.Schema{
 									SchemaProps: spec.SchemaProps{
-										Ref: ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.LinkEndpointID"),
+										Ref: ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointID"),
 									},
 								},
 							},
@@ -3805,7 +3863,7 @@ func schema_apis_backend_infra_v1alpha1_LinkSpec(ref common.ReferenceCallback) c
 			},
 		},
 		Dependencies: []string{
-			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.LinkEndpointID"},
+			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointID"},
 	}
 }
 
@@ -3866,7 +3924,7 @@ func schema_apis_backend_infra_v1alpha1_Module(ref common.ReferenceCallback) com
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "Module is the Schema for the Module API",
+				Description: "Module is the Schema for the Module API A module refers to a hardware component or expansion module that can be installed within a ModuleBay of a Node. Modules provide additional functionality and capabilities to the infrastructure environment, allowing users to enhance and customize their deployments according to specific requirements.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -3913,7 +3971,7 @@ func schema_apis_backend_infra_v1alpha1_ModuleBay(ref common.ReferenceCallback) 
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "ModuleBay is the Schema for the ModuleBay API",
+				Description: "ModuleBay is the Schema for the ModuleBay API A ModuleBay serves as a modular slot or enclosure within a Node, designed to accommodate additional modules. ModuleBays provide a flexible and scalable approach to extending the capabilities of Nodes, allowing users to customize and enhance their infrastructure deployments according to specific requirements.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -4012,9 +4070,24 @@ func schema_apis_backend_infra_v1alpha1_ModuleBaySpec(ref common.ReferenceCallba
 				Description: "ModuleBaySpec defines the desired state of ModuleBay",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
-					"domain": {
+					"region": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Domain defines the administrative domain the resource belongs to.",
+							Description: "Region defines the region this sites belongs to",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site in which the node is deployed",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"nodeGroup": {
+						SchemaProps: spec.SchemaProps{
+							Description: "NodeGroup defines the node group the resource belongs to.",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
@@ -4022,7 +4095,7 @@ func schema_apis_backend_infra_v1alpha1_ModuleBaySpec(ref common.ReferenceCallba
 					},
 					"node": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Node defines the node to which this interface belongs",
+							Description: "Node defines the node the resource belongs to.",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
@@ -4053,7 +4126,7 @@ func schema_apis_backend_infra_v1alpha1_ModuleBaySpec(ref common.ReferenceCallba
 						},
 					},
 				},
-				Required: []string{"domain", "node", "psoition"},
+				Required: []string{"site", "nodeGroup", "node", "psoition"},
 			},
 		},
 	}
@@ -4144,9 +4217,24 @@ func schema_apis_backend_infra_v1alpha1_ModuleSpec(ref common.ReferenceCallback)
 				Description: "ModuleSpec defines the desired state of Module",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
-					"domain": {
+					"region": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Domain defines the administrative domain the resource belongs to.",
+							Description: "Region defines the region this sites belongs to",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site in which the node is deployed",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"nodeGroup": {
+						SchemaProps: spec.SchemaProps{
+							Description: "NodeGroup defines the node group the resource belongs to.",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
@@ -4154,7 +4242,7 @@ func schema_apis_backend_infra_v1alpha1_ModuleSpec(ref common.ReferenceCallback)
 					},
 					"node": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Node defines the node to which this interface belongs",
+							Description: "Node defines the node the resource belongs to.",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
@@ -4185,7 +4273,7 @@ func schema_apis_backend_infra_v1alpha1_ModuleSpec(ref common.ReferenceCallback)
 						},
 					},
 				},
-				Required: []string{"domain", "node", "moduleBay"},
+				Required: []string{"site", "nodeGroup", "node", "moduleBay"},
 			},
 		},
 	}
@@ -4224,7 +4312,7 @@ func schema_apis_backend_infra_v1alpha1_Node(ref common.ReferenceCallback) commo
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "Node is the Schema for the Node API",
+				Description: "Node is the Schema for the Node API A Node represents a fundamental unit that implements compute, storage, and/or networking within your environment. Nodes can embody physical, virtual, or containerized entities, offering versatility in deployment options to suit diverse infrastructure requirements. Nodes are logically organized within racks and sites/regions, establishing a hierarchical structure for efficient resource management and organization. Additionally, Nodes are associated with nodeGroups, facilitating centralized management and control within defined administrative boundaries. Each Node is assigned a provider, representing the entity responsible for implementing the specifics of the Node.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -4264,6 +4352,426 @@ func schema_apis_backend_infra_v1alpha1_Node(ref common.ReferenceCallback) commo
 		},
 		Dependencies: []string{
 			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeSpec", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_NodeGroup(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "NodeGroup is the Schema for the NodeGroup API A NodeGrouo represents a logical grouping of infrastructure resources managed by a single administrative entity or organization. NodeGroups serve as administrative boundaries within the environment, providing a structured framework for organizing and managing resources based on administrative ownership or responsibility. E.g. A NodeGroup on one hand, can be used to represent a topology that spans multiple sites and regions, but a NodeGroup can also be used to group all nodes of a cluster together.",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
+						},
+					},
+					"spec": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupSpec"),
+						},
+					},
+					"status": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupStatus"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupSpec", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_NodeGroupID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region this sites belongs to",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site in which the node is deployed",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"nodeGroup": {
+						SchemaProps: spec.SchemaProps{
+							Description: "NodeGroup defines the node group the resource belongs to.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"site", "nodeGroup"},
+			},
+		},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_NodeGroupList(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "NodeGroupList contains a list of NodeGroups",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"),
+						},
+					},
+					"items": {
+						SchemaProps: spec.SchemaProps{
+							Type: []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroup"),
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"items"},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroup", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_NodeGroupSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "NodeGroupSpec defines the desired state of NodeGroup E.g. A nodeGroup can be a cluster E.g. A nodeGroup can be a topology like a DC fabric (frontend and backend could be a different nodeGroup) A Node Group is a global unique identifier within the system e.g. representing a topology, a cluster or another set of elements that are managed together by a single entity",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"labels": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Labels as user defined labels",
+							Type:        []string{"object"},
+							AdditionalProperties: &spec.SchemaOrBool{
+								Allows: true,
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_NodeGroupStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "NodeGroupStatus defines the observed state of NodeGroup",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"conditions": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Conditions of the resource.",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_NodeID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region this sites belongs to",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site in which the node is deployed",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"nodeGroup": {
+						SchemaProps: spec.SchemaProps{
+							Description: "NodeGroup defines the node group the resource belongs to.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"node": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Node defines the node the resource belongs to.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"site", "nodeGroup", "node"},
+			},
+		},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_NodeItem(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "NodeItem is the Schema for the NodeItem API A NodeItem represents a specific hardware component or accessory associated with a Node. NodeItems represent a wide range of hardware elements, e.g Fan(s), PowerUnit(s), CPU(s), and other peripheral devices essential for the operation of the Node. NodeItem is used to represent the modular components of a node.",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
+						},
+					},
+					"spec": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeItemSpec"),
+						},
+					},
+					"status": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeItemStatus"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeItemSpec", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeItemStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_NodeItemList(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "NodeItemList contains a list of NodeItems",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"),
+						},
+					},
+					"items": {
+						SchemaProps: spec.SchemaProps{
+							Type: []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeItem"),
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"items"},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeItem", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_NodeItemSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "NodeItemSpec defines the desired state of NodeItem",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region this sites belongs to",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site in which the node is deployed",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"nodeGroup": {
+						SchemaProps: spec.SchemaProps{
+							Description: "NodeGroup defines the node group the resource belongs to.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"node": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Node defines the node the resource belongs to.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"labels": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Labels as user defined labels",
+							Type:        []string{"object"},
+							AdditionalProperties: &spec.SchemaOrBool{
+								Allows: true,
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"site", "nodeGroup", "node"},
+			},
+		},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_NodeItemStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "NodeItemStatus defines the observed state of NodeItem",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"conditions": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Conditions of the resource.",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"},
 	}
 }
 
@@ -4320,7 +4828,7 @@ func schema_apis_backend_infra_v1alpha1_NodeSet(ref common.ReferenceCallback) co
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "NodeSet is the Schema for the NodeSet API",
+				Description: "NodeSet is the Schema for the NodeSet API A NodeSet represents a set of nodes. E.g. it can be used to model a set of nodes in a cluster that share the same charecteristics wrt, Numa, interfaces, etc. Another usage of NodeSet is the representation of a virtual Node that consists of multiple nodes.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -4419,17 +4927,25 @@ func schema_apis_backend_infra_v1alpha1_NodeSetSpec(ref common.ReferenceCallback
 				Description: "NodeSetSetSpec defines the desired state of NodeSet",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
-					"domain": {
+					"region": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Domain defines the administrative domain the resource belongs to.",
+							Description: "Region defines the region this sites belongs to",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site in which the node is deployed",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
 						},
 					},
-					"cluster": {
+					"nodeGroup": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Cluster to which this nodeSet is assocated",
+							Description: "NodeGroup defines the node group the resource belongs to.",
+							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -4457,7 +4973,7 @@ func schema_apis_backend_infra_v1alpha1_NodeSetSpec(ref common.ReferenceCallback
 						},
 					},
 				},
-				Required: []string{"domain", "cluster"},
+				Required: []string{"site", "nodeGroup"},
 			},
 		},
 		Dependencies: []string{
@@ -4501,17 +5017,24 @@ func schema_apis_backend_infra_v1alpha1_NodeSpec(ref common.ReferenceCallback) c
 				Description: "NodeSpec defines the desired state of Node",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
-					"domain": {
+					"region": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Domain defines the administrative domain the resource belongs to.",
-							Default:     "",
+							Description: "Region defines the region this sites belongs to",
 							Type:        []string{"string"},
 							Format:      "",
 						},
 					},
 					"site": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Site defines the site on which the node is deployed",
+							Description: "Site defines the site in which the node is deployed",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"nodeGroup": {
+						SchemaProps: spec.SchemaProps{
+							Description: "NodeGroup defines the node group the resource belongs to.",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
@@ -4520,6 +5043,13 @@ func schema_apis_backend_infra_v1alpha1_NodeSpec(ref common.ReferenceCallback) c
 					"rack": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Rack defines the rack in which the node is deployed",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"position": {
+						SchemaProps: spec.SchemaProps{
+							Description: "relative position in the rack",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -4555,7 +5085,7 @@ func schema_apis_backend_infra_v1alpha1_NodeSpec(ref common.ReferenceCallback) c
 						},
 					},
 				},
-				Required: []string{"domain", "site", "provider"},
+				Required: []string{"site", "nodeGroup", "provider"},
 			},
 		},
 		Dependencies: []string{
@@ -4592,44 +5122,11 @@ func schema_apis_backend_infra_v1alpha1_NodeStatus(ref common.ReferenceCallback)
 	}
 }
 
-func schema_apis_backend_infra_v1alpha1_ObjectReference(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Type: []string{"object"},
-				Properties: map[string]spec.Schema{
-					"apiVersion": {
-						SchemaProps: spec.SchemaProps{
-							Description: "APIVersion of the target resources",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"kind": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Kind of the target resources",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"name": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Name of the target resource",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-				},
-			},
-		},
-	}
-}
-
 func schema_apis_backend_infra_v1alpha1_Rack(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "Rack is the Schema for the Rack API",
+				Description: "Rack is the Schema for the Rack API A rack represents a physical equipment rack within your environment. Each rack is designed to accommodate the installation of devices and equipment.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -4728,10 +5225,39 @@ func schema_apis_backend_infra_v1alpha1_RackSpec(ref common.ReferenceCallback) c
 				Description: "RackSpec defines the desired state of Rack",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region this sites belongs to",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site in which the node is deployed",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
 					"location": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Location defines the location information where this resource is located in lon/lat coordinates",
 							Ref:         ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Location"),
+						},
+					},
+					"height": {
+						SchemaProps: spec.SchemaProps{
+							Description: "The height of the rack, measured in units.",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"width": {
+						SchemaProps: spec.SchemaProps{
+							Description: "The canonical distance between the two vertical rails on a face. In inch",
+							Type:        []string{"string"},
+							Format:      "",
 						},
 					},
 					"labels": {
@@ -4751,6 +5277,7 @@ func schema_apis_backend_infra_v1alpha1_RackSpec(ref common.ReferenceCallback) c
 						},
 					},
 				},
+				Required: []string{"site"},
 			},
 		},
 		Dependencies: []string{
@@ -4787,11 +5314,165 @@ func schema_apis_backend_infra_v1alpha1_RackStatus(ref common.ReferenceCallback)
 	}
 }
 
+func schema_apis_backend_infra_v1alpha1_Region(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "Region is the Schema for the Region API A region represent a geography in which multiple infrastructure resources are grouped A region might represent a continent, country, city, campus, or other area depending on your environment.",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
+						},
+					},
+					"spec": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RegionSpec"),
+						},
+					},
+					"status": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RegionStatus"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RegionSpec", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RegionStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_RegionList(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "RegionList contains a list of Regions",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"),
+						},
+					},
+					"items": {
+						SchemaProps: spec.SchemaProps{
+							Type: []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Region"),
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"items"},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Region", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_RegionSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "RegionSpec defines the desired state of Region",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"labels": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Labels as user defined labels",
+							Type:        []string{"object"},
+							AdditionalProperties: &spec.SchemaOrBool{
+								Allows: true,
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_RegionStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "RegionStatus defines the observed state of Region",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"conditions": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Conditions of the resource.",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"},
+	}
+}
+
 func schema_apis_backend_infra_v1alpha1_Site(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "Site is the Schema for the Site API",
+				Description: "Site is the Schema for the Site API A site serves as a fundamental organizational unit for managing infrastructure resources within your environment. The utilization of sites may vary based on the organizational structure and requirements, but in essence, each site typically corresponds to a distinct building or campus.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -4831,6 +5512,34 @@ func schema_apis_backend_infra_v1alpha1_Site(ref common.ReferenceCallback) commo
 		},
 		Dependencies: []string{
 			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.SiteSpec", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.SiteStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_SiteID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region this sites belongs to",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site in which the node is deployed",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"site"},
+			},
+		},
 	}
 }
 
@@ -4890,6 +5599,14 @@ func schema_apis_backend_infra_v1alpha1_SiteSpec(ref common.ReferenceCallback) c
 				Description: "SiteSpec defines the desired state of Site",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region this sites belongs to",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
 					"location": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Location defines the location information where this resource is located in lon/lat coordinates",
@@ -4913,6 +5630,7 @@ func schema_apis_backend_infra_v1alpha1_SiteSpec(ref common.ReferenceCallback) c
 						},
 					},
 				},
+				Required: []string{"region"},
 			},
 		},
 		Dependencies: []string{

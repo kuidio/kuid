@@ -26,6 +26,8 @@ import (
 
 // SiteSpec defines the desired state of Site
 type SiteSpec struct {
+	// Region defines the region this sites belongs to
+	Region string `json:"region" yaml:"region" protobuf:"bytes,1,opt,name=region"`
 	// Location defines the location information where this resource is located
 	// in lon/lat coordinates
 	Location *Location `json:"location,omitempty" yaml:"location,omitempty" protobuf:"bytes,2,opt,name=location"`
@@ -44,8 +46,9 @@ type SiteStatus struct {
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// Site is the Schema for the Site API
-//
+// A site serves as a fundamental organizational unit for managing infrastructure resources within your environment.
+// The utilization of sites may vary based on the organizational structure and requirements,
+// but in essence, each site typically corresponds to a distinct building or campus.
 // +k8s:openapi-gen=true
 type Site struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`

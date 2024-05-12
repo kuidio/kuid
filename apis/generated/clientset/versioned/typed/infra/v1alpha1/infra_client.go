@@ -28,15 +28,18 @@ import (
 type InfraV1alpha1Interface interface {
 	RESTClient() rest.Interface
 	ClustersGetter
-	DomainsGetter
 	EndpointsGetter
+	EndpointSetsGetter
 	LinksGetter
 	LinkSetsGetter
 	ModulesGetter
 	ModuleBaysGetter
 	NodesGetter
+	NodeGroupsGetter
+	NodeItemsGetter
 	NodeSetsGetter
 	RacksGetter
+	RegionsGetter
 	SitesGetter
 }
 
@@ -49,12 +52,12 @@ func (c *InfraV1alpha1Client) Clusters(namespace string) ClusterInterface {
 	return newClusters(c, namespace)
 }
 
-func (c *InfraV1alpha1Client) Domains(namespace string) DomainInterface {
-	return newDomains(c, namespace)
-}
-
 func (c *InfraV1alpha1Client) Endpoints(namespace string) EndpointInterface {
 	return newEndpoints(c, namespace)
+}
+
+func (c *InfraV1alpha1Client) EndpointSets(namespace string) EndpointSetInterface {
+	return newEndpointSets(c, namespace)
 }
 
 func (c *InfraV1alpha1Client) Links(namespace string) LinkInterface {
@@ -77,12 +80,24 @@ func (c *InfraV1alpha1Client) Nodes(namespace string) NodeInterface {
 	return newNodes(c, namespace)
 }
 
+func (c *InfraV1alpha1Client) NodeGroups(namespace string) NodeGroupInterface {
+	return newNodeGroups(c, namespace)
+}
+
+func (c *InfraV1alpha1Client) NodeItems(namespace string) NodeItemInterface {
+	return newNodeItems(c, namespace)
+}
+
 func (c *InfraV1alpha1Client) NodeSets(namespace string) NodeSetInterface {
 	return newNodeSets(c, namespace)
 }
 
 func (c *InfraV1alpha1Client) Racks(namespace string) RackInterface {
 	return newRacks(c, namespace)
+}
+
+func (c *InfraV1alpha1Client) Regions(namespace string) RegionInterface {
+	return newRegions(c, namespace)
 }
 
 func (c *InfraV1alpha1Client) Sites(namespace string) SiteInterface {

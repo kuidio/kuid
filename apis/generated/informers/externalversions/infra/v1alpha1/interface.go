@@ -25,10 +25,10 @@ import (
 type Interface interface {
 	// Clusters returns a ClusterInformer.
 	Clusters() ClusterInformer
-	// Domains returns a DomainInformer.
-	Domains() DomainInformer
 	// Endpoints returns a EndpointInformer.
 	Endpoints() EndpointInformer
+	// EndpointSets returns a EndpointSetInformer.
+	EndpointSets() EndpointSetInformer
 	// Links returns a LinkInformer.
 	Links() LinkInformer
 	// LinkSets returns a LinkSetInformer.
@@ -39,10 +39,16 @@ type Interface interface {
 	ModuleBays() ModuleBayInformer
 	// Nodes returns a NodeInformer.
 	Nodes() NodeInformer
+	// NodeGroups returns a NodeGroupInformer.
+	NodeGroups() NodeGroupInformer
+	// NodeItems returns a NodeItemInformer.
+	NodeItems() NodeItemInformer
 	// NodeSets returns a NodeSetInformer.
 	NodeSets() NodeSetInformer
 	// Racks returns a RackInformer.
 	Racks() RackInformer
+	// Regions returns a RegionInformer.
+	Regions() RegionInformer
 	// Sites returns a SiteInformer.
 	Sites() SiteInformer
 }
@@ -63,14 +69,14 @@ func (v *version) Clusters() ClusterInformer {
 	return &clusterInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
-// Domains returns a DomainInformer.
-func (v *version) Domains() DomainInformer {
-	return &domainInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
-}
-
 // Endpoints returns a EndpointInformer.
 func (v *version) Endpoints() EndpointInformer {
 	return &endpointInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
+// EndpointSets returns a EndpointSetInformer.
+func (v *version) EndpointSets() EndpointSetInformer {
+	return &endpointSetInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // Links returns a LinkInformer.
@@ -98,6 +104,16 @@ func (v *version) Nodes() NodeInformer {
 	return &nodeInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
+// NodeGroups returns a NodeGroupInformer.
+func (v *version) NodeGroups() NodeGroupInformer {
+	return &nodeGroupInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
+// NodeItems returns a NodeItemInformer.
+func (v *version) NodeItems() NodeItemInformer {
+	return &nodeItemInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
 // NodeSets returns a NodeSetInformer.
 func (v *version) NodeSets() NodeSetInformer {
 	return &nodeSetInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
@@ -106,6 +122,11 @@ func (v *version) NodeSets() NodeSetInformer {
 // Racks returns a RackInformer.
 func (v *version) Racks() RackInformer {
 	return &rackInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
+// Regions returns a RegionInformer.
+func (v *version) Regions() RegionInformer {
+	return &regionInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // Sites returns a SiteInformer.

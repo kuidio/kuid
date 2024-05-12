@@ -27,8 +27,7 @@ import "k8s.io/apimachinery/pkg/runtime/schema/generated.proto";
 // Package-wide variables from generator "generated".
 option go_package = "github.com/kuidio/kuid/apis/backend/infra/v1alpha1";
 
-// Cluster is the Schema for the Cluster API
-//
+// A Cluster represents a kubernetes cluster and is typically used as a nodeGroup identifier.
 // +k8s:openapi-gen=true
 message Cluster {
   optional k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
@@ -70,41 +69,10 @@ message ClusterStatus {
   optional github.com.kuidio.kuid.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
-// Domain is the Schema for the Domain API
-//
-// +k8s:openapi-gen=true
-message Domain {
-  optional k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
-
-  optional DomainSpec spec = 2;
-
-  optional DomainStatus status = 3;
-}
-
-// DomainList contains a list of Domains
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-message DomainList {
-  optional k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
-
-  repeated Domain items = 2;
-}
-
-// DomainSpec defines the desired state of Domain
-message DomainSpec {
-  // UserDefinedLabels define metadata to the resource.
-  // defined in the spec to distingiush metadata labels from user defined labels
-  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
-}
-
-// DomainStatus defines the observed state of Domain
-message DomainStatus {
-  // ConditionedStatus provides the status of the IPClain using conditions
-  // - a ready condition indicates the overall status of the resource
-  optional github.com.kuidio.kuid.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
-}
-
-// Endpoint is the Schema for the Endpoint API
-//
+// An Endpoint represents a communication interface or connection point within a Node,
+// facilitating network communication and data transfer between different components
+// or systems within the environment. `Endpoints` serve as gateways for transmitting and
+// receiving data, enabling seamless communication between Nodes.
 // +k8s:openapi-gen=true
 message Endpoint {
   optional k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
@@ -115,11 +83,10 @@ message Endpoint {
 }
 
 message EndpointID {
-  // Node defines the node to which this interface belongs
-  optional string node = 1;
+  optional NodeID nodeID = 6;
 
-  // Interface defines the name of the interface
-  optional string interface = 2;
+  // Endpoint defines the name of the endpoint
+  optional string endpoint = 5;
 }
 
 // EndpointList contains a list of Endpoints
@@ -130,21 +97,77 @@ message EndpointList {
   repeated Endpoint items = 2;
 }
 
-// EndpointSpec defines the desired state of Endpoint
-message EndpointSpec {
-  // Domain defines the administrative domain the resource belongs to.
-  optional string domain = 1;
+// A EndpointSet represents a set of endpoints that belong together within a nodeGroup.
+// E.g. it can be used to model a logical Link Aggregation group within
+// a node or it can be used to represent a logical multi-homing construction
+// between a set of nodes belonging to a single nodeGroup.
+// +k8s:openapi-gen=true
+message EndpointSet {
+  optional k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  // EndpointID defines the Endpoint identifier
-  optional EndpointID EndpointID = 2;
+  optional EndpointSetSpec spec = 2;
 
-  // Module define the module to which the Endpoint belongs
+  optional EndpointSetStatus status = 3;
+}
+
+// EndpointSetList contains a list of EndpointSets
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+message EndpointSetList {
+  optional k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
+
+  repeated EndpointSet items = 2;
+}
+
+// EndpointSetSpec defines the desired state of EndpointSet
+// An EndpointSet can be a LAG (single Homed) or ESI (multiHomed). The EndpointSet
+// can only belong to a single NodeGroup
+message EndpointSetSpec {
+  // Endpoints defines the Endpoints that are part of the EndpointSet
+  // Min 1, Max 16
+  repeated EndpointID endpoints = 1;
+
+  // Lacp defines if the lag enabled LACP
   // +optional
-  optional string module = 3;
+  optional bool lacp = 2;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 4;
+  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
+}
+
+// EndpointSetStatus defines the observed state of EndpointSet
+message EndpointSetStatus {
+  // ConditionedStatus provides the status of the IPClain using conditions
+  // - a ready condition indicates the overall status of the resource
+  optional github.com.kuidio.kuid.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
+
+  // ESI defines the ethernet segment identifier of the logical link
+  // if set this is a multi-homed logical endpoint
+  // the ESI is a global unique identifier within the administrative domain
+  // +optional
+  optional uint32 esi = 2;
+
+  // LagId defines the lag id for the logical single-homed or multi-homed
+  // endpoint
+  // +optional
+  optional uint32 lagID = 3;
+}
+
+// EndpointSpec defines the desired state of Endpoint
+message EndpointSpec {
+  // EndpointID identifies the endpoint identity this resource belongs to
+  optional EndpointID EndpointID = 1;
+
+  // Module define the module to which the Endpoint belongs
+  // +optional
+  optional string module = 2;
+
+  // UserDefinedLabels define metadata to the resource.
+  // defined in the spec to distingiush metadata labels from user defined labels
+  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
+
+  // (Gbps)
+  optional string speed = 4;
 }
 
 // EndpointStatus defines the observed state of Endpoint
@@ -154,8 +177,8 @@ message EndpointStatus {
   optional github.com.kuidio.kuid.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
-// Link is the Schema for the Link API
-//
+// A link represents a physical/logical connection that enables communication and data transfer
+// between 2 endpoints of a node.
 // +k8s:openapi-gen=true
 message Link {
   optional k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
@@ -163,14 +186,6 @@ message Link {
   optional LinkSpec spec = 2;
 
   optional LinkStatus status = 3;
-}
-
-message LinkEndpointID {
-  // Domain defines the administrative domain the resource belongs to.
-  optional string domain = 1;
-
-  // Interface identifier within the domain
-  optional EndpointID endpointID = 2;
 }
 
 // LinkList contains a list of Links
@@ -181,8 +196,10 @@ message LinkList {
   repeated Link items = 2;
 }
 
-// LinkSet is the Schema for the LinkSet API
-//
+// A linkSet represents a set of links that belong together within a node group or accross nodeGroups.
+// E.g. it can be used to model a logical Link Aggregation group between 2 nodes or
+// it can be used to represent a logical multi-homing construction between a set of nodes
+// belonging to 1 or multiple nodeGroups/Topologies.
 // +k8s:openapi-gen=true
 message LinkSet {
   optional k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
@@ -207,7 +224,7 @@ message LinkSetSpec {
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
+  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 2;
 }
 
 // LinkSetStatus defines the observed state of LinkSet
@@ -229,11 +246,12 @@ message LinkSetStatus {
 // LinkSpec defines the desired state of Link
 message LinkSpec {
   // Endpoints define the 2 endpoint identifiers of the link
-  repeated LinkEndpointID endpoints = 1;
+  // Can only have 2 endpoints
+  repeated EndpointID endpoints = 1;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
+  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 2;
 }
 
 // LinkStatus defines the observed state of Link
@@ -249,8 +267,9 @@ message Location {
   optional string longitude = 2;
 }
 
-// Module is the Schema for the Module API
-//
+// A module refers to a hardware component or expansion module that can be installed within a ModuleBay of a Node.
+// Modules provide additional functionality and capabilities to the infrastructure environment,
+// allowing users to enhance and customize their deployments according to specific requirements.
 // +k8s:openapi-gen=true
 message Module {
   optional k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
@@ -260,8 +279,9 @@ message Module {
   optional ModuleStatus status = 3;
 }
 
-// ModuleBay is the Schema for the ModuleBay API
-//
+// A ModuleBay serves as a modular slot or enclosure within a Node, designed to accommodate additional modules.
+// ModuleBays provide a flexible and scalable approach to extending the capabilities of Nodes,
+// allowing users to customize and enhance their infrastructure deployments according to specific requirements.
 // +k8s:openapi-gen=true
 message ModuleBay {
   optional k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
@@ -281,18 +301,15 @@ message ModuleBayList {
 
 // ModuleBaySpec defines the desired state of ModuleBay
 message ModuleBaySpec {
-  // Domain defines the administrative domain the resource belongs to.
-  optional string domain = 1;
-
-  // Node defines the node to which this interface belongs
-  optional string node = 2;
+  // NodeID identifies the node identity this resource belongs to
+  optional NodeID nodeID = 1;
 
   // Position defines the position in the node the moduleBay is deployed
-  optional string psoition = 3;
+  optional string psoition = 2;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 4;
+  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
 }
 
 // ModuleBayStatus defines the observed state of ModuleBay
@@ -312,18 +329,15 @@ message ModuleList {
 
 // ModuleSpec defines the desired state of Module
 message ModuleSpec {
-  // Domain defines the administrative domain the resource belongs to.
-  optional string domain = 1;
-
-  // Node defines the node to which this interface belongs
-  optional string node = 2;
+  // NodeID identifies the node identity this resource belongs to
+  optional NodeID nodeID = 1;
 
   // ModuelBay defines the bay in which the module is deployed
-  optional string moduleBay = 3;
+  optional string moduleBay = 2;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 4;
+  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
 }
 
 // ModuleStatus defines the observed state of Module
@@ -333,8 +347,13 @@ message ModuleStatus {
   optional github.com.kuidio.kuid.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
-// Node is the Schema for the Node API
-//
+// A Node represents a fundamental unit that implements compute, storage, and/or networking within your environment.
+// Nodes can embody physical, virtual, or containerized entities, offering versatility in deployment options to suit
+// diverse infrastructure requirements.
+// Nodes are logically organized within racks and sites/regions, establishing a hierarchical structure for efficient
+// resource management and organization. Additionally, Nodes are associated with nodeGroups, facilitating centralized
+// management and control within defined administrative boundaries.
+// Each Node is assigned a provider, representing the entity responsible for implementing the specifics of the Node.
 // +k8s:openapi-gen=true
 message Node {
   optional k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
@@ -342,6 +361,98 @@ message Node {
   optional NodeSpec spec = 2;
 
   optional NodeStatus status = 3;
+}
+
+// A NodeGrouo represents a logical grouping of infrastructure resources managed by a single
+// administrative entity or organization. NodeGroups serve as administrative boundaries within the environment,
+// providing a structured framework for organizing and managing resources based on administrative ownership
+// or responsibility. E.g. A NodeGroup on one hand, can be used to represent a topology that spans multiple
+// sites and regions, but a NodeGroup can also be used to group all nodes of a cluster together.
+// +k8s:openapi-gen=true
+message NodeGroup {
+  optional k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
+
+  optional NodeGroupSpec spec = 2;
+
+  optional NodeGroupStatus status = 3;
+}
+
+message NodeGroupID {
+  optional SiteID siteID = 4;
+
+  // NodeGroup defines the node group the resource belongs to.
+  optional string nodeGroup = 3;
+}
+
+// NodeGroupList contains a list of NodeGroups
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+message NodeGroupList {
+  optional k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
+
+  repeated NodeGroup items = 2;
+}
+
+// NodeGroupSpec defines the desired state of NodeGroup
+// E.g. A nodeGroup can be a cluster
+// E.g. A nodeGroup can be a topology like a DC fabric (frontend and backend could be a different nodeGroup)
+// A Node Group is a global unique identifier within the system e.g. representing a topology, a cluster or
+// another set of elements that are managed together by a single entity
+message NodeGroupSpec {
+  // UserDefinedLabels define metadata to the resource.
+  // defined in the spec to distingiush metadata labels from user defined labels
+  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 1;
+}
+
+// NodeGroupStatus defines the observed state of NodeGroup
+message NodeGroupStatus {
+  // ConditionedStatus provides the status of the IPClain using conditions
+  // - a ready condition indicates the overall status of the resource
+  optional github.com.kuidio.kuid.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
+}
+
+message NodeID {
+  optional NodeGroupID nodeGroupID = 5;
+
+  // Node defines the node the resource belongs to.
+  optional string node = 4;
+}
+
+// A NodeItem represents a specific hardware component or accessory associated with a Node.
+// NodeItems represent a wide range of hardware elements, e.g Fan(s), PowerUnit(s), CPU(s),
+// and other peripheral devices essential for the operation of the Node.
+// NodeItem is used to represent the modular components of a node.
+// +k8s:openapi-gen=true
+message NodeItem {
+  optional k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
+
+  optional NodeItemSpec spec = 2;
+
+  optional NodeItemStatus status = 3;
+}
+
+// NodeItemList contains a list of NodeItems
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+message NodeItemList {
+  optional k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
+
+  repeated NodeItem items = 2;
+}
+
+// NodeItemSpec defines the desired state of NodeItem
+message NodeItemSpec {
+  // NodeID identifies the node identity this resource belongs to
+  optional NodeID nodeID = 1;
+
+  // UserDefinedLabels define metadata to the resource.
+  // defined in the spec to distingiush metadata labels from user defined labels
+  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 2;
+}
+
+// NodeItemStatus defines the observed state of NodeItem
+message NodeItemStatus {
+  // ConditionedStatus provides the status of the IPClain using conditions
+  // - a ready condition indicates the overall status of the resource
+  optional github.com.kuidio.kuid.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
 // NodeList contains a list of Nodes
@@ -352,8 +463,10 @@ message NodeList {
   repeated Node items = 2;
 }
 
-// NodeSet is the Schema for the NodeSet API
-//
+// A NodeSet represents a set of nodes.
+// E.g. it can be used to model a set of nodes in a cluster that share the same
+// charecteristics wrt, Numa, interfaces, etc.
+// Another usage of NodeSet is the representation of a virtual Node that consists of multiple nodes.
 // +k8s:openapi-gen=true
 message NodeSet {
   optional k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
@@ -373,15 +486,14 @@ message NodeSetList {
 
 // NodeSetSetSpec defines the desired state of NodeSet
 message NodeSetSpec {
-  // Domain defines the administrative domain the resource belongs to.
-  optional string domain = 1;
-
-  // Cluster to which this nodeSet is assocated
-  optional string cluster = 2;
+  // NodeGroupID identifies the nodeGroup this resource belongs to
+  // E.g. a NodeSet in a cluster belongs to a nodeGroup where the name of the nodeGroup is the cluster
+  // E.g. a Virtual Node, belongs to a nodeGroup where the name of the nodeGroup represents the topology this node is deployed in
+  optional NodeGroupID nodeGroupID = 1;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional github.com.kuidio.kuid.apis.common.v1alpha1.ClaimLabels userDefinedLabels = 3;
+  optional github.com.kuidio.kuid.apis.common.v1alpha1.ClaimLabels userDefinedLabels = 2;
 }
 
 // NodeSetStatus defines the observed state of NodeSet
@@ -393,22 +505,24 @@ message NodeSetStatus {
 
 // NodeSpec defines the desired state of Node
 message NodeSpec {
-  // Domain defines the administrative domain the resource belongs to.
-  optional string domain = 1;
-
-  // Site defines the site on which the node is deployed
-  optional string site = 2;
+  // NodeGroupID identifies the nodeGroup identity this resource belongs to
+  optional NodeGroupID nodeGroupID = 1;
 
   // Rack defines the rack in which the node is deployed
   // +optional
-  optional string rack = 3;
+  optional string rack = 2;
+
+  // relative position in the rack
+  // +optional
+  optional string position = 3;
 
   // Location defines the location information where this resource is located
   // in lon/lat coordinates
-  optional Location location = 5;
+  // +optional
+  optional Location location = 4;
 
   // Provider defines the provider implementing this resource.
-  optional string provider = 4;
+  optional string provider = 5;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
@@ -422,20 +536,8 @@ message NodeStatus {
   optional github.com.kuidio.kuid.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
-message ObjectReference {
-  // APIVersion of the target resources
-  optional string apiVersion = 1;
-
-  // Kind of the target resources
-  optional string kind = 2;
-
-  // Name of the target resource
-  // +optional
-  optional string name = 3;
-}
-
-// Rack is the Schema for the Rack API
-//
+// A rack represents a physical equipment rack within your environment. Each rack is designed to accommodate
+// the installation of devices and equipment.
 // +k8s:openapi-gen=true
 message Rack {
   optional k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
@@ -455,13 +557,22 @@ message RackList {
 
 // RackSpec defines the desired state of Rack
 message RackSpec {
+  // SiteID identifies the siteID this resource belongs to
+  optional SiteID siteID = 1;
+
   // Location defines the location information where this resource is located
   // in lon/lat coordinates
   optional Location location = 2;
 
+  // The height of the rack, measured in units.
+  optional string height = 3;
+
+  // The canonical distance between the two vertical rails on a face. In inch
+  optional string width = 4;
+
   // UserDefinedLabels define metadata to the resource.
-  // defined in the spec to distingiush metadata labels from user defined labels
-  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
+  // defined in the spec to distingiush metadata labels from user defined label
+  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 5;
 }
 
 // RackStatus defines the observed state of Rack
@@ -471,8 +582,42 @@ message RackStatus {
   optional github.com.kuidio.kuid.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
-// Site is the Schema for the Site API
-//
+// A region represent a geography in which multiple infrastructure resources are grouped
+// A region might represent a continent, country, city, campus, or other area depending on your environment.
+// +k8s:openapi-gen=true
+message Region {
+  optional k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
+
+  optional RegionSpec spec = 2;
+
+  optional RegionStatus status = 3;
+}
+
+// RegionList contains a list of Regions
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+message RegionList {
+  optional k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
+
+  repeated Region items = 2;
+}
+
+// RegionSpec defines the desired state of Region
+message RegionSpec {
+  // UserDefinedLabels define metadata to the resource.
+  // defined in the spec to distingiush metadata labels from user defined labels
+  optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 1;
+}
+
+// RegionStatus defines the observed state of Region
+message RegionStatus {
+  // ConditionedStatus provides the status of the IPClain using conditions
+  // - a ready condition indicates the overall status of the resource
+  optional github.com.kuidio.kuid.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
+}
+
+// A site serves as a fundamental organizational unit for managing infrastructure resources within your environment.
+// The utilization of sites may vary based on the organizational structure and requirements,
+// but in essence, each site typically corresponds to a distinct building or campus.
 // +k8s:openapi-gen=true
 message Site {
   optional k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
@@ -480,6 +625,14 @@ message Site {
   optional SiteSpec spec = 2;
 
   optional SiteStatus status = 3;
+}
+
+message SiteID {
+  // Region defines the region this sites belongs to
+  optional string region = 1;
+
+  // Site defines the site in which the node is deployed
+  optional string site = 2;
 }
 
 // SiteList contains a list of Sites
@@ -492,6 +645,9 @@ message SiteList {
 
 // SiteSpec defines the desired state of Site
 message SiteSpec {
+  // Region defines the region this sites belongs to
+  optional string region = 1;
+
   // Location defines the location information where this resource is located
   // in lon/lat coordinates
   optional Location location = 2;

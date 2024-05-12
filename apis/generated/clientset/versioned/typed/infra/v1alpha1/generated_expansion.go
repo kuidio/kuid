@@ -19,9 +19,9 @@ package v1alpha1
 
 type ClusterExpansion interface{}
 
-type DomainExpansion interface{}
-
 type EndpointExpansion interface{}
+
+type EndpointSetExpansion interface{}
 
 type LinkExpansion interface{}
 
@@ -33,8 +33,14 @@ type ModuleBayExpansion interface{}
 
 type NodeExpansion interface{}
 
+type NodeGroupExpansion interface{}
+
+type NodeItemExpansion interface{}
+
 type NodeSetExpansion interface{}
 
 type RackExpansion interface{}
+
+type RegionExpansion interface{}
 
 type SiteExpansion interface{}

@@ -24,18 +24,19 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// LinkSpec defines the desired state of Link
-type LinkSpec struct {
-	// Endpoints define the 2 endpoint identifiers of the link
-	// Can only have 2 endpoints
-	Endpoints []*EndpointID `json:"endpoints" yaml:"endpoints" protobuf:"bytes,1,opt,name=endpoints"`
+// NodeGroupSpec defines the desired state of NodeGroup
+// E.g. A nodeGroup can be a cluster
+// E.g. A nodeGroup can be a topology like a DC fabric (frontend and backend could be a different nodeGroup)
+// A Node Group is a global unique identifier within the system e.g. representing a topology, a cluster or
+// another set of elements that are managed together by a single entity
+type NodeGroupSpec struct {
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
-	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,2,opt,name=userDefinedLabels"`
+	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=userDefinedLabels"`
 }
 
-// LinkStatus defines the observed state of Link
-type LinkStatus struct {
+// NodeGroupStatus defines the observed state of NodeGroup
+type NodeGroupStatus struct {
 	// ConditionedStatus provides the status of the IPClain using conditions
 	// - a ready condition indicates the overall status of the resource
 	conditionv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=conditionedStatus"`
@@ -44,25 +45,28 @@ type LinkStatus struct {
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// A link represents a physical/logical connection that enables communication and data transfer
-// between 2 endpoints of a node.
+// A NodeGrouo represents a logical grouping of infrastructure resources managed by a single
+// administrative entity or organization. NodeGroups serve as administrative boundaries within the environment,
+// providing a structured framework for organizing and managing resources based on administrative ownership
+// or responsibility. E.g. A NodeGroup on one hand, can be used to represent a topology that spans multiple
+// sites and regions, but a NodeGroup can also be used to group all nodes of a cluster together.
 // +k8s:openapi-gen=true
-type Link struct {
+type NodeGroup struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
 
-	Spec   LinkSpec   `json:"spec,omitempty" yaml:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
-	Status LinkStatus `json:"status,omitempty" yaml:"status,omitempty" protobuf:"bytes,3,opt,name=status"`
+	Spec   NodeGroupSpec   `json:"spec,omitempty" yaml:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
+	Status NodeGroupStatus `json:"status,omitempty" yaml:"status,omitempty" protobuf:"bytes,3,opt,name=status"`
 }
 
-// LinkList contains a list of Links
+// NodeGroupList contains a list of NodeGroups
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-type LinkList struct {
+type NodeGroupList struct {
 	metav1.TypeMeta `json:",inline" yaml:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
-	Items           []Link `json:"items" yaml:"items" protobuf:"bytes,2,rep,name=items"`
+	Items           []NodeGroup `json:"items" yaml:"items" protobuf:"bytes,2,rep,name=items"`
 }
 
 var (
-	LinkKind = reflect.TypeOf(Link{}).Name()
+	NodeGroupKind = reflect.TypeOf(NodeGroup{}).Name()
 )

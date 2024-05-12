@@ -26,15 +26,13 @@ import (
 
 // ModuleSpec defines the desired state of Module
 type ModuleSpec struct {
-	// Domain defines the administrative domain the resource belongs to.
-	Domain string `json:"domain" yaml:"domain" protobuf:"bytes,1,opt,name=domain"`
-	// Node defines the node to which this interface belongs
-	Node string `json:"node" yaml:"node" protobuf:"bytes,2,opt,name=node"`
+	// NodeID identifies the node identity this resource belongs to
+	NodeID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeID"`
 	// ModuelBay defines the bay in which the module is deployed
-	ModuleBay string `json:"moduleBay" yaml:"moduleBay" protobuf:"bytes,3,opt,name=moduleBay"`
+	ModuleBay string `json:"moduleBay" yaml:"moduleBay" protobuf:"bytes,2,opt,name=moduleBay"`
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
-	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,4,opt,name=userDefinedLabels"`
+	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,3,opt,name=userDefinedLabels"`
 }
 
 // ModuleStatus defines the observed state of Module
@@ -47,8 +45,9 @@ type ModuleStatus struct {
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// Module is the Schema for the Module API
-//
+// A module refers to a hardware component or expansion module that can be installed within a ModuleBay of a Node.
+// Modules provide additional functionality and capabilities to the infrastructure environment,
+// allowing users to enhance and customize their deployments according to specific requirements.
 // +k8s:openapi-gen=true
 type Module struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`

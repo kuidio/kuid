@@ -24,15 +24,17 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// DomainSpec defines the desired state of Domain
-type DomainSpec struct {
+// NodeItemSpec defines the desired state of NodeItem
+type NodeItemSpec struct {
+	// NodeID identifies the node identity this resource belongs to
+	NodeID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeID"`
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
-	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,3,opt,name=userDefinedLabels"`
+	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,2,opt,name=userDefinedLabels"`
 }
 
-// DomainStatus defines the observed state of Domain
-type DomainStatus struct {
+// NodeItemStatus defines the observed state of NodeItem
+type NodeItemStatus struct {
 	// ConditionedStatus provides the status of the IPClain using conditions
 	// - a ready condition indicates the overall status of the resource
 	conditionv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=conditionedStatus"`
@@ -41,25 +43,27 @@ type DomainStatus struct {
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// Domain is the Schema for the Domain API
-//
+// A NodeItem represents a specific hardware component or accessory associated with a Node.
+// NodeItems represent a wide range of hardware elements, e.g Fan(s), PowerUnit(s), CPU(s),
+// and other peripheral devices essential for the operation of the Node.
+// NodeItem is used to represent the modular components of a node.
 // +k8s:openapi-gen=true
-type Domain struct {
+type NodeItem struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
 
-	Spec   DomainSpec   `json:"spec,omitempty" yaml:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
-	Status DomainStatus `json:"status,omitempty" yaml:"status,omitempty" protobuf:"bytes,3,opt,name=status"`
+	Spec   NodeItemSpec   `json:"spec,omitempty" yaml:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
+	Status NodeItemStatus `json:"status,omitempty" yaml:"status,omitempty" protobuf:"bytes,3,opt,name=status"`
 }
 
-// DomainList contains a list of Domains
+// NodeItemList contains a list of NodeItems
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-type DomainList struct {
+type NodeItemList struct {
 	metav1.TypeMeta `json:",inline" yaml:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
-	Items           []Domain `json:"items" yaml:"items" protobuf:"bytes,2,rep,name=items"`
+	Items           []NodeItem `json:"items" yaml:"items" protobuf:"bytes,2,rep,name=items"`
 }
 
 var (
-	DomainKind = reflect.TypeOf(Domain{}).Name()
+	NodeItemKind = reflect.TypeOf(NodeItem{}).Name()
 )

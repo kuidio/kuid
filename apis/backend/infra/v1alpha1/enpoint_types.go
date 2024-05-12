@@ -24,18 +24,21 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// Claims can be expressed in 3 ways
+// OnwerReference, Finalizer or Status with reference to the claim onwer -> finalizer seem the best option for this
+
 // EndpointSpec defines the desired state of Endpoint
 type EndpointSpec struct {
-	// Domain defines the administrative domain the resource belongs to.
-	Domain string `json:"domain" yaml:"domain" protobuf:"bytes,1,opt,name=domain"`
-	// EndpointID defines the Endpoint identifier
-	EndpointID `json:",inline" yaml:",inline" protobuf:"bytes,2,opt,name=EndpointID"`
+	// EndpointID identifies the endpoint identity this resource belongs to
+	EndpointID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=EndpointID"`
 	// Module define the module to which the Endpoint belongs
 	// +optional
-	Module *string `json:"module,omitempty" yaml:"module,omitempty" protobuf:"bytes,3,opt,name=module"`
+	Module *string `json:"module,omitempty" yaml:"module,omitempty" protobuf:"bytes,2,opt,name=module"`
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
-	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,4,opt,name=userDefinedLabels"`
+	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,3,opt,name=userDefinedLabels"`
+	// (Gbps)
+	Speed *string `json:"speed,omitempty" yaml:"speed,omitempty" protobuf:"bytes,4,opt,name=speed"`
 }
 
 // EndpointStatus defines the observed state of Endpoint
@@ -48,8 +51,10 @@ type EndpointStatus struct {
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// Endpoint is the Schema for the Endpoint API
-//
+// An Endpoint represents a communication interface or connection point within a Node,
+// facilitating network communication and data transfer between different components
+// or systems within the environment. `Endpoints` serve as gateways for transmitting and
+// receiving data, enabling seamless communication between Nodes.
 // +k8s:openapi-gen=true
 type Endpoint struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`

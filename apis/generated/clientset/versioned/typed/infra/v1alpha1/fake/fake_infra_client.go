@@ -31,12 +31,12 @@ func (c *FakeInfraV1alpha1) Clusters(namespace string) v1alpha1.ClusterInterface
 	return &FakeClusters{c, namespace}
 }
 
-func (c *FakeInfraV1alpha1) Domains(namespace string) v1alpha1.DomainInterface {
-	return &FakeDomains{c, namespace}
-}
-
 func (c *FakeInfraV1alpha1) Endpoints(namespace string) v1alpha1.EndpointInterface {
 	return &FakeEndpoints{c, namespace}
+}
+
+func (c *FakeInfraV1alpha1) EndpointSets(namespace string) v1alpha1.EndpointSetInterface {
+	return &FakeEndpointSets{c, namespace}
 }
 
 func (c *FakeInfraV1alpha1) Links(namespace string) v1alpha1.LinkInterface {
@@ -59,12 +59,24 @@ func (c *FakeInfraV1alpha1) Nodes(namespace string) v1alpha1.NodeInterface {
 	return &FakeNodes{c, namespace}
 }
 
+func (c *FakeInfraV1alpha1) NodeGroups(namespace string) v1alpha1.NodeGroupInterface {
+	return &FakeNodeGroups{c, namespace}
+}
+
+func (c *FakeInfraV1alpha1) NodeItems(namespace string) v1alpha1.NodeItemInterface {
+	return &FakeNodeItems{c, namespace}
+}
+
 func (c *FakeInfraV1alpha1) NodeSets(namespace string) v1alpha1.NodeSetInterface {
 	return &FakeNodeSets{c, namespace}
 }
 
 func (c *FakeInfraV1alpha1) Racks(namespace string) v1alpha1.RackInterface {
 	return &FakeRacks{c, namespace}
+}
+
+func (c *FakeInfraV1alpha1) Regions(namespace string) v1alpha1.RegionInterface {
+	return &FakeRegions{c, namespace}
 }
 
 func (c *FakeInfraV1alpha1) Sites(namespace string) v1alpha1.SiteInterface {

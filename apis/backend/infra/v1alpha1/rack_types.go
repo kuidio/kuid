@@ -26,12 +26,18 @@ import (
 
 // RackSpec defines the desired state of Rack
 type RackSpec struct {
+	// SiteID identifies the siteID this resource belongs to
+	SiteID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=siteID"`
 	// Location defines the location information where this resource is located
 	// in lon/lat coordinates
 	Location *Location `json:"location,omitempty" yaml:"location,omitempty" protobuf:"bytes,2,opt,name=location"`
+	// The height of the rack, measured in units.
+	Height string `json:"height,omitempty" yaml:"height,omitempty" protobuf:"bytes,3,opt,name=height"`
+	// The canonical distance between the two vertical rails on a face. In inch
+	Width string `json:"width,omitempty" yaml:"width,omitempty" protobuf:"bytes,4,opt,name=width"`
 	// UserDefinedLabels define metadata to the resource.
-	// defined in the spec to distingiush metadata labels from user defined labels
-	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,3,opt,name=userDefinedLabels"`
+	// defined in the spec to distingiush metadata labels from user defined label
+	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,5,opt,name=userDefinedLabels"`
 }
 
 // RackStatus defines the observed state of Rack
@@ -44,8 +50,8 @@ type RackStatus struct {
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// Rack is the Schema for the Rack API
-//
+// A rack represents a physical equipment rack within your environment. Each rack is designed to accommodate
+// the installation of devices and equipment.
 // +k8s:openapi-gen=true
 type Rack struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`

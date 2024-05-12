@@ -26,15 +26,13 @@ import (
 
 // ModuleBaySpec defines the desired state of ModuleBay
 type ModuleBaySpec struct {
-	// Domain defines the administrative domain the resource belongs to.
-	Domain string `json:"domain" yaml:"domain" protobuf:"bytes,1,opt,name=domain"`
-	// Node defines the node to which this interface belongs
-	Node string `json:"node" yaml:"node" protobuf:"bytes,2,opt,name=node"`
+	// NodeID identifies the node identity this resource belongs to
+	NodeID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeID"`
 	// Position defines the position in the node the moduleBay is deployed
-	Position string `json:"psoition" yaml:"psoition" protobuf:"bytes,3,opt,name=psoition"`
+	Position string `json:"psoition" yaml:"psoition" protobuf:"bytes,2,opt,name=psoition"`
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
-	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,4,opt,name=userDefinedLabels"`
+	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,3,opt,name=userDefinedLabels"`
 }
 
 // ModuleBayStatus defines the observed state of ModuleBay
@@ -47,8 +45,9 @@ type ModuleBayStatus struct {
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// ModuleBay is the Schema for the ModuleBay API
-//
+// A ModuleBay serves as a modular slot or enclosure within a Node, designed to accommodate additional modules.
+// ModuleBays provide a flexible and scalable approach to extending the capabilities of Nodes,
+// allowing users to customize and enhance their infrastructure deployments according to specific requirements.
 // +k8s:openapi-gen=true
 type ModuleBay struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`

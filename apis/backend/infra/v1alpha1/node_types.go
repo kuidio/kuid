@@ -26,21 +26,30 @@ import (
 
 // NodeSpec defines the desired state of Node
 type NodeSpec struct {
-	// Domain defines the administrative domain the resource belongs to.
-	Domain string `json:"domain" yaml:"domain" protobuf:"bytes,1,opt,name=domain"`
-	// Site defines the site on which the node is deployed
-	Site string `json:"site" yaml:"site" protobuf:"bytes,2,opt,name=site"`
+	// NodeGroupID identifies the nodeGroup identity this resource belongs to
+	NodeGroupID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeGroupID"`
 	// Rack defines the rack in which the node is deployed
 	// +optional
-	Rack *string `json:"rack" yaml:"rack" protobuf:"bytes,3,opt,name=rack"`
+	Rack *string `json:"rack,omitempty" yaml:"rack,omitempty" protobuf:"bytes,2,opt,name=rack"`
+	// relative position in the rack
+	// +optional
+	Position *string `json:"position,omitempty" yaml:"position,omitempty" protobuf:"bytes,3,opt,name=position"`
 	// Location defines the location information where this resource is located
 	// in lon/lat coordinates
-	Location *Location `json:"location,omitempty" yaml:"location,omitempty" protobuf:"bytes,5,opt,name=location"`
+	// +optional
+	Location *Location `json:"location,omitempty" yaml:"location,omitempty" protobuf:"bytes,4,opt,name=location"`
 	// Provider defines the provider implementing this resource.
-	Provider string `json:"provider" yaml:"provider" protobuf:"bytes,4,opt,name=provider"`
+	Provider string `json:"provider" yaml:"provider" protobuf:"bytes,5,opt,name=provider"`
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
 	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,6,opt,name=userDefinedLabels"`
+
+	// TBD
+	// Serial number
+	// Node config
+	// Initial config
+	// IPAddress: IPv4 or IPv6
+	// OOB IPAddress
 }
 
 // NodeStatus defines the observed state of Node
@@ -53,8 +62,13 @@ type NodeStatus struct {
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// Node is the Schema for the Node API
-//
+// A Node represents a fundamental unit that implements compute, storage, and/or networking within your environment.
+// Nodes can embody physical, virtual, or containerized entities, offering versatility in deployment options to suit
+// diverse infrastructure requirements.
+// Nodes are logically organized within racks and sites/regions, establishing a hierarchical structure for efficient
+// resource management and organization. Additionally, Nodes are associated with nodeGroups, facilitating centralized
+// management and control within defined administrative boundaries.
+// Each Node is assigned a provider, representing the entity responsible for implementing the specifics of the Node.
 // +k8s:openapi-gen=true
 type Node struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`

@@ -93,10 +93,10 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		// Group=infra.be.kuid.dev, Version=v1alpha1
 	case infrav1alpha1.SchemeGroupVersion.WithResource("clusters"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Clusters().Informer()}, nil
-	case infrav1alpha1.SchemeGroupVersion.WithResource("domains"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Domains().Informer()}, nil
 	case infrav1alpha1.SchemeGroupVersion.WithResource("endpoints"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Endpoints().Informer()}, nil
+	case infrav1alpha1.SchemeGroupVersion.WithResource("endpointsets"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().EndpointSets().Informer()}, nil
 	case infrav1alpha1.SchemeGroupVersion.WithResource("links"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Links().Informer()}, nil
 	case infrav1alpha1.SchemeGroupVersion.WithResource("linksets"):
@@ -107,10 +107,16 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().ModuleBays().Informer()}, nil
 	case infrav1alpha1.SchemeGroupVersion.WithResource("nodes"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Nodes().Informer()}, nil
+	case infrav1alpha1.SchemeGroupVersion.WithResource("nodegroups"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().NodeGroups().Informer()}, nil
+	case infrav1alpha1.SchemeGroupVersion.WithResource("nodeitems"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().NodeItems().Informer()}, nil
 	case infrav1alpha1.SchemeGroupVersion.WithResource("nodesets"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().NodeSets().Informer()}, nil
 	case infrav1alpha1.SchemeGroupVersion.WithResource("racks"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Racks().Informer()}, nil
+	case infrav1alpha1.SchemeGroupVersion.WithResource("regions"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Regions().Informer()}, nil
 	case infrav1alpha1.SchemeGroupVersion.WithResource("sites"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Sites().Informer()}, nil
 

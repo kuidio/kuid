@@ -51,8 +51,7 @@ type ClusterStatus struct {
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// Cluster is the Schema for the Cluster API
-//
+// A Cluster represents a kubernetes cluster and is typically used as a nodeGroup identifier.
 // +k8s:openapi-gen=true
 type Cluster struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`

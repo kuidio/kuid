@@ -16,6 +16,7 @@ limitations under the License.
 
 package v1alpha1
 
+/*
 type ObjectReference struct {
 	// APIVersion of the target resources
 	APIVersion string `yaml:"apiVersion,omitempty" json:"apiVersion,omitempty" protobuf:"bytes,1,opt,name=apiVersion"`
@@ -30,3 +31,4 @@ type ObjectReference struct {
 	// Note: Namespace is not allowed; the namespace
 	// must match the namespace of the PackageVariantSet resource
 }
+*/

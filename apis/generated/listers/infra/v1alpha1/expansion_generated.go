@@ -25,14 +25,6 @@ type ClusterListerExpansion interface{}
 // ClusterNamespaceLister.
 type ClusterNamespaceListerExpansion interface{}
 
-// DomainListerExpansion allows custom methods to be added to
-// DomainLister.
-type DomainListerExpansion interface{}
-
-// DomainNamespaceListerExpansion allows custom methods to be added to
-// DomainNamespaceLister.
-type DomainNamespaceListerExpansion interface{}
-
 // EndpointListerExpansion allows custom methods to be added to
 // EndpointLister.
 type EndpointListerExpansion interface{}
@@ -40,6 +32,14 @@ type EndpointListerExpansion interface{}
 // EndpointNamespaceListerExpansion allows custom methods to be added to
 // EndpointNamespaceLister.
 type EndpointNamespaceListerExpansion interface{}
+
+// EndpointSetListerExpansion allows custom methods to be added to
+// EndpointSetLister.
+type EndpointSetListerExpansion interface{}
+
+// EndpointSetNamespaceListerExpansion allows custom methods to be added to
+// EndpointSetNamespaceLister.
+type EndpointSetNamespaceListerExpansion interface{}
 
 // LinkListerExpansion allows custom methods to be added to
 // LinkLister.
@@ -81,6 +81,22 @@ type NodeListerExpansion interface{}
 // NodeNamespaceLister.
 type NodeNamespaceListerExpansion interface{}
 
+// NodeGroupListerExpansion allows custom methods to be added to
+// NodeGroupLister.
+type NodeGroupListerExpansion interface{}
+
+// NodeGroupNamespaceListerExpansion allows custom methods to be added to
+// NodeGroupNamespaceLister.
+type NodeGroupNamespaceListerExpansion interface{}
+
+// NodeItemListerExpansion allows custom methods to be added to
+// NodeItemLister.
+type NodeItemListerExpansion interface{}
+
+// NodeItemNamespaceListerExpansion allows custom methods to be added to
+// NodeItemNamespaceLister.
+type NodeItemNamespaceListerExpansion interface{}
+
 // NodeSetListerExpansion allows custom methods to be added to
 // NodeSetLister.
 type NodeSetListerExpansion interface{}
@@ -96,6 +112,14 @@ type RackListerExpansion interface{}
 // RackNamespaceListerExpansion allows custom methods to be added to
 // RackNamespaceLister.
 type RackNamespaceListerExpansion interface{}
+
+// RegionListerExpansion allows custom methods to be added to
+// RegionLister.
+type RegionListerExpansion interface{}
+
+// RegionNamespaceListerExpansion allows custom methods to be added to
+// RegionNamespaceLister.
+type RegionNamespaceListerExpansion interface{}
 
 // SiteListerExpansion allows custom methods to be added to
 // SiteLister.

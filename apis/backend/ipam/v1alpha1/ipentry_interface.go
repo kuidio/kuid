@@ -155,7 +155,6 @@ func (r *IPEntry) GetClaimName() string {
 	return r.Spec.Claim
 }
 
-
 // dummy to satisfy the interface
 func (r *IPEntry) GetClaimType() backend.ClaimType {
 	return backend.ClaimType_Invalid
@@ -212,7 +211,6 @@ func (r *IPEntry) GetSpecID() string {
 func (r *IPEntry) GetSpec() any {
 	return r.Spec
 }
-
 
 func (r *IPEntry) SetSpec(s any) {
 	if spec, ok := s.(IPEntrySpec); ok {

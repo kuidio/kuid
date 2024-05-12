@@ -26,13 +26,13 @@ import (
 
 // NodeSetSetSpec defines the desired state of NodeSet
 type NodeSetSpec struct {
-	// Domain defines the administrative domain the resource belongs to.
-	Domain string `json:"domain" yaml:"domain" protobuf:"bytes,1,opt,name=domain"`
-	// Cluster to which this nodeSet is assocated
-	Cluster *string `json:"cluster" yaml:"cluster" protobuf:"bytes,2,opt,name=cluster"`
+	// NodeGroupID identifies the nodeGroup this resource belongs to
+	// E.g. a NodeSet in a cluster belongs to a nodeGroup where the name of the nodeGroup is the cluster
+	// E.g. a Virtual Node, belongs to a nodeGroup where the name of the nodeGroup represents the topology this node is deployed in
+	NodeGroupID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeGroupID"`
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
-	commonv1alpha1.ClaimLabels `json:",inline" yaml:",inline" protobuf:"bytes,3,opt,name=userDefinedLabels"`
+	commonv1alpha1.ClaimLabels `json:",inline" yaml:",inline" protobuf:"bytes,2,opt,name=userDefinedLabels"`
 }
 
 // NodeSetStatus defines the observed state of NodeSet
@@ -45,8 +45,10 @@ type NodeSetStatus struct {
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// NodeSet is the Schema for the NodeSet API
-//
+// A NodeSet represents a set of nodes.
+// E.g. it can be used to model a set of nodes in a cluster that share the same
+// charecteristics wrt, Numa, interfaces, etc.
+// Another usage of NodeSet is the representation of a virtual Node that consists of multiple nodes.
 // +k8s:openapi-gen=true
 type NodeSet struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`
