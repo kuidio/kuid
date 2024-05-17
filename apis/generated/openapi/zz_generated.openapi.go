@@ -2916,7 +2916,7 @@ func schema_apis_backend_infra_v1alpha1_Cluster(ref common.ReferenceCallback) co
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "Cluster is the Schema for the Cluster API A Cluster represents a kubernetes cluster and is typically used as a nodeGroup identifier.",
+				Description: "A Cluster represents a kubernetes cluster and is typically used as a nodeGroup identifier.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -3095,7 +3095,7 @@ func schema_apis_backend_infra_v1alpha1_Endpoint(ref common.ReferenceCallback) c
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "Endpoint is the Schema for the Endpoint API An Endpoint represents a communication interface or connection point within a Node, facilitating network communication and data transfer between different components or systems within the environment. `Endpoints` serve as gateways for transmitting and receiving data, enabling seamless communication between Nodes.",
+				Description: "An Endpoint represents a communication interface or connection point within a Node, facilitating network communication and data transfer between different components or systems within the environment. `Endpoints` serve as gateways for transmitting and receiving data, enabling seamless communication between Nodes.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -3243,7 +3243,7 @@ func schema_apis_backend_infra_v1alpha1_EndpointSet(ref common.ReferenceCallback
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "EndpointSet is the Schema for the EndpointSet API A EndpointSet represents a set of endpoints that belong together within a nodeGroup. E.g. it can be used to model a logical Link Aggregation group within a node or it can be used to represent a logical multi-homing construction between a set of nodes belonging to a single nodeGroup.",
+				Description: "A EndpointSet represents a set of endpoints that belong together within a nodeGroup. E.g. it can be used to model a logical Link Aggregation group within a node or it can be used to represent a logical multi-homing construction between a set of nodes belonging to a single nodeGroup.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -3546,7 +3546,7 @@ func schema_apis_backend_infra_v1alpha1_Link(ref common.ReferenceCallback) commo
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "Link is the Schema for the Link API A link represents a physical/logical connection that enables communication and data transfer between 2 endpoints of a node.",
+				Description: "A link represents a physical/logical connection that enables communication and data transfer between 2 endpoints of a node.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -3642,7 +3642,7 @@ func schema_apis_backend_infra_v1alpha1_LinkSet(ref common.ReferenceCallback) co
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "LinkSet is the Schema for the LinkSet API A linkSet represents a set of links that belong together within a node group or accross nodeGroups. E.g. it can be used to model a logical Link Aggregation group between 2 nodes or it can be used to represent a logical multi-homing construction between a set of nodes belonging to 1 or multiple nodeGroups/Topologies.",
+				Description: "A linkSet represents a set of links that belong together within a node group or accross nodeGroups. E.g. it can be used to model a logical Link Aggregation group between 2 nodes or it can be used to represent a logical multi-homing construction between a set of nodes belonging to 1 or multiple nodeGroups/Topologies.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -3924,7 +3924,7 @@ func schema_apis_backend_infra_v1alpha1_Module(ref common.ReferenceCallback) com
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "Module is the Schema for the Module API A module refers to a hardware component or expansion module that can be installed within a ModuleBay of a Node. Modules provide additional functionality and capabilities to the infrastructure environment, allowing users to enhance and customize their deployments according to specific requirements.",
+				Description: "A module refers to a hardware component or expansion module that can be installed within a ModuleBay of a Node. Modules provide additional functionality and capabilities to the infrastructure environment, allowing users to enhance and customize their deployments according to specific requirements.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -3971,7 +3971,7 @@ func schema_apis_backend_infra_v1alpha1_ModuleBay(ref common.ReferenceCallback) 
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "ModuleBay is the Schema for the ModuleBay API A ModuleBay serves as a modular slot or enclosure within a Node, designed to accommodate additional modules. ModuleBays provide a flexible and scalable approach to extending the capabilities of Nodes, allowing users to customize and enhance their infrastructure deployments according to specific requirements.",
+				Description: "A ModuleBay serves as a modular slot or enclosure within a Node, designed to accommodate additional modules. ModuleBays provide a flexible and scalable approach to extending the capabilities of Nodes, allowing users to customize and enhance their infrastructure deployments according to specific requirements.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -4312,7 +4312,7 @@ func schema_apis_backend_infra_v1alpha1_Node(ref common.ReferenceCallback) commo
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "Node is the Schema for the Node API A Node represents a fundamental unit that implements compute, storage, and/or networking within your environment. Nodes can embody physical, virtual, or containerized entities, offering versatility in deployment options to suit diverse infrastructure requirements. Nodes are logically organized within racks and sites/regions, establishing a hierarchical structure for efficient resource management and organization. Additionally, Nodes are associated with nodeGroups, facilitating centralized management and control within defined administrative boundaries. Each Node is assigned a provider, representing the entity responsible for implementing the specifics of the Node.",
+				Description: "A Node represents a fundamental unit that implements compute, storage, and/or networking within your environment. Nodes can embody physical, virtual, or containerized entities, offering versatility in deployment options to suit diverse infrastructure requirements. Nodes are logically organized within racks and sites/regions, establishing a hierarchical structure for efficient resource management and organization. Additionally, Nodes are associated with nodeGroups, facilitating centralized management and control within defined administrative boundaries. Each Node is assigned a provider, representing the entity responsible for implementing the specifics of the Node.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -4359,7 +4359,7 @@ func schema_apis_backend_infra_v1alpha1_NodeGroup(ref common.ReferenceCallback) 
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "NodeGroup is the Schema for the NodeGroup API A NodeGrouo represents a logical grouping of infrastructure resources managed by a single administrative entity or organization. NodeGroups serve as administrative boundaries within the environment, providing a structured framework for organizing and managing resources based on administrative ownership or responsibility. E.g. A NodeGroup on one hand, can be used to represent a topology that spans multiple sites and regions, but a NodeGroup can also be used to group all nodes of a cluster together.",
+				Description: "A NodeGrouo represents a logical grouping of infrastructure resources managed by a single administrative entity or organization. NodeGroups serve as administrative boundaries within the environment, providing a structured framework for organizing and managing resources based on administrative ownership or responsibility. E.g. A NodeGroup on one hand, can be used to represent a topology that spans multiple sites and regions, but a NodeGroup can also be used to group all nodes of a cluster together.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -4593,7 +4593,7 @@ func schema_apis_backend_infra_v1alpha1_NodeItem(ref common.ReferenceCallback) c
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "NodeItem is the Schema for the NodeItem API A NodeItem represents a specific hardware component or accessory associated with a Node. NodeItems represent a wide range of hardware elements, e.g Fan(s), PowerUnit(s), CPU(s), and other peripheral devices essential for the operation of the Node. NodeItem is used to represent the modular components of a node.",
+				Description: "A NodeItem represents a specific hardware component or accessory associated with a Node. NodeItems represent a wide range of hardware elements, e.g Fan(s), PowerUnit(s), CPU(s), and other peripheral devices essential for the operation of the Node. NodeItem is used to represent the modular components of a node.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -4828,7 +4828,7 @@ func schema_apis_backend_infra_v1alpha1_NodeSet(ref common.ReferenceCallback) co
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "NodeSet is the Schema for the NodeSet API A NodeSet represents a set of nodes. E.g. it can be used to model a set of nodes in a cluster that share the same charecteristics wrt, Numa, interfaces, etc. Another usage of NodeSet is the representation of a virtual Node that consists of multiple nodes.",
+				Description: "A NodeSet represents a set of nodes. E.g. it can be used to model a set of nodes in a cluster that share the same charecteristics wrt, Numa, interfaces, etc. Another usage of NodeSet is the representation of a virtual Node that consists of multiple nodes.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -5126,7 +5126,7 @@ func schema_apis_backend_infra_v1alpha1_Rack(ref common.ReferenceCallback) commo
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "Rack is the Schema for the Rack API A rack represents a physical equipment rack within your environment. Each rack is designed to accommodate the installation of devices and equipment.",
+				Description: "A rack represents a physical equipment rack within your environment. Each rack is designed to accommodate the installation of devices and equipment.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -5318,7 +5318,7 @@ func schema_apis_backend_infra_v1alpha1_Region(ref common.ReferenceCallback) com
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "Region is the Schema for the Region API A region represent a geography in which multiple infrastructure resources are grouped A region might represent a continent, country, city, campus, or other area depending on your environment.",
+				Description: "A region represent a geography in which multiple infrastructure resources are grouped A region might represent a continent, country, city, campus, or other area depending on your environment.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -5472,7 +5472,7 @@ func schema_apis_backend_infra_v1alpha1_Site(ref common.ReferenceCallback) commo
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "Site is the Schema for the Site API A site serves as a fundamental organizational unit for managing infrastructure resources within your environment. The utilization of sites may vary based on the organizational structure and requirements, but in essence, each site typically corresponds to a distinct building or campus.",
+				Description: "A site serves as a fundamental organizational unit for managing infrastructure resources within your environment. The utilization of sites may vary based on the organizational structure and requirements, but in essence, each site typically corresponds to a distinct building or campus.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
