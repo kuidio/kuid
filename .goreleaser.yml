@@ -1,0 +1,56 @@
+project_name: kuid-server
+builds:
+  - id: kuid-server
+    binary: kuid-server
+    main: ./main.go
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
+dockers:
+  - goos: linux
+    goarch: amd64
+    ids:
+      - kuid-server
+    image_templates:
+      - "ghcr.io/kuidio/{{ .ProjectName }}:v{{ .Version }}"
+      - "ghcr.io/kuidio/{{ .ProjectName }}:latest"
+    dockerfile: goreleaser.dockerfile
+    skip_push: false
+    build_flag_templates:
+      - "--pull"
+      - "--build-arg=USERID=10000"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.source=https://github.com/kuidio/{{.ProjectName}}"
+      - "--label=org.opencontainers.image.version=v{{.Version}}"
+archives:
+  - name_template: >-
+      {{ .ProjectName }}_
+      {{- .Version }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else if eq .Arch "arm" }}armv7
+      {{- else if eq .Arch "arm64" }}aarch64
+      {{- else }}{{ .Arch }}{{ end }}
+checksum:
+  name_template: "checksums.txt"
+snapshot:
+  name_template: "{{ .Tag }}"
+changelog:
+  use: github
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+release:
+  prerelease: auto
+  draft: false
+  replace_existing_draft: true
+  disable: false

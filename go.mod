@@ -37,7 +37,7 @@ require (
 	github.com/henderiw/idxtable v0.0.0-20240507134400-54d7d0b2a708
 	github.com/henderiw/iputil v0.0.0-20231218081610-37f78ad9c81c
 	github.com/henderiw/logger v0.0.0-20230911123436-8655829b1abe
-	github.com/henderiw/store v0.0.0-20240311135319-eb32ab80594b
+	github.com/henderiw/store v0.0.0-20240513051819-0202d08d7b42
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.9.0
