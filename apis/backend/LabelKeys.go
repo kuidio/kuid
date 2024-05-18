@@ -47,6 +47,7 @@ const (
 	KuidINVSiteKey             = "infra.be.kuid.dev/site"
 	KuidINVLocationKey         = "infra.be.kuid.dev/location"
 	KuidINVRackKey             = "infra.be.kuid.dev/rack"
+	KuidINVPositionKey         = "infra.be.kuid.dev/position"
 	KuidINVNodeKey             = "infra.be.kuid.dev/node"
 	KuidINVLinkKey             = "infra.be.kuid.dev/link"
 )
