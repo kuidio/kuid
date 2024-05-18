@@ -3906,17 +3906,20 @@ func schema_apis_backend_infra_v1alpha1_Location(ref common.ReferenceCallback) c
 				Properties: map[string]spec.Schema{
 					"latitude": {
 						SchemaProps: spec.SchemaProps{
-							Type:   []string{"string"},
-							Format: "",
+							Default: "",
+							Type:    []string{"string"},
+							Format:  "",
 						},
 					},
 					"longitude": {
 						SchemaProps: spec.SchemaProps{
-							Type:   []string{"string"},
-							Format: "",
+							Default: "",
+							Type:    []string{"string"},
+							Format:  "",
 						},
 					},
 				},
+				Required: []string{"latitude", "longitude"},
 			},
 		},
 	}

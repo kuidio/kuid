@@ -17,6 +17,6 @@ limitations under the License.
 package v1alpha1
 
 type Location struct {
-	Latitude  *string `json:"latitude,omitempty" yaml:"latitude,omitempty" protobuf:"bytes,1,opt,name=latitude"`
-	Longitude *string `json:"longitude,omitempty" yaml:"longitude,omitempty" protobuf:"bytes,2,opt,name=longitude"`
+	Latitude  string `json:"latitude" yaml:"latitude" protobuf:"bytes,1,opt,name=latitude"`
+	Longitude string `json:"longitude" yaml:"longitude" protobuf:"bytes,2,opt,name=longitude"`
 }
