@@ -67,16 +67,16 @@ func runE(cmd *cobra.Command, args []string) error {
 				return err
 			}
 			if gen == "go-to-protobuf" {
-				/*
-					err := run(exec.Command("go", "mod", "vendor"))
-					if err != nil {
-						return err
-					}
-					err = run(exec.Command("go", "mod", "tidy"))
-					if err != nil {
-						return err
-					}
-				*/
+
+				err := run(exec.Command("go", "mod", "vendor"))
+				if err != nil {
+					return err
+				}
+				err = run(exec.Command("go", "mod", "tidy"))
+				if err != nil {
+					return err
+				}
+
 			}
 		}
 	}

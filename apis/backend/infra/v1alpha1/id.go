@@ -18,7 +18,7 @@ package v1alpha1
 
 type SiteID struct {
 	// Region defines the region this sites belongs to
-	Region *string `json:"region,omitempty" yaml:"region,omitempty" protobuf:"bytes,1,opt,name=region"`
+	Region string `json:"region" yaml:"region" protobuf:"bytes,1,opt,name=region"`
 	// Site defines the site in which the node is deployed
 	Site string `json:"site" yaml:"site" protobuf:"bytes,2,opt,name=site"`
 }

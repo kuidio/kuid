@@ -3147,6 +3147,7 @@ func schema_apis_backend_infra_v1alpha1_EndpointID(ref common.ReferenceCallback)
 					"region": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Region defines the region this sites belongs to",
+							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -3184,7 +3185,7 @@ func schema_apis_backend_infra_v1alpha1_EndpointID(ref common.ReferenceCallback)
 						},
 					},
 				},
-				Required: []string{"site", "nodeGroup", "node", "endpoint"},
+				Required: []string{"region", "site", "nodeGroup", "node", "endpoint"},
 			},
 		},
 	}
@@ -3440,6 +3441,7 @@ func schema_apis_backend_infra_v1alpha1_EndpointSpec(ref common.ReferenceCallbac
 					"region": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Region defines the region this sites belongs to",
+							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -3507,7 +3509,7 @@ func schema_apis_backend_infra_v1alpha1_EndpointSpec(ref common.ReferenceCallbac
 						},
 					},
 				},
-				Required: []string{"site", "nodeGroup", "node", "endpoint"},
+				Required: []string{"region", "site", "nodeGroup", "node", "endpoint"},
 			},
 		},
 	}
@@ -4073,6 +4075,7 @@ func schema_apis_backend_infra_v1alpha1_ModuleBaySpec(ref common.ReferenceCallba
 					"region": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Region defines the region this sites belongs to",
+							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -4126,7 +4129,7 @@ func schema_apis_backend_infra_v1alpha1_ModuleBaySpec(ref common.ReferenceCallba
 						},
 					},
 				},
-				Required: []string{"site", "nodeGroup", "node", "psoition"},
+				Required: []string{"region", "site", "nodeGroup", "node", "psoition"},
 			},
 		},
 	}
@@ -4220,6 +4223,7 @@ func schema_apis_backend_infra_v1alpha1_ModuleSpec(ref common.ReferenceCallback)
 					"region": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Region defines the region this sites belongs to",
+							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -4273,7 +4277,7 @@ func schema_apis_backend_infra_v1alpha1_ModuleSpec(ref common.ReferenceCallback)
 						},
 					},
 				},
-				Required: []string{"site", "nodeGroup", "node", "moduleBay"},
+				Required: []string{"region", "site", "nodeGroup", "node", "moduleBay"},
 			},
 		},
 	}
@@ -4411,6 +4415,7 @@ func schema_apis_backend_infra_v1alpha1_NodeGroupID(ref common.ReferenceCallback
 					"region": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Region defines the region this sites belongs to",
+							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -4432,7 +4437,7 @@ func schema_apis_backend_infra_v1alpha1_NodeGroupID(ref common.ReferenceCallback
 						},
 					},
 				},
-				Required: []string{"site", "nodeGroup"},
+				Required: []string{"region", "site", "nodeGroup"},
 			},
 		},
 	}
@@ -4554,6 +4559,7 @@ func schema_apis_backend_infra_v1alpha1_NodeID(ref common.ReferenceCallback) com
 					"region": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Region defines the region this sites belongs to",
+							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -4583,7 +4589,7 @@ func schema_apis_backend_infra_v1alpha1_NodeID(ref common.ReferenceCallback) com
 						},
 					},
 				},
-				Required: []string{"site", "nodeGroup", "node"},
+				Required: []string{"region", "site", "nodeGroup", "node"},
 			},
 		},
 	}
@@ -4695,6 +4701,7 @@ func schema_apis_backend_infra_v1alpha1_NodeItemSpec(ref common.ReferenceCallbac
 					"region": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Region defines the region this sites belongs to",
+							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -4740,7 +4747,7 @@ func schema_apis_backend_infra_v1alpha1_NodeItemSpec(ref common.ReferenceCallbac
 						},
 					},
 				},
-				Required: []string{"site", "nodeGroup", "node"},
+				Required: []string{"region", "site", "nodeGroup", "node"},
 			},
 		},
 	}
@@ -4930,6 +4937,7 @@ func schema_apis_backend_infra_v1alpha1_NodeSetSpec(ref common.ReferenceCallback
 					"region": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Region defines the region this sites belongs to",
+							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -4973,7 +4981,7 @@ func schema_apis_backend_infra_v1alpha1_NodeSetSpec(ref common.ReferenceCallback
 						},
 					},
 				},
-				Required: []string{"site", "nodeGroup"},
+				Required: []string{"region", "site", "nodeGroup"},
 			},
 		},
 		Dependencies: []string{
@@ -5020,6 +5028,7 @@ func schema_apis_backend_infra_v1alpha1_NodeSpec(ref common.ReferenceCallback) c
 					"region": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Region defines the region this sites belongs to",
+							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -5085,7 +5094,7 @@ func schema_apis_backend_infra_v1alpha1_NodeSpec(ref common.ReferenceCallback) c
 						},
 					},
 				},
-				Required: []string{"site", "nodeGroup", "provider"},
+				Required: []string{"region", "site", "nodeGroup", "provider"},
 			},
 		},
 		Dependencies: []string{
@@ -5228,6 +5237,7 @@ func schema_apis_backend_infra_v1alpha1_RackSpec(ref common.ReferenceCallback) c
 					"region": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Region defines the region this sites belongs to",
+							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -5277,7 +5287,7 @@ func schema_apis_backend_infra_v1alpha1_RackSpec(ref common.ReferenceCallback) c
 						},
 					},
 				},
-				Required: []string{"site"},
+				Required: []string{"region", "site"},
 			},
 		},
 		Dependencies: []string{
@@ -5524,6 +5534,7 @@ func schema_apis_backend_infra_v1alpha1_SiteID(ref common.ReferenceCallback) com
 					"region": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Region defines the region this sites belongs to",
+							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -5537,7 +5548,7 @@ func schema_apis_backend_infra_v1alpha1_SiteID(ref common.ReferenceCallback) com
 						},
 					},
 				},
-				Required: []string{"site"},
+				Required: []string{"region", "site"},
 			},
 		},
 	}
