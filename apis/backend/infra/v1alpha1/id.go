@@ -16,6 +16,8 @@ limitations under the License.
 
 package v1alpha1
 
+import "fmt"
+
 type SiteID struct {
 	// Region defines the region this sites belongs to
 	Region string `json:"region" yaml:"region" protobuf:"bytes,1,opt,name=region"`
@@ -39,4 +41,36 @@ type EndpointID struct {
 	NodeID `json:",inline" yaml:",inline" protobuf:"bytes,6,opt,name=nodeID"`
 	// Endpoint defines the name of the endpoint
 	Endpoint string `json:"endpoint" yaml:"endpoint" protobuf:"bytes,5,opt,name=endpoint"`
+}
+
+func (r SiteID) KuidString() string {
+	return fmt.Sprintf(
+		"%s.%s.",
+		r.Region,
+		r.Site,
+	)
+}
+
+func (r NodeGroupID) KuidString() string {
+	return fmt.Sprintf(
+		"%s.%s",
+		r.NodeGroup,
+		r.SiteID.KuidString(),
+	)
+}
+
+func (r NodeID) KuidString() string {
+	return fmt.Sprintf(
+		"%s.%s",
+		r.NodeGroupID.KuidString(),
+		r.Node,
+	)
+}
+
+func (r EndpointID) KuidString() string {
+	return fmt.Sprintf(
+		"%s.%s",
+		r.NodeID.KuidString(),
+		r.Endpoint,
+	)
 }
