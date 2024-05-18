@@ -45,7 +45,7 @@ type EndpointID struct {
 
 func (r SiteID) KuidString() string {
 	return fmt.Sprintf(
-		"%s.%s.",
+		"%s.%s",
 		r.Region,
 		r.Site,
 	)
