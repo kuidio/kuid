@@ -18,6 +18,7 @@ package resources
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"sync"
 
@@ -96,6 +97,8 @@ func (r *Resources) AddNewResource(ctx context.Context, cr client.Object, o back
 // and puts the results in the resource inventory
 func (r *Resources) getExistingResources(ctx context.Context, cr client.Object) error {
 	log := log.FromContext(ctx)
+
+	var errm error
 	for _, ownObj := range r.cfg.Owns {
 		ownObj := ownObj
 
@@ -106,7 +109,8 @@ func (r *Resources) getExistingResources(ctx context.Context, cr client.Object) 
 
 		ownObjList := ownObj.NewObjList()
 		if err := r.List(ctx, ownObjList, opts...); err != nil {
-			return err
+			errm = errors.Join(errm, err)
+			continue
 		}
 		for _, o := range ownObjList.GetObjects() {
 			o := o
@@ -120,7 +124,7 @@ func (r *Resources) getExistingResources(ctx context.Context, cr client.Object) 
 			}
 		}
 	}
-	return nil
+	return errm
 }
 
 // APIDelete is used to delete the existing resources that are owned by this cr
@@ -138,17 +142,20 @@ func (r *Resources) APIDelete(ctx context.Context, cr client.Object) error {
 
 func (r *Resources) apiDelete(ctx context.Context) error {
 	// delete in priority
+	var errm error
 	for ref, o := range r.existingResources {
 		if ref.Kind == "Namespace" {
 			continue
 		}
 		if err := r.delete(ctx, ref, o); err != nil {
-			return err
+			errm = errors.Join(errm, err)
+			continue
 		}
 	}
 	for ref, o := range r.existingResources {
 		if err := r.delete(ctx, ref, o); err != nil {
-			return err
+			errm = errors.Join(errm, err)
+			continue
 		}
 	}
 	return nil
@@ -200,19 +207,26 @@ func (r *Resources) APIApply(ctx context.Context, cr client.Object) error {
 
 func (r *Resources) apiApply(ctx context.Context) error {
 	// apply in priority
+	var errm error
 	for ref, o := range r.newResources {
 		ref := ref
 		o := o
 		if ref.Kind == "Namespace" { // apply in priority
-			r.apply(ctx, ref, o)
+			if err := r.apply(ctx, ref, o); err != nil {
+				errm =errors.Join(errm, err)
+				continue
+			}
 		} else {
 			continue
 		}
 	}
 	for ref, o := range r.newResources {
-		r.apply(ctx, ref, o)
+		if err := r.apply(ctx, ref, o); err != nil {
+			errm =errors.Join(errm, err)
+			continue
+		}
 	}
-	return nil
+	return errm
 }
 
 func (r *Resources) apply(ctx context.Context, ref corev1.ObjectReference, o backend.GenericObject) error {
