@@ -384,3 +384,16 @@ func (r *Endpoint) IsClaimed(cr client.Object) OwnerStatus {
 	}
 	return Free
 }
+
+func (r *Endpoint) IsOwnedBy(cr client.Object) bool {
+	refs := r.GetOwnerReferences()
+	for _, ref := range refs {
+		if ref.APIVersion == cr.GetObjectKind().GroupVersionKind().GroupVersion().String() &&
+			ref.Kind == cr.GetObjectKind().GroupVersionKind().Kind {
+			if ref.UID == cr.GetUID() && ref.Name == cr.GetName() {
+				return true
+			}
+		}
+	}
+	return false
+}
