@@ -16,7 +16,10 @@ limitations under the License.
 
 package v1alpha1
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type SiteID struct {
 	// Region defines the region this sites belongs to
@@ -65,6 +68,23 @@ func (r NodeID) KuidString() string {
 		r.NodeGroupID.KuidString(),
 		r.Node,
 	)
+}
+
+func String2NodeID(s string) *NodeID {
+	parts := strings.Split(s, ".")
+	if len(parts) != 4 {
+		return nil
+	}
+	return &NodeID{
+		Node: parts[3],
+		NodeGroupID: NodeGroupID{
+			NodeGroup: parts[0],
+			SiteID: SiteID{
+				Region: parts[1],
+				Site:   parts[2],
+			},
+		},
+	}
 }
 
 func (r EndpointID) KuidString() string {
