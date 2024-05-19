@@ -86,7 +86,7 @@ type GenericObject interface {
 	SetSpec(x any)
 	GetSpec() any
 	NewObjList() GenericObjectList
-	GroupVersionKind() schema.GroupVersionKind
+	SchemaGroupVersionKind() schema.GroupVersionKind
 }
 
 type Object interface {
