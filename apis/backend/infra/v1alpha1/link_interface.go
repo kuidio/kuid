@@ -45,6 +45,8 @@ const LinkSingular = "link"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &Link{}
 var _ resource.ObjectList = &LinkList{}
+var _ backend.GenericObject = &Link{}
+var _ backend.ObjectList = &LinkList{}
 
 // GetListMeta returns the ListMeta
 func (r *LinkList) GetListMeta() *metav1.ListMeta {

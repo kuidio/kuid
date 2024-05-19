@@ -45,6 +45,8 @@ const EndpointSetSingular = "endpointset"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &EndpointSet{}
 var _ resource.ObjectList = &EndpointSetList{}
+var _ backend.GenericObject = &EndpointSet{}
+var _ backend.ObjectList = &EndpointSetList{}
 
 // GetListMeta returns the ListMeta
 func (r *EndpointSetList) GetListMeta() *metav1.ListMeta {

@@ -45,6 +45,8 @@ const RackSingular = "rack"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &Rack{}
 var _ resource.ObjectList = &RackList{}
+var _ backend.GenericObject = &Rack{}
+var _ backend.ObjectList = &RackList{}
 
 // GetListMeta returns the ListMeta
 func (r *RackList) GetListMeta() *metav1.ListMeta {

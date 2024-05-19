@@ -45,6 +45,8 @@ const RegionSingular = "region"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &Region{}
 var _ resource.ObjectList = &RegionList{}
+var _ backend.GenericObject = &Region{}
+var _ backend.ObjectList = &RegionList{}
 
 // GetListMeta returns the ListMeta
 func (r *RegionList) GetListMeta() *metav1.ListMeta {

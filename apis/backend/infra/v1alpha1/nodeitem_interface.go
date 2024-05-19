@@ -45,6 +45,8 @@ const NodeItemSingular = "nodeitem"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &NodeItem{}
 var _ resource.ObjectList = &NodeItemList{}
+var _ backend.GenericObject = &NodeItem{}
+var _ backend.ObjectList = &NodeItemList{}
 
 // GetListMeta returns the ListMeta
 func (r *NodeItemList) GetListMeta() *metav1.ListMeta {

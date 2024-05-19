@@ -45,6 +45,8 @@ const NodeSetSingular = "nodeset"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &NodeSet{}
 var _ resource.ObjectList = &NodeSetList{}
+var _ backend.GenericObject = &NodeSet{}
+var _ backend.ObjectList = &NodeSetList{}
 
 // GetListMeta returns the ListMeta
 func (r *NodeSetList) GetListMeta() *metav1.ListMeta {

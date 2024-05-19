@@ -45,6 +45,8 @@ const ModuleSingular = "module"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &Module{}
 var _ resource.ObjectList = &ModuleList{}
+var _ backend.GenericObject = &Module{}
+var _ backend.ObjectList = &ModuleList{}
 
 // GetListMeta returns the ListMeta
 func (r *ModuleList) GetListMeta() *metav1.ListMeta {

@@ -45,6 +45,8 @@ const LinkSetSingular = "linkset"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &LinkSet{}
 var _ resource.ObjectList = &LinkSetList{}
+var _ backend.GenericObject = &LinkSet{}
+var _ backend.ObjectList = &LinkSetList{}
 
 // GetListMeta returns the ListMeta
 func (r *LinkSetList) GetListMeta() *metav1.ListMeta {

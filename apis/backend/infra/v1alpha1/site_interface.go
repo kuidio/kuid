@@ -45,6 +45,8 @@ const SiteSingular = "site"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &Site{}
 var _ resource.ObjectList = &SiteList{}
+var _ backend.GenericObject = &Site{}
+var _ backend.ObjectList = &SiteList{}
 
 // GetListMeta returns the ListMeta
 func (r *SiteList) GetListMeta() *metav1.ListMeta {

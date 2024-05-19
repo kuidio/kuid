@@ -45,6 +45,8 @@ const ModuleBaySingular = "modulebay"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &ModuleBay{}
 var _ resource.ObjectList = &ModuleBayList{}
+var _ backend.GenericObject = &ModuleBay{}
+var _ backend.ObjectList = &ModuleBayList{}
 
 // GetListMeta returns the ListMeta
 func (r *ModuleBayList) GetListMeta() *metav1.ListMeta {

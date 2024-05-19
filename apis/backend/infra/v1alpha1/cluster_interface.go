@@ -45,6 +45,8 @@ const ClusterSingular = "cluster"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &Cluster{}
 var _ resource.ObjectList = &ClusterList{}
+var _ backend.GenericObject = &Cluster{}
+var _ backend.ObjectList = &ClusterList{}
 
 // GetListMeta returns the ListMeta
 func (r *ClusterList) GetListMeta() *metav1.ListMeta {
