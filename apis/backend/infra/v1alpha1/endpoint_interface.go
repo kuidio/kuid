@@ -370,19 +370,19 @@ const (
 	Claimed
 )
 
-func (r *Endpoint) IsClaimed(cr client.Object) OwnerStatus {
+func (r *Endpoint) IsClaimed(cr client.Object) (OwnerStatus, *metav1.OwnerReference) {
 	refs := r.GetOwnerReferences()
 	for _, ref := range refs {
 		if ref.APIVersion == cr.GetObjectKind().GroupVersionKind().GroupVersion().String() &&
 			ref.Kind == cr.GetObjectKind().GroupVersionKind().Kind {
 			if ref.UID == cr.GetUID() && ref.Name == cr.GetName() {
-				return Owned
+				return Owned, nil
 			} else {
-				return Claimed
+				return Claimed, &ref
 			}
 		}
 	}
-	return Free
+	return Free, nil
 }
 
 func (r *Endpoint) IsOwnedBy(cr client.Object) bool {
@@ -396,4 +396,50 @@ func (r *Endpoint) IsOwnedBy(cr client.Object) bool {
 		}
 	}
 	return false
+}
+
+func (r *Endpoint) Claim(cr client.Object) {
+	refs := r.GetOwnerReferences()
+	if len(refs) == 0 {
+		refs = []metav1.OwnerReference{}
+	}
+	found := false
+	for _, ref := range refs {
+		if ref.APIVersion == cr.GetObjectKind().GroupVersionKind().GroupVersion().String() &&
+			ref.Kind == cr.GetObjectKind().GroupVersionKind().Kind &&
+			ref.Name == cr.GetName() &&
+			ref.UID == cr.GetUID() {
+			found = true
+			break
+		}
+	}
+	if !found {
+		refs = append(refs, metav1.OwnerReference{
+			APIVersion: cr.GetObjectKind().GroupVersionKind().GroupVersion().String(),
+			Kind:       cr.GetObjectKind().GroupVersionKind().Kind,
+			Name:       cr.GetName(),
+			UID:        cr.GetUID(),
+		})
+	}
+	r.SetOwnerReferences(refs)
+}
+
+func (r *Endpoint) Release(cr client.Object) {
+	refs := r.GetOwnerReferences()
+	found := false
+	idx := 0
+	for i, ref := range refs {
+		if ref.APIVersion == cr.GetObjectKind().GroupVersionKind().GroupVersion().String() &&
+			ref.Kind == cr.GetObjectKind().GroupVersionKind().Kind &&
+			ref.Name == cr.GetName() &&
+			ref.UID == cr.GetUID() {
+			found = true
+			idx = i
+			break
+		}
+	}
+	if found {
+		refs = append(refs[:idx], refs[idx+1:]...)
+		r.SetOwnerReferences(refs)
+	}
 }
