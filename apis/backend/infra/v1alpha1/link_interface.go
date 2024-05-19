@@ -145,6 +145,15 @@ func (r *LinkList) GetObjects() []backend.GenericObject {
 	return objs
 }
 
+func (r *LinkList) GetLinks() []*Link {
+	objs := []*Link{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
+}
+
 func (r *Link) CalculateHash() ([sha1.Size]byte, error) {
 	// Convert the struct to JSON
 	jsonData, err := json.Marshal(r)

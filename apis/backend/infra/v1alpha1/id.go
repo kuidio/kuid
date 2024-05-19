@@ -94,3 +94,23 @@ func (r EndpointID) KuidString() string {
 		r.Endpoint,
 	)
 }
+
+func String2EndpointID(s string) *EndpointID {
+	parts := strings.Split(s, ".")
+	if len(parts) != 5 {
+		return nil
+	}
+	return &EndpointID{
+		Endpoint: parts[4],
+		NodeID: NodeID{
+			Node: parts[3],
+			NodeGroupID: NodeGroupID{
+				NodeGroup: parts[0],
+				SiteID: SiteID{
+					Region: parts[1],
+					Site:   parts[2],
+				},
+			},
+		},
+	}
+}
