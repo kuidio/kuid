@@ -168,6 +168,16 @@ func (r *NodeGroup) ValidateSyntax() field.ErrorList {
 	return allErrs
 }
 
+func (r *NodeGroup) GetSpec() any {
+	return r.Spec
+}
+
+func (r *NodeGroup) SetSpec(s any) {
+	if spec, ok := s.(NodeGroupSpec); ok {
+		r.Spec = spec
+	}
+}
+
 // BuildNodeGroup returns a reource from a client Object a Spec/Status
 func BuildNodeGroup(meta metav1.ObjectMeta, spec *NodeGroupSpec, status *NodeGroupStatus) *NodeGroup {
 	aspec := NodeGroupSpec{}

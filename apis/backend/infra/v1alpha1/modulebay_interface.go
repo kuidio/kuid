@@ -168,6 +168,16 @@ func (r *ModuleBay) ValidateSyntax() field.ErrorList {
 	return allErrs
 }
 
+func (r *ModuleBay) GetSpec() any {
+	return r.Spec
+}
+
+func (r *ModuleBay) SetSpec(s any) {
+	if spec, ok := s.(ModuleBaySpec); ok {
+		r.Spec = spec
+	}
+}
+
 // BuildModuleBay returns a reource from a client Object a Spec/Status
 func BuildModuleBay(meta metav1.ObjectMeta, spec *ModuleBaySpec, status *ModuleBayStatus) *ModuleBay {
 	aspec := ModuleBaySpec{}

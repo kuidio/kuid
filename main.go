@@ -532,6 +532,22 @@ func main() {
 					DB:     db,
 				},
 				genidbe)).
+			WithResourceAndHandler(ctx, &infrabev1alpha1.EndpointSet{}, genericserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&genericserver.ServerObjContext{
+					TracerString:   "endpointset-server",
+					Obj:            &infrabev1alpha1.EndpointSet{},
+					ConversionFunc: infrabev1alpha1.EndpointSetConvertFieldSelector,
+					TableConverter: infrabev1alpha1.EndpointSetTableConvertor,
+					FielSelector:   infrabev1alpha1.EndpointSetParseFieldSelector,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				genidbe)).
 			WithResourceAndHandler(ctx, &infrabev1alpha1.Link{}, genericserver.NewProvider(
 				ctx,
 				mgr.GetClient(),

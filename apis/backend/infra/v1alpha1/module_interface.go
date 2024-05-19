@@ -168,6 +168,16 @@ func (r *Module) ValidateSyntax() field.ErrorList {
 	return allErrs
 }
 
+func (r *Module) GetSpec() any {
+	return r.Spec
+}
+
+func (r *Module) SetSpec(s any) {
+	if spec, ok := s.(ModuleSpec); ok {
+		r.Spec = spec
+	}
+}
+
 // BuildModule returns a reource from a client Object a Spec/Status
 func BuildModule(meta metav1.ObjectMeta, spec *ModuleSpec, status *ModuleStatus) *Module {
 	aspec := ModuleSpec{}

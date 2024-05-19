@@ -197,6 +197,16 @@ func (r *Endpoint) ValidateSyntax() field.ErrorList {
 	return allErrs
 }
 
+func (r *Endpoint) GetSpec() any {
+	return r.Spec
+}
+
+func (r *Endpoint) SetSpec(s any) {
+	if spec, ok := s.(EndpointSpec); ok {
+		r.Spec = spec
+	}
+}
+
 // BuildEndpoint returns a reource from a client Object a Spec/Status
 func BuildEndpoint(meta metav1.ObjectMeta, spec *EndpointSpec, status *EndpointStatus) *Endpoint {
 	aspec := EndpointSpec{}

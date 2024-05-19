@@ -168,6 +168,16 @@ func (r *LinkSet) ValidateSyntax() field.ErrorList {
 	return allErrs
 }
 
+func (r *LinkSet) GetSpec() any {
+	return r.Spec
+}
+
+func (r *LinkSet) SetSpec(s any) {
+	if spec, ok := s.(LinkSetSpec); ok {
+		r.Spec = spec
+	}
+}
+
 // BuildLinkSet returns a reource from a client Object a Spec/Status
 func BuildLinkSet(meta metav1.ObjectMeta, spec *LinkSetSpec, status *LinkSetStatus) *LinkSet {
 	aspec := LinkSetSpec{}

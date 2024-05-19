@@ -182,6 +182,16 @@ func (r *Link) ValidateSyntax() field.ErrorList {
 	return allErrs
 }
 
+func (r *Link) GetSpec() any {
+	return r.Spec
+}
+
+func (r *Link) SetSpec(s any) {
+	if spec, ok := s.(LinkSpec); ok {
+		r.Spec = spec
+	}
+}
+
 // BuildLink returns a reource from a client Object a Spec/Status
 func BuildLink(meta metav1.ObjectMeta, spec *LinkSpec, status *LinkStatus) *Link {
 	aspec := LinkSpec{}
@@ -214,8 +224,8 @@ func LinkTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 			return []interface{}{
 				r.GetName(),
 				r.GetCondition(conditionv1alpha1.ConditionTypeReady).Status,
-				r.GetEndPointIDA().String(),
-				r.GetEndPointIDB().String(),
+				r.GetEndPointIDA().KuidString(),
+				r.GetEndPointIDB().KuidString(),
 			}
 		},
 		Columns: []metav1.TableColumnDefinition{

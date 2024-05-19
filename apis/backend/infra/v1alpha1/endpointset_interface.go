@@ -39,70 +39,70 @@ import (
 	genericapirequest "k8s.io/apiserver/pkg/endpoints/request"
 )
 
-const ClusterPlural = "clusters"
-const ClusterSingular = "cluster"
+const EndpointSetPlural = "endpointsets"
+const EndpointSetSingular = "endpointset"
 
 // +k8s:deepcopy-gen=false
-var _ resource.Object = &Cluster{}
-var _ resource.ObjectList = &ClusterList{}
+var _ resource.Object = &EndpointSet{}
+var _ resource.ObjectList = &EndpointSetList{}
 
 // GetListMeta returns the ListMeta
-func (r *ClusterList) GetListMeta() *metav1.ListMeta {
+func (r *EndpointSetList) GetListMeta() *metav1.ListMeta {
 	return &r.ListMeta
 }
 
-func (r *Cluster) GetSingularName() string {
-	return ClusterSingular
+func (r *EndpointSet) GetSingularName() string {
+	return EndpointSetSingular
 }
 
-func (Cluster) GetGroupVersionResource() schema.GroupVersionResource {
+func (EndpointSet) GetGroupVersionResource() schema.GroupVersionResource {
 	return schema.GroupVersionResource{
 		Group:    SchemeGroupVersion.Group,
 		Version:  SchemeGroupVersion.Version,
-		Resource: ClusterPlural,
+		Resource: EndpointSetPlural,
 	}
 }
 
 // IsStorageVersion returns true -- v1alpha1.Config is used as the internal version.
 // IsStorageVersion implements resource.Object.
-func (Cluster) IsStorageVersion() bool {
+func (EndpointSet) IsStorageVersion() bool {
 	return true
 }
 
 // GetObjectMeta implements resource.Object
-func (r *Cluster) GetObjectMeta() *metav1.ObjectMeta {
+func (r *EndpointSet) GetObjectMeta() *metav1.ObjectMeta {
 	return &r.ObjectMeta
 }
 
 // NamespaceScoped returns true to indicate Fortune is a namespaced resource.
 // NamespaceScoped implements resource.Object.
-func (Cluster) NamespaceScoped() bool {
+func (EndpointSet) NamespaceScoped() bool {
 	return true
 }
 
 // New implements resource.Object
-func (Cluster) New() runtime.Object {
-	return &Cluster{}
+func (EndpointSet) New() runtime.Object {
+	return &EndpointSet{}
 }
 
 // NewList implements resource.Object
-func (Cluster) NewList() runtime.Object {
-	return &ClusterList{}
+func (EndpointSet) NewList() runtime.Object {
+	return &EndpointSetList{}
 }
 
 // GetCondition returns the condition based on the condition kind
-func (r *Cluster) GetCondition(t conditionv1alpha1.ConditionType) conditionv1alpha1.Condition {
+func (r *EndpointSet) GetCondition(t conditionv1alpha1.ConditionType) conditionv1alpha1.Condition {
 	return r.Status.GetCondition(t)
 }
 
 // SetConditions sets the conditions on the resource. it allows for 0, 1 or more conditions
 // to be set at once
-func (r *Cluster) SetConditions(c ...conditionv1alpha1.Condition) {
+func (r *EndpointSet) SetConditions(c ...conditionv1alpha1.Condition) {
 	r.Status.SetConditions(c...)
 }
 
-// ClusterConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for Cluster
-func ClusterConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+// EndpointSetConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for EndpointSet
+func EndpointSetConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil
@@ -113,7 +113,7 @@ func ClusterConvertFieldSelector(label, value string) (internalLabel, internalVa
 	}
 }
 
-func (r *ClusterList) GetItems() []backend.Object {
+func (r *EndpointSetList) GetItems() []backend.Object {
 	objs := []backend.Object{}
 	for _, r := range r.Items {
 		r := r
@@ -122,7 +122,7 @@ func (r *ClusterList) GetItems() []backend.Object {
 	return objs
 }
 
-func (r *Cluster) CalculateHash() ([sha1.Size]byte, error) {
+func (r *EndpointSet) CalculateHash() ([sha1.Size]byte, error) {
 	// Convert the struct to JSON
 	jsonData, err := json.Marshal(r)
 	if err != nil {
@@ -133,28 +133,32 @@ func (r *Cluster) CalculateHash() ([sha1.Size]byte, error) {
 	return sha1.Sum(jsonData), nil
 }
 
-func (r *Cluster) GetNamespacedName() types.NamespacedName {
+func (r *EndpointSet) GetNamespacedName() types.NamespacedName {
 	return types.NamespacedName{
 		Namespace: r.GetNamespace(),
 		Name:      r.GetName(),
 	}
 }
 
-func (r *Cluster) GetKey() store.Key {
+func (r *EndpointSet) GetKey() store.Key {
 	return store.KeyFromNSN(r.GetNamespacedName())
 }
 
-func (r *Cluster) GetOwnerReference() *commonv1alpha1.OwnerReference {
+func (r *EndpointSet) GetEndpointSet() string {
+	return r.Name
+}
+
+func (r *EndpointSet) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	return &commonv1alpha1.OwnerReference{
 		Group:     SchemeGroupVersion.Group,
 		Version:   SchemeGroupVersion.Version,
-		Kind:      ClusterKind,
+		Kind:      EndpointSetKind,
 		Namespace: r.Namespace,
 		Name:      r.Name,
 	}
 }
 
-func (r *Cluster) ValidateSyntax() field.ErrorList {
+func (r *EndpointSet) ValidateSyntax() field.ErrorList {
 	var allErrs field.ErrorList
 
 	/*
@@ -168,30 +172,30 @@ func (r *Cluster) ValidateSyntax() field.ErrorList {
 	return allErrs
 }
 
-func (r *Cluster) GetSpec() any {
+func (r *EndpointSet) GetSpec() any {
 	return r.Spec
 }
 
-func (r *Cluster) SetSpec(s any) {
-	if spec, ok := s.(ClusterSpec); ok {
+func (r *EndpointSet) SetSpec(s any) {
+	if spec, ok := s.(EndpointSetSpec); ok {
 		r.Spec = spec
 	}
 }
 
-// BuildCluster returns a reource from a client Object a Spec/Status
-func BuildCluster(meta metav1.ObjectMeta, spec *ClusterSpec, status *ClusterStatus) *Cluster {
-	aspec := ClusterSpec{}
+// BuildEndpointSet returns a reource from a client Object a Spec/Status
+func BuildEndpointSet(meta metav1.ObjectMeta, spec *EndpointSetSpec, status *EndpointSetStatus) *EndpointSet {
+	aspec := EndpointSetSpec{}
 	if spec != nil {
 		aspec = *spec
 	}
-	astatus := ClusterStatus{}
+	astatus := EndpointSetStatus{}
 	if status != nil {
 		astatus = *status
 	}
-	return &Cluster{
+	return &EndpointSet{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: SchemeGroupVersion.Identifier(),
-			Kind:       ClusterKind,
+			Kind:       EndpointSetKind,
 		},
 		ObjectMeta: meta,
 		Spec:       aspec,
@@ -199,44 +203,40 @@ func BuildCluster(meta metav1.ObjectMeta, spec *ClusterSpec, status *ClusterStat
 	}
 }
 
-func ClusterTableConvertor(gr schema.GroupResource) registry.TableConvertor {
+func EndpointSetTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 	return registry.TableConvertor{
 		Resource: gr,
 		Cells: func(obj runtime.Object) []interface{} {
-			r, ok := obj.(*Cluster)
+			r, ok := obj.(*EndpointSet)
 			if !ok {
 				return nil
 			}
 			return []interface{}{
 				r.GetName(),
 				r.GetCondition(conditionv1alpha1.ConditionTypeReady).Status,
-				r.Spec.NodeGroup,
-				r.Spec.Provider,
 			}
 		},
 		Columns: []metav1.TableColumnDefinition{
 			{Name: "Name", Type: "string"},
 			{Name: "Ready", Type: "string"},
-			{Name: "Domain", Type: "string"},
-			{Name: "Provider", Type: "string"},
 		},
 	}
 }
 
-func ClusterParseFieldSelector(ctx context.Context, fieldSelector fields.Selector) (backend.Filter, error) {
-	var filter *ClusterFilter
+func EndpointSetParseFieldSelector(ctx context.Context, fieldSelector fields.Selector) (backend.Filter, error) {
+	var filter *EndpointSetFilter
 
 	// add the namespace to the list
 	namespace, ok := genericapirequest.NamespaceFrom(ctx)
 	if fieldSelector == nil {
 		if ok {
-			return &ClusterFilter{Namespace: namespace}, nil
+			return &EndpointSetFilter{Namespace: namespace}, nil
 		}
 		return filter, nil
 	}
 	requirements := fieldSelector.Requirements()
 	for _, requirement := range requirements {
-		filter = &ClusterFilter{}
+		filter = &EndpointSetFilter{}
 		switch requirement.Operator {
 		case selection.Equals, selection.DoesNotExist:
 			if requirement.Value == "" {
@@ -260,14 +260,14 @@ func ClusterParseFieldSelector(ctx context.Context, fieldSelector fields.Selecto
 		if filter != nil {
 			filter.Namespace = namespace
 		} else {
-			filter = &ClusterFilter{Namespace: namespace}
+			filter = &EndpointSetFilter{Namespace: namespace}
 		}
 	}
 
-	return &ClusterFilter{}, nil
+	return &EndpointSetFilter{}, nil
 }
 
-type ClusterFilter struct {
+type EndpointSetFilter struct {
 	// Name filters by the name of the objects
 	Name string `protobuf:"bytes,1,opt,name=name"`
 
@@ -275,9 +275,9 @@ type ClusterFilter struct {
 	Namespace string `protobuf:"bytes,2,opt,name=namespace"`
 }
 
-func (r *ClusterFilter) Filter(ctx context.Context, obj runtime.Object) bool {
+func (r *EndpointSetFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	f := true
-	o, ok := obj.(*Cluster)
+	o, ok := obj.(*EndpointSet)
 	if !ok {
 		return f
 	}

@@ -168,6 +168,16 @@ func (r *Rack) ValidateSyntax() field.ErrorList {
 	return allErrs
 }
 
+func (r *Rack) GetSpec() any {
+	return r.Spec
+}
+
+func (r *Rack) SetSpec(s any) {
+	if spec, ok := s.(RackSpec); ok {
+		r.Spec = spec
+	}
+}
+
 // BuildRack returns a reource from a client Object a Spec/Status
 func BuildRack(meta metav1.ObjectMeta, spec *RackSpec, status *RackStatus) *Rack {
 	aspec := RackSpec{}

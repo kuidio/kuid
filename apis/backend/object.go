@@ -83,6 +83,8 @@ type EntryObject interface {
 type GenericObject interface {
 	Object
 	ValidateSyntax() field.ErrorList
+	SetSpec(x any)
+	GetSpec() any
 }
 
 type Object interface {

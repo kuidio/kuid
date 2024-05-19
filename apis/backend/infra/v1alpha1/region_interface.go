@@ -172,6 +172,16 @@ func (r *Region) ValidateSyntax() field.ErrorList {
 	return allErrs
 }
 
+func (r *Region) GetSpec() any {
+	return r.Spec
+}
+
+func (r *Region) SetSpec(s any) {
+	if spec, ok := s.(RegionSpec); ok {
+		r.Spec = spec
+	}
+}
+
 // BuildRegion returns a reource from a client Object a Spec/Status
 func BuildRegion(meta metav1.ObjectMeta, spec *RegionSpec, status *RegionStatus) *Region {
 	aspec := RegionSpec{}

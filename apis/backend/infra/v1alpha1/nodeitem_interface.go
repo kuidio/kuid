@@ -168,6 +168,16 @@ func (r *NodeItem) ValidateSyntax() field.ErrorList {
 	return allErrs
 }
 
+func (r *NodeItem) GetSpec() any {
+	return r.Spec
+}
+
+func (r *NodeItem) SetSpec(s any) {
+	if spec, ok := s.(NodeItemSpec); ok {
+		r.Spec = spec
+	}
+}
+
 // BuildNodeItem returns a reource from a client Object a Spec/Status
 func BuildNodeItem(meta metav1.ObjectMeta, spec *NodeItemSpec, status *NodeItemStatus) *NodeItem {
 	aspec := NodeItemSpec{}

@@ -176,6 +176,16 @@ func (r *Site) ValidateSyntax() field.ErrorList {
 	return allErrs
 }
 
+func (r *Site) GetSpec() any {
+	return r.Spec
+}
+
+func (r *Site) SetSpec(s any) {
+	if spec, ok := s.(SiteSpec); ok {
+		r.Spec = spec
+	}
+}
+
 // BuildSite returns a reource from a client Object a Spec/Status
 func BuildSite(meta metav1.ObjectMeta, spec *SiteSpec, status *SiteStatus) *Site {
 	aspec := SiteSpec{}
