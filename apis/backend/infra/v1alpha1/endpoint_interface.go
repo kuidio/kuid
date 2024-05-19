@@ -353,3 +353,11 @@ func (r *EndpointFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	}
 	return f
 }
+
+func (r *Endpoint) GetUserDefinedLabels() map[string]string {
+	return r.Spec.GetUserDefinedLabels()
+}
+
+func (r *Endpoint) GetProvider() string {
+	return ""
+}

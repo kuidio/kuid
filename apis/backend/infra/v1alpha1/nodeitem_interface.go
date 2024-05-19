@@ -316,3 +316,11 @@ func (r *NodeItemFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	}
 	return f
 }
+
+func (r *NodeItem) GetUserDefinedLabels() map[string]string {
+	return r.Spec.GetUserDefinedLabels()
+}
+
+func (r *NodeItem) GetProvider() string {
+	return ""
+}

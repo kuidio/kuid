@@ -320,3 +320,11 @@ func (r *RegionFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	}
 	return f
 }
+
+func (r *Region) GetUserDefinedLabels() map[string]string {
+	return r.Spec.GetUserDefinedLabels()
+}
+
+func (r *Region) GetProvider() string {
+	return ""
+}

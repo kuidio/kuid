@@ -316,3 +316,12 @@ func (r *LinkSetFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	}
 	return f
 }
+
+
+func (r *LinkSet) GetUserDefinedLabels() map[string]string {
+	return r.Spec.GetUserDefinedLabels()
+}
+
+func (r *LinkSet) GetProvider() string {
+	return ""
+}

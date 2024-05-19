@@ -320,3 +320,11 @@ func (r *ClusterFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	}
 	return f
 }
+
+func (r *Cluster) GetUserDefinedLabels() map[string]string {
+	return r.Spec.GetUserDefinedLabels()
+}
+
+func (r *Cluster) GetProvider() string {
+	return r.Spec.Provider
+}

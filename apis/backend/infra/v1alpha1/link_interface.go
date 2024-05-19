@@ -334,3 +334,11 @@ func (r *LinkFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	}
 	return f
 }
+
+func (r *Link) GetUserDefinedLabels() map[string]string {
+	return r.Spec.GetUserDefinedLabels()
+}
+
+func (r *Link) GetProvider() string {
+	return ""
+}

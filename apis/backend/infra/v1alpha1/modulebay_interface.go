@@ -316,3 +316,11 @@ func (r *ModuleBayFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	}
 	return f
 }
+
+func (r *ModuleBay) GetUserDefinedLabels() map[string]string {
+	return r.Spec.GetUserDefinedLabels()
+}
+
+func (r *ModuleBay) GetProvider() string {
+	return ""
+}

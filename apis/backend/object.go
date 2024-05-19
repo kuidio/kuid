@@ -87,6 +87,8 @@ type GenericObject interface {
 	GetSpec() any
 	NewObjList() GenericObjectList
 	SchemaGroupVersionKind() schema.GroupVersionKind
+	GetUserDefinedLabels() map[string]string
+	GetProvider() string
 }
 
 type Object interface {

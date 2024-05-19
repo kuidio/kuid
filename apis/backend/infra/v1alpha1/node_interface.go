@@ -344,3 +344,12 @@ func (r *NodeFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	}
 	return f
 }
+
+
+func (r *Node) GetUserDefinedLabels() map[string]string {
+	return r.Spec.GetUserDefinedLabels()
+}
+
+func (r *Node) GetProvider() string {
+	return r.Spec.Provider
+}

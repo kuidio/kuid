@@ -315,3 +315,12 @@ func (r *RackFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	}
 	return f
 }
+
+
+func (r *Rack) GetUserDefinedLabels() map[string]string {
+	return r.Spec.GetUserDefinedLabels()
+}
+
+func (r *Rack) GetProvider() string {
+	return ""
+}

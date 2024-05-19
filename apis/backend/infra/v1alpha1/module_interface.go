@@ -316,3 +316,12 @@ func (r *ModuleFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	}
 	return f
 }
+
+
+func (r *Module) GetUserDefinedLabels() map[string]string {
+	return r.Spec.GetUserDefinedLabels()
+}
+
+func (r *Module) GetProvider() string {
+	return ""
+}
