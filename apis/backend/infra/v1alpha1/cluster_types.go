@@ -70,5 +70,6 @@ type ClusterList struct {
 }
 
 var (
-	ClusterKind = reflect.TypeOf(Cluster{}).Name()
+	ClusterKind     = reflect.TypeOf(Cluster{}).Name()
+	ClusterKindList = reflect.TypeOf(ClusterList{}).Name()
 )

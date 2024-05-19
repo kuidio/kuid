@@ -90,6 +90,16 @@ func (Module) NewList() runtime.Object {
 	return &ModuleList{}
 }
 
+func (r *Module) NewObjList() backend.ObjectList {
+	return &ModuleList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: ModuleKindList},
+	}
+}
+
+func (r *Module) SchemaGroupVersionKind() schema.GroupVersionKind {
+	return SchemeGroupVersion.WithKind(ModuleKind)
+}
+
 // GetCondition returns the condition based on the condition kind
 func (r *Module) GetCondition(t conditionv1alpha1.ConditionType) conditionv1alpha1.Condition {
 	return r.Status.GetCondition(t)

@@ -27,7 +27,7 @@ import (
 // NodeSetSetSpec defines the desired state of NodeSet
 type NodeSetSpec struct {
 	// NodeGroupID identifies the nodeGroup this resource belongs to
-	// E.g. a NodeSet in a cluster belongs to a nodeGroup where the name of the nodeGroup is the cluster
+	// E.g. a NodeSet in a NodeSet belongs to a nodeGroup where the name of the nodeGroup is the NodeSet
 	// E.g. a Virtual Node, belongs to a nodeGroup where the name of the nodeGroup represents the topology this node is deployed in
 	NodeGroupID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeGroupID"`
 	// UserDefinedLabels define metadata to the resource.
@@ -46,7 +46,7 @@ type NodeSetStatus struct {
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // A NodeSet represents a set of nodes.
-// E.g. it can be used to model a set of nodes in a cluster that share the same
+// E.g. it can be used to model a set of nodes in a NodeSet that share the same
 // charecteristics wrt, Numa, interfaces, etc.
 // Another usage of NodeSet is the representation of a virtual Node that consists of multiple nodes.
 // +k8s:openapi-gen=true
@@ -68,4 +68,5 @@ type NodeSetList struct {
 
 var (
 	NodeSetKind = reflect.TypeOf(NodeSet{}).Name()
+	NodeSetKindList = reflect.TypeOf(NodeSetList{}).Name()
 )

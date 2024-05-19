@@ -90,6 +90,16 @@ func (Site) NewList() runtime.Object {
 	return &SiteList{}
 }
 
+func (r *Site) NewObjList() backend.ObjectList {
+	return &SiteList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: SiteKindList},
+	}
+}
+
+func (r *Site) SchemaGroupVersionKind() schema.GroupVersionKind {
+	return SchemeGroupVersion.WithKind(SiteKind)
+}
+
 // GetCondition returns the condition based on the condition kind
 func (r *Site) GetCondition(t conditionv1alpha1.ConditionType) conditionv1alpha1.Condition {
 	return r.Status.GetCondition(t)

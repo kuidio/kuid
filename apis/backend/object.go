@@ -85,6 +85,8 @@ type GenericObject interface {
 	ValidateSyntax() field.ErrorList
 	SetSpec(x any)
 	GetSpec() any
+	NewObjList() ObjectList
+	GroupVersionKind() schema.GroupVersionKind
 }
 
 type Object interface {

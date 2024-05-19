@@ -90,6 +90,16 @@ func (LinkSet) NewList() runtime.Object {
 	return &LinkSetList{}
 }
 
+func (r *LinkSet) NewObjList() backend.ObjectList {
+	return &LinkSetList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: LinkSetKindList},
+	}
+}
+
+func (r *LinkSet) SchemaGroupVersionKind() schema.GroupVersionKind {
+	return SchemeGroupVersion.WithKind(LinkSetKind)
+}
+
 // GetCondition returns the condition based on the condition kind
 func (r *LinkSet) GetCondition(t conditionv1alpha1.ConditionType) conditionv1alpha1.Condition {
 	return r.Status.GetCondition(t)

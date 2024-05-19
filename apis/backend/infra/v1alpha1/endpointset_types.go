@@ -81,4 +81,5 @@ type EndpointSetList struct {
 
 var (
 	EndpointSetKind = reflect.TypeOf(EndpointSet{}).Name()
+	EndpointSetKindList = reflect.TypeOf(EndpointSetList{}).Name()
 )

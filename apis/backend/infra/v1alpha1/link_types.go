@@ -65,4 +65,5 @@ type LinkList struct {
 
 var (
 	LinkKind = reflect.TypeOf(Link{}).Name()
+	LinkKindList = reflect.TypeOf(LinkList{}).Name()
 )

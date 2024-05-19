@@ -90,6 +90,16 @@ func (EndpointSet) NewList() runtime.Object {
 	return &EndpointSetList{}
 }
 
+func (r *EndpointSet) NewObjList() backend.ObjectList {
+	return &EndpointSetList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: EndpointSetKindList},
+	}
+}
+
+func (r *EndpointSet) SchemaGroupVersionKind() schema.GroupVersionKind {
+	return SchemeGroupVersion.WithKind(EndpointSetKind)
+}
+
 // GetCondition returns the condition based on the condition kind
 func (r *EndpointSet) GetCondition(t conditionv1alpha1.ConditionType) conditionv1alpha1.Condition {
 	return r.Status.GetCondition(t)

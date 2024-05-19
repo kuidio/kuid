@@ -90,6 +90,16 @@ func (NodeSet) NewList() runtime.Object {
 	return &NodeSetList{}
 }
 
+func (r *NodeSet) NewObjList() backend.ObjectList {
+	return &NodeSetList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: NodeSetKindList},
+	}
+}
+
+func (r *NodeSet) SchemaGroupVersionKind() schema.GroupVersionKind {
+	return SchemeGroupVersion.WithKind(NodeSetKind)
+}
+
 // GetCondition returns the condition based on the condition kind
 func (r *NodeSet) GetCondition(t conditionv1alpha1.ConditionType) conditionv1alpha1.Condition {
 	return r.Status.GetCondition(t)

@@ -90,6 +90,16 @@ func (Region) NewList() runtime.Object {
 	return &RegionList{}
 }
 
+func (r *Region) NewObjList() backend.ObjectList {
+	return &RegionList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: RegionKindList},
+	}
+}
+
+func (r *Region) SchemaGroupVersionKind() schema.GroupVersionKind {
+	return SchemeGroupVersion.WithKind(RegionKind)
+}
+
 // GetCondition returns the condition based on the condition kind
 func (r *Region) GetCondition(t conditionv1alpha1.ConditionType) conditionv1alpha1.Condition {
 	return r.Status.GetCondition(t)

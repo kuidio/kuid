@@ -88,4 +88,5 @@ type NodeList struct {
 
 var (
 	NodeKind = reflect.TypeOf(Node{}).Name()
+	NodeKindList = reflect.TypeOf(NodeList{}).Name()
 )

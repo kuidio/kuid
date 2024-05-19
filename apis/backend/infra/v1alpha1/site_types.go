@@ -68,4 +68,5 @@ type SiteList struct {
 
 var (
 	SiteKind = reflect.TypeOf(Site{}).Name()
+	SiteKindList = reflect.TypeOf(SiteList{}).Name()
 )

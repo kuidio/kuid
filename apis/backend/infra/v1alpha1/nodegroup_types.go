@@ -25,9 +25,9 @@ import (
 )
 
 // NodeGroupSpec defines the desired state of NodeGroup
-// E.g. A nodeGroup can be a cluster
+// E.g. A nodeGroup can be a NodeGroup
 // E.g. A nodeGroup can be a topology like a DC fabric (frontend and backend could be a different nodeGroup)
-// A Node Group is a global unique identifier within the system e.g. representing a topology, a cluster or
+// A Node Group is a global unique identifier within the system e.g. representing a topology, a NodeGroup or
 // another set of elements that are managed together by a single entity
 type NodeGroupSpec struct {
 	// UserDefinedLabels define metadata to the resource.
@@ -49,7 +49,7 @@ type NodeGroupStatus struct {
 // administrative entity or organization. NodeGroups serve as administrative boundaries within the environment,
 // providing a structured framework for organizing and managing resources based on administrative ownership
 // or responsibility. E.g. A NodeGroup on one hand, can be used to represent a topology that spans multiple
-// sites and regions, but a NodeGroup can also be used to group all nodes of a cluster together.
+// sites and regions, but a NodeGroup can also be used to group all nodes of a NodeGroup together.
 // +k8s:openapi-gen=true
 type NodeGroup struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`
@@ -69,4 +69,5 @@ type NodeGroupList struct {
 
 var (
 	NodeGroupKind = reflect.TypeOf(NodeGroup{}).Name()
+	NodeGroupKindList = reflect.TypeOf(NodeGroupList{}).Name()
 )

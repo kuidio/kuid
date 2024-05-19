@@ -71,4 +71,5 @@ type RackList struct {
 
 var (
 	RackKind = reflect.TypeOf(Rack{}).Name()
+	RackKindList = reflect.TypeOf(RackList{}).Name()
 )

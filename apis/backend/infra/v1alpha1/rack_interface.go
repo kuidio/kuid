@@ -90,6 +90,16 @@ func (Rack) NewList() runtime.Object {
 	return &RackList{}
 }
 
+func (r *Rack) NewObjList() backend.ObjectList {
+	return &RackList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: RackKindList},
+	}
+}
+
+func (r *Rack) SchemaGroupVersionKind() schema.GroupVersionKind {
+	return SchemeGroupVersion.WithKind(RackKind)
+}
+
 // GetCondition returns the condition based on the condition kind
 func (r *Rack) GetCondition(t conditionv1alpha1.ConditionType) conditionv1alpha1.Condition {
 	return r.Status.GetCondition(t)

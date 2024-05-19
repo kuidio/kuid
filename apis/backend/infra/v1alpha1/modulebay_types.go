@@ -67,4 +67,5 @@ type ModuleBayList struct {
 
 var (
 	ModuleBayKind = reflect.TypeOf(ModuleBay{}).Name()
+	ModuleBayKindList = reflect.TypeOf(ModuleBayList{}).Name()
 )

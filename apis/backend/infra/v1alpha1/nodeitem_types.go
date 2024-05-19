@@ -66,4 +66,5 @@ type NodeItemList struct {
 
 var (
 	NodeItemKind = reflect.TypeOf(NodeItem{}).Name()
+	NodeItemKindList = reflect.TypeOf(NodeItemList{}).Name()
 )

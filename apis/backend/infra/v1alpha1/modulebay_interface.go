@@ -90,6 +90,16 @@ func (ModuleBay) NewList() runtime.Object {
 	return &ModuleBayList{}
 }
 
+func (r *ModuleBay) NewObjList() backend.ObjectList {
+	return &ModuleBayList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: ModuleBayKindList},
+	}
+}
+
+func (r *ModuleBay) SchemaGroupVersionKind() schema.GroupVersionKind {
+	return SchemeGroupVersion.WithKind(ModuleBayKind)
+}
+
 // GetCondition returns the condition based on the condition kind
 func (r *ModuleBay) GetCondition(t conditionv1alpha1.ConditionType) conditionv1alpha1.Condition {
 	return r.Status.GetCondition(t)

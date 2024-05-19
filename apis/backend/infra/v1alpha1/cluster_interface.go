@@ -90,6 +90,16 @@ func (Cluster) NewList() runtime.Object {
 	return &ClusterList{}
 }
 
+func (r *Cluster) NewObjList() backend.ObjectList {
+	return &ClusterList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: ClusterKindList},
+	}
+}
+
+func (r *Cluster) SchemaGroupVersionKind() schema.GroupVersionKind {
+	return SchemeGroupVersion.WithKind(ClusterKind)
+}
+
 // GetCondition returns the condition based on the condition kind
 func (r *Cluster) GetCondition(t conditionv1alpha1.ConditionType) conditionv1alpha1.Condition {
 	return r.Status.GetCondition(t)
