@@ -37,6 +37,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 	genericapirequest "k8s.io/apiserver/pkg/endpoints/request"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const EndpointPlural = "endpoints"
@@ -134,7 +135,6 @@ func (r *EndpointList) GetItems() []backend.Object {
 	}
 	return objs
 }
-
 
 func (r *EndpointList) GetObjects() []backend.GenericObject {
 	objs := []backend.GenericObject{}
@@ -360,4 +360,27 @@ func (r *Endpoint) GetUserDefinedLabels() map[string]string {
 
 func (r *Endpoint) GetProvider() string {
 	return ""
+}
+
+type OwnerStatus int
+
+const (
+	Free OwnerStatus = iota
+	Owned
+	Claimed
+)
+
+func (r *Endpoint) IsClaimed(cr client.Object) OwnerStatus {
+	refs := r.GetOwnerReferences()
+	for _, ref := range refs {
+		if ref.APIVersion == cr.GetObjectKind().GroupVersionKind().GroupVersion().String() &&
+			ref.Kind == cr.GetObjectKind().GroupVersionKind().Kind {
+			if ref.UID == cr.GetUID() && ref.Name == cr.GetName() {
+				return Owned
+			} else {
+				return Claimed
+			}
+		}
+	}
+	return Free
 }
