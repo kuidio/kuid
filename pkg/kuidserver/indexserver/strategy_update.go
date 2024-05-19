@@ -94,10 +94,6 @@ func (r *strategy) Update(ctx context.Context, key types.NamespacedName, obj, ol
 	if err := r.store.Update(ctx, storebackend.KeyFromNSN(key), obj); err != nil {
 		return obj, apierrors.NewInternalError(err)
 	}
-
-	if err := r.store.Update(ctx, storebackend.KeyFromNSN(key), obj); err != nil {
-		return obj, apierrors.NewInternalError(err)
-	}
 	r.notifyWatcher(ctx, watch.Event{
 		Type:   watch.Modified,
 		Object: obj,

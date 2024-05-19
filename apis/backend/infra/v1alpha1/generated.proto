@@ -37,6 +37,14 @@ message Cluster {
   optional ClusterStatus status = 3;
 }
 
+message ClusterFilter {
+  // Name filters by the name of the objects
+  optional string name = 1;
+
+  // Namespace filters by the namespace of the objects
+  optional string namespace = 2;
+}
+
 // ClusterList contains a list of Clusters
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message ClusterList {
@@ -47,8 +55,8 @@ message ClusterList {
 
 // ClusterSpec defines the desired state of Cluster
 message ClusterSpec {
-  // Domain defines the administrative domain the resource belongs to.
-  optional string domain = 1;
+  // NodeGroup defines the node group the resource belongs to.
+  optional string nodeGroup = 1;
 
   // Provider defines the provider implementing this resource.
   optional string provider = 2;
@@ -80,6 +88,14 @@ message Endpoint {
   optional EndpointSpec spec = 2;
 
   optional EndpointStatus status = 3;
+}
+
+message EndpointFilter {
+  // Name filters by the name of the objects
+  optional string name = 1;
+
+  // Namespace filters by the namespace of the objects
+  optional string namespace = 2;
 }
 
 message EndpointID {
@@ -188,6 +204,14 @@ message Link {
   optional LinkStatus status = 3;
 }
 
+message LinkFilter {
+  // Name filters by the name of the objects
+  optional string name = 1;
+
+  // Namespace filters by the namespace of the objects
+  optional string namespace = 2;
+}
+
 // LinkList contains a list of Links
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message LinkList {
@@ -207,6 +231,14 @@ message LinkSet {
   optional LinkSetSpec spec = 2;
 
   optional LinkSetStatus status = 3;
+}
+
+message LinkSetFilter {
+  // Name filters by the name of the objects
+  optional string name = 1;
+
+  // Namespace filters by the namespace of the objects
+  optional string namespace = 2;
 }
 
 // LinkSetList contains a list of LinkSets
@@ -291,6 +323,14 @@ message ModuleBay {
   optional ModuleBayStatus status = 3;
 }
 
+message ModuleBayFilter {
+  // Name filters by the name of the objects
+  optional string name = 1;
+
+  // Namespace filters by the namespace of the objects
+  optional string namespace = 2;
+}
+
 // ModuleBayList contains a list of ModuleBays
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message ModuleBayList {
@@ -317,6 +357,14 @@ message ModuleBayStatus {
   // ConditionedStatus provides the status of the IPClain using conditions
   // - a ready condition indicates the overall status of the resource
   optional github.com.kuidio.kuid.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
+}
+
+message ModuleFilter {
+  // Name filters by the name of the objects
+  optional string name = 1;
+
+  // Namespace filters by the namespace of the objects
+  optional string namespace = 2;
 }
 
 // ModuleList contains a list of Modules
@@ -363,6 +411,14 @@ message Node {
   optional NodeStatus status = 3;
 }
 
+message NodeFilter {
+  // Name filters by the name of the objects
+  optional string name = 1;
+
+  // Namespace filters by the namespace of the objects
+  optional string namespace = 2;
+}
+
 // A NodeGrouo represents a logical grouping of infrastructure resources managed by a single
 // administrative entity or organization. NodeGroups serve as administrative boundaries within the environment,
 // providing a structured framework for organizing and managing resources based on administrative ownership
@@ -375,6 +431,14 @@ message NodeGroup {
   optional NodeGroupSpec spec = 2;
 
   optional NodeGroupStatus status = 3;
+}
+
+message NodeGroupFilter {
+  // Name filters by the name of the objects
+  optional string name = 1;
+
+  // Namespace filters by the namespace of the objects
+  optional string namespace = 2;
 }
 
 message NodeGroupID {
@@ -430,6 +494,14 @@ message NodeItem {
   optional NodeItemStatus status = 3;
 }
 
+message NodeItemFilter {
+  // Name filters by the name of the objects
+  optional string name = 1;
+
+  // Namespace filters by the namespace of the objects
+  optional string namespace = 2;
+}
+
 // NodeItemList contains a list of NodeItems
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message NodeItemList {
@@ -474,6 +546,14 @@ message NodeSet {
   optional NodeSetSpec spec = 2;
 
   optional NodeSetStatus status = 3;
+}
+
+message NodeSetFilter {
+  // Name filters by the name of the objects
+  optional string name = 1;
+
+  // Namespace filters by the namespace of the objects
+  optional string namespace = 2;
 }
 
 // NodeSetList contains a list of NodeSets
@@ -547,6 +627,14 @@ message Rack {
   optional RackStatus status = 3;
 }
 
+message RackFilter {
+  // Name filters by the name of the objects
+  optional string name = 1;
+
+  // Namespace filters by the namespace of the objects
+  optional string namespace = 2;
+}
+
 // RackList contains a list of Racks
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message RackList {
@@ -593,6 +681,14 @@ message Region {
   optional RegionStatus status = 3;
 }
 
+message RegionFilter {
+  // Name filters by the name of the objects
+  optional string name = 1;
+
+  // Namespace filters by the namespace of the objects
+  optional string namespace = 2;
+}
+
 // RegionList contains a list of Regions
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message RegionList {
@@ -625,6 +721,14 @@ message Site {
   optional SiteSpec spec = 2;
 
   optional SiteStatus status = 3;
+}
+
+message SiteFilter {
+  // Name filters by the name of the objects
+  optional string name = 1;
+
+  // Namespace filters by the namespace of the objects
+  optional string namespace = 2;
 }
 
 message SiteID {

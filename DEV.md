@@ -5,5 +5,5 @@ Development
 3. create main (schema, backend, storage)
 4. update artifact
     - reconciler
-    - permissiions
+    - permissions
     - apiservice

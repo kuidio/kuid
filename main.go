@@ -41,6 +41,7 @@ import (
 	"github.com/kuidio/kuid/pkg/backend/ipam"
 	"github.com/kuidio/kuid/pkg/kuidserver/claimserver"
 	"github.com/kuidio/kuid/pkg/kuidserver/entryserver"
+	"github.com/kuidio/kuid/pkg/kuidserver/genericserver"
 	"github.com/kuidio/kuid/pkg/kuidserver/indexserver"
 	serverstore "github.com/kuidio/kuid/pkg/kuidserver/store"
 	"github.com/kuidio/kuid/pkg/reconcilers"
@@ -455,50 +456,258 @@ func main() {
 					DB:     db,
 				},
 				extcommbe)).
-				WithResourceAndHandler(ctx, &genidbev1alpha1.GENIDClaim{}, claimserver.NewProvider(
-					ctx,
-					mgr.GetClient(),
-					&claimserver.ServerObjContext{
-						TracerString:   "genidclaim-server",
-						Obj:            &genidbev1alpha1.GENIDClaim{},
-						NewIndexFn:     func() backend.IndexObject { return &genidbev1alpha1.GENIDIndex{} },
-						ConversionFunc: genidbev1alpha1.GENIDClaimConvertFieldSelector,
-					},
-					&serverstore.Config{
-						Prefix: configDir,
-						Type:   serverstore.StorageType_KV,
-						DB:     db,
-					},
-					genidbe)).
-				WithResourceAndHandler(ctx, &genidbev1alpha1.GENIDEntry{}, entryserver.NewProvider(
-					ctx,
-					mgr.GetClient(),
-					&entryserver.ServerObjContext{
-						TracerString:   "genidentry-server",
-						Obj:            &genidbev1alpha1.GENIDEntry{},
-						ConversionFunc: genidbev1alpha1.GENIDEntryConvertFieldSelector,
-					},
-					&serverstore.Config{
-						Prefix: configDir,
-						Type:   serverstore.StorageType_KV,
-						DB:     db,
-					},
-					genidbe)).
-				WithResourceAndHandler(ctx, &genidbev1alpha1.GENIDIndex{}, indexserver.NewProvider(
-					ctx,
-					mgr.GetClient(),
-					&indexserver.ServerObjContext{
-						TracerString:   "genidindex-server",
-						Obj:            &genidbev1alpha1.GENIDIndex{},
-						ConversionFunc: genidbev1alpha1.GENIDIndexConvertFieldSelector,
-						TableConverter: genidbev1alpha1.GENIDIndexTableConvertor,
-					},
-					&serverstore.Config{
-						Prefix: configDir,
-						Type:   serverstore.StorageType_KV,
-						DB:     db,
-					},
-					genidbe)).
+			WithResourceAndHandler(ctx, &genidbev1alpha1.GENIDClaim{}, claimserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&claimserver.ServerObjContext{
+					TracerString:   "genidclaim-server",
+					Obj:            &genidbev1alpha1.GENIDClaim{},
+					NewIndexFn:     func() backend.IndexObject { return &genidbev1alpha1.GENIDIndex{} },
+					ConversionFunc: genidbev1alpha1.GENIDClaimConvertFieldSelector,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				genidbe)).
+			WithResourceAndHandler(ctx, &genidbev1alpha1.GENIDEntry{}, entryserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&entryserver.ServerObjContext{
+					TracerString:   "genidentry-server",
+					Obj:            &genidbev1alpha1.GENIDEntry{},
+					ConversionFunc: genidbev1alpha1.GENIDEntryConvertFieldSelector,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				genidbe)).
+			WithResourceAndHandler(ctx, &genidbev1alpha1.GENIDIndex{}, indexserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&indexserver.ServerObjContext{
+					TracerString:   "genidindex-server",
+					Obj:            &genidbev1alpha1.GENIDIndex{},
+					ConversionFunc: genidbev1alpha1.GENIDIndexConvertFieldSelector,
+					TableConverter: genidbev1alpha1.GENIDIndexTableConvertor,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				genidbe)).
+			WithResourceAndHandler(ctx, &infrabev1alpha1.Cluster{}, genericserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&genericserver.ServerObjContext{
+					TracerString:   "cluster-server",
+					Obj:            &infrabev1alpha1.Cluster{},
+					ConversionFunc: infrabev1alpha1.ClusterConvertFieldSelector,
+					TableConverter: infrabev1alpha1.ClusterTableConvertor,
+					FielSelector:   infrabev1alpha1.ClusterParseFieldSelector,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				genidbe)).
+			WithResourceAndHandler(ctx, &infrabev1alpha1.Endpoint{}, genericserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&genericserver.ServerObjContext{
+					TracerString:   "endpoint-server",
+					Obj:            &infrabev1alpha1.Endpoint{},
+					ConversionFunc: infrabev1alpha1.EndpointConvertFieldSelector,
+					TableConverter: infrabev1alpha1.EndpointTableConvertor,
+					FielSelector:   infrabev1alpha1.EndpointParseFieldSelector,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				genidbe)).
+			WithResourceAndHandler(ctx, &infrabev1alpha1.Link{}, genericserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&genericserver.ServerObjContext{
+					TracerString:   "link-server",
+					Obj:            &infrabev1alpha1.Link{},
+					ConversionFunc: infrabev1alpha1.LinkConvertFieldSelector,
+					TableConverter: infrabev1alpha1.LinkTableConvertor,
+					FielSelector:   infrabev1alpha1.LinkParseFieldSelector,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				genidbe)).
+			WithResourceAndHandler(ctx, &infrabev1alpha1.LinkSet{}, genericserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&genericserver.ServerObjContext{
+					TracerString:   "linkset-server",
+					Obj:            &infrabev1alpha1.LinkSet{},
+					ConversionFunc: infrabev1alpha1.LinkSetConvertFieldSelector,
+					TableConverter: infrabev1alpha1.LinkSetTableConvertor,
+					FielSelector:   infrabev1alpha1.LinkSetParseFieldSelector,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				genidbe)).
+			WithResourceAndHandler(ctx, &infrabev1alpha1.Module{}, genericserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&genericserver.ServerObjContext{
+					TracerString:   "module-server",
+					Obj:            &infrabev1alpha1.Module{},
+					ConversionFunc: infrabev1alpha1.ModuleConvertFieldSelector,
+					TableConverter: infrabev1alpha1.ModuleTableConvertor,
+					FielSelector:   infrabev1alpha1.ModuleParseFieldSelector,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				genidbe)).
+			WithResourceAndHandler(ctx, &infrabev1alpha1.ModuleBay{}, genericserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&genericserver.ServerObjContext{
+					TracerString:   "modulebay-server",
+					Obj:            &infrabev1alpha1.ModuleBay{},
+					ConversionFunc: infrabev1alpha1.ModuleBayConvertFieldSelector,
+					TableConverter: infrabev1alpha1.ModuleBayTableConvertor,
+					FielSelector:   infrabev1alpha1.ModuleBayParseFieldSelector,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				genidbe)).
+			WithResourceAndHandler(ctx, &infrabev1alpha1.Node{}, genericserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&genericserver.ServerObjContext{
+					TracerString:   "node-server",
+					Obj:            &infrabev1alpha1.Node{},
+					ConversionFunc: infrabev1alpha1.NodeConvertFieldSelector,
+					TableConverter: infrabev1alpha1.NodeTableConvertor,
+					FielSelector:   infrabev1alpha1.NodeParseFieldSelector,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				genidbe)).
+			WithResourceAndHandler(ctx, &infrabev1alpha1.NodeGroup{}, genericserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&genericserver.ServerObjContext{
+					TracerString:   "nodegroup-server",
+					Obj:            &infrabev1alpha1.NodeGroup{},
+					ConversionFunc: infrabev1alpha1.NodeGroupConvertFieldSelector,
+					TableConverter: infrabev1alpha1.NodeGroupTableConvertor,
+					FielSelector:   infrabev1alpha1.NodeGroupParseFieldSelector,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				genidbe)).
+			WithResourceAndHandler(ctx, &infrabev1alpha1.NodeItem{}, genericserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&genericserver.ServerObjContext{
+					TracerString:   "nodeitem-server",
+					Obj:            &infrabev1alpha1.NodeItem{},
+					ConversionFunc: infrabev1alpha1.NodeItemConvertFieldSelector,
+					TableConverter: infrabev1alpha1.NodeItemTableConvertor,
+					FielSelector:   infrabev1alpha1.NodeItemParseFieldSelector,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				genidbe)).
+			WithResourceAndHandler(ctx, &infrabev1alpha1.NodeSet{}, genericserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&genericserver.ServerObjContext{
+					TracerString:   "nodeset-server",
+					Obj:            &infrabev1alpha1.NodeSet{},
+					ConversionFunc: infrabev1alpha1.NodeSetConvertFieldSelector,
+					TableConverter: infrabev1alpha1.NodeSetTableConvertor,
+					FielSelector:   infrabev1alpha1.NodeSetParseFieldSelector,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				genidbe)).
+			WithResourceAndHandler(ctx, &infrabev1alpha1.Rack{}, genericserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&genericserver.ServerObjContext{
+					TracerString:   "rack-server",
+					Obj:            &infrabev1alpha1.Rack{},
+					ConversionFunc: infrabev1alpha1.RackConvertFieldSelector,
+					TableConverter: infrabev1alpha1.RackTableConvertor,
+					FielSelector:   infrabev1alpha1.RackParseFieldSelector,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				genidbe)).
+			WithResourceAndHandler(ctx, &infrabev1alpha1.Region{}, genericserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&genericserver.ServerObjContext{
+					TracerString:   "region-server",
+					Obj:            &infrabev1alpha1.Region{},
+					ConversionFunc: infrabev1alpha1.RegionConvertFieldSelector,
+					TableConverter: infrabev1alpha1.RegionTableConvertor,
+					FielSelector:   infrabev1alpha1.RegionParseFieldSelector,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				genidbe)).
+			WithResourceAndHandler(ctx, &infrabev1alpha1.Site{}, genericserver.NewProvider(
+				ctx,
+				mgr.GetClient(),
+				&genericserver.ServerObjContext{
+					TracerString:   "site-server",
+					Obj:            &infrabev1alpha1.Site{},
+					ConversionFunc: infrabev1alpha1.SiteConvertFieldSelector,
+					TableConverter: infrabev1alpha1.SiteTableConvertor,
+					FielSelector:   infrabev1alpha1.SiteParseFieldSelector,
+				},
+				&serverstore.Config{
+					Prefix: configDir,
+					Type:   serverstore.StorageType_KV,
+					DB:     db,
+				},
+				genidbe)).
 			WithoutEtcd().
 			Execute(ctx); err != nil {
 			log.Info("cannot start config-server")

@@ -17,6 +17,7 @@ limitations under the License.
 package backend
 
 import (
+	"context"
 	"crypto/sha1"
 
 	"github.com/henderiw/idxtable/pkg/table"
@@ -27,6 +28,7 @@ import (
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/validation/field"
@@ -78,6 +80,11 @@ type EntryObject interface {
 	GetSpecID() string
 }
 
+type GenericObject interface {
+	Object
+	ValidateSyntax() field.ErrorList
+}
+
 type Object interface {
 	client.Object
 	GetNamespacedName() types.NamespacedName
@@ -92,4 +99,8 @@ type Object interface {
 type ObjectList interface {
 	GetItems() []Object
 	client.ObjectList
+}
+
+type Filter interface {
+	Filter(ctx context.Context, obj runtime.Object) bool
 }

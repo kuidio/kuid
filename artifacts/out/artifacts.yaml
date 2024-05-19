@@ -57,6 +57,22 @@ spec:
 apiVersion: apiregistration.k8s.io/v1
 kind: APIService
 metadata:
+  name: v1alpha1.infra.be.kuid.dev
+spec:
+  group: infra.be.kuid.dev
+  groupPriorityMinimum: 1000
+  insecureSkipTLSVerify: true
+  service:
+    name: kuid-server
+    namespace: kuid-system
+    port: 6443
+  version: v1alpha1
+  versionPriority: 15
+
+---
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
   name: v1alpha1.ipam.be.kuid.dev
 spec:
   group: ipam.be.kuid.dev

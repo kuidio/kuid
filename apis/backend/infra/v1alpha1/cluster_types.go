@@ -26,8 +26,8 @@ import (
 
 // ClusterSpec defines the desired state of Cluster
 type ClusterSpec struct {
-	// Domain defines the administrative domain the resource belongs to.
-	Domain string `json:"domain" yaml:"domain" protobuf:"bytes,1,opt,name=domain"`
+	// NodeGroup defines the node group the resource belongs to.
+	NodeGroup string `json:"nodeGroup" yaml:"nodeGroup" protobuf:"bytes,1,opt,name=nodeGroup"`
 	// Provider defines the provider implementing this resource.
 	Provider string `json:"provider" yaml:"provider" protobuf:"bytes,2,opt,name=provider"`
 	// Location defines the location information where this resource is located

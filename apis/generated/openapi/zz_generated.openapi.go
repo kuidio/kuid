@@ -92,10 +92,12 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDRangeSyntaxValidator":         schema_apis_backend_genid_v1alpha1_GENIDRangeSyntaxValidator(ref),
 		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDStaticIDSyntaxValidator":      schema_apis_backend_genid_v1alpha1_GENIDStaticIDSyntaxValidator(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Cluster":                           schema_apis_backend_infra_v1alpha1_Cluster(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ClusterFilter":                     schema_apis_backend_infra_v1alpha1_ClusterFilter(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ClusterList":                       schema_apis_backend_infra_v1alpha1_ClusterList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ClusterSpec":                       schema_apis_backend_infra_v1alpha1_ClusterSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ClusterStatus":                     schema_apis_backend_infra_v1alpha1_ClusterStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Endpoint":                          schema_apis_backend_infra_v1alpha1_Endpoint(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointFilter":                    schema_apis_backend_infra_v1alpha1_EndpointFilter(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointID":                        schema_apis_backend_infra_v1alpha1_EndpointID(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointList":                      schema_apis_backend_infra_v1alpha1_EndpointList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSet":                       schema_apis_backend_infra_v1alpha1_EndpointSet(ref),
@@ -105,8 +107,10 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSpec":                      schema_apis_backend_infra_v1alpha1_EndpointSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointStatus":                    schema_apis_backend_infra_v1alpha1_EndpointStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Link":                              schema_apis_backend_infra_v1alpha1_Link(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.LinkFilter":                        schema_apis_backend_infra_v1alpha1_LinkFilter(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.LinkList":                          schema_apis_backend_infra_v1alpha1_LinkList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.LinkSet":                           schema_apis_backend_infra_v1alpha1_LinkSet(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.LinkSetFilter":                     schema_apis_backend_infra_v1alpha1_LinkSetFilter(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.LinkSetList":                       schema_apis_backend_infra_v1alpha1_LinkSetList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.LinkSetSpec":                       schema_apis_backend_infra_v1alpha1_LinkSetSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.LinkSetStatus":                     schema_apis_backend_infra_v1alpha1_LinkSetStatus(ref),
@@ -115,39 +119,48 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Location":                          schema_apis_backend_infra_v1alpha1_Location(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Module":                            schema_apis_backend_infra_v1alpha1_Module(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ModuleBay":                         schema_apis_backend_infra_v1alpha1_ModuleBay(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ModuleBayFilter":                   schema_apis_backend_infra_v1alpha1_ModuleBayFilter(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ModuleBayList":                     schema_apis_backend_infra_v1alpha1_ModuleBayList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ModuleBaySpec":                     schema_apis_backend_infra_v1alpha1_ModuleBaySpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ModuleBayStatus":                   schema_apis_backend_infra_v1alpha1_ModuleBayStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ModuleFilter":                      schema_apis_backend_infra_v1alpha1_ModuleFilter(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ModuleList":                        schema_apis_backend_infra_v1alpha1_ModuleList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ModuleSpec":                        schema_apis_backend_infra_v1alpha1_ModuleSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ModuleStatus":                      schema_apis_backend_infra_v1alpha1_ModuleStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Node":                              schema_apis_backend_infra_v1alpha1_Node(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeFilter":                        schema_apis_backend_infra_v1alpha1_NodeFilter(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroup":                         schema_apis_backend_infra_v1alpha1_NodeGroup(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupFilter":                   schema_apis_backend_infra_v1alpha1_NodeGroupFilter(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupID":                       schema_apis_backend_infra_v1alpha1_NodeGroupID(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupList":                     schema_apis_backend_infra_v1alpha1_NodeGroupList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupSpec":                     schema_apis_backend_infra_v1alpha1_NodeGroupSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupStatus":                   schema_apis_backend_infra_v1alpha1_NodeGroupStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeID":                            schema_apis_backend_infra_v1alpha1_NodeID(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeItem":                          schema_apis_backend_infra_v1alpha1_NodeItem(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeItemFilter":                    schema_apis_backend_infra_v1alpha1_NodeItemFilter(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeItemList":                      schema_apis_backend_infra_v1alpha1_NodeItemList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeItemSpec":                      schema_apis_backend_infra_v1alpha1_NodeItemSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeItemStatus":                    schema_apis_backend_infra_v1alpha1_NodeItemStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeList":                          schema_apis_backend_infra_v1alpha1_NodeList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeSet":                           schema_apis_backend_infra_v1alpha1_NodeSet(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeSetFilter":                     schema_apis_backend_infra_v1alpha1_NodeSetFilter(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeSetList":                       schema_apis_backend_infra_v1alpha1_NodeSetList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeSetSpec":                       schema_apis_backend_infra_v1alpha1_NodeSetSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeSetStatus":                     schema_apis_backend_infra_v1alpha1_NodeSetStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeSpec":                          schema_apis_backend_infra_v1alpha1_NodeSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeStatus":                        schema_apis_backend_infra_v1alpha1_NodeStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Rack":                              schema_apis_backend_infra_v1alpha1_Rack(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RackFilter":                        schema_apis_backend_infra_v1alpha1_RackFilter(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RackList":                          schema_apis_backend_infra_v1alpha1_RackList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RackSpec":                          schema_apis_backend_infra_v1alpha1_RackSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RackStatus":                        schema_apis_backend_infra_v1alpha1_RackStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Region":                            schema_apis_backend_infra_v1alpha1_Region(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RegionFilter":                      schema_apis_backend_infra_v1alpha1_RegionFilter(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RegionList":                        schema_apis_backend_infra_v1alpha1_RegionList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RegionSpec":                        schema_apis_backend_infra_v1alpha1_RegionSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RegionStatus":                      schema_apis_backend_infra_v1alpha1_RegionStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Site":                              schema_apis_backend_infra_v1alpha1_Site(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.SiteFilter":                        schema_apis_backend_infra_v1alpha1_SiteFilter(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.SiteID":                            schema_apis_backend_infra_v1alpha1_SiteID(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.SiteList":                          schema_apis_backend_infra_v1alpha1_SiteList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.SiteSpec":                          schema_apis_backend_infra_v1alpha1_SiteSpec(ref),
@@ -2959,6 +2972,35 @@ func schema_apis_backend_infra_v1alpha1_Cluster(ref common.ReferenceCallback) co
 	}
 }
 
+func schema_apis_backend_infra_v1alpha1_ClusterFilter(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"Name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name filters by the name of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"Namespace": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Namespace filters by the namespace of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"Name", "Namespace"},
+			},
+		},
+	}
+}
+
 func schema_apis_backend_infra_v1alpha1_ClusterList(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -3015,9 +3057,9 @@ func schema_apis_backend_infra_v1alpha1_ClusterSpec(ref common.ReferenceCallback
 				Description: "ClusterSpec defines the desired state of Cluster",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
-					"domain": {
+					"nodeGroup": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Domain defines the administrative domain the resource belongs to.",
+							Description: "NodeGroup defines the node group the resource belongs to.",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
@@ -3054,7 +3096,7 @@ func schema_apis_backend_infra_v1alpha1_ClusterSpec(ref common.ReferenceCallback
 						},
 					},
 				},
-				Required: []string{"domain", "provider"},
+				Required: []string{"nodeGroup", "provider"},
 			},
 		},
 		Dependencies: []string{
@@ -3135,6 +3177,35 @@ func schema_apis_backend_infra_v1alpha1_Endpoint(ref common.ReferenceCallback) c
 		},
 		Dependencies: []string{
 			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSpec", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_EndpointFilter(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"Name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name filters by the name of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"Namespace": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Namespace filters by the namespace of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"Name", "Namespace"},
+			},
+		},
 	}
 }
 
@@ -3591,6 +3662,35 @@ func schema_apis_backend_infra_v1alpha1_Link(ref common.ReferenceCallback) commo
 	}
 }
 
+func schema_apis_backend_infra_v1alpha1_LinkFilter(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"Name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name filters by the name of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"Namespace": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Namespace filters by the namespace of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"Name", "Namespace"},
+			},
+		},
+	}
+}
+
 func schema_apis_backend_infra_v1alpha1_LinkList(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -3684,6 +3784,35 @@ func schema_apis_backend_infra_v1alpha1_LinkSet(ref common.ReferenceCallback) co
 		},
 		Dependencies: []string{
 			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.LinkSetSpec", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.LinkSetStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_LinkSetFilter(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"Name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name filters by the name of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"Namespace": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Namespace filters by the namespace of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"Name", "Namespace"},
+			},
+		},
 	}
 }
 
@@ -4019,6 +4148,35 @@ func schema_apis_backend_infra_v1alpha1_ModuleBay(ref common.ReferenceCallback) 
 	}
 }
 
+func schema_apis_backend_infra_v1alpha1_ModuleBayFilter(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"Name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name filters by the name of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"Namespace": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Namespace filters by the namespace of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"Name", "Namespace"},
+			},
+		},
+	}
+}
+
 func schema_apis_backend_infra_v1alpha1_ModuleBayList(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -4164,6 +4322,35 @@ func schema_apis_backend_infra_v1alpha1_ModuleBayStatus(ref common.ReferenceCall
 		},
 		Dependencies: []string{
 			"github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_ModuleFilter(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"Name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name filters by the name of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"Namespace": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Namespace filters by the namespace of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"Name", "Namespace"},
+			},
+		},
 	}
 }
 
@@ -4362,6 +4549,35 @@ func schema_apis_backend_infra_v1alpha1_Node(ref common.ReferenceCallback) commo
 	}
 }
 
+func schema_apis_backend_infra_v1alpha1_NodeFilter(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"Name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name filters by the name of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"Namespace": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Namespace filters by the namespace of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"Name", "Namespace"},
+			},
+		},
+	}
+}
+
 func schema_apis_backend_infra_v1alpha1_NodeGroup(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -4406,6 +4622,35 @@ func schema_apis_backend_infra_v1alpha1_NodeGroup(ref common.ReferenceCallback) 
 		},
 		Dependencies: []string{
 			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupSpec", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_NodeGroupFilter(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"Name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name filters by the name of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"Namespace": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Namespace filters by the namespace of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"Name", "Namespace"},
+			},
+		},
 	}
 }
 
@@ -4645,6 +4890,35 @@ func schema_apis_backend_infra_v1alpha1_NodeItem(ref common.ReferenceCallback) c
 	}
 }
 
+func schema_apis_backend_infra_v1alpha1_NodeItemFilter(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"Name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name filters by the name of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"Namespace": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Namespace filters by the namespace of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"Name", "Namespace"},
+			},
+		},
+	}
+}
+
 func schema_apis_backend_infra_v1alpha1_NodeItemList(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -4878,6 +5152,35 @@ func schema_apis_backend_infra_v1alpha1_NodeSet(ref common.ReferenceCallback) co
 		},
 		Dependencies: []string{
 			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeSetSpec", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeSetStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_NodeSetFilter(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"Name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name filters by the name of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"Namespace": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Namespace filters by the namespace of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"Name", "Namespace"},
+			},
+		},
 	}
 }
 
@@ -5181,6 +5484,35 @@ func schema_apis_backend_infra_v1alpha1_Rack(ref common.ReferenceCallback) commo
 	}
 }
 
+func schema_apis_backend_infra_v1alpha1_RackFilter(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"Name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name filters by the name of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"Namespace": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Namespace filters by the namespace of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"Name", "Namespace"},
+			},
+		},
+	}
+}
+
 func schema_apis_backend_infra_v1alpha1_RackList(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -5374,6 +5706,35 @@ func schema_apis_backend_infra_v1alpha1_Region(ref common.ReferenceCallback) com
 	}
 }
 
+func schema_apis_backend_infra_v1alpha1_RegionFilter(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"Name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name filters by the name of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"Namespace": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Namespace filters by the namespace of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"Name", "Namespace"},
+			},
+		},
+	}
+}
+
 func schema_apis_backend_infra_v1alpha1_RegionList(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -5525,6 +5886,35 @@ func schema_apis_backend_infra_v1alpha1_Site(ref common.ReferenceCallback) commo
 		},
 		Dependencies: []string{
 			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.SiteSpec", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.SiteStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_SiteFilter(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"Name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name filters by the name of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"Namespace": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Namespace filters by the namespace of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"Name", "Namespace"},
+			},
+		},
 	}
 }
 

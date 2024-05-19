@@ -103,9 +103,6 @@ func (r *strategy) Update(ctx context.Context, key types.NamespacedName, obj, ol
 	if err := updateResourceVersion(ctx, obj, old); err != nil {
 		return obj, apierrors.NewInternalError(err)
 	}
-
-	log.Info("update claim storage", "key", key, "obj", obj)
-
 	if err := r.store.Update(ctx, storebackend.KeyFromNSN(key), obj); err != nil {
 		return obj, apierrors.NewInternalError(err)
 	}

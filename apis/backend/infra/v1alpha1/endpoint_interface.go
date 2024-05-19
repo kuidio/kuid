@@ -17,6 +17,7 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"context"
 	"crypto/sha1"
 	"encoding/json"
 	"fmt"
@@ -27,11 +28,15 @@ import (
 	"github.com/kuidio/kuid/apis/backend"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/apimachinery/pkg/selection"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/validation/field"
+	genericapirequest "k8s.io/apiserver/pkg/endpoints/request"
 )
 
 const EndpointPlural = "endpoints"
@@ -224,19 +229,94 @@ func EndpointTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 			return []interface{}{
 				r.GetName(),
 				r.GetCondition(conditionv1alpha1.ConditionTypeReady).Status,
+				r.Spec.NodeGroup,
 				r.Spec.Region,
 				r.Spec.Site,
-				r.Spec.NodeGroup,
 				r.Spec.Node,
 			}
 		},
 		Columns: []metav1.TableColumnDefinition{
 			{Name: "Name", Type: "string"},
 			{Name: "Ready", Type: "string"},
+			{Name: "Topology", Type: "string"},
 			{Name: "Region", Type: "string"},
 			{Name: "Site", Type: "string"},
-			{Name: "Topology", Type: "string"},
 			{Name: "Node", Type: "string"},
 		},
 	}
+}
+
+func EndpointParseFieldSelector(ctx context.Context, fieldSelector fields.Selector) (backend.Filter, error) {
+	var filter *EndpointFilter
+
+	// add the namespace to the list
+	namespace, ok := genericapirequest.NamespaceFrom(ctx)
+	if fieldSelector == nil {
+		if ok {
+			return &EndpointFilter{Namespace: namespace}, nil
+		}
+		return filter, nil
+	}
+	requirements := fieldSelector.Requirements()
+	for _, requirement := range requirements {
+		filter = &EndpointFilter{}
+		switch requirement.Operator {
+		case selection.Equals, selection.DoesNotExist:
+			if requirement.Value == "" {
+				return filter, apierrors.NewBadRequest(fmt.Sprintf("unsupported fieldSelector value %q for field %q with operator %q", requirement.Value, requirement.Field, requirement.Operator))
+			}
+		default:
+			return filter, apierrors.NewBadRequest(fmt.Sprintf("unsupported fieldSelector operator %q for field %q", requirement.Operator, requirement.Field))
+		}
+
+		switch requirement.Field {
+		case "metadata.name":
+			filter.Name = requirement.Value
+		case "metadata.namespace":
+			filter.Namespace = requirement.Value
+		default:
+			return filter, apierrors.NewBadRequest(fmt.Sprintf("unknown fieldSelector field %q", requirement.Field))
+		}
+	}
+	// add namespace to the filter selector if specified
+	if ok {
+		if filter != nil {
+			filter.Namespace = namespace
+		} else {
+			filter = &EndpointFilter{Namespace: namespace}
+		}
+	}
+
+	return &EndpointFilter{}, nil
+}
+
+type EndpointFilter struct {
+	// Name filters by the name of the objects
+	Name string `protobuf:"bytes,1,opt,name=name"`
+
+	// Namespace filters by the namespace of the objects
+	Namespace string `protobuf:"bytes,2,opt,name=namespace"`
+}
+
+func (r *EndpointFilter) Filter(ctx context.Context, obj runtime.Object) bool {
+	f := true
+	o, ok := obj.(*Endpoint)
+	if !ok {
+		return f
+	}
+	if r.Name != "" {
+		if o.GetName() == r.Name {
+			f = false
+		} else {
+			f = true
+		}
+	}
+	if r.Namespace != "" {
+		if o.GetNamespace() == r.Namespace {
+			f = false
+		} else {
+			f = true
+		}
+	}
+	return f
 }

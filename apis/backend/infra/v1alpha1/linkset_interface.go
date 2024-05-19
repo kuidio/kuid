@@ -39,70 +39,70 @@ import (
 	genericapirequest "k8s.io/apiserver/pkg/endpoints/request"
 )
 
-const RegionPlural = "regions"
-const RegionSingular = "region"
+const LinkSetPlural = "linksets"
+const LinkSetSingular = "linkset"
 
 // +k8s:deepcopy-gen=false
-var _ resource.Object = &Region{}
-var _ resource.ObjectList = &RegionList{}
+var _ resource.Object = &LinkSet{}
+var _ resource.ObjectList = &LinkSetList{}
 
 // GetListMeta returns the ListMeta
-func (r *RegionList) GetListMeta() *metav1.ListMeta {
+func (r *LinkSetList) GetListMeta() *metav1.ListMeta {
 	return &r.ListMeta
 }
 
-func (r *Region) GetSingularName() string {
-	return RegionSingular
+func (r *LinkSet) GetSingularName() string {
+	return LinkSetSingular
 }
 
-func (Region) GetGroupVersionResource() schema.GroupVersionResource {
+func (LinkSet) GetGroupVersionResource() schema.GroupVersionResource {
 	return schema.GroupVersionResource{
 		Group:    SchemeGroupVersion.Group,
 		Version:  SchemeGroupVersion.Version,
-		Resource: RegionPlural,
+		Resource: LinkSetPlural,
 	}
 }
 
 // IsStorageVersion returns true -- v1alpha1.Config is used as the internal version.
 // IsStorageVersion implements resource.Object.
-func (Region) IsStorageVersion() bool {
+func (LinkSet) IsStorageVersion() bool {
 	return true
 }
 
 // GetObjectMeta implements resource.Object
-func (r *Region) GetObjectMeta() *metav1.ObjectMeta {
+func (r *LinkSet) GetObjectMeta() *metav1.ObjectMeta {
 	return &r.ObjectMeta
 }
 
 // NamespaceScoped returns true to indicate Fortune is a namespaced resource.
 // NamespaceScoped implements resource.Object.
-func (Region) NamespaceScoped() bool {
+func (LinkSet) NamespaceScoped() bool {
 	return true
 }
 
 // New implements resource.Object
-func (Region) New() runtime.Object {
-	return &Region{}
+func (LinkSet) New() runtime.Object {
+	return &LinkSet{}
 }
 
 // NewList implements resource.Object
-func (Region) NewList() runtime.Object {
-	return &RegionList{}
+func (LinkSet) NewList() runtime.Object {
+	return &LinkSetList{}
 }
 
 // GetCondition returns the condition based on the condition kind
-func (r *Region) GetCondition(t conditionv1alpha1.ConditionType) conditionv1alpha1.Condition {
+func (r *LinkSet) GetCondition(t conditionv1alpha1.ConditionType) conditionv1alpha1.Condition {
 	return r.Status.GetCondition(t)
 }
 
 // SetConditions sets the conditions on the resource. it allows for 0, 1 or more conditions
 // to be set at once
-func (r *Region) SetConditions(c ...conditionv1alpha1.Condition) {
+func (r *LinkSet) SetConditions(c ...conditionv1alpha1.Condition) {
 	r.Status.SetConditions(c...)
 }
 
-// RegionConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for Region
-func RegionConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
+// LinkSetConvertFieldSelector is the schema conversion function for normalizing the FieldSelector for LinkSet
+func LinkSetConvertFieldSelector(label, value string) (internalLabel, internalValue string, err error) {
 	switch label {
 	case "metadata.name":
 		return label, value, nil
@@ -113,7 +113,7 @@ func RegionConvertFieldSelector(label, value string) (internalLabel, internalVal
 	}
 }
 
-func (r *RegionList) GetItems() []backend.Object {
+func (r *LinkSetList) GetItems() []backend.Object {
 	objs := []backend.Object{}
 	for _, r := range r.Items {
 		r := r
@@ -122,7 +122,7 @@ func (r *RegionList) GetItems() []backend.Object {
 	return objs
 }
 
-func (r *Region) CalculateHash() ([sha1.Size]byte, error) {
+func (r *LinkSet) CalculateHash() ([sha1.Size]byte, error) {
 	// Convert the struct to JSON
 	jsonData, err := json.Marshal(r)
 	if err != nil {
@@ -133,32 +133,28 @@ func (r *Region) CalculateHash() ([sha1.Size]byte, error) {
 	return sha1.Sum(jsonData), nil
 }
 
-func (r *Region) GetNamespacedName() types.NamespacedName {
+func (r *LinkSet) GetNamespacedName() types.NamespacedName {
 	return types.NamespacedName{
 		Namespace: r.GetNamespace(),
 		Name:      r.GetName(),
 	}
 }
 
-func (r *Region) GetKey() store.Key {
+func (r *LinkSet) GetKey() store.Key {
 	return store.KeyFromNSN(r.GetNamespacedName())
 }
 
-func (r *Region) GetRegion() string {
-	return r.Name
-}
-
-func (r *Region) GetOwnerReference() *commonv1alpha1.OwnerReference {
+func (r *LinkSet) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	return &commonv1alpha1.OwnerReference{
 		Group:     SchemeGroupVersion.Group,
 		Version:   SchemeGroupVersion.Version,
-		Kind:      RegionKind,
+		Kind:      LinkSetKind,
 		Namespace: r.Namespace,
 		Name:      r.Name,
 	}
 }
 
-func (r *Region) ValidateSyntax() field.ErrorList {
+func (r *LinkSet) ValidateSyntax() field.ErrorList {
 	var allErrs field.ErrorList
 
 	/*
@@ -172,20 +168,20 @@ func (r *Region) ValidateSyntax() field.ErrorList {
 	return allErrs
 }
 
-// BuildRegion returns a reource from a client Object a Spec/Status
-func BuildRegion(meta metav1.ObjectMeta, spec *RegionSpec, status *RegionStatus) *Region {
-	aspec := RegionSpec{}
+// BuildLinkSet returns a reource from a client Object a Spec/Status
+func BuildLinkSet(meta metav1.ObjectMeta, spec *LinkSetSpec, status *LinkSetStatus) *LinkSet {
+	aspec := LinkSetSpec{}
 	if spec != nil {
 		aspec = *spec
 	}
-	astatus := RegionStatus{}
+	astatus := LinkSetStatus{}
 	if status != nil {
 		astatus = *status
 	}
-	return &Region{
+	return &LinkSet{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: SchemeGroupVersion.Identifier(),
-			Kind:       RegionKind,
+			Kind:       LinkSetKind,
 		},
 		ObjectMeta: meta,
 		Spec:       aspec,
@@ -193,11 +189,11 @@ func BuildRegion(meta metav1.ObjectMeta, spec *RegionSpec, status *RegionStatus)
 	}
 }
 
-func RegionTableConvertor(gr schema.GroupResource) registry.TableConvertor {
+func LinkSetTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 	return registry.TableConvertor{
 		Resource: gr,
 		Cells: func(obj runtime.Object) []interface{} {
-			r, ok := obj.(*Region)
+			r, ok := obj.(*LinkSet)
 			if !ok {
 				return nil
 			}
@@ -213,20 +209,20 @@ func RegionTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 	}
 }
 
-func RegionParseFieldSelector(ctx context.Context, fieldSelector fields.Selector) (backend.Filter, error) {
-	var filter *RegionFilter
+func LinkSetParseFieldSelector(ctx context.Context, fieldSelector fields.Selector) (backend.Filter, error) {
+	var filter *LinkSetFilter
 
 	// add the namespace to the list
 	namespace, ok := genericapirequest.NamespaceFrom(ctx)
 	if fieldSelector == nil {
 		if ok {
-			return &RegionFilter{Namespace: namespace}, nil
+			return &LinkSetFilter{Namespace: namespace}, nil
 		}
 		return filter, nil
 	}
 	requirements := fieldSelector.Requirements()
 	for _, requirement := range requirements {
-		filter = &RegionFilter{}
+		filter = &LinkSetFilter{}
 		switch requirement.Operator {
 		case selection.Equals, selection.DoesNotExist:
 			if requirement.Value == "" {
@@ -250,14 +246,14 @@ func RegionParseFieldSelector(ctx context.Context, fieldSelector fields.Selector
 		if filter != nil {
 			filter.Namespace = namespace
 		} else {
-			filter = &RegionFilter{Namespace: namespace}
+			filter = &LinkSetFilter{Namespace: namespace}
 		}
 	}
 
-	return &RegionFilter{}, nil
+	return &LinkSetFilter{}, nil
 }
 
-type RegionFilter struct {
+type LinkSetFilter struct {
 	// Name filters by the name of the objects
 	Name string `protobuf:"bytes,1,opt,name=name"`
 
@@ -265,9 +261,9 @@ type RegionFilter struct {
 	Namespace string `protobuf:"bytes,2,opt,name=namespace"`
 }
 
-func (r *RegionFilter) Filter(ctx context.Context, obj runtime.Object) bool {
+func (r *LinkSetFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	f := true
-	o, ok := obj.(*Region)
+	o, ok := obj.(*LinkSet)
 	if !ok {
 		return f
 	}

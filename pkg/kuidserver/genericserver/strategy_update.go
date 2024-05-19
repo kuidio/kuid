@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package entryserver
+package genericserver
 
 import (
 	"context"
@@ -45,27 +45,36 @@ func (r *strategy) AllowUnconditionalUpdate() bool { return false }
 
 func (r *strategy) ValidateUpdate(ctx context.Context, obj, old runtime.Object) field.ErrorList {
 	var allErrs field.ErrorList
+	genObj, ok := obj.(backend.GenericObject)
+	if !ok {
+		allErrs = append(allErrs, field.Invalid(
+			field.NewPath(""),
+			genObj,
+			fmt.Errorf("unexpected new object got: %s", reflect.TypeOf(obj)).Error(),
+		))
+		return allErrs
+	}
 
-	return allErrs
+	return genObj.ValidateSyntax()
 }
 
 func (r *strategy) Update(ctx context.Context, key types.NamespacedName, obj, old runtime.Object, dryrun bool) (runtime.Object, error) {
 	log := log.FromContext(ctx)
 	// check if there is a change
-	newObj, ok := obj.(backend.EntryObject)
+	newGenObj, ok := obj.(backend.GenericObject)
 	if !ok {
 		return obj, fmt.Errorf("unexpected new object, got: %s", reflect.TypeOf(obj))
 	}
-	oldObj, ok := old.(backend.EntryObject)
+	oldGenObj, ok := old.(backend.GenericObject)
 	if !ok {
 		return obj, fmt.Errorf("unexpected old object, got: %s", reflect.TypeOf(obj))
 	}
 
-	newHash, err := newObj.CalculateHash()
+	newHash, err := newGenObj.CalculateHash()
 	if err != nil {
 		return obj, err
 	}
-	oldHash, err := oldObj.CalculateHash()
+	oldHash, err := oldGenObj.CalculateHash()
 	if err != nil {
 		return obj, err
 	}
