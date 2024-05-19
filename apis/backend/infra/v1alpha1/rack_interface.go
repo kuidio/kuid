@@ -45,9 +45,9 @@ const RackSingular = "rack"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &Rack{}
 var _ resource.ObjectList = &RackList{}
-var _ backend.GenericObject = &Rack{}
 var _ backend.ObjectList = &RackList{}
-
+var _ backend.GenericObject = &Rack{}
+var _ backend.GenericObjectList = &RackList{}
 // GetListMeta returns the ListMeta
 func (r *RackList) GetListMeta() *metav1.ListMeta {
 	return &r.ListMeta
@@ -92,7 +92,7 @@ func (Rack) NewList() runtime.Object {
 	return &RackList{}
 }
 
-func (r *Rack) NewObjList() backend.ObjectList {
+func (r *Rack) NewObjList() backend.GenericObjectList {
 	return &RackList{
 		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: RackKindList},
 	}
@@ -127,6 +127,16 @@ func RackConvertFieldSelector(label, value string) (internalLabel, internalValue
 
 func (r *RackList) GetItems() []backend.Object {
 	objs := []backend.Object{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
+}
+
+
+func (r *RackList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)

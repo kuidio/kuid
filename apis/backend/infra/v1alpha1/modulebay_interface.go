@@ -45,8 +45,9 @@ const ModuleBaySingular = "modulebay"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &ModuleBay{}
 var _ resource.ObjectList = &ModuleBayList{}
-var _ backend.GenericObject = &ModuleBay{}
 var _ backend.ObjectList = &ModuleBayList{}
+var _ backend.GenericObject = &ModuleBay{}
+var _ backend.GenericObjectList = &ModuleBayList{}
 
 // GetListMeta returns the ListMeta
 func (r *ModuleBayList) GetListMeta() *metav1.ListMeta {
@@ -92,7 +93,7 @@ func (ModuleBay) NewList() runtime.Object {
 	return &ModuleBayList{}
 }
 
-func (r *ModuleBay) NewObjList() backend.ObjectList {
+func (r *ModuleBay) NewObjList() backend.GenericObjectList {
 	return &ModuleBayList{
 		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: ModuleBayKindList},
 	}
@@ -127,6 +128,16 @@ func ModuleBayConvertFieldSelector(label, value string) (internalLabel, internal
 
 func (r *ModuleBayList) GetItems() []backend.Object {
 	objs := []backend.Object{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
+}
+
+
+func (r *ModuleBayList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)

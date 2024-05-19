@@ -45,8 +45,9 @@ const RegionSingular = "region"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &Region{}
 var _ resource.ObjectList = &RegionList{}
-var _ backend.GenericObject = &Region{}
 var _ backend.ObjectList = &RegionList{}
+var _ backend.GenericObject = &Region{}
+var _ backend.GenericObjectList = &RegionList{}
 
 // GetListMeta returns the ListMeta
 func (r *RegionList) GetListMeta() *metav1.ListMeta {
@@ -92,7 +93,7 @@ func (Region) NewList() runtime.Object {
 	return &RegionList{}
 }
 
-func (r *Region) NewObjList() backend.ObjectList {
+func (r *Region) NewObjList() backend.GenericObjectList {
 	return &RegionList{
 		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: RegionKindList},
 	}
@@ -127,6 +128,16 @@ func RegionConvertFieldSelector(label, value string) (internalLabel, internalVal
 
 func (r *RegionList) GetItems() []backend.Object {
 	objs := []backend.Object{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
+}
+
+
+func (r *RegionList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)

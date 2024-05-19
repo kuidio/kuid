@@ -45,8 +45,9 @@ const NodeSingular = "node"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &Node{}
 var _ resource.ObjectList = &NodeList{}
-var _ backend.GenericObject = &Node{}
 var _ backend.ObjectList = &NodeList{}
+var _ backend.GenericObject = &Node{}
+var _ backend.GenericObjectList = &NodeList{}
 
 // GetListMeta returns the ListMeta
 func (r *NodeList) GetListMeta() *metav1.ListMeta {
@@ -92,7 +93,7 @@ func (Node) NewList() runtime.Object {
 	return &NodeList{}
 }
 
-func (r *Node) NewObjList() backend.ObjectList {
+func (r *Node) NewObjList() backend.GenericObjectList {
 	return &NodeList{
 		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: NodeKindList},
 	}
@@ -127,6 +128,16 @@ func NodeConvertFieldSelector(label, value string) (internalLabel, internalValue
 
 func (r *NodeList) GetItems() []backend.Object {
 	objs := []backend.Object{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
+}
+
+
+func (r *NodeList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)

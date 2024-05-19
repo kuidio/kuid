@@ -45,8 +45,9 @@ const LinkSetSingular = "linkset"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &LinkSet{}
 var _ resource.ObjectList = &LinkSetList{}
-var _ backend.GenericObject = &LinkSet{}
 var _ backend.ObjectList = &LinkSetList{}
+var _ backend.GenericObject = &LinkSet{}
+var _ backend.GenericObjectList = &LinkSetList{}
 
 // GetListMeta returns the ListMeta
 func (r *LinkSetList) GetListMeta() *metav1.ListMeta {
@@ -92,7 +93,7 @@ func (LinkSet) NewList() runtime.Object {
 	return &LinkSetList{}
 }
 
-func (r *LinkSet) NewObjList() backend.ObjectList {
+func (r *LinkSet) NewObjList() backend.GenericObjectList {
 	return &LinkSetList{
 		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: LinkSetKindList},
 	}
@@ -127,6 +128,16 @@ func LinkSetConvertFieldSelector(label, value string) (internalLabel, internalVa
 
 func (r *LinkSetList) GetItems() []backend.Object {
 	objs := []backend.Object{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
+}
+
+
+func (r *LinkSetList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)

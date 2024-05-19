@@ -45,8 +45,9 @@ const ClusterSingular = "cluster"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &Cluster{}
 var _ resource.ObjectList = &ClusterList{}
-var _ backend.GenericObject = &Cluster{}
 var _ backend.ObjectList = &ClusterList{}
+var _ backend.GenericObject = &Cluster{}
+var _ backend.GenericObjectList = &ClusterList{}
 
 // GetListMeta returns the ListMeta
 func (r *ClusterList) GetListMeta() *metav1.ListMeta {
@@ -92,7 +93,7 @@ func (Cluster) NewList() runtime.Object {
 	return &ClusterList{}
 }
 
-func (r *Cluster) NewObjList() backend.ObjectList {
+func (r *Cluster) NewObjList() backend.GenericObjectList {
 	return &ClusterList{
 		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: ClusterKindList},
 	}
@@ -127,6 +128,16 @@ func ClusterConvertFieldSelector(label, value string) (internalLabel, internalVa
 
 func (r *ClusterList) GetItems() []backend.Object {
 	objs := []backend.Object{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
+}
+
+
+func (r *ClusterList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)

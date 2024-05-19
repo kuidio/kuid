@@ -45,8 +45,9 @@ const SiteSingular = "site"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &Site{}
 var _ resource.ObjectList = &SiteList{}
-var _ backend.GenericObject = &Site{}
 var _ backend.ObjectList = &SiteList{}
+var _ backend.GenericObject = &Site{}
+var _ backend.GenericObjectList = &SiteList{}
 
 // GetListMeta returns the ListMeta
 func (r *SiteList) GetListMeta() *metav1.ListMeta {
@@ -92,7 +93,7 @@ func (Site) NewList() runtime.Object {
 	return &SiteList{}
 }
 
-func (r *Site) NewObjList() backend.ObjectList {
+func (r *Site) NewObjList() backend.GenericObjectList {
 	return &SiteList{
 		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: SiteKindList},
 	}
@@ -127,6 +128,16 @@ func SiteConvertFieldSelector(label, value string) (internalLabel, internalValue
 
 func (r *SiteList) GetItems() []backend.Object {
 	objs := []backend.Object{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
+}
+
+
+func (r *SiteList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)

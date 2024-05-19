@@ -45,8 +45,9 @@ const ModuleSingular = "module"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &Module{}
 var _ resource.ObjectList = &ModuleList{}
-var _ backend.GenericObject = &Module{}
 var _ backend.ObjectList = &ModuleList{}
+var _ backend.GenericObject = &Module{}
+var _ backend.GenericObjectList = &ModuleList{}
 
 // GetListMeta returns the ListMeta
 func (r *ModuleList) GetListMeta() *metav1.ListMeta {
@@ -92,7 +93,7 @@ func (Module) NewList() runtime.Object {
 	return &ModuleList{}
 }
 
-func (r *Module) NewObjList() backend.ObjectList {
+func (r *Module) NewObjList() backend.GenericObjectList {
 	return &ModuleList{
 		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: ModuleKindList},
 	}
@@ -127,6 +128,16 @@ func ModuleConvertFieldSelector(label, value string) (internalLabel, internalVal
 
 func (r *ModuleList) GetItems() []backend.Object {
 	objs := []backend.Object{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
+}
+
+
+func (r *ModuleList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)

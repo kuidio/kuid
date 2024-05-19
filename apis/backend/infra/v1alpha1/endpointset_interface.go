@@ -45,8 +45,9 @@ const EndpointSetSingular = "endpointset"
 // +k8s:deepcopy-gen=false
 var _ resource.Object = &EndpointSet{}
 var _ resource.ObjectList = &EndpointSetList{}
-var _ backend.GenericObject = &EndpointSet{}
 var _ backend.ObjectList = &EndpointSetList{}
+var _ backend.GenericObject = &EndpointSet{}
+var _ backend.GenericObjectList = &EndpointSetList{}
 
 // GetListMeta returns the ListMeta
 func (r *EndpointSetList) GetListMeta() *metav1.ListMeta {
@@ -92,7 +93,7 @@ func (EndpointSet) NewList() runtime.Object {
 	return &EndpointSetList{}
 }
 
-func (r *EndpointSet) NewObjList() backend.ObjectList {
+func (r *EndpointSet) NewObjList() backend.GenericObjectList {
 	return &EndpointSetList{
 		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: EndpointSetKindList},
 	}
@@ -127,6 +128,16 @@ func EndpointSetConvertFieldSelector(label, value string) (internalLabel, intern
 
 func (r *EndpointSetList) GetItems() []backend.Object {
 	objs := []backend.Object{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
+}
+
+
+func (r *EndpointSetList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)
