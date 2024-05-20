@@ -20,6 +20,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	"sync"
 
 	"github.com/henderiw/logger/log"
@@ -241,7 +242,7 @@ func (r *Resources) apply(ctx context.Context, o backend.GenericObject) error {
 		}
 		if err := r.Client.Create(ctx, o); err != nil {
 			log.Error("cannot create resource", "key", key.String(), "error", err.Error())
-			if resource.IgnoreAlreadyExist(err) != nil {
+			if !strings.Contains(err.Error(), "AlreadyExists") {
 				return err
 			}
 			return nil
