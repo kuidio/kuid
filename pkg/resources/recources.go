@@ -236,6 +236,7 @@ func (r *Resources) apply(ctx context.Context, o backend.GenericObject) error {
 	log.Info("api apply object", "key", key.String())
 	spec := o.GetSpec()
 	if err := r.Client.Get(ctx, key, o); err != nil {
+		log.Error("cannot get resource", "key", key.String(), "error", err.Error())
 		if resource.IgnoreNotFound(err) != nil {
 			log.Error("cannot get resource", "key", key.String(), "error", err.Error())
 			return err
