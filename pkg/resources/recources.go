@@ -24,25 +24,26 @@ import (
 	"sync"
 
 	"github.com/henderiw/logger/log"
-	"github.com/kuidio/kuid/apis/backend"
 	"github.com/kuidio/kuid/pkg/reconcilers/resource"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/utils/ptr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 type Config struct {
-	Owns []backend.GenericObject
+	Owns []schema.GroupVersionKind
 }
 
 func New(c client.Client, cfg Config) *Resources {
 	return &Resources{
 		Client:            c,
 		cfg:               cfg,
-		newResources:      map[corev1.ObjectReference]backend.GenericObject{},
-		existingResources: map[corev1.ObjectReference]backend.GenericObject{},
+		newResources:      map[corev1.ObjectReference]client.Object{},
+		existingResources: map[corev1.ObjectReference]client.Object{},
 	}
 }
 
@@ -50,8 +51,8 @@ type Resources struct {
 	client.Client
 	cfg               Config
 	m                 sync.RWMutex
-	newResources      map[corev1.ObjectReference]backend.GenericObject
-	existingResources map[corev1.ObjectReference]backend.GenericObject
+	newResources      map[corev1.ObjectReference]client.Object
+	existingResources map[corev1.ObjectReference]client.Object
 	matchLabels       client.MatchingLabels
 }
 
@@ -65,7 +66,7 @@ func (r *Resources) Init(ml client.MatchingLabels) {
 */
 
 // AddNewResource adds a new resource to the inventoru
-func (r *Resources) AddNewResource(ctx context.Context, cr client.Object, o backend.GenericObject) error {
+func (r *Resources) AddNewResource(ctx context.Context, cr, o client.Object) error {
 	r.m.Lock()
 	defer r.m.Unlock()
 
@@ -100,22 +101,23 @@ func (r *Resources) getExistingResources(ctx context.Context, cr client.Object) 
 	log := log.FromContext(ctx)
 
 	var errm error
-	for _, ownObj := range r.cfg.Owns {
-		ownObj := ownObj
+	for _, gvk := range r.cfg.Owns {
+		gvk := gvk
 
 		opts := []client.ListOption{}
 		if len(r.matchLabels) > 0 {
 			opts = append(opts, r.matchLabels)
 		}
 
-		ownObjList := ownObj.NewObjList()
-		log.Info("getExistingResources", "gvk", ownObjList.GetObjectKind().GroupVersionKind().String())
-		if err := r.List(ctx, ownObjList, opts...); err != nil {
+		//ownObjList := ownObj.NewObjList()
+		objList := resource.GetUnstructuredListFromGVK(&gvk)
+		log.Info("getExistingResources", "gvk", objList.GetObjectKind().GroupVersionKind().String())
+		if err := r.List(ctx, objList, opts...); err != nil {
 			log.Error("getExistingResources list failed", "err", err.Error())
 			errm = errors.Join(errm, err)
 			continue
 		}
-		for _, o := range ownObjList.GetObjects() {
+		for _, o := range objList.Items {
 			o := o
 			for _, ref := range o.GetOwnerReferences() {
 				log.Info("ownerref", "refs", fmt.Sprintf("%s/%s", ref.UID, cr.GetUID()))
@@ -123,10 +125,10 @@ func (r *Resources) getExistingResources(ctx context.Context, cr client.Object) 
 					//apiVersion, kind := ownObj.SchemaGroupVersionKind().ToAPIVersionAndKind()
 					//log.Info("gvk", "apiVersion", apiVersion, "kind", kind)
 					r.existingResources[corev1.ObjectReference{
-						APIVersion: ownObj.GetObjectKind().GroupVersionKind().GroupVersion().String(),
-						Kind:       ownObj.GetObjectKind().GroupVersionKind().Kind,
+						APIVersion: gvk.GroupVersion().String(),
+						Kind:       gvk.Kind,
 						Name:       o.GetName(),
-						Namespace:  o.GetNamespace()}] = o
+						Namespace:  o.GetNamespace()}] = &o
 				}
 			}
 		}
@@ -151,6 +153,8 @@ func (r *Resources) apiDelete(ctx context.Context) error {
 	// delete in priority
 	var errm error
 	for ref, o := range r.existingResources {
+		ref := ref
+		o := o
 		if ref.Kind == "Namespace" {
 			continue
 		}
@@ -160,6 +164,8 @@ func (r *Resources) apiDelete(ctx context.Context) error {
 		}
 	}
 	for ref, o := range r.existingResources {
+		ref := ref
+		o := o
 		if err := r.delete(ctx, ref, o); err != nil {
 			errm = errors.Join(errm, err)
 			continue
@@ -168,7 +174,7 @@ func (r *Resources) apiDelete(ctx context.Context) error {
 	return nil
 }
 
-func (r *Resources) delete(ctx context.Context, ref corev1.ObjectReference, o backend.GenericObject) error {
+func (r *Resources) delete(ctx context.Context, ref corev1.ObjectReference, o client.Object) error {
 	log := log.FromContext(ctx)
 	log.Info("api delete existing resource", "referernce", ref.String())
 	if err := r.Delete(ctx, o); err != nil {
@@ -236,11 +242,16 @@ func (r *Resources) apiApply(ctx context.Context) error {
 	return errm
 }
 
-func (r *Resources) apply(ctx context.Context, o backend.GenericObject) error {
+func (r *Resources) apply(ctx context.Context, o client.Object) error {
 	log := log.FromContext(ctx)
 	key := types.NamespacedName{Namespace: o.GetNamespace(), Name: o.GetName()}
 	log.Info("api apply object", "key", key.String())
-	spec := o.GetSpec()
+
+	u, ok := o.(*unstructured.Unstructured)
+	if !ok {
+		return fmt.Errorf("unknown object")
+	}
+	spec := u.Object["spec"]
 	if err := r.Client.Get(ctx, key, o); err != nil {
 		log.Error("cannot get resource", "key", key.String(), "error", err.Error())
 		if resource.IgnoreNotFound(err) != nil {
@@ -256,9 +267,13 @@ func (r *Resources) apply(ctx context.Context, o backend.GenericObject) error {
 		}
 		return nil
 	}
-	o.SetSpec(spec)
-	if err := r.Client.Update(ctx, o); err != nil {
-		log.Error("cannot create resource", "key", key.String(), "error", err.Error())
+	u, ok = o.(*unstructured.Unstructured)
+	if !ok {
+		return fmt.Errorf("unknown object")
+	}
+	u.Object["spec"] = spec
+	if err := r.Client.Update(ctx, u); err != nil {
+		log.Error("cannot update resource", "key", key.String(), "error", err.Error())
 		return err
 	}
 	return nil
