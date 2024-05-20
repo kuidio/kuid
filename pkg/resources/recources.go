@@ -20,6 +20,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"reflect"
 	"strings"
 	"sync"
 
@@ -27,7 +28,6 @@ import (
 	"github.com/kuidio/kuid/pkg/reconcilers/resource"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/utils/ptr"
@@ -118,6 +118,7 @@ func (r *Resources) getExistingResources(ctx context.Context, cr client.Object) 
 			continue
 		}
 		for _, o := range objList.Items {
+			log.Info("getExistingResources", "gvk", o.GetObjectKind().GroupVersionKind().String(), "name", o.GetName())
 			o := o
 			for _, ref := range o.GetOwnerReferences() {
 				log.Info("ownerref", "refs", fmt.Sprintf("%s/%s", ref.UID, cr.GetUID()))
@@ -247,11 +248,11 @@ func (r *Resources) apply(ctx context.Context, o client.Object) error {
 	key := types.NamespacedName{Namespace: o.GetNamespace(), Name: o.GetName()}
 	log.Info("api apply object", "key", key.String())
 
-	u, ok := o.(*unstructured.Unstructured)
-	if !ok {
-		return fmt.Errorf("unknown object")
+	spec, err := getSpecField(o)
+	if err != nil {
+		log.Error("cannot get spec", "err", err)
+		return err
 	}
-	spec := u.Object["spec"]
 	if err := r.Client.Get(ctx, key, o); err != nil {
 		log.Error("cannot get resource", "key", key.String(), "error", err.Error())
 		if resource.IgnoreNotFound(err) != nil {
@@ -267,15 +268,46 @@ func (r *Resources) apply(ctx context.Context, o client.Object) error {
 		}
 		return nil
 	}
-	u, ok = o.(*unstructured.Unstructured)
-	if !ok {
-		return fmt.Errorf("unknown object")
+	if err := setSpecField(o, spec); err != nil {
+		log.Error("cannot set spec", "err", err)
+		return err
 	}
-	u.Object["spec"] = spec
-	if err := r.Client.Update(ctx, u); err != nil {
+	if err := r.Client.Update(ctx, o); err != nil {
 		log.Error("cannot update resource", "key", key.String(), "error", err.Error())
 		return err
 	}
+	return nil
+}
+
+func getSpecField(o client.Object) (any, error) {
+	// Get the value of the Spec field using reflection.
+	clientObjValue := reflect.ValueOf(o).Elem()
+	specField := clientObjValue.FieldByName("spec")
+	if specField.IsValid() {
+		return specField.Interface(), nil
+	}
+	return nil, fmt.Errorf("spec field not found in client object")
+}
+
+func setSpecField(o client.Object, spec any) error {
+	// Set the value of the Spec field to the client object using reflection.
+	clientObjValue := reflect.ValueOf(o).Elem()
+	specField := clientObjValue.FieldByName("Spec")
+	if specField.IsValid() {
+		if specField.CanSet() {
+			specValue := reflect.ValueOf(spec)
+			if specValue.Type().AssignableTo(specField.Type()) {
+				specField.Set(specValue)
+			} else {
+				return fmt.Errorf("spec value type is not assignable to client object's Spec field type")
+			}
+		} else {
+			return fmt.Errorf("unable to set Spec field")
+		}
+	} else {
+		return fmt.Errorf("spec field not found in client object")
+	}
+
 	return nil
 }
 
