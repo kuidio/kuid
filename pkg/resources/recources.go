@@ -241,7 +241,10 @@ func (r *Resources) apply(ctx context.Context, o backend.GenericObject) error {
 		}
 		if err := r.Client.Create(ctx, o); err != nil {
 			log.Error("cannot create resource", "key", key.String(), "error", err.Error())
-			return err
+			if resource.IgnoreAlreadyExist(err) != nil {
+				return err
+			}
+			return nil
 		}
 		return nil
 	}
