@@ -135,7 +135,6 @@ func (r *NodeList) GetItems() []backend.Object {
 	return objs
 }
 
-
 func (r *NodeList) GetObjects() []backend.GenericObject {
 	objs := []backend.GenericObject{}
 	for _, r := range r.Items {
@@ -175,18 +174,12 @@ func (r *Node) GetSite() string {
 	return r.Spec.Site
 }
 
-func (r *Node) GetNodeGroupID() NodeGroupID {
-	return NodeGroupID{
-		SiteID:    r.Spec.SiteID,
-		NodeGroup: r.Spec.NodeGroup,
-	}
+func (r *Node) GetNodeGroupNodeID() NodeGroupNodeID {
+	return r.Spec.NodeGroupNodeID
 }
 
 func (r *Node) GetNodeID() NodeID {
-	return NodeID{
-		NodeGroupID: r.GetNodeGroupID(),
-		Node:        r.Name,
-	}
+	return r.Spec.NodeID
 }
 
 func (r *Node) GetOwnerReference() *commonv1alpha1.OwnerReference {
@@ -344,7 +337,6 @@ func (r *NodeFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	}
 	return f
 }
-
 
 func (r *Node) GetUserDefinedLabels() map[string]string {
 	return r.Spec.GetUserDefinedLabels()

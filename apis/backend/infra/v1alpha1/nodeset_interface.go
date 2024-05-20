@@ -135,7 +135,6 @@ func (r *NodeSetList) GetItems() []backend.Object {
 	return objs
 }
 
-
 func (r *NodeSetList) GetObjects() []backend.GenericObject {
 	objs := []backend.GenericObject{}
 	for _, r := range r.Items {
@@ -316,7 +315,6 @@ func (r *NodeSetFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	}
 	return f
 }
-
 
 func (r *NodeSet) GetUserDefinedLabels() map[string]string {
 	return r.Spec.GetUserDefinedLabels()

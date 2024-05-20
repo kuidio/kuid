@@ -29,8 +29,8 @@ import (
 
 // EndpointSpec defines the desired state of Endpoint
 type EndpointSpec struct {
-	// EndpointID identifies the endpoint identity this resource belongs to
-	EndpointID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=EndpointID"`
+	// NodeGroupEndpointID identifies the endpoint identity this resource belongs to
+	NodeGroupEndpointID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeGroupEndpointID"`
 	// Module define the module to which the Endpoint belongs
 	// +optional
 	Module *string `json:"module,omitempty" yaml:"module,omitempty" protobuf:"bytes,2,opt,name=module"`
@@ -39,6 +39,8 @@ type EndpointSpec struct {
 	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,3,opt,name=userDefinedLabels"`
 	// (Gbps)
 	Speed *string `json:"speed,omitempty" yaml:"speed,omitempty" protobuf:"bytes,4,opt,name=speed"`
+	// VLANTagging defines if VLAN tagging is enabled or disabled on the interface
+	VLANTagging bool `json:"vlanTagging,omitempty" yaml:"vlanTagging,omitempty" protobuf:"bytes,5,opt,name=vlanTagging"`
 }
 
 // EndpointStatus defines the observed state of Endpoint
@@ -73,6 +75,6 @@ type EndpointList struct {
 }
 
 var (
-	EndpointKind = reflect.TypeOf(Endpoint{}).Name()
+	EndpointKind     = reflect.TypeOf(Endpoint{}).Name()
 	EndpointKindList = reflect.TypeOf(EndpointList{}).Name()
 )

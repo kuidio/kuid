@@ -61,6 +61,6 @@ type RegionList struct {
 }
 
 var (
-	RegionKind = reflect.TypeOf(Region{}).Name()
+	RegionKind     = reflect.TypeOf(Region{}).Name()
 	RegionKindList = reflect.TypeOf(RegionList{}).Name()
 )

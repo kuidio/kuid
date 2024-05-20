@@ -175,18 +175,15 @@ func (r *Endpoint) GetSite() string {
 	return r.Spec.Site
 }
 
-func (r *Endpoint) GetNodeGroupID() NodeGroupID {
-	return NodeGroupID{
-		SiteID:    r.Spec.SiteID,
+func (r *Endpoint) GetNodeGroupNodeID() NodeGroupNodeID {
+	return NodeGroupNodeID{
 		NodeGroup: r.Spec.NodeGroup,
+		NodeID:    r.Spec.NodeID,
 	}
 }
 
 func (r *Endpoint) GetNodeID() NodeID {
-	return NodeID{
-		Node:        r.Spec.Node,
-		NodeGroupID: r.GetNodeGroupID(),
-	}
+	return r.Spec.NodeID
 }
 
 func (r *Endpoint) GetEndpointID() EndpointID {

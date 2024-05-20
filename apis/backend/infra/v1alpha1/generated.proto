@@ -126,6 +126,14 @@ message EndpointSet {
   optional EndpointSetStatus status = 3;
 }
 
+message EndpointSetFilter {
+  // Name filters by the name of the objects
+  optional string name = 1;
+
+  // Namespace filters by the namespace of the objects
+  optional string namespace = 2;
+}
+
 // EndpointSetList contains a list of EndpointSets
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message EndpointSetList {
@@ -171,8 +179,8 @@ message EndpointSetStatus {
 
 // EndpointSpec defines the desired state of Endpoint
 message EndpointSpec {
-  // EndpointID identifies the endpoint identity this resource belongs to
-  optional EndpointID EndpointID = 1;
+  // NodeGroupEndpointID identifies the endpoint identity this resource belongs to
+  optional NodeGroupEndpointID nodeGroupEndpointID = 1;
 
   // Module define the module to which the Endpoint belongs
   // +optional
@@ -184,6 +192,9 @@ message EndpointSpec {
 
   // (Gbps)
   optional string speed = 4;
+
+  // VLANTagging defines if VLAN tagging is enabled or disabled on the interface
+  optional bool vlanTagging = 5;
 }
 
 // EndpointStatus defines the observed state of Endpoint
@@ -279,7 +290,7 @@ message LinkSetStatus {
 message LinkSpec {
   // Endpoints define the 2 endpoint identifiers of the link
   // Can only have 2 endpoints
-  repeated EndpointID endpoints = 1;
+  repeated NodeGroupEndpointID endpoints = 1;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
@@ -423,7 +434,7 @@ message NodeFilter {
 // administrative entity or organization. NodeGroups serve as administrative boundaries within the environment,
 // providing a structured framework for organizing and managing resources based on administrative ownership
 // or responsibility. E.g. A NodeGroup on one hand, can be used to represent a topology that spans multiple
-// sites and regions, but a NodeGroup can also be used to group all nodes of a cluster together.
+// sites and regions, but a NodeGroup can also be used to group all nodes of a NodeGroup together.
 // +k8s:openapi-gen=true
 message NodeGroup {
   optional k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
@@ -431,6 +442,14 @@ message NodeGroup {
   optional NodeGroupSpec spec = 2;
 
   optional NodeGroupStatus status = 3;
+}
+
+message NodeGroupEndpointID {
+  // NodeGroup defines the node group the resource belongs to.
+  optional string nodeGroup = 1;
+
+  // EndpointID defines the endpointID
+  optional EndpointID endpointID = 2;
 }
 
 message NodeGroupFilter {
@@ -441,13 +460,6 @@ message NodeGroupFilter {
   optional string namespace = 2;
 }
 
-message NodeGroupID {
-  optional SiteID siteID = 4;
-
-  // NodeGroup defines the node group the resource belongs to.
-  optional string nodeGroup = 3;
-}
-
 // NodeGroupList contains a list of NodeGroups
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message NodeGroupList {
@@ -456,10 +468,18 @@ message NodeGroupList {
   repeated NodeGroup items = 2;
 }
 
+message NodeGroupNodeID {
+  // NodeGroup defines the node group the resource belongs to.
+  optional string nodeGroup = 1;
+
+  // NodeID defines the nodeID
+  optional NodeID nodeID = 2;
+}
+
 // NodeGroupSpec defines the desired state of NodeGroup
-// E.g. A nodeGroup can be a cluster
+// E.g. A nodeGroup can be a NodeGroup
 // E.g. A nodeGroup can be a topology like a DC fabric (frontend and backend could be a different nodeGroup)
-// A Node Group is a global unique identifier within the system e.g. representing a topology, a cluster or
+// A Node Group is a global unique identifier within the system e.g. representing a topology, a NodeGroup or
 // another set of elements that are managed together by a single entity
 message NodeGroupSpec {
   // UserDefinedLabels define metadata to the resource.
@@ -475,10 +495,10 @@ message NodeGroupStatus {
 }
 
 message NodeID {
-  optional NodeGroupID nodeGroupID = 5;
+  optional SiteID siteID = 1;
 
   // Node defines the node the resource belongs to.
-  optional string node = 4;
+  optional string node = 2;
 }
 
 // A NodeItem represents a specific hardware component or accessory associated with a Node.
@@ -536,7 +556,7 @@ message NodeList {
 }
 
 // A NodeSet represents a set of nodes.
-// E.g. it can be used to model a set of nodes in a cluster that share the same
+// E.g. it can be used to model a set of nodes in a NodeSet that share the same
 // charecteristics wrt, Numa, interfaces, etc.
 // Another usage of NodeSet is the representation of a virtual Node that consists of multiple nodes.
 // +k8s:openapi-gen=true
@@ -566,10 +586,10 @@ message NodeSetList {
 
 // NodeSetSetSpec defines the desired state of NodeSet
 message NodeSetSpec {
-  // NodeGroupID identifies the nodeGroup this resource belongs to
-  // E.g. a NodeSet in a cluster belongs to a nodeGroup where the name of the nodeGroup is the cluster
+  // NodeGroupName identifies the nodeGroup this resource belongs to
+  // E.g. a NodeSet in a NodeSet belongs to a nodeGroup where the name of the nodeGroup is the NodeSet
   // E.g. a Virtual Node, belongs to a nodeGroup where the name of the nodeGroup represents the topology this node is deployed in
-  optional NodeGroupID nodeGroupID = 1;
+  optional string nodeGroup = 1;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
@@ -585,8 +605,8 @@ message NodeSetStatus {
 
 // NodeSpec defines the desired state of Node
 message NodeSpec {
-  // NodeGroupID identifies the nodeGroup identity this resource belongs to
-  optional NodeGroupID nodeGroupID = 1;
+  // NodeGroupNodeID identifies the nodeGroup identity this resource belongs to
+  optional NodeGroupNodeID nodeGroupID = 1;
 
   // Rack defines the rack in which the node is deployed
   // +optional

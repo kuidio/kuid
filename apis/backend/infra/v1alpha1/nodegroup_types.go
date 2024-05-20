@@ -68,6 +68,6 @@ type NodeGroupList struct {
 }
 
 var (
-	NodeGroupKind = reflect.TypeOf(NodeGroup{}).Name()
+	NodeGroupKind     = reflect.TypeOf(NodeGroup{}).Name()
 	NodeGroupKindList = reflect.TypeOf(NodeGroupList{}).Name()
 )

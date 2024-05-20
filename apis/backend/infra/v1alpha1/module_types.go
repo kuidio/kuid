@@ -66,6 +66,6 @@ type ModuleList struct {
 }
 
 var (
-	ModuleKind = reflect.TypeOf(Module{}).Name()
+	ModuleKind     = reflect.TypeOf(Module{}).Name()
 	ModuleKindList = reflect.TypeOf(ModuleList{}).Name()
 )

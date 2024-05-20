@@ -101,6 +101,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointID":                        schema_apis_backend_infra_v1alpha1_EndpointID(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointList":                      schema_apis_backend_infra_v1alpha1_EndpointList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSet":                       schema_apis_backend_infra_v1alpha1_EndpointSet(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSetFilter":                 schema_apis_backend_infra_v1alpha1_EndpointSetFilter(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSetList":                   schema_apis_backend_infra_v1alpha1_EndpointSetList(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSetSpec":                   schema_apis_backend_infra_v1alpha1_EndpointSetSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSetStatus":                 schema_apis_backend_infra_v1alpha1_EndpointSetStatus(ref),
@@ -130,9 +131,10 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Node":                              schema_apis_backend_infra_v1alpha1_Node(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeFilter":                        schema_apis_backend_infra_v1alpha1_NodeFilter(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroup":                         schema_apis_backend_infra_v1alpha1_NodeGroup(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupEndpointID":               schema_apis_backend_infra_v1alpha1_NodeGroupEndpointID(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupFilter":                   schema_apis_backend_infra_v1alpha1_NodeGroupFilter(ref),
-		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupID":                       schema_apis_backend_infra_v1alpha1_NodeGroupID(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupList":                     schema_apis_backend_infra_v1alpha1_NodeGroupList(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupNodeID":                   schema_apis_backend_infra_v1alpha1_NodeGroupNodeID(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupSpec":                     schema_apis_backend_infra_v1alpha1_NodeGroupSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupStatus":                   schema_apis_backend_infra_v1alpha1_NodeGroupStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeID":                            schema_apis_backend_infra_v1alpha1_NodeID(ref),
@@ -3231,14 +3233,6 @@ func schema_apis_backend_infra_v1alpha1_EndpointID(ref common.ReferenceCallback)
 							Format:      "",
 						},
 					},
-					"nodeGroup": {
-						SchemaProps: spec.SchemaProps{
-							Description: "NodeGroup defines the node group the resource belongs to.",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
 					"node": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Node defines the node the resource belongs to.",
@@ -3256,7 +3250,7 @@ func schema_apis_backend_infra_v1alpha1_EndpointID(ref common.ReferenceCallback)
 						},
 					},
 				},
-				Required: []string{"region", "site", "nodeGroup", "node", "endpoint"},
+				Required: []string{"region", "site", "node", "endpoint"},
 			},
 		},
 	}
@@ -3355,6 +3349,35 @@ func schema_apis_backend_infra_v1alpha1_EndpointSet(ref common.ReferenceCallback
 		},
 		Dependencies: []string{
 			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSetSpec", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSetStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_EndpointSetFilter(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"Name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name filters by the name of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"Namespace": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Namespace filters by the namespace of the objects",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"Name", "Namespace"},
+			},
+		},
 	}
 }
 
@@ -3509,6 +3532,14 @@ func schema_apis_backend_infra_v1alpha1_EndpointSpec(ref common.ReferenceCallbac
 				Description: "EndpointSpec defines the desired state of Endpoint",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
+					"nodeGroup": {
+						SchemaProps: spec.SchemaProps{
+							Description: "NodeGroup defines the node group the resource belongs to.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
 					"region": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Region defines the region this sites belongs to",
@@ -3520,14 +3551,6 @@ func schema_apis_backend_infra_v1alpha1_EndpointSpec(ref common.ReferenceCallbac
 					"site": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Site defines the site in which the node is deployed",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"nodeGroup": {
-						SchemaProps: spec.SchemaProps{
-							Description: "NodeGroup defines the node group the resource belongs to.",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
@@ -3579,8 +3602,15 @@ func schema_apis_backend_infra_v1alpha1_EndpointSpec(ref common.ReferenceCallbac
 							Format:      "",
 						},
 					},
+					"vlanTagging": {
+						SchemaProps: spec.SchemaProps{
+							Description: "VLANTagging defines if VLAN tagging is enabled or disabled on the interface",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
 				},
-				Required: []string{"region", "site", "nodeGroup", "node", "endpoint"},
+				Required: []string{"nodeGroup", "region", "site", "node", "endpoint"},
 			},
 		},
 	}
@@ -3967,7 +3997,7 @@ func schema_apis_backend_infra_v1alpha1_LinkSpec(ref common.ReferenceCallback) c
 							Items: &spec.SchemaOrArray{
 								Schema: &spec.Schema{
 									SchemaProps: spec.SchemaProps{
-										Ref: ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointID"),
+										Ref: ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupEndpointID"),
 									},
 								},
 							},
@@ -3994,7 +4024,7 @@ func schema_apis_backend_infra_v1alpha1_LinkSpec(ref common.ReferenceCallback) c
 			},
 		},
 		Dependencies: []string{
-			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointID"},
+			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupEndpointID"},
 	}
 }
 
@@ -4249,14 +4279,6 @@ func schema_apis_backend_infra_v1alpha1_ModuleBaySpec(ref common.ReferenceCallba
 							Format:      "",
 						},
 					},
-					"nodeGroup": {
-						SchemaProps: spec.SchemaProps{
-							Description: "NodeGroup defines the node group the resource belongs to.",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
 					"node": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Node defines the node the resource belongs to.",
@@ -4290,7 +4312,7 @@ func schema_apis_backend_infra_v1alpha1_ModuleBaySpec(ref common.ReferenceCallba
 						},
 					},
 				},
-				Required: []string{"region", "site", "nodeGroup", "node", "psoition"},
+				Required: []string{"region", "site", "node", "psoition"},
 			},
 		},
 	}
@@ -4426,14 +4448,6 @@ func schema_apis_backend_infra_v1alpha1_ModuleSpec(ref common.ReferenceCallback)
 							Format:      "",
 						},
 					},
-					"nodeGroup": {
-						SchemaProps: spec.SchemaProps{
-							Description: "NodeGroup defines the node group the resource belongs to.",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
 					"node": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Node defines the node the resource belongs to.",
@@ -4467,7 +4481,7 @@ func schema_apis_backend_infra_v1alpha1_ModuleSpec(ref common.ReferenceCallback)
 						},
 					},
 				},
-				Required: []string{"region", "site", "nodeGroup", "node", "moduleBay"},
+				Required: []string{"region", "site", "node", "moduleBay"},
 			},
 		},
 	}
@@ -4582,7 +4596,7 @@ func schema_apis_backend_infra_v1alpha1_NodeGroup(ref common.ReferenceCallback) 
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "A NodeGrouo represents a logical grouping of infrastructure resources managed by a single administrative entity or organization. NodeGroups serve as administrative boundaries within the environment, providing a structured framework for organizing and managing resources based on administrative ownership or responsibility. E.g. A NodeGroup on one hand, can be used to represent a topology that spans multiple sites and regions, but a NodeGroup can also be used to group all nodes of a cluster together.",
+				Description: "A NodeGrouo represents a logical grouping of infrastructure resources managed by a single administrative entity or organization. NodeGroups serve as administrative boundaries within the environment, providing a structured framework for organizing and managing resources based on administrative ownership or responsibility. E.g. A NodeGroup on one hand, can be used to represent a topology that spans multiple sites and regions, but a NodeGroup can also be used to group all nodes of a NodeGroup together.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -4625,6 +4639,59 @@ func schema_apis_backend_infra_v1alpha1_NodeGroup(ref common.ReferenceCallback) 
 	}
 }
 
+func schema_apis_backend_infra_v1alpha1_NodeGroupEndpointID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"nodeGroup": {
+						SchemaProps: spec.SchemaProps{
+							Description: "NodeGroup defines the node group the resource belongs to.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region this sites belongs to",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site in which the node is deployed",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"node": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Node defines the node the resource belongs to.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"endpoint": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Endpoint defines the name of the endpoint",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"nodeGroup", "region", "site", "node", "endpoint"},
+			},
+		},
+	}
+}
+
 func schema_apis_backend_infra_v1alpha1_NodeGroupFilter(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -4649,43 +4716,6 @@ func schema_apis_backend_infra_v1alpha1_NodeGroupFilter(ref common.ReferenceCall
 					},
 				},
 				Required: []string{"Name", "Namespace"},
-			},
-		},
-	}
-}
-
-func schema_apis_backend_infra_v1alpha1_NodeGroupID(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Type: []string{"object"},
-				Properties: map[string]spec.Schema{
-					"region": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Region defines the region this sites belongs to",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"site": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Site defines the site in which the node is deployed",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"nodeGroup": {
-						SchemaProps: spec.SchemaProps{
-							Description: "NodeGroup defines the node group the resource belongs to.",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-				},
-				Required: []string{"region", "site", "nodeGroup"},
 			},
 		},
 	}
@@ -4740,11 +4770,56 @@ func schema_apis_backend_infra_v1alpha1_NodeGroupList(ref common.ReferenceCallba
 	}
 }
 
+func schema_apis_backend_infra_v1alpha1_NodeGroupNodeID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"nodeGroup": {
+						SchemaProps: spec.SchemaProps{
+							Description: "NodeGroup defines the node group the resource belongs to.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region this sites belongs to",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site in which the node is deployed",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"node": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Node defines the node the resource belongs to.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"nodeGroup", "region", "site", "node"},
+			},
+		},
+	}
+}
+
 func schema_apis_backend_infra_v1alpha1_NodeGroupSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "NodeGroupSpec defines the desired state of NodeGroup E.g. A nodeGroup can be a cluster E.g. A nodeGroup can be a topology like a DC fabric (frontend and backend could be a different nodeGroup) A Node Group is a global unique identifier within the system e.g. representing a topology, a cluster or another set of elements that are managed together by a single entity",
+				Description: "NodeGroupSpec defines the desired state of NodeGroup E.g. A nodeGroup can be a NodeGroup E.g. A nodeGroup can be a topology like a DC fabric (frontend and backend could be a different nodeGroup) A Node Group is a global unique identifier within the system e.g. representing a topology, a NodeGroup or another set of elements that are managed together by a single entity",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"labels": {
@@ -4820,14 +4895,6 @@ func schema_apis_backend_infra_v1alpha1_NodeID(ref common.ReferenceCallback) com
 							Format:      "",
 						},
 					},
-					"nodeGroup": {
-						SchemaProps: spec.SchemaProps{
-							Description: "NodeGroup defines the node group the resource belongs to.",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
 					"node": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Node defines the node the resource belongs to.",
@@ -4837,7 +4904,7 @@ func schema_apis_backend_infra_v1alpha1_NodeID(ref common.ReferenceCallback) com
 						},
 					},
 				},
-				Required: []string{"region", "site", "nodeGroup", "node"},
+				Required: []string{"region", "site", "node"},
 			},
 		},
 	}
@@ -4991,14 +5058,6 @@ func schema_apis_backend_infra_v1alpha1_NodeItemSpec(ref common.ReferenceCallbac
 							Format:      "",
 						},
 					},
-					"nodeGroup": {
-						SchemaProps: spec.SchemaProps{
-							Description: "NodeGroup defines the node group the resource belongs to.",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
 					"node": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Node defines the node the resource belongs to.",
@@ -5024,7 +5083,7 @@ func schema_apis_backend_infra_v1alpha1_NodeItemSpec(ref common.ReferenceCallbac
 						},
 					},
 				},
-				Required: []string{"region", "site", "nodeGroup", "node"},
+				Required: []string{"region", "site", "node"},
 			},
 		},
 	}
@@ -5112,7 +5171,7 @@ func schema_apis_backend_infra_v1alpha1_NodeSet(ref common.ReferenceCallback) co
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "A NodeSet represents a set of nodes. E.g. it can be used to model a set of nodes in a cluster that share the same charecteristics wrt, Numa, interfaces, etc. Another usage of NodeSet is the representation of a virtual Node that consists of multiple nodes.",
+				Description: "A NodeSet represents a set of nodes. E.g. it can be used to model a set of nodes in a NodeSet that share the same charecteristics wrt, Numa, interfaces, etc. Another usage of NodeSet is the representation of a virtual Node that consists of multiple nodes.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -5240,25 +5299,9 @@ func schema_apis_backend_infra_v1alpha1_NodeSetSpec(ref common.ReferenceCallback
 				Description: "NodeSetSetSpec defines the desired state of NodeSet",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
-					"region": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Region defines the region this sites belongs to",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"site": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Site defines the site in which the node is deployed",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
 					"nodeGroup": {
 						SchemaProps: spec.SchemaProps{
-							Description: "NodeGroup defines the node group the resource belongs to.",
+							Description: "NodeGroupName identifies the nodeGroup this resource belongs to E.g. a NodeSet in a NodeSet belongs to a nodeGroup where the name of the nodeGroup is the NodeSet E.g. a Virtual Node, belongs to a nodeGroup where the name of the nodeGroup represents the topology this node is deployed in",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
@@ -5287,7 +5330,7 @@ func schema_apis_backend_infra_v1alpha1_NodeSetSpec(ref common.ReferenceCallback
 						},
 					},
 				},
-				Required: []string{"region", "site", "nodeGroup"},
+				Required: []string{"nodeGroup"},
 			},
 		},
 		Dependencies: []string{
@@ -5331,6 +5374,14 @@ func schema_apis_backend_infra_v1alpha1_NodeSpec(ref common.ReferenceCallback) c
 				Description: "NodeSpec defines the desired state of Node",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
+					"nodeGroup": {
+						SchemaProps: spec.SchemaProps{
+							Description: "NodeGroup defines the node group the resource belongs to.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
 					"region": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Region defines the region this sites belongs to",
@@ -5347,9 +5398,9 @@ func schema_apis_backend_infra_v1alpha1_NodeSpec(ref common.ReferenceCallback) c
 							Format:      "",
 						},
 					},
-					"nodeGroup": {
+					"node": {
 						SchemaProps: spec.SchemaProps{
-							Description: "NodeGroup defines the node group the resource belongs to.",
+							Description: "Node defines the node the resource belongs to.",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
@@ -5400,7 +5451,7 @@ func schema_apis_backend_infra_v1alpha1_NodeSpec(ref common.ReferenceCallback) c
 						},
 					},
 				},
-				Required: []string{"region", "site", "nodeGroup", "provider"},
+				Required: []string{"nodeGroup", "region", "site", "node", "provider"},
 			},
 		},
 		Dependencies: []string{

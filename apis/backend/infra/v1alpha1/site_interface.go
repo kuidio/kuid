@@ -135,7 +135,6 @@ func (r *SiteList) GetItems() []backend.Object {
 	return objs
 }
 
-
 func (r *SiteList) GetObjects() []backend.GenericObject {
 	objs := []backend.GenericObject{}
 	for _, r := range r.Items {
@@ -326,7 +325,6 @@ func (r *SiteFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	}
 	return f
 }
-
 
 func (r *Site) GetUserDefinedLabels() map[string]string {
 	return r.Spec.GetUserDefinedLabels()

@@ -135,7 +135,6 @@ func (r *NodeItemList) GetItems() []backend.Object {
 	return objs
 }
 
-
 func (r *NodeItemList) GetObjects() []backend.GenericObject {
 	objs := []backend.GenericObject{}
 	for _, r := range r.Items {

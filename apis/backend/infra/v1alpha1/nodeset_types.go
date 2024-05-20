@@ -26,10 +26,10 @@ import (
 
 // NodeSetSetSpec defines the desired state of NodeSet
 type NodeSetSpec struct {
-	// NodeGroupID identifies the nodeGroup this resource belongs to
+	// NodeGroupName identifies the nodeGroup this resource belongs to
 	// E.g. a NodeSet in a NodeSet belongs to a nodeGroup where the name of the nodeGroup is the NodeSet
 	// E.g. a Virtual Node, belongs to a nodeGroup where the name of the nodeGroup represents the topology this node is deployed in
-	NodeGroupID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeGroupID"`
+	NodeGroup string `json:"nodeGroup" yaml:"nodeGroup" protobuf:"bytes,1,opt,name=nodeGroup"`
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
 	commonv1alpha1.ClaimLabels `json:",inline" yaml:",inline" protobuf:"bytes,2,opt,name=userDefinedLabels"`
@@ -67,6 +67,6 @@ type NodeSetList struct {
 }
 
 var (
-	NodeSetKind = reflect.TypeOf(NodeSet{}).Name()
+	NodeSetKind     = reflect.TypeOf(NodeSet{}).Name()
 	NodeSetKindList = reflect.TypeOf(NodeSetList{}).Name()
 )

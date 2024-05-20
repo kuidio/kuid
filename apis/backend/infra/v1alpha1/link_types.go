@@ -28,7 +28,7 @@ import (
 type LinkSpec struct {
 	// Endpoints define the 2 endpoint identifiers of the link
 	// Can only have 2 endpoints
-	Endpoints []*EndpointID `json:"endpoints" yaml:"endpoints" protobuf:"bytes,1,opt,name=endpoints"`
+	Endpoints []*NodeGroupEndpointID `json:"endpoints" yaml:"endpoints" protobuf:"bytes,1,opt,name=endpoints"`
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
 	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,2,opt,name=userDefinedLabels"`
@@ -64,6 +64,6 @@ type LinkList struct {
 }
 
 var (
-	LinkKind = reflect.TypeOf(Link{}).Name()
+	LinkKind     = reflect.TypeOf(Link{}).Name()
 	LinkKindList = reflect.TypeOf(LinkList{}).Name()
 )

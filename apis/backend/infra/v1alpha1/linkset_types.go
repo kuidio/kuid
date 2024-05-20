@@ -72,6 +72,6 @@ type LinkSetList struct {
 }
 
 var (
-	LinkSetKind = reflect.TypeOf(LinkSet{}).Name()
+	LinkSetKind     = reflect.TypeOf(LinkSet{}).Name()
 	LinkSetKindList = reflect.TypeOf(LinkSetList{}).Name()
 )

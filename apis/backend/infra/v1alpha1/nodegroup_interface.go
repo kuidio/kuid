@@ -48,6 +48,7 @@ var _ resource.ObjectList = &NodeGroupList{}
 var _ backend.ObjectList = &NodeGroupList{}
 var _ backend.GenericObject = &NodeGroup{}
 var _ backend.GenericObjectList = &NodeGroupList{}
+
 // GetListMeta returns the ListMeta
 func (r *NodeGroupList) GetListMeta() *metav1.ListMeta {
 	return &r.ListMeta
@@ -133,7 +134,6 @@ func (r *NodeGroupList) GetItems() []backend.Object {
 	}
 	return objs
 }
-
 
 func (r *NodeGroupList) GetObjects() []backend.GenericObject {
 	objs := []backend.GenericObject{}

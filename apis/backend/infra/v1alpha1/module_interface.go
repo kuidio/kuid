@@ -135,7 +135,6 @@ func (r *ModuleList) GetItems() []backend.Object {
 	return objs
 }
 
-
 func (r *ModuleList) GetObjects() []backend.GenericObject {
 	objs := []backend.GenericObject{}
 	for _, r := range r.Items {
@@ -316,7 +315,6 @@ func (r *ModuleFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	}
 	return f
 }
-
 
 func (r *Module) GetUserDefinedLabels() map[string]string {
 	return r.Spec.GetUserDefinedLabels()

@@ -28,22 +28,30 @@ type SiteID struct {
 	Site string `json:"site" yaml:"site" protobuf:"bytes,2,opt,name=site"`
 }
 
-type NodeGroupID struct {
-	SiteID `json:",inline" yaml:",inline" protobuf:"bytes,4,opt,name=siteID"`
-	// NodeGroup defines the node group the resource belongs to.
-	NodeGroup string `json:"nodeGroup" yaml:"nodeGroup" protobuf:"bytes,3,opt,name=nodeGroup"`
-}
-
 type NodeID struct {
-	NodeGroupID `json:",inline" yaml:",inline" protobuf:"bytes,5,opt,name=nodeGroupID"`
+	SiteID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=siteID"`
 	// Node defines the node the resource belongs to.
-	Node string `json:"node" yaml:"node" protobuf:"bytes,4,opt,name=node"`
+	Node string `json:"node" yaml:"node" protobuf:"bytes,2,opt,name=node"`
 }
 
 type EndpointID struct {
 	NodeID `json:",inline" yaml:",inline" protobuf:"bytes,6,opt,name=nodeID"`
 	// Endpoint defines the name of the endpoint
 	Endpoint string `json:"endpoint" yaml:"endpoint" protobuf:"bytes,5,opt,name=endpoint"`
+}
+
+type NodeGroupNodeID struct {
+	// NodeGroup defines the node group the resource belongs to.
+	NodeGroup string `json:"nodeGroup" yaml:"nodeGroup" protobuf:"bytes,1,opt,name=nodeGroup"`
+	// NodeID defines the nodeID
+	NodeID `json:",inline" yaml:",inline" protobuf:"bytes,2,opt,name=nodeID"`
+}
+
+type NodeGroupEndpointID struct {
+	// NodeGroup defines the node group the resource belongs to.
+	NodeGroup string `json:"nodeGroup" yaml:"nodeGroup" protobuf:"bytes,1,opt,name=nodeGroup"`
+	// EndpointID defines the endpointID
+	EndpointID `json:",inline" yaml:",inline" protobuf:"bytes,2,opt,name=endpointID"`
 }
 
 func (r SiteID) KuidString() string {
@@ -54,37 +62,12 @@ func (r SiteID) KuidString() string {
 	)
 }
 
-func (r NodeGroupID) KuidString() string {
-	return fmt.Sprintf(
-		"%s.%s",
-		r.NodeGroup,
-		r.SiteID.KuidString(),
-	)
-}
-
 func (r NodeID) KuidString() string {
 	return fmt.Sprintf(
 		"%s.%s",
-		r.NodeGroupID.KuidString(),
+		r.SiteID.KuidString(),
 		r.Node,
 	)
-}
-
-func String2NodeID(s string) *NodeID {
-	parts := strings.Split(s, ".")
-	if len(parts) != 4 {
-		return nil
-	}
-	return &NodeID{
-		Node: parts[3],
-		NodeGroupID: NodeGroupID{
-			NodeGroup: parts[0],
-			SiteID: SiteID{
-				Region: parts[1],
-				Site:   parts[2],
-			},
-		},
-	}
 }
 
 func (r EndpointID) KuidString() string {
@@ -95,17 +78,50 @@ func (r EndpointID) KuidString() string {
 	)
 }
 
-func String2EndpointID(s string) *EndpointID {
+func (r NodeGroupNodeID) KuidString() string {
+	return fmt.Sprintf(
+		"%s.%s",
+		r.NodeGroup,
+		r.SiteID.KuidString(),
+	)
+}
+
+func (r NodeGroupEndpointID) KuidString() string {
+	return fmt.Sprintf(
+		"%s.%s",
+		r.NodeID.KuidString(),
+		r.Endpoint,
+	)
+}
+
+func String2NodeGroupNodeID(s string) *NodeGroupNodeID {
+	parts := strings.Split(s, ".")
+	if len(parts) != 4 {
+		return nil
+	}
+	return &NodeGroupNodeID{
+		NodeGroup: parts[0],
+		NodeID: NodeID{
+			Node: parts[3],
+			SiteID: SiteID{
+				Region: parts[1],
+				Site:   parts[2],
+			},
+		},
+	}
+}
+
+func String2NodeGroupEndpointID(s string) *NodeGroupEndpointID {
 	parts := strings.Split(s, ".")
 	if len(parts) != 5 {
 		return nil
 	}
-	return &EndpointID{
-		Endpoint: parts[4],
-		NodeID: NodeID{
-			Node: parts[3],
-			NodeGroupID: NodeGroupID{
-				NodeGroup: parts[0],
+	return &NodeGroupEndpointID{
+		NodeGroup: parts[0],
+		EndpointID: EndpointID{
+			Endpoint: parts[4],
+			NodeID: NodeID{
+				Node: parts[3],
 				SiteID: SiteID{
 					Region: parts[1],
 					Site:   parts[2],

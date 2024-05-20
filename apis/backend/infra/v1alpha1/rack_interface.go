@@ -48,6 +48,7 @@ var _ resource.ObjectList = &RackList{}
 var _ backend.ObjectList = &RackList{}
 var _ backend.GenericObject = &Rack{}
 var _ backend.GenericObjectList = &RackList{}
+
 // GetListMeta returns the ListMeta
 func (r *RackList) GetListMeta() *metav1.ListMeta {
 	return &r.ListMeta
@@ -133,7 +134,6 @@ func (r *RackList) GetItems() []backend.Object {
 	}
 	return objs
 }
-
 
 func (r *RackList) GetObjects() []backend.GenericObject {
 	objs := []backend.GenericObject{}
@@ -315,7 +315,6 @@ func (r *RackFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	}
 	return f
 }
-
 
 func (r *Rack) GetUserDefinedLabels() map[string]string {
 	return r.Spec.GetUserDefinedLabels()

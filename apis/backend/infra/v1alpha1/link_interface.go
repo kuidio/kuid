@@ -135,7 +135,6 @@ func (r *LinkList) GetItems() []backend.Object {
 	return objs
 }
 
-
 func (r *LinkList) GetObjects() []backend.GenericObject {
 	objs := []backend.GenericObject{}
 	for _, r := range r.Items {
@@ -176,14 +175,14 @@ func (r *Link) GetKey() store.Key {
 	return store.KeyFromNSN(r.GetNamespacedName())
 }
 
-func (r *Link) GetEndPointIDA() *EndpointID {
+func (r *Link) GetEndPointIDA() *NodeGroupEndpointID {
 	if len(r.Spec.Endpoints) != 2 {
 		return nil
 	}
 	return r.Spec.Endpoints[0]
 }
 
-func (r *Link) GetEndPointIDB() *EndpointID {
+func (r *Link) GetEndPointIDB() *NodeGroupEndpointID {
 	if len(r.Spec.Endpoints) != 2 {
 		return nil
 	}

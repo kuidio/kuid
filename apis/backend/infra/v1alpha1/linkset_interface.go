@@ -135,7 +135,6 @@ func (r *LinkSetList) GetItems() []backend.Object {
 	return objs
 }
 
-
 func (r *LinkSetList) GetObjects() []backend.GenericObject {
 	objs := []backend.GenericObject{}
 	for _, r := range r.Items {
@@ -316,7 +315,6 @@ func (r *LinkSetFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	}
 	return f
 }
-
 
 func (r *LinkSet) GetUserDefinedLabels() map[string]string {
 	return r.Spec.GetUserDefinedLabels()

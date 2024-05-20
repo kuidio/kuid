@@ -26,8 +26,8 @@ import (
 
 // NodeSpec defines the desired state of Node
 type NodeSpec struct {
-	// NodeGroupID identifies the nodeGroup identity this resource belongs to
-	NodeGroupID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeGroupID"`
+	// NodeGroupNodeID identifies the nodeGroup identity this resource belongs to
+	NodeGroupNodeID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeGroupID"`
 	// Rack defines the rack in which the node is deployed
 	// +optional
 	Rack *string `json:"rack,omitempty" yaml:"rack,omitempty" protobuf:"bytes,2,opt,name=rack"`
@@ -87,6 +87,6 @@ type NodeList struct {
 }
 
 var (
-	NodeKind = reflect.TypeOf(Node{}).Name()
+	NodeKind     = reflect.TypeOf(Node{}).Name()
 	NodeKindList = reflect.TypeOf(NodeList{}).Name()
 )
