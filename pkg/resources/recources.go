@@ -282,7 +282,7 @@ func (r *Resources) apply(ctx context.Context, o client.Object) error {
 func getSpecField(o client.Object) (any, error) {
 	// Get the value of the Spec field using reflection.
 	clientObjValue := reflect.ValueOf(o).Elem()
-	specField := clientObjValue.FieldByName("spec")
+	specField := clientObjValue.FieldByName("Spec")
 	if specField.IsValid() {
 		return specField.Interface(), nil
 	}
