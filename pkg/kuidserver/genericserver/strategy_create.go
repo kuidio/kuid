@@ -39,7 +39,7 @@ func (r *strategy) PrepareForCreate(ctx context.Context, obj runtime.Object) {
 func (r *strategy) Validate(ctx context.Context, obj runtime.Object) field.ErrorList {
 	var allErrs field.ErrorList
 
-	fmt.Println("Validate index create", obj)
+	//fmt.Println("Validate index create", obj)
 
 	genObj, ok := obj.(backend.GenericObject)
 	if !ok {
@@ -59,7 +59,7 @@ func (r *strategy) Create(ctx context.Context, key types.NamespacedName, obj run
 	if dryrun {
 		return obj, nil
 	}
-	log.Info("create index in storage", "key", key, "obj", obj)
+	log.Debug("create resource in storage", "key", key, "obj", obj)
 
 	if err := r.store.Create(ctx, storebackend.KeyFromNSN(key), obj); err != nil {
 		return obj, apierrors.NewInternalError(err)

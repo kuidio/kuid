@@ -51,6 +51,7 @@ const (
 	KuidINVNodeTypeKey         = "infra.be.kuid.dev/node-type"
 	KuidINVNodeKey             = "infra.be.kuid.dev/node"
 	KuidINVLinkKey             = "infra.be.kuid.dev/link"
+	KuidINVPurpose             = "infra.be.kuid.dev/purpose"
 )
 
 var BackendSystemKeys = sets.New[string](KuidOwnerGroupKey,

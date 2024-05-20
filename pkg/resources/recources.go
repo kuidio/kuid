@@ -212,39 +212,45 @@ func (r *Resources) apiApply(ctx context.Context) error {
 		ref := ref
 		o := o
 		if ref.Kind == "Namespace" { // apply in priority
-			if err := r.apply(ctx, ref, o); err != nil {
-				errm =errors.Join(errm, err)
+			if err := r.apply(ctx, o); err != nil {
+				errm = errors.Join(errm, err)
 				continue
 			}
 		} else {
 			continue
 		}
 	}
-	for ref, o := range r.newResources {
-		if err := r.apply(ctx, ref, o); err != nil {
-			errm =errors.Join(errm, err)
+	for _, o := range r.newResources {
+		if err := r.apply(ctx, o); err != nil {
+			errm = errors.Join(errm, err)
 			continue
 		}
 	}
 	return errm
 }
 
-func (r *Resources) apply(ctx context.Context, ref corev1.ObjectReference, o backend.GenericObject) error {
+func (r *Resources) apply(ctx context.Context, o backend.GenericObject) error {
 	log := log.FromContext(ctx)
 	key := types.NamespacedName{Namespace: o.GetNamespace(), Name: o.GetName()}
-	log.Info("api apply object", "ref", ref.String(), "key", key.String())
+	log.Info("api apply object", "key", key.String())
 	spec := o.GetSpec()
 	if err := r.Client.Get(ctx, key, o); err != nil {
 		if resource.IgnoreNotFound(err) != nil {
+			log.Error("cannot get resource", "key", key.String(), "error", err.Error())
 			return err
 		}
-		if err := r.Create(ctx, o); err != nil {
+		if err := r.Client.Create(ctx, o); err != nil {
+			log.Error("cannot create resource", "key", key.String(), "error", err.Error())
 			return err
 		}
 		return nil
 	}
 	o.SetSpec(spec)
-	return r.Update(ctx, o)
+	if err := r.Client.Update(ctx, o); err != nil {
+		log.Error("cannot create resource", "key", key.String(), "error", err.Error())
+		return err
+	}
+	return nil
 }
 
 func (r *Resources) GetNewResources() map[corev1.ObjectReference]client.Object {
