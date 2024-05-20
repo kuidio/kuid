@@ -176,7 +176,7 @@ func (r *ModuleBay) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
-func (r *ModuleBay) ValidateSyntax() field.ErrorList {
+func (r *ModuleBay) ValidateSyntax(_ string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	/*

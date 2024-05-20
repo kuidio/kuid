@@ -83,4 +83,5 @@ type EXTCOMMClaimList struct {
 
 var (
 	EXTCOMMClaimKind = reflect.TypeOf(EXTCOMMClaim{}).Name()
+	EXTCOMMClaimListKind = reflect.TypeOf(EXTCOMMClaimList{}).Name()
 )

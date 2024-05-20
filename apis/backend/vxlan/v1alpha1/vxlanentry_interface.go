@@ -31,6 +31,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
 const VXLANEntryPlural = "vxlanentries"
@@ -251,4 +252,24 @@ func BuildVXLANEntry(meta metav1.ObjectMeta, spec *VXLANEntrySpec, status *VXLAN
 		Spec:       aspec,
 		Status:     astatus,
 	}
+}
+
+func (r *VXLANEntry) ValidateSyntax(_ string) field.ErrorList {
+	var allErrs field.ErrorList
+	return allErrs
+}
+
+func (r *VXLANEntry) NewObjList() backend.GenericObjectList {
+	return &VXLANEntryList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: VXLANEntryListKind},
+	}
+}
+
+func (r *VXLANEntryList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
 }

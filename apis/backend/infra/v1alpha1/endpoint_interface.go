@@ -203,7 +203,7 @@ func (r *Endpoint) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
-func (r *Endpoint) ValidateSyntax() field.ErrorList {
+func (r *Endpoint) ValidateSyntax(_ string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	/*

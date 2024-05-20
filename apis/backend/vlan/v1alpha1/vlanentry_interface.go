@@ -31,6 +31,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
 const VLANEntryPlural = "vlanentries"
@@ -251,4 +252,24 @@ func BuildVLANEntry(meta metav1.ObjectMeta, spec *VLANEntrySpec, status *VLANEnt
 		Spec:       aspec,
 		Status:     astatus,
 	}
+}
+
+func (r *VLANEntry) ValidateSyntax(_ string) field.ErrorList {
+	var allErrs field.ErrorList
+	return allErrs
+}
+
+func (r *VLANEntry) NewObjList() backend.GenericObjectList {
+	return &VLANEntryList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: VLANEntryListKind},
+	}
+}
+
+func (r *VLANEntryList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
 }

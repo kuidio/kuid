@@ -32,6 +32,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
 const ESIEntryPlural = "esientries"
@@ -136,6 +137,10 @@ func (r *ESIEntry) GetNamespacedName() types.NamespacedName {
 	}
 }
 
+func (r *ESIEntry) GetKey() store.Key {
+	return store.KeyFromNSN(types.NamespacedName{Namespace: r.Namespace, Name: r.Spec.Index})
+}
+
 func (r *ESIEntry) GetIndex() string {
 	return r.Spec.Index
 }
@@ -218,4 +223,35 @@ func BuildESIEntry(meta metav1.ObjectMeta, spec *ESIEntrySpec, status *ESIEntryS
 		Spec:       aspec,
 		Status:     astatus,
 	}
+}
+
+func (r *ESIEntry) ValidateSyntax(_ string) field.ErrorList {
+	var allErrs field.ErrorList
+	return allErrs
+}
+
+
+func (r *ESIEntry) GetSpec() any {
+	return r.Spec
+}
+
+func (r *ESIEntry) SetSpec(s any) {
+	if spec, ok := s.(ESIEntrySpec); ok {
+		r.Spec = spec
+	}
+}
+
+func (r *ESIEntry) NewObjList() backend.GenericObjectList {
+	return &ESIEntryList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: ESIEntryListKind},
+	}
+}
+
+func (r *ESIEntryList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
 }

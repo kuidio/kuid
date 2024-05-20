@@ -567,3 +567,29 @@ func (r *GENIDClaim) GetStatusID() *uint64 {
 	}
 	return ptr.To[uint64](uint64(*r.Status.ID))
 }
+
+
+func (r *GENIDClaim) GetSpec() any {
+	return r.Spec
+}
+
+func (r *GENIDClaim) SetSpec(s any) {
+	if spec, ok := s.(GENIDClaimSpec); ok {
+		r.Spec = spec
+	}
+}
+
+func (r *GENIDClaim) NewObjList() backend.GenericObjectList {
+	return &GENIDClaimList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: GENIDClaimListKind},
+	}
+}
+
+func (r *GENIDClaimList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
+}

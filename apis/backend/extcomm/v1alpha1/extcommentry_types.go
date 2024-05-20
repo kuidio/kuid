@@ -74,4 +74,5 @@ type EXTCOMMEntryList struct {
 
 var (
 	EXTCOMMEntryKind = reflect.TypeOf(EXTCOMMEntry{}).Name()
+	EXTCOMMEntryListKind = reflect.TypeOf(EXTCOMMEntryList{}).Name()
 )

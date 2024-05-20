@@ -55,7 +55,7 @@ func (r *strategy) ValidateUpdate(ctx context.Context, obj, old runtime.Object) 
 		return allErrs
 	}
 
-	return index.ValidateSyntax()
+	return index.ValidateSyntax("")
 }
 
 func (r *strategy) Update(ctx context.Context, key types.NamespacedName, obj, old runtime.Object, dryrun bool) (runtime.Object, error) {

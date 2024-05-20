@@ -503,3 +503,29 @@ func (r *VXLANClaim) GetStatusID() *uint64 {
 	}
 	return ptr.To[uint64](uint64(*r.Status.ID))
 }
+
+
+func (r *VXLANClaim) GetSpec() any {
+	return r.Spec
+}
+
+func (r *VXLANClaim) SetSpec(s any) {
+	if spec, ok := s.(VXLANClaimSpec); ok {
+		r.Spec = spec
+	}
+}
+
+func (r *VXLANClaim) NewObjList() backend.GenericObjectList {
+	return &VXLANClaimList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: VXLANClaimListKind},
+	}
+}
+
+func (r *VXLANClaimList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
+}

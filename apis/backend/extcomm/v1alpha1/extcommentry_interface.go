@@ -31,6 +31,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
 const EXTCOMMEntryPlural = "extcommentries"
@@ -250,4 +251,25 @@ func BuildEXTCOMMEntry(meta metav1.ObjectMeta, spec *EXTCOMMEntrySpec, status *E
 		Spec:       aspec,
 		Status:     astatus,
 	}
+}
+
+func (r *EXTCOMMEntry) ValidateSyntax(_ string) field.ErrorList {
+	var allErrs field.ErrorList
+	return allErrs
+}
+
+
+func (r *EXTCOMMEntry) NewObjList() backend.GenericObjectList {
+	return &EXTCOMMEntryList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: EXTCOMMEntryListKind},
+	}
+}
+
+func (r *EXTCOMMEntryList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
 }

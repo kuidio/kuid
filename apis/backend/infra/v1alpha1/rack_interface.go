@@ -176,7 +176,7 @@ func (r *Rack) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
-func (r *Rack) ValidateSyntax() field.ErrorList {
+func (r *Rack) ValidateSyntax(_ string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	/*

@@ -184,7 +184,7 @@ func (r *Site) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
-func (r *Site) ValidateSyntax() field.ErrorList {
+func (r *Site) ValidateSyntax(_ string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	/*

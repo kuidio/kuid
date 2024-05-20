@@ -118,9 +118,9 @@ func (r *Resources) getExistingResources(ctx context.Context, cr client.Object) 
 			for _, ref := range o.GetOwnerReferences() {
 				log.Info("ownerref", "refs", fmt.Sprintf("%s/%s", ref.UID, cr.GetUID()))
 				if ref.UID == cr.GetUID() {
-					apiVersion, kind := ownObj.SchemaGroupVersionKind().ToAPIVersionAndKind()
-					log.Info("gvk", "apiVersion", apiVersion, "kind", kind)
-					r.existingResources[corev1.ObjectReference{APIVersion: apiVersion, Kind: kind, Name: o.GetName(), Namespace: o.GetNamespace()}] = o
+					//apiVersion, kind := ownObj.SchemaGroupVersionKind().ToAPIVersionAndKind()
+					//log.Info("gvk", "apiVersion", apiVersion, "kind", kind)
+					r.existingResources[corev1.ObjectReference{APIVersion: ownObj.GetObjectKind().GroupVersionKind().GroupVersion().String(), Kind: ownObj.GetObjectKind().GroupVersionKind().Kind, Name: o.GetName(), Namespace: o.GetNamespace()}] = o
 				}
 			}
 		}

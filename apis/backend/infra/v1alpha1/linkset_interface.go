@@ -176,7 +176,7 @@ func (r *LinkSet) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
-func (r *LinkSet) ValidateSyntax() field.ErrorList {
+func (r *LinkSet) ValidateSyntax(_ string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	/*

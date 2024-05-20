@@ -83,4 +83,5 @@ type ASClaimList struct {
 
 var (
 	ASClaimKind = reflect.TypeOf(ASClaim{}).Name()
+	ASClaimListKind = reflect.TypeOf(ASClaimList{}).Name()
 )

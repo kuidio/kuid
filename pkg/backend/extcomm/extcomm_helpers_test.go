@@ -40,7 +40,7 @@ func getIndex(index, testType string) (*extcommbev1alpha1.EXTCOMMIndex, error) {
 		nil,
 	)
 
-	fieldErrs := idx.ValidateSyntax()
+	fieldErrs := idx.ValidateSyntax("")
 	if len(fieldErrs) != 0 {
 		return nil, fmt.Errorf("syntax errors %v", fieldErrs)
 	}

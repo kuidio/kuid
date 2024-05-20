@@ -163,7 +163,7 @@ func (r *ASIndex) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
-func (r *ASIndex) ValidateSyntax() field.ErrorList {
+func (r *ASIndex) ValidateSyntax(_ string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	if r.Spec.MinID != nil {
@@ -281,4 +281,30 @@ func BuildASIndex(meta metav1.ObjectMeta, spec *ASIndexSpec, status *ASIndexStat
 		Spec:       aspec,
 		Status:     astatus,
 	}
+}
+
+
+func (r *ASIndex) GetSpec() any {
+	return r.Spec
+}
+
+func (r *ASIndex) SetSpec(s any) {
+	if spec, ok := s.(ASIndexSpec); ok {
+		r.Spec = spec
+	}
+}
+
+func (r *ASIndex) NewObjList() backend.GenericObjectList {
+	return &ASClaimList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: ASClaimListKind},
+	}
+}
+
+func (r *ASIndexList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
 }

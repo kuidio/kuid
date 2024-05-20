@@ -31,6 +31,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
 const GENIDEntryPlural = "genidentries"
@@ -250,4 +251,24 @@ func BuildGENIDEntry(meta metav1.ObjectMeta, spec *GENIDEntrySpec, status *GENID
 		Spec:       aspec,
 		Status:     astatus,
 	}
+}
+
+func (r *GENIDEntry) ValidateSyntax(_ string) field.ErrorList {
+	var allErrs field.ErrorList
+	return allErrs
+}
+
+func (r *GENIDEntry) NewObjList() backend.GenericObjectList {
+	return &GENIDEntryList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: GENIDEntryListKind},
+	}
+}
+
+func (r *GENIDEntryList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
 }

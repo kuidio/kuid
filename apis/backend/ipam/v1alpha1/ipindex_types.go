@@ -73,4 +73,5 @@ type IPIndexList struct {
 
 var (
 	IPIndexKind = reflect.TypeOf(IPIndex{}).Name()
+	IPIndexListKind = reflect.TypeOf(IPIndexList{}).Name()
 )

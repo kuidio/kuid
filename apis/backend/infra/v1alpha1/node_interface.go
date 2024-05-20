@@ -192,7 +192,7 @@ func (r *Node) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
-func (r *Node) ValidateSyntax() field.ErrorList {
+func (r *Node) ValidateSyntax(_ string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	/*

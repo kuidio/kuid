@@ -180,7 +180,7 @@ func (r *Region) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
-func (r *Region) ValidateSyntax() field.ErrorList {
+func (r *Region) ValidateSyntax(_ string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	/*

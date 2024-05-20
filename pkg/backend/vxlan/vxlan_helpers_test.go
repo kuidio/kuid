@@ -37,7 +37,7 @@ func getIndex(index, _ string) (*vxlanbev1alpha1.VXLANIndex, error) {
 		nil,
 	)
 
-	fieldErrs := idx.ValidateSyntax()
+	fieldErrs := idx.ValidateSyntax("")
 	if len(fieldErrs) != 0 {
 		return nil, fmt.Errorf("syntax errors %v", fieldErrs)
 	}

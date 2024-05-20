@@ -89,4 +89,5 @@ type IPEntryList struct {
 
 var (
 	IPEntryKind = reflect.TypeOf(IPEntry{}).Name()
+	IPEntryListKind = reflect.TypeOf(IPEntryList{}).Name()
 )

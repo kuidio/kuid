@@ -39,7 +39,7 @@ func getIndex(index, testType string) (*genidbev1alpha1.GENIDIndex, error) {
 		nil,
 	)
 
-	fieldErrs := idx.ValidateSyntax()
+	fieldErrs := idx.ValidateSyntax("")
 	if len(fieldErrs) != 0 {
 		return nil, fmt.Errorf("syntax errors %v", fieldErrs)
 	}

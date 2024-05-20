@@ -162,7 +162,7 @@ func (r *IPIndex) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
-func (r *IPIndex) ValidateSyntax() field.ErrorList {
+func (r *IPIndex) ValidateSyntax(_ string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	if len(r.Spec.Prefixes) == 0 {
@@ -305,4 +305,30 @@ func GetIPClaimFromPrefix(obj client.Object, prefix Prefix) *IPClaim {
 		},
 		nil,
 	)
+}
+
+
+func (r *IPIndex) GetSpec() any {
+	return r.Spec
+}
+
+func (r *IPIndex) SetSpec(s any) {
+	if spec, ok := s.(IPIndexSpec); ok {
+		r.Spec = spec
+	}
+}
+
+func (r *IPIndex) NewObjList() backend.GenericObjectList {
+	return &IPIndexList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: IPIndexListKind},
+	}
+}
+
+func (r *IPIndexList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
 }

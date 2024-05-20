@@ -180,7 +180,7 @@ func (r *EndpointSet) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
-func (r *EndpointSet) ValidateSyntax() field.ErrorList {
+func (r *EndpointSet) ValidateSyntax(_ string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	/*

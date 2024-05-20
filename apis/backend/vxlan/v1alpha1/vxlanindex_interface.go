@@ -163,7 +163,7 @@ func (r *VXLANIndex) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
-func (r *VXLANIndex) ValidateSyntax() field.ErrorList {
+func (r *VXLANIndex) ValidateSyntax(_ string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	if r.Spec.MinID != nil {
@@ -281,4 +281,31 @@ func BuildVXLANIndex(meta metav1.ObjectMeta, spec *VXLANIndexSpec, status *VXLAN
 		Spec:       aspec,
 		Status:     astatus,
 	}
+}
+
+
+
+func (r *VXLANIndex) GetSpec() any {
+	return r.Spec
+}
+
+func (r *VXLANIndex) SetSpec(s any) {
+	if spec, ok := s.(VXLANIndexSpec); ok {
+		r.Spec = spec
+	}
+}
+
+func (r *VXLANIndex) NewObjList() backend.GenericObjectList {
+	return &VXLANIndexList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: VXLANIndexListKind},
+	}
+}
+
+func (r *VXLANIndexList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
 }

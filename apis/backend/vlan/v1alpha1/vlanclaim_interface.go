@@ -503,3 +503,29 @@ func (r *VLANClaim) GetStatusID() *uint64 {
 	}
 	return ptr.To[uint64](uint64(*r.Status.ID))
 }
+
+
+func (r *VLANClaim) GetSpec() any {
+	return r.Spec
+}
+
+func (r *VLANClaim) SetSpec(s any) {
+	if spec, ok := s.(VLANClaimSpec); ok {
+		r.Spec = spec
+	}
+}
+
+func (r *VLANClaim) NewObjList() backend.GenericObjectList {
+	return &VLANClaimList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: VLANClaimListKind},
+	}
+}
+
+func (r *VLANClaimList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
+}

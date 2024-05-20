@@ -37,7 +37,7 @@ func getIndex(index, _ string) (*vlanbev1alpha1.VLANIndex, error) {
 		nil,
 	)
 
-	fieldErrs := idx.ValidateSyntax()
+	fieldErrs := idx.ValidateSyntax("")
 	if len(fieldErrs) != 0 {
 		return nil, fmt.Errorf("syntax errors %v", fieldErrs)
 	}

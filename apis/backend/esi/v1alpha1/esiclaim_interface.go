@@ -503,3 +503,29 @@ func (r *ESIClaim) GetStatusID() *uint64 {
 	}
 	return ptr.To[uint64](uint64(*r.Status.ID))
 }
+
+
+func (r *ESIClaim) GetSpec() any {
+	return r.Spec
+}
+
+func (r *ESIClaim) SetSpec(s any) {
+	if spec, ok := s.(ESIClaimSpec); ok {
+		r.Spec = spec
+	}
+}
+
+func (r *ESIClaim) NewObjList() backend.GenericObjectList {
+	return &ESIClaimList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: ESIClaimListKind},
+	}
+}
+
+func (r *ESIClaimList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
+}

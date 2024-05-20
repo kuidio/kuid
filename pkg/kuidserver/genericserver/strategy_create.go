@@ -51,7 +51,7 @@ func (r *strategy) Validate(ctx context.Context, obj runtime.Object) field.Error
 		return allErrs
 	}
 
-	return genObj.ValidateSyntax()
+	return genObj.ValidateSyntax("")
 }
 
 func (r *strategy) Create(ctx context.Context, key types.NamespacedName, obj runtime.Object, dryrun bool) (runtime.Object, error) {

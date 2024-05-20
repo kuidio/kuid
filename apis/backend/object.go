@@ -43,7 +43,6 @@ type IndexObject interface {
 	GetMaxID() *uint64
 	GetMinClaim() ClaimObject
 	GetMaxClaim() ClaimObject
-	ValidateSyntax() field.ErrorList
 }
 
 type ClaimObject interface {
@@ -64,7 +63,6 @@ type ClaimObject interface {
 	SetStatusRange(*string)
 	SetStatusID(*uint64)
 	GetStatusID() *uint64
-	ValidateSyntax(s string) field.ErrorList
 	GetClaimRequest() string
 	GetClaimResponse() string
 }
@@ -82,13 +80,12 @@ type EntryObject interface {
 
 type GenericObject interface {
 	Object
-	ValidateSyntax() field.ErrorList
 	SetSpec(x any)
 	GetSpec() any
 	NewObjList() GenericObjectList
-	SchemaGroupVersionKind() schema.GroupVersionKind
-	GetUserDefinedLabels() map[string]string
-	GetProvider() string
+	//SchemaGroupVersionKind() schema.GroupVersionKind
+	//GetUserDefinedLabels() map[string]string
+	//GetProvider() string
 }
 
 type Object interface {
@@ -100,6 +97,7 @@ type Object interface {
 	GetCondition(t conditionv1alpha1.ConditionType) conditionv1alpha1.Condition
 	SetConditions(c ...conditionv1alpha1.Condition)
 	CalculateHash() ([sha1.Size]byte, error)
+	ValidateSyntax(s string) field.ErrorList
 }
 
 type ObjectList interface {

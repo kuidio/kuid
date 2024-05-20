@@ -74,4 +74,5 @@ type GENIDEntryList struct {
 
 var (
 	GENIDEntryKind = reflect.TypeOf(GENIDEntry{}).Name()
+	GENIDEntryListKind = reflect.TypeOf(GENIDEntryList{}).Name()
 )

@@ -176,7 +176,7 @@ func (r *Module) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
-func (r *Module) ValidateSyntax() field.ErrorList {
+func (r *Module) ValidateSyntax(_ string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	/*

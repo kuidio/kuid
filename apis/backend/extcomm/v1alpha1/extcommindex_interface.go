@@ -182,7 +182,7 @@ func (r *EXTCOMMIndex) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
-func (r *EXTCOMMIndex) ValidateSyntax() field.ErrorList {
+func (r *EXTCOMMIndex) ValidateSyntax(_ string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	if GetExtendedCommunityType(r.Spec.Type) == ExtendedCommunityType_Invalid {
@@ -348,4 +348,30 @@ func EXTCOMMIndexTableConvertor(gr schema.GroupResource) registry.TableConvertor
 			{Name: "MaxID", Type: "integer"},
 		},
 	}
+}
+
+
+func (r *EXTCOMMIndex) GetSpec() any {
+	return r.Spec
+}
+
+func (r *EXTCOMMIndex) SetSpec(s any) {
+	if spec, ok := s.(EXTCOMMIndexSpec); ok {
+		r.Spec = spec
+	}
+}
+
+func (r *EXTCOMMIndex) NewObjList() backend.GenericObjectList {
+	return &EXTCOMMIndexList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: EXTCOMMIndexListKind},
+	}
+}
+
+func (r *EXTCOMMIndexList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
 }

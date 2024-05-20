@@ -189,7 +189,7 @@ func (r *GENIDIndex) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
-func (r *GENIDIndex) ValidateSyntax() field.ErrorList {
+func (r *GENIDIndex) ValidateSyntax(_ string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	if GetGenIDType(r.Spec.Type) == GENIDType_Invalid {
@@ -341,4 +341,31 @@ func GENIDIndexTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 			{Name: "MaxID", Type: "integer"},
 		},
 	}
+}
+
+
+
+func (r *GENIDIndex) GetSpec() any {
+	return r.Spec
+}
+
+func (r *GENIDIndex) SetSpec(s any) {
+	if spec, ok := s.(GENIDIndexSpec); ok {
+		r.Spec = spec
+	}
+}
+
+func (r *GENIDIndex) NewObjList() backend.GenericObjectList {
+	return &GENIDIndexList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: GENIDIndexListKind},
+	}
+}
+
+func (r *GENIDIndexList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
 }

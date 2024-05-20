@@ -31,6 +31,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
 const ASEntryPlural = "asentries"
@@ -248,4 +249,25 @@ func BuildASEntry(meta metav1.ObjectMeta, spec *ASEntrySpec, status *ASEntryStat
 		Spec:       aspec,
 		Status:     astatus,
 	}
+}
+
+func (r *ASEntry) ValidateSyntax(_ string) field.ErrorList {
+	var allErrs field.ErrorList
+	return allErrs
+}
+
+
+func (r *ASEntry) NewObjList() backend.GenericObjectList {
+	return &ASEntryList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: ASEntryListKind},
+	}
+}
+
+func (r *ASEntryList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
 }

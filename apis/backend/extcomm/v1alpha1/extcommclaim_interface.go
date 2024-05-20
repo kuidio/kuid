@@ -568,3 +568,30 @@ func (r *EXTCOMMClaim) GetStatusID() *uint64 {
 	}
 	return ptr.To[uint64](uint64(*r.Status.ID))
 }
+
+
+
+func (r *EXTCOMMClaim) GetSpec() any {
+	return r.Spec
+}
+
+func (r *EXTCOMMClaim) SetSpec(s any) {
+	if spec, ok := s.(EXTCOMMClaimSpec); ok {
+		r.Spec = spec
+	}
+}
+
+func (r *EXTCOMMClaim) NewObjList() backend.GenericObjectList {
+	return &EXTCOMMClaimList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: EXTCOMMClaimListKind},
+	}
+}
+
+func (r *EXTCOMMClaimList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
+}

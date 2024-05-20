@@ -77,4 +77,5 @@ type GENIDIndexList struct {
 
 var (
 	GENIDIndexKind = reflect.TypeOf(GENIDIndex{}).Name()
+	GENIDIndexListKind = reflect.TypeOf(GENIDIndexList{}).Name()
 )

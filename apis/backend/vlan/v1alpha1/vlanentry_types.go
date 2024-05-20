@@ -74,4 +74,5 @@ type VLANEntryList struct {
 
 var (
 	VLANEntryKind = reflect.TypeOf(VLANEntry{}).Name()
+	VLANEntryListKind = reflect.TypeOf(VLANEntryList{}).Name()
 )

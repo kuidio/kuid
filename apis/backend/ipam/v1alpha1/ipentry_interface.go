@@ -34,6 +34,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/validation/field"
 	"k8s.io/utils/ptr"
 )
 
@@ -314,4 +315,24 @@ func IPEntryTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 			{Name: "DefaultGateway", Type: "string"},
 		},
 	}
+}
+
+func (r *IPEntry) ValidateSyntax(_ string) field.ErrorList {
+	var allErrs field.ErrorList
+	return allErrs
+}
+
+func (r *IPEntry) NewObjList() backend.GenericObjectList {
+	return &IPEntryList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: IPEntryListKind},
+	}
+}
+
+func (r *IPEntryList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
 }

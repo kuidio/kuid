@@ -295,7 +295,7 @@ func (r *IPClaim) GetIPClaimSummaryType() IPClaimSummaryType {
 	}
 }
 
-func (r *IPClaim) ValidateSyntax(s string) field.ErrorList {
+func (r *IPClaim) ValidateSyntax(_ string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	gv, err := schema.ParseGroupVersion(r.APIVersion)
@@ -501,4 +501,30 @@ func IPClaimTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 			{Name: "DefaultGateway", Type: "string"},
 		},
 	}
+}
+
+
+func (r *IPClaim) GetSpec() any {
+	return r.Spec
+}
+
+func (r *IPClaim) SetSpec(s any) {
+	if spec, ok := s.(IPClaimSpec); ok {
+		r.Spec = spec
+	}
+}
+
+func (r *IPClaim) NewObjList() backend.GenericObjectList {
+	return &IPClaimList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: IPClaimListKind},
+	}
+}
+
+func (r *IPClaimList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
 }

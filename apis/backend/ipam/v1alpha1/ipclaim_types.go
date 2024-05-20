@@ -121,5 +121,6 @@ type IPClaimList struct {
 }
 
 var (
-	IPClaimKind = reflect.TypeOf(IPClaim{}).Name()
+	IPClaimKind     = reflect.TypeOf(IPClaim{}).Name()
+	IPClaimListKind = reflect.TypeOf(IPClaimList{}).Name()
 )

@@ -163,7 +163,7 @@ func (r *ESIIndex) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
-func (r *ESIIndex) ValidateSyntax() field.ErrorList {
+func (r *ESIIndex) ValidateSyntax(_ string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	if r.Spec.MinID != nil {
@@ -281,4 +281,30 @@ func BuildESIIndex(meta metav1.ObjectMeta, spec *ESIIndexSpec, status *ESIIndexS
 		Spec:       aspec,
 		Status:     astatus,
 	}
+}
+
+
+func (r *ESIIndex) GetSpec() any {
+	return r.Spec
+}
+
+func (r *ESIIndex) SetSpec(s any) {
+	if spec, ok := s.(ESIIndexSpec); ok {
+		r.Spec = spec
+	}
+}
+
+func (r *ESIIndex) NewObjList() backend.GenericObjectList {
+	return &ESIIndexList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: ESIIndexListKind},
+	}
+}
+
+func (r *ESIIndexList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
 }

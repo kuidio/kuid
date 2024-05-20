@@ -74,4 +74,5 @@ type ASEntryList struct {
 
 var (
 	ASEntryKind = reflect.TypeOf(ASEntry{}).Name()
+	ASEntryListKind = reflect.TypeOf(ASEntryList{}).Name()
 )

@@ -176,7 +176,7 @@ func (r *Cluster) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
-func (r *Cluster) ValidateSyntax() field.ErrorList {
+func (r *Cluster) ValidateSyntax(_ string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	/*

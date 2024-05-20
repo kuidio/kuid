@@ -83,4 +83,5 @@ type VXLANClaimList struct {
 
 var (
 	VXLANClaimKind = reflect.TypeOf(VXLANClaim{}).Name()
+	VXLANClaimListKind = reflect.TypeOf(VXLANClaimList{}).Name()
 )

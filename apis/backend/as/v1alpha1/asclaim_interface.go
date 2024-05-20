@@ -372,7 +372,7 @@ func (r *ASClaim) ValidateASRange() error {
 	return errm
 }
 
-func (r *ASClaim) ValidateSyntax(s string) field.ErrorList {
+func (r *ASClaim) ValidateSyntax(_ string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	gv, err := schema.ParseGroupVersion(r.APIVersion)
@@ -517,4 +517,30 @@ func (r *ASClaim) GetStatusID() *uint64 {
 		return nil
 	}
 	return ptr.To[uint64](uint64(*r.Status.ID))
+}
+
+
+func (r *ASClaim) GetSpec() any {
+	return r.Spec
+}
+
+func (r *ASClaim) SetSpec(s any) {
+	if spec, ok := s.(ASClaimSpec); ok {
+		r.Spec = spec
+	}
+}
+
+func (r *ASClaim) NewObjList() backend.GenericObjectList {
+	return &ASClaimList{
+		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: ASClaimListKind},
+	}
+}
+
+func (r *ASClaimList) GetObjects() []backend.GenericObject {
+	objs := []backend.GenericObject{}
+	for _, r := range r.Items {
+		r := r
+		objs = append(objs, &r)
+	}
+	return objs
 }

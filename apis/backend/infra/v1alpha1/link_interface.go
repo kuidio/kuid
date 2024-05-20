@@ -199,7 +199,7 @@ func (r *Link) GetOwnerReference() *commonv1alpha1.OwnerReference {
 	}
 }
 
-func (r *Link) ValidateSyntax() field.ErrorList {
+func (r *Link) ValidateSyntax(_ string) field.ErrorList {
 	var allErrs field.ErrorList
 
 	if len(r.Spec.Endpoints) != 2 {
