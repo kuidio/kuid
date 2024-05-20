@@ -28,6 +28,7 @@ import (
 	"github.com/kuidio/kuid/pkg/reconcilers/resource"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/utils/ptr"
@@ -110,15 +111,16 @@ func (r *Resources) getExistingResources(ctx context.Context, cr client.Object) 
 		}
 
 		//ownObjList := ownObj.NewObjList()
-		objList := resource.GetUnstructuredListFromGVK(&gvk)
-		log.Info("getExistingResources", "gvk", objList.GetObjectKind().GroupVersionKind().String())
-		if err := r.List(ctx, objList, opts...); err != nil {
+		list := &unstructured.UnstructuredList{}
+		list.SetGroupVersionKind(gvk)
+		if err := r.List(ctx, list, opts...); err != nil {
 			log.Error("getExistingResources list failed", "err", err.Error())
 			errm = errors.Join(errm, err)
 			continue
 		}
-		for _, o := range objList.Items {
-			log.Info("getExistingResources", "gvk", o.GetObjectKind().GroupVersionKind().String(), "name", o.GetName())
+		log.Info("getExistingResources items", "gvk", gvk.String(), "items", len(list.Items))
+		for _, o := range list.Items {
+			log.Info("getExistingResources item", "gvk", o.GetObjectKind().GroupVersionKind().String(), "name", o.GetName())
 			o := o
 			for _, ref := range o.GetOwnerReferences() {
 				log.Info("ownerref", "refs", fmt.Sprintf("%s/%s", ref.UID, cr.GetUID()))
@@ -235,6 +237,7 @@ func (r *Resources) apiApply(ctx context.Context) error {
 		}
 	}
 	for _, o := range r.newResources {
+		o := o
 		if err := r.apply(ctx, o); err != nil {
 			errm = errors.Join(errm, err)
 			continue
@@ -246,7 +249,7 @@ func (r *Resources) apiApply(ctx context.Context) error {
 func (r *Resources) apply(ctx context.Context, o client.Object) error {
 	log := log.FromContext(ctx)
 	key := types.NamespacedName{Namespace: o.GetNamespace(), Name: o.GetName()}
-	log.Info("api apply object", "key", key.String())
+	log.Info("api apply object", "key", key.String(), "gvk", o.GetObjectKind().GroupVersionKind().String())
 
 	spec, err := getSpecField(o)
 	if err != nil {
