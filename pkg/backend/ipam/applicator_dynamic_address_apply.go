@@ -38,7 +38,7 @@ func (r *dynamicAddressApplicator) Apply(ctx context.Context, claim *ipambev1alp
 	if err != nil {
 		return err
 	}
-	fmt.Println("claimAddress", pi.Prefix.String(), r.parentClaimSummaryType, r.parentRangeName, r.parentNetwork, r.parentLabels)
+	//fmt.Println("claimAddress", pi.Prefix.String(), r.parentClaimSummaryType, r.parentRangeName, r.parentNetwork, r.parentLabels)
 	if r.parentClaimSummaryType == ipambev1alpha1.IPClaimSummaryType_Range {
 		if err := r.applyAddressInRange(ctx, claim, pi, r.parentRangeName, r.parentLabels); err != nil {
 			return err
@@ -49,7 +49,7 @@ func (r *dynamicAddressApplicator) Apply(ctx context.Context, claim *ipambev1alp
 			return err
 		}
 	}
-	fmt.Println("claimAddress after apply", pi.Prefix.String())
+	//fmt.Println("claimAddress after apply", pi.Prefix.String())
 	r.updateClaimAddressStatus(ctx, claim, pi, r.parentNetwork)
 	return nil
 }
@@ -81,7 +81,7 @@ func (r *dynamicAddressApplicator) claimAddress(ctx context.Context, claim *ipam
 					// in the rib
 					// e.g. 10.0.0.1/24 is in the rib 10.0.0.1/32 but the status reflects
 					// 10.0.0.1/24
-					fmt.Println("claim Address", spi.Addr().String(), existingRoute.Prefix().Addr().String())
+					//fmt.Println("claim Address", spi.Addr().String(), existingRoute.Prefix().Addr().String())
 					if spi.Addr().String() == existingRoute.Prefix().Addr().String() {
 						if spi.GetPrefixLength() != spi.GetAddressPrefixLength() {							
 							r.parentLabels = getUserDefinedLabels(findParent(existingRoute.Parents(r.cacheCtx.rib)).Labels())
@@ -189,7 +189,7 @@ func (r *dynamicAddressApplicator) selectAddress(ctx context.Context, claim *ipa
 					if err != nil {
 						return nil, err
 					}
-					fmt.Println("address status not empty", statuspi.Prefix.String())
+					//fmt.Println("address status not empty", statuspi.Prefix.String())
 					// check if the route is free in the rib
 					prefixLength := pi.GetAddressPrefixLength()
 					if _, ok := r.cacheCtx.rib.Get(netip.PrefixFrom(statuspi.Addr(), prefixLength.Int())); !ok {
@@ -200,14 +200,14 @@ func (r *dynamicAddressApplicator) selectAddress(ctx context.Context, claim *ipa
 				// gather the prefixLength - use address based prefixLength /32 or /128 to validate the rib
 				// for netowork allocations use the parent prefixLength
 				prefixLength := pi.GetAddressPrefixLength()
-				fmt.Println("prefixLength", prefixLength)
+				//fmt.Println("prefixLength", prefixLength)
 				if isParentRouteSelectable(parentRoute, uint8(prefixLength)) {
 					p := r.cacheCtx.rib.GetAvailablePrefixByBitLen(pi.GetIPPrefix(), uint8(prefixLength.Int()))
-					fmt.Println("addr", p.Addr().String())
+					//fmt.Println("addr", p.Addr().String())
 					if p.IsValid() {
 						// success, parentClaimType was already checked for non nil
 						if *parentIPPrefixType == ipambev1alpha1.IPPrefixType_Network {
-							fmt.Println("parent prefixLength", parentpi.GetPrefixLength())
+							//fmt.Println("parent prefixLength", parentpi.GetPrefixLength())
 							return iputil.NewPrefixInfo(netip.PrefixFrom(p.Addr(), int(parentpi.GetPrefixLength()))), nil
 						} else {
 							return iputil.NewPrefixInfo(p), nil

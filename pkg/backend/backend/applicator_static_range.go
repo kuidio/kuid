@@ -73,25 +73,25 @@ func (r *rangeApplicator) reclaimRange(ctx context.Context, claim backend.ClaimO
 		r.rangeExists = true // we are optimistic and set the claimset to true since we have entries
 		claimSet[rangeID.String()] = struct{}{}
 	}
-	fmt.Println("claimSet before", claim.GetName(), claimSet)
+	//fmt.Println("claimSet before", claim.GetName(), claimSet)
 
 	existingEntries, err := r.getEntriesByOwner(ctx, claim)
 	if err != nil {
 		return err
 	}
-	fmt.Println("existingEntries", existingEntries)
+	//fmt.Println("existingEntries", existingEntries)
 	// delete the
 	for treeName, existingEntries := range existingEntries {
 		if treeName != "" {
 			return fmt.Errorf("cannot have a range in non root tree: %s", treeName)
 		}
 		for _, existingEntry := range existingEntries {
-			fmt.Println("existingEntry", existingEntry.ID().String())
+			//fmt.Println("existingEntry", existingEntry.ID().String())
 			delete(claimSet, existingEntry.ID().String())
 		}
 	}
 
-	fmt.Println("claimSet after", claim.GetName(), claimSet)
+	//fmt.Println("claimSet after", claim.GetName(), claimSet)
 	if len(claimSet) != 0 {
 		// cleanup
 		r.rangeExists = false

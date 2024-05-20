@@ -266,6 +266,8 @@ func NodeTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 func NodeParseFieldSelector(ctx context.Context, fieldSelector fields.Selector) (backend.Filter, error) {
 	var filter *NodeFilter
 
+	fmt.Println("fieldSelector", fieldSelector)
+
 	// add the namespace to the list
 	namespace, ok := genericapirequest.NamespaceFrom(ctx)
 	if fieldSelector == nil {
@@ -285,6 +287,9 @@ func NodeParseFieldSelector(ctx context.Context, fieldSelector fields.Selector) 
 		default:
 			return filter, apierrors.NewBadRequest(fmt.Sprintf("unsupported fieldSelector operator %q for field %q", requirement.Operator, requirement.Field))
 		}
+
+		fmt.Println("fieldSelector", requirement.Field)
+		fmt.Println("fieldSelector", requirement.Value)
 
 		switch requirement.Field {
 		case "metadata.name":
@@ -316,7 +321,7 @@ type NodeFilter struct {
 }
 
 func (r *NodeFilter) Filter(ctx context.Context, obj runtime.Object) bool {
-	f := true
+	f := false // result of the previous filter
 	o, ok := obj.(*Node)
 	if !ok {
 		return f

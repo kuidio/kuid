@@ -151,6 +151,14 @@ func main() {
 		genidbev1alpha1.SchemeGroupVersion.WithKind(genidbev1alpha1.GENIDEntryKind),
 		genidbev1alpha1.GENIDEntryConvertFieldSelector,
 	)
+	runScheme.AddFieldLabelConversionFunc(
+		infrabev1alpha1.SchemeGroupVersion.WithKind(infrabev1alpha1.NodeKind),
+		infrabev1alpha1.NodeConvertFieldSelector,
+	)
+	runScheme.AddFieldLabelConversionFunc(
+		infrabev1alpha1.SchemeGroupVersion.WithKind(infrabev1alpha1.LinkKind),
+		infrabev1alpha1.LinkConvertFieldSelector,
+	)
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), manager.Options{
 		Scheme: runScheme,
@@ -508,14 +516,13 @@ func main() {
 					Obj:            &infrabev1alpha1.Cluster{},
 					ConversionFunc: infrabev1alpha1.ClusterConvertFieldSelector,
 					TableConverter: infrabev1alpha1.ClusterTableConvertor,
-					FielSelector:   infrabev1alpha1.ClusterParseFieldSelector,
+					FieldSelector:  infrabev1alpha1.ClusterParseFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
 					Type:   serverstore.StorageType_KV,
 					DB:     db,
-				},
-				genidbe)).
+				})).
 			WithResourceAndHandler(ctx, &infrabev1alpha1.Endpoint{}, genericserver.NewProvider(
 				ctx,
 				mgr.GetClient(),
@@ -524,14 +531,13 @@ func main() {
 					Obj:            &infrabev1alpha1.Endpoint{},
 					ConversionFunc: infrabev1alpha1.EndpointConvertFieldSelector,
 					TableConverter: infrabev1alpha1.EndpointTableConvertor,
-					FielSelector:   infrabev1alpha1.EndpointParseFieldSelector,
+					FieldSelector:  infrabev1alpha1.EndpointParseFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
 					Type:   serverstore.StorageType_KV,
 					DB:     db,
-				},
-				genidbe)).
+				})).
 			WithResourceAndHandler(ctx, &infrabev1alpha1.EndpointSet{}, genericserver.NewProvider(
 				ctx,
 				mgr.GetClient(),
@@ -540,14 +546,13 @@ func main() {
 					Obj:            &infrabev1alpha1.EndpointSet{},
 					ConversionFunc: infrabev1alpha1.EndpointSetConvertFieldSelector,
 					TableConverter: infrabev1alpha1.EndpointSetTableConvertor,
-					FielSelector:   infrabev1alpha1.EndpointSetParseFieldSelector,
+					FieldSelector:  infrabev1alpha1.EndpointSetParseFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
 					Type:   serverstore.StorageType_KV,
 					DB:     db,
-				},
-				genidbe)).
+				})).
 			WithResourceAndHandler(ctx, &infrabev1alpha1.Link{}, genericserver.NewProvider(
 				ctx,
 				mgr.GetClient(),
@@ -556,14 +561,13 @@ func main() {
 					Obj:            &infrabev1alpha1.Link{},
 					ConversionFunc: infrabev1alpha1.LinkConvertFieldSelector,
 					TableConverter: infrabev1alpha1.LinkTableConvertor,
-					FielSelector:   infrabev1alpha1.LinkParseFieldSelector,
+					FieldSelector:  infrabev1alpha1.LinkParseFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
 					Type:   serverstore.StorageType_KV,
 					DB:     db,
-				},
-				genidbe)).
+				})).
 			WithResourceAndHandler(ctx, &infrabev1alpha1.LinkSet{}, genericserver.NewProvider(
 				ctx,
 				mgr.GetClient(),
@@ -572,14 +576,13 @@ func main() {
 					Obj:            &infrabev1alpha1.LinkSet{},
 					ConversionFunc: infrabev1alpha1.LinkSetConvertFieldSelector,
 					TableConverter: infrabev1alpha1.LinkSetTableConvertor,
-					FielSelector:   infrabev1alpha1.LinkSetParseFieldSelector,
+					FieldSelector:  infrabev1alpha1.LinkSetParseFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
 					Type:   serverstore.StorageType_KV,
 					DB:     db,
-				},
-				genidbe)).
+				})).
 			WithResourceAndHandler(ctx, &infrabev1alpha1.Module{}, genericserver.NewProvider(
 				ctx,
 				mgr.GetClient(),
@@ -588,14 +591,13 @@ func main() {
 					Obj:            &infrabev1alpha1.Module{},
 					ConversionFunc: infrabev1alpha1.ModuleConvertFieldSelector,
 					TableConverter: infrabev1alpha1.ModuleTableConvertor,
-					FielSelector:   infrabev1alpha1.ModuleParseFieldSelector,
+					FieldSelector:  infrabev1alpha1.ModuleParseFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
 					Type:   serverstore.StorageType_KV,
 					DB:     db,
-				},
-				genidbe)).
+				})).
 			WithResourceAndHandler(ctx, &infrabev1alpha1.ModuleBay{}, genericserver.NewProvider(
 				ctx,
 				mgr.GetClient(),
@@ -604,14 +606,13 @@ func main() {
 					Obj:            &infrabev1alpha1.ModuleBay{},
 					ConversionFunc: infrabev1alpha1.ModuleBayConvertFieldSelector,
 					TableConverter: infrabev1alpha1.ModuleBayTableConvertor,
-					FielSelector:   infrabev1alpha1.ModuleBayParseFieldSelector,
+					FieldSelector:  infrabev1alpha1.ModuleBayParseFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
 					Type:   serverstore.StorageType_KV,
 					DB:     db,
-				},
-				genidbe)).
+				})).
 			WithResourceAndHandler(ctx, &infrabev1alpha1.Node{}, genericserver.NewProvider(
 				ctx,
 				mgr.GetClient(),
@@ -620,14 +621,13 @@ func main() {
 					Obj:            &infrabev1alpha1.Node{},
 					ConversionFunc: infrabev1alpha1.NodeConvertFieldSelector,
 					TableConverter: infrabev1alpha1.NodeTableConvertor,
-					FielSelector:   infrabev1alpha1.NodeParseFieldSelector,
+					FieldSelector:  infrabev1alpha1.NodeParseFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
 					Type:   serverstore.StorageType_KV,
 					DB:     db,
-				},
-				genidbe)).
+				})).
 			WithResourceAndHandler(ctx, &infrabev1alpha1.NodeGroup{}, genericserver.NewProvider(
 				ctx,
 				mgr.GetClient(),
@@ -636,14 +636,13 @@ func main() {
 					Obj:            &infrabev1alpha1.NodeGroup{},
 					ConversionFunc: infrabev1alpha1.NodeGroupConvertFieldSelector,
 					TableConverter: infrabev1alpha1.NodeGroupTableConvertor,
-					FielSelector:   infrabev1alpha1.NodeGroupParseFieldSelector,
+					FieldSelector:  infrabev1alpha1.NodeGroupParseFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
 					Type:   serverstore.StorageType_KV,
 					DB:     db,
-				},
-				genidbe)).
+				})).
 			WithResourceAndHandler(ctx, &infrabev1alpha1.NodeItem{}, genericserver.NewProvider(
 				ctx,
 				mgr.GetClient(),
@@ -652,14 +651,13 @@ func main() {
 					Obj:            &infrabev1alpha1.NodeItem{},
 					ConversionFunc: infrabev1alpha1.NodeItemConvertFieldSelector,
 					TableConverter: infrabev1alpha1.NodeItemTableConvertor,
-					FielSelector:   infrabev1alpha1.NodeItemParseFieldSelector,
+					FieldSelector:  infrabev1alpha1.NodeItemParseFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
 					Type:   serverstore.StorageType_KV,
 					DB:     db,
-				},
-				genidbe)).
+				})).
 			WithResourceAndHandler(ctx, &infrabev1alpha1.NodeSet{}, genericserver.NewProvider(
 				ctx,
 				mgr.GetClient(),
@@ -668,14 +666,13 @@ func main() {
 					Obj:            &infrabev1alpha1.NodeSet{},
 					ConversionFunc: infrabev1alpha1.NodeSetConvertFieldSelector,
 					TableConverter: infrabev1alpha1.NodeSetTableConvertor,
-					FielSelector:   infrabev1alpha1.NodeSetParseFieldSelector,
+					FieldSelector:  infrabev1alpha1.NodeSetParseFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
 					Type:   serverstore.StorageType_KV,
 					DB:     db,
-				},
-				genidbe)).
+				})).
 			WithResourceAndHandler(ctx, &infrabev1alpha1.Rack{}, genericserver.NewProvider(
 				ctx,
 				mgr.GetClient(),
@@ -684,14 +681,13 @@ func main() {
 					Obj:            &infrabev1alpha1.Rack{},
 					ConversionFunc: infrabev1alpha1.RackConvertFieldSelector,
 					TableConverter: infrabev1alpha1.RackTableConvertor,
-					FielSelector:   infrabev1alpha1.RackParseFieldSelector,
+					FieldSelector:  infrabev1alpha1.RackParseFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
 					Type:   serverstore.StorageType_KV,
 					DB:     db,
-				},
-				genidbe)).
+				})).
 			WithResourceAndHandler(ctx, &infrabev1alpha1.Region{}, genericserver.NewProvider(
 				ctx,
 				mgr.GetClient(),
@@ -700,14 +696,13 @@ func main() {
 					Obj:            &infrabev1alpha1.Region{},
 					ConversionFunc: infrabev1alpha1.RegionConvertFieldSelector,
 					TableConverter: infrabev1alpha1.RegionTableConvertor,
-					FielSelector:   infrabev1alpha1.RegionParseFieldSelector,
+					FieldSelector:  infrabev1alpha1.RegionParseFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
 					Type:   serverstore.StorageType_KV,
 					DB:     db,
-				},
-				genidbe)).
+				})).
 			WithResourceAndHandler(ctx, &infrabev1alpha1.Site{}, genericserver.NewProvider(
 				ctx,
 				mgr.GetClient(),
@@ -716,14 +711,13 @@ func main() {
 					Obj:            &infrabev1alpha1.Site{},
 					ConversionFunc: infrabev1alpha1.SiteConvertFieldSelector,
 					TableConverter: infrabev1alpha1.SiteTableConvertor,
-					FielSelector:   infrabev1alpha1.SiteParseFieldSelector,
+					FieldSelector:  infrabev1alpha1.SiteParseFieldSelector,
 				},
 				&serverstore.Config{
 					Prefix: configDir,
 					Type:   serverstore.StorageType_KV,
 					DB:     db,
-				},
-				genidbe)).
+				})).
 			WithoutEtcd().
 			Execute(ctx); err != nil {
 			log.Info("cannot start config-server")

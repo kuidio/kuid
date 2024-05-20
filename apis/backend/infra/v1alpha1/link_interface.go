@@ -321,7 +321,7 @@ type LinkFilter struct {
 }
 
 func (r *LinkFilter) Filter(ctx context.Context, obj runtime.Object) bool {
-	f := true
+	f := false // result of the previous filter
 	o, ok := obj.(*Link)
 	if !ok {
 		return f

@@ -145,7 +145,7 @@ func (r *dynamicApplicator) Apply(ctx context.Context, claim backend.ClaimObject
 			r.claimID = ptr.To[uint64](e.ID().ID())
 		}
 	}
-	fmt.Println("apply", r.claimID)
+	//fmt.Println("apply", r.claimID)
 	if r.claimID == nil {
 		return fmt.Errorf("claimed failed, no claim ID found")
 	}

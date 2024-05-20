@@ -298,7 +298,7 @@ type RegionFilter struct {
 }
 
 func (r *RegionFilter) Filter(ctx context.Context, obj runtime.Object) bool {
-	f := true
+	f := false // result of the previous filter
 	o, ok := obj.(*Region)
 	if !ok {
 		return f

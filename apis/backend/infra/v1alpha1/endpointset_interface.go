@@ -298,7 +298,7 @@ type EndpointSetFilter struct {
 }
 
 func (r *EndpointSetFilter) Filter(ctx context.Context, obj runtime.Object) bool {
-	f := true
+	f := false // result of the previous filter
 	o, ok := obj.(*EndpointSet)
 	if !ok {
 		return f

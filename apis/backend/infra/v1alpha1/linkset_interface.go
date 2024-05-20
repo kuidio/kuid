@@ -294,7 +294,7 @@ type LinkSetFilter struct {
 }
 
 func (r *LinkSetFilter) Filter(ctx context.Context, obj runtime.Object) bool {
-	f := true
+	f := false // result of the previous filter
 	o, ok := obj.(*LinkSet)
 	if !ok {
 		return f

@@ -33,7 +33,6 @@ type Filter struct {
 
 	// Namespace filters by the namespace of the objects
 	Namespace string
-
 }
 
 // parseFieldSelector parses client-provided fields.Selector into a packageFilter

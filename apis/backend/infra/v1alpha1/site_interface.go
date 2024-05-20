@@ -304,7 +304,7 @@ type SiteFilter struct {
 }
 
 func (r *SiteFilter) Filter(ctx context.Context, obj runtime.Object) bool {
-	f := true
+	f := false // result of the previous filter
 	o, ok := obj.(*Site)
 	if !ok {
 		return f

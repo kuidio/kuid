@@ -34,6 +34,8 @@ import (
 func parseFieldSelector(ctx context.Context, fieldSelector fields.Selector) (backend.Filter, error) {
 	var filter *storerFilter
 
+	//log := log.FromContext(ctx)
+
 	// add the namespace to the list
 	namespace, ok := genericapirequest.NamespaceFrom(ctx)
 	if fieldSelector == nil {
@@ -87,7 +89,7 @@ type storerFilter struct {
 
 func (r *storerFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	log := log.FromContext(ctx)
-	f := true
+	f := false // this is the result of the previous filtering
 	accessor, err := meta.Accessor(obj)
 	if err != nil {
 		log.Error("cannot get meta from object", "error", err.Error())

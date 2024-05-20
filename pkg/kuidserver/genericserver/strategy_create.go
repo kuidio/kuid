@@ -39,8 +39,6 @@ func (r *strategy) PrepareForCreate(ctx context.Context, obj runtime.Object) {
 func (r *strategy) Validate(ctx context.Context, obj runtime.Object) field.ErrorList {
 	var allErrs field.ErrorList
 
-	//fmt.Println("Validate index create", obj)
-
 	genObj, ok := obj.(backend.GenericObject)
 	if !ok {
 		allErrs = append(allErrs, field.Invalid(

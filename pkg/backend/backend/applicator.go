@@ -46,7 +46,7 @@ func (r *applicator) getEntriesByOwner(ctx context.Context, claim backend.ClaimO
 		return nil, err
 	}
 	claimType := claim.GetClaimType()
-	fmt.Println("getEntriesByOwner", r.cacheCtx.tree)
+	//ln("getEntriesByOwner", r.cacheCtx.tree)
 	treeEntries[""] = r.cacheCtx.tree.GetByLabel(ownerSelector)
 	if len(treeEntries) != 0 {
 		// ranges and prefixes using network type can have multiple plrefixes
@@ -106,7 +106,7 @@ func (r *applicator) getEntriesByLabelSelector(ctx context.Context, claim backen
 
 func (r *applicator) deleteNonClaimedEntries(ctx context.Context, existingEntries map[string]tree.Entries, id *uint64, reclaimTreeName string) error {
 	for treeName, existingEntries := range existingEntries {
-		fmt.Println("deleteNonClaimedEntries", treeName, existingEntries)
+		//fmt.Println("deleteNonClaimedEntries", treeName, existingEntries)
 		for _, existingEntry := range existingEntries {
 			if id != nil && *id == existingEntry.ID().ID() && reclaimTreeName == treeName {
 				continue

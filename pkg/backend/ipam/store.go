@@ -109,12 +109,12 @@ func (r *bestore) SaveAll(ctx context.Context, k store.Key) error {
 
 	// debug end
 	for _, newIPEntry := range newIPEntries {
-		log.Info("SaveAll", "newIPEntry", newIPEntry.GetNamespacedName())
+		log.Debug("SaveAll", "newIPEntry", newIPEntry.GetNamespacedName())
 		newIPEntry := newIPEntry
 		found := false
 		var ipEntry backend.EntryObject
 		for idx, curIPEntry := range curIPEntries {
-			log.Info("SaveAll", "curIPEntry", *curIPEntry)
+			log.Debug("SaveAll", "curIPEntry", *curIPEntry)
 			idx := idx
 			curIPEntry := curIPEntry
 			//fmt.Println("saveAll entries", newIPEntry.Name, curIPEntry.Name)
@@ -126,7 +126,7 @@ func (r *bestore) SaveAll(ctx context.Context, k store.Key) error {
 				break
 			}
 		}
-		log.Info("SaveAll", "found", found, "curIPEntry", ipEntry, "newIPEntry", newIPEntry)
+		log.Debug("SaveAll", "found", found, "curIPEntry", ipEntry, "newIPEntry", newIPEntry)
 		//fmt.Println("saveAll entries", found, newIPEntry.Name)
 		if !found {
 			if err := r.client.Create(ctx, newIPEntry); err != nil {
@@ -136,9 +136,9 @@ func (r *bestore) SaveAll(ctx context.Context, k store.Key) error {
 			continue
 		}
 		ipEntry.SetSpec(newIPEntry.GetSpec()) 
-		log.Info("save all ipEntry update", "nsn", ipEntry.GetNamespacedName())
+		log.Debug("save all ipEntry update", "nsn", ipEntry.GetNamespacedName())
 		if err := r.client.Update(ctx, ipEntry); err != nil {
-			log.Info("save all ipEntry failed", "nsn", ipEntry.GetNamespacedName(), "error", err.Error())
+			log.Debug("save all ipEntry failed", "nsn", ipEntry.GetNamespacedName(), "error", err.Error())
 			return err
 		}
 	}

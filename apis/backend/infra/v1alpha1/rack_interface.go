@@ -294,7 +294,7 @@ type RackFilter struct {
 }
 
 func (r *RackFilter) Filter(ctx context.Context, obj runtime.Object) bool {
-	f := true
+	f := false // result of the previous filter
 	o, ok := obj.(*Rack)
 	if !ok {
 		return f

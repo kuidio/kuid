@@ -24,7 +24,6 @@ import (
 	"github.com/henderiw/apiserver-store/pkg/generic/registry"
 	"github.com/henderiw/apiserver-store/pkg/storebackend"
 	"github.com/kuidio/kuid/apis/backend"
-	bebackend "github.com/kuidio/kuid/pkg/backend/backend"
 	"github.com/kuidio/kuid/pkg/kuidserver/store"
 	"go.opentelemetry.io/otel"
 	"k8s.io/apimachinery/pkg/fields"
@@ -40,17 +39,17 @@ type ServerObjContext struct {
 	Obj            resource.Object
 	ConversionFunc runtime.FieldLabelConversionFunc
 	TableConverter func(gr schema.GroupResource) registry.TableConvertor
-	FielSelector   func(ctx context.Context, fieldSelector fields.Selector) (backend.Filter, error)
+	FieldSelector  func(ctx context.Context, fieldSelector fields.Selector) (backend.Filter, error)
 }
 
-func NewProvider(ctx context.Context, client client.Client, serverObjContext *ServerObjContext, storeConfig *store.Config, be bebackend.Backend) builderrest.ResourceHandlerProvider {
+func NewProvider(ctx context.Context, client client.Client, serverObjContext *ServerObjContext, storeConfig *store.Config) builderrest.ResourceHandlerProvider {
 	return func(ctx context.Context, scheme *runtime.Scheme, getter generic.RESTOptionsGetter) (rest.Storage, error) {
-		return NewREST(ctx, scheme, getter, client, serverObjContext, storeConfig, be)
+		return NewREST(ctx, scheme, getter, client, serverObjContext, storeConfig)
 	}
 }
 
 // NewPackageRevisionREST returns a RESTStorage object that will work against API services.
-func NewREST(ctx context.Context, scheme *runtime.Scheme, optsGetter generic.RESTOptionsGetter, client client.Client, serverObjContext *ServerObjContext, storeConfig *store.Config, be bebackend.Backend) (rest.Storage, error) {
+func NewREST(ctx context.Context, scheme *runtime.Scheme, optsGetter generic.RESTOptionsGetter, client client.Client, serverObjContext *ServerObjContext, storeConfig *store.Config) (rest.Storage, error) {
 	scheme.AddFieldLabelConversionFunc(
 		serverObjContext.Obj.GetObjectKind().GroupVersionKind(),
 		serverObjContext.ConversionFunc,
@@ -75,7 +74,7 @@ func NewREST(ctx context.Context, scheme *runtime.Scheme, optsGetter generic.RES
 
 	singlularResource := serverObjContext.Obj.GetGroupVersionResource().GroupResource()
 	singlularResource.Resource = serverObjContext.Obj.GetSingularName()
-	strategy := NewStrategy(ctx, scheme, client, serverObjContext, configStore, be)
+	strategy := NewStrategy(ctx, scheme, client, serverObjContext, configStore)
 
 	// overwrite the default table convertor if specified by the user
 	tableConvertor := DefaultTableConvertor(serverObjContext.Obj.GetGroupVersionResource().GroupResource())

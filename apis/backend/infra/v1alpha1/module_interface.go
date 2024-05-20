@@ -294,7 +294,7 @@ type ModuleFilter struct {
 }
 
 func (r *ModuleFilter) Filter(ctx context.Context, obj runtime.Object) bool {
-	f := true
+	f := false // result of the previous filter
 	o, ok := obj.(*Module)
 	if !ok {
 		return f

@@ -298,7 +298,7 @@ type ClusterFilter struct {
 }
 
 func (r *ClusterFilter) Filter(ctx context.Context, obj runtime.Object) bool {
-	f := true
+	f := false // result of the previous filter
 	o, ok := obj.(*Cluster)
 	if !ok {
 		return f

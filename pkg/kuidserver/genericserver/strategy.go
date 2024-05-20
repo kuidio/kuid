@@ -25,7 +25,6 @@ import (
 	"github.com/henderiw/apiserver-store/pkg/storebackend"
 	"github.com/henderiw/logger/log"
 	"github.com/kuidio/kuid/apis/backend"
-	bebackend "github.com/kuidio/kuid/pkg/backend/backend"
 	watchermanager "github.com/kuidio/kuid/pkg/kuidserver/watcher-manager"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/labels"
@@ -39,7 +38,7 @@ import (
 )
 
 // NewStrategy creates and returns a fischerStrategy instance
-func NewStrategy(ctx context.Context, typer runtime.ObjectTyper, client client.Client, serverObjContext *ServerObjContext, store storebackend.Storer[runtime.Object], be bebackend.Backend) *strategy {
+func NewStrategy(ctx context.Context, typer runtime.ObjectTyper, client client.Client, serverObjContext *ServerObjContext, store storebackend.Storer[runtime.Object]) *strategy {
 	watcherManager := watchermanager.New(32)
 
 	go watcherManager.Start(ctx)
@@ -50,10 +49,10 @@ func NewStrategy(ctx context.Context, typer runtime.ObjectTyper, client client.C
 		client:           client,
 		serverObjContext: serverObjContext,
 		store:            store,
-		be:               be,
-		gr:               serverObjContext.Obj.GetGroupVersionResource().GroupResource(),
-		resource:         serverObjContext.Obj,
-		watcherManager:   watcherManager,
+		//be:               be,
+		gr:             serverObjContext.Obj.GetGroupVersionResource().GroupResource(),
+		resource:       serverObjContext.Obj,
+		watcherManager: watcherManager,
 	}
 }
 
@@ -94,10 +93,10 @@ type strategy struct {
 	client           client.Client
 	store            storebackend.Storer[runtime.Object]
 	serverObjContext *ServerObjContext
-	be               bebackend.Backend
-	gr               schema.GroupResource
-	resource         resource.Object
-	watcherManager   watchermanager.WatcherManager
+	//be               bebackend.Backend
+	gr             schema.GroupResource
+	resource       resource.Object
+	watcherManager watchermanager.WatcherManager
 }
 
 func (r *strategy) NamespaceScoped() bool {

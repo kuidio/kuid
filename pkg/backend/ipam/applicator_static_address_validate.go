@@ -52,7 +52,7 @@ func (r *staticAddressApplicator) Validate(ctx context.Context, claim *ipambev1a
 	// check the /32 or /128 equivalent in the rib
 	route, ok := dryrunRib.Get(pi.GetIPAddressPrefix())
 	if ok {
-		fmt.Println("static address route exists", *claim.Spec.Address, route.Prefix().String())
+		//fmt.Println("static address route exists", *claim.Spec.Address, route.Prefix().String())
 		// if the route exists validate the owner
 		routeLabels := route.Labels()
 		// a range is an exception as it can overlap with an address
@@ -100,7 +100,7 @@ func (r *staticAddressApplicator) Validate(ctx context.Context, claim *ipambev1a
 	}
 	// parents exist
 	parentRoute := findParent(routes)
-	fmt.Println("static address parent route", parentRoute.Prefix(), parentRoute.Labels())
+	//fmt.Println("static address parent route", parentRoute.Prefix(), parentRoute.Labels())
 	if err := r.validateExistingParent(ctx, claim, pi, parentRoute); err != nil {
 		log.Error(err.Error())
 		return err
@@ -132,9 +132,9 @@ func (r *staticAddressApplicator) validateExistingParent(ctx context.Context, cl
 			}
 			route, err := ipTable.Get(pi.GetIPAddress().String())
 			if err == nil { // error means not found
-				fmt.Println("range address labels", route.Labels())
+				//fmt.Println("range address labels", route.Labels())
 				if err := claim.ValidateOwner(route.Labels()); err != nil {
-					fmt.Println("owner error", err.Error())
+					//fmt.Println("owner error", err.Error())
 					return fmt.Errorf("address is already allocated in range %s, err: %s", parentClaimName, err.Error())
 				}
 			}

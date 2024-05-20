@@ -67,7 +67,7 @@ func (r *staticApplicator) reclaimID(ctx context.Context, claim backend.ClaimObj
 	}
 
 	claimID, claimTreeName := reclaimIDFromExisitingEntries(existingEntries, *claim.GetStaticID())
-	fmt.Println("static id", claim.GetName(), claimID, claimTreeName)
+	//fmt.Println("static id", claim.GetName(), claimID, claimTreeName)
 	// remove the existing entries that done match the claimed ID
 	// should be none, but just in case
 	if err := r.deleteNonClaimedEntries(ctx, existingEntries, claimID, claimTreeName); err != nil {
@@ -140,7 +140,7 @@ func (r *staticApplicator) Apply(ctx context.Context, claim backend.ClaimObject)
 			}
 		}
 	} else {
-		fmt.Println("static id in range", r.parentTreeName)
+		//fmt.Println("static id in range", r.parentTreeName)
 		// a claim in a range
 		k := store.ToKey(r.parentTreeName)
 		table, err := r.cacheCtx.ranges.Get(ctx, k)
@@ -157,7 +157,7 @@ func (r *staticApplicator) Apply(ctx context.Context, claim backend.ClaimObject)
 			}
 		}
 	}
-	fmt.Println("apply", *claim.GetStaticID())
+	//fmt.Println("apply", *claim.GetStaticID())
 
 	claim.SetStatusID(claim.GetStaticID())
 	return nil

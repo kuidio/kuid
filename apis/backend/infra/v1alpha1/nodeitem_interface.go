@@ -294,7 +294,7 @@ type NodeItemFilter struct {
 }
 
 func (r *NodeItemFilter) Filter(ctx context.Context, obj runtime.Object) bool {
-	f := true
+	f := false // result of the previous filter
 	o, ok := obj.(*NodeItem)
 	if !ok {
 		return f

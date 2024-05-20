@@ -294,7 +294,7 @@ type NodeSetFilter struct {
 }
 
 func (r *NodeSetFilter) Filter(ctx context.Context, obj runtime.Object) bool {
-	f := true
+	f := false // result of the previous filter
 	o, ok := obj.(*NodeSet)
 	if !ok {
 		return f
