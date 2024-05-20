@@ -109,7 +109,9 @@ func (r *Resources) getExistingResources(ctx context.Context, cr client.Object) 
 		}
 
 		ownObjList := ownObj.NewObjList()
+		log.Info("getExistingResources", "gvk", ownObjList.GetObjectKind().GroupVersionKind().String())
 		if err := r.List(ctx, ownObjList, opts...); err != nil {
+			log.Error("getExistingResources list failed", "err", err.Error())
 			errm = errors.Join(errm, err)
 			continue
 		}
@@ -120,7 +122,11 @@ func (r *Resources) getExistingResources(ctx context.Context, cr client.Object) 
 				if ref.UID == cr.GetUID() {
 					//apiVersion, kind := ownObj.SchemaGroupVersionKind().ToAPIVersionAndKind()
 					//log.Info("gvk", "apiVersion", apiVersion, "kind", kind)
-					r.existingResources[corev1.ObjectReference{APIVersion: ownObj.GetObjectKind().GroupVersionKind().GroupVersion().String(), Kind: ownObj.GetObjectKind().GroupVersionKind().Kind, Name: o.GetName(), Namespace: o.GetNamespace()}] = o
+					r.existingResources[corev1.ObjectReference{
+						APIVersion: ownObj.GetObjectKind().GroupVersionKind().GroupVersion().String(),
+						Kind:       ownObj.GetObjectKind().GroupVersionKind().Kind,
+						Name:       o.GetName(),
+						Namespace:  o.GetNamespace()}] = o
 				}
 			}
 		}

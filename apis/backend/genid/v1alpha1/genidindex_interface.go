@@ -343,8 +343,6 @@ func GENIDIndexTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 	}
 }
 
-
-
 func (r *GENIDIndex) GetSpec() any {
 	return r.Spec
 }
@@ -357,12 +355,14 @@ func (r *GENIDIndex) SetSpec(s any) {
 
 func (r *GENIDIndex) NewObjList() backend.GenericObjectList {
 	return &GENIDIndexList{
-		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: GENIDIndexListKind},
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: SchemeGroupVersion.Identifier(),
+			Kind:       GENIDIndexListKind},
 	}
 }
 
 func (r *GENIDIndexList) GetObjects() []backend.GenericObject {
-	objs := []backend.GenericObject{}
+	objs := make([]backend.GenericObject, 0, len(r.Items))
 	for _, r := range r.Items {
 		r := r
 		objs = append(objs, &r)
