@@ -82,15 +82,15 @@ func (r NodeGroupNodeID) KuidString() string {
 	return fmt.Sprintf(
 		"%s.%s",
 		r.NodeGroup,
-		r.SiteID.KuidString(),
+		r.NodeID.KuidString(),
 	)
 }
 
 func (r NodeGroupEndpointID) KuidString() string {
 	return fmt.Sprintf(
 		"%s.%s",
-		r.NodeID.KuidString(),
-		r.Endpoint,
+		r.NodeGroup,
+		r.EndpointID.KuidString(),
 	)
 }
 
