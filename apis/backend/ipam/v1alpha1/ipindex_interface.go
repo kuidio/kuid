@@ -35,6 +35,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 	"k8s.io/utils/ptr"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const IPIndexPlural = "ipindices"
@@ -272,4 +273,36 @@ func IPIndexTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 			{Name: "Prefix4", Type: "string"},
 		},
 	}
+}
+
+func GetIPClaimFromPrefix(obj client.Object, prefix Prefix) *IPClaim {
+	// prefix validation should have happened before
+	pi, _ := iputil.New(prefix.Prefix)
+
+	var prefixType *IPPrefixType
+	if pt, ok := prefix.Labels[backend.KuidIPAMIPPrefixTypeKey]; ok {
+		prefixType = GetIPPrefixTypeFromString(pt)
+	}
+
+	// topology.vpc-name -> vpc-name default is the default router
+	index := obj.GetName()
+
+	return BuildIPClaim(
+		metav1.ObjectMeta{
+			Namespace: obj.GetNamespace(),
+			Name:      fmt.Sprintf("%s.%s", index, pi.GetSubnetName()),
+		},
+		&IPClaimSpec{
+			PrefixType:   prefixType,
+			Index:        index,
+			Prefix:       ptr.To[string](prefix.Prefix),
+			PrefixLength: ptr.To[uint32](uint32(pi.GetPrefixLength())),
+			CreatePrefix: ptr.To[bool](true),
+			ClaimLabels: commonv1alpha1.ClaimLabels{
+				UserDefinedLabels: prefix.UserDefinedLabels,
+			},
+			Owner: commonv1alpha1.GetOwnerReference(obj),
+		},
+		nil,
+	)
 }
