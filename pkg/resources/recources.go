@@ -67,7 +67,7 @@ func (r *Resources) Init(ml client.MatchingLabels) {
 */
 
 // AddNewResource adds a new resource to the inventoru
-func (r *Resources) AddNewResource(ctx context.Context, cr, o client.Object) error {
+func (r *Resources) AddNewResource(ctx context.Context, cr, o client.Object) {
 	r.m.Lock()
 	defer r.m.Unlock()
 
@@ -93,7 +93,6 @@ func (r *Resources) AddNewResource(ctx context.Context, cr, o client.Object) err
 	log.Info("add newresource", "ref", ref.String())
 
 	r.newResources[ref] = o
-	return nil
 }
 
 // GetExistingResources retrieves the exisiting resource that match the label selector and the owner reference
