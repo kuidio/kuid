@@ -51,6 +51,7 @@ const (
 	KuidINVNodeTypeKey         = "infra.be.kuid.dev/node-type"
 	KuidINVNodeKey             = "infra.be.kuid.dev/node"
 	KuidINVLinkKey             = "infra.be.kuid.dev/link"
+	KuidINVLinkTypeKey         = "infra.be.kuid.dev/link-type"
 	KuidINVPurpose             = "infra.be.kuid.dev/purpose"
 )
 
