@@ -28,7 +28,8 @@ type ConditionType string
 // Condition Types.
 const (
 	// ConditionTypeReady represents the resource ready condition
-	ConditionTypeReady ConditionType = "Ready"
+	ConditionTypeReady             ConditionType = "Ready"
+	ConditionTypeDeviceConfigReady ConditionType = "DeviceConfigReady"
 )
 
 // A ConditionReason represents the reason a resource is in a condition.
@@ -180,6 +181,40 @@ func Unknown() Condition {
 func Failed(msg string) Condition {
 	return Condition{metav1.Condition{
 		Type:               string(ConditionTypeReady),
+		Status:             metav1.ConditionFalse,
+		LastTransitionTime: metav1.Now(),
+		Reason:             string(ConditionReasonFailed),
+		Message:            msg,
+	}}
+}
+
+// Ready returns a condition that indicates the resource is
+// ready for use.
+func DeviceConfigReady() Condition {
+	return Condition{metav1.Condition{
+		Type:               string(ConditionTypeDeviceConfigReady),
+		Status:             metav1.ConditionTrue,
+		LastTransitionTime: metav1.Now(),
+		Reason:             string(ConditionReasonReady),
+	}}
+}
+
+// Unknown returns a condition that indicates the resource is in an
+// unknown status.
+func DeviceConfigUnknown() Condition {
+	return Condition{metav1.Condition{
+		Type:               string(ConditionTypeDeviceConfigReady),
+		Status:             metav1.ConditionFalse,
+		LastTransitionTime: metav1.Now(),
+		Reason:             string(ConditionReasonUnknown),
+	}}
+}
+
+// Failed returns a condition that indicates the resource
+// failed to get reconciled.
+func DeviceConfigFailed(msg string) Condition {
+	return Condition{metav1.Condition{
+		Type:               string(ConditionTypeDeviceConfigReady),
 		Status:             metav1.ConditionFalse,
 		LastTransitionTime: metav1.Now(),
 		Reason:             string(ConditionReasonFailed),

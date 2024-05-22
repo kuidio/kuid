@@ -251,6 +251,7 @@ func NodeTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 				r.Spec.SiteID.Region,
 				r.Spec.SiteID.Site,
 				r.Spec.NodeGroup,
+				r.Spec.Provider,
 			}
 		},
 		Columns: []metav1.TableColumnDefinition{
@@ -259,6 +260,7 @@ func NodeTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 			{Name: "Region", Type: "string"},
 			{Name: "Site", Type: "string"},
 			{Name: "Topology", Type: "string"},
+			{Name: "Provider", Type: "string"},
 		},
 	}
 }
