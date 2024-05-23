@@ -90,7 +90,7 @@ func (r *Resources) AddNewResource(ctx context.Context, cr, o client.Object) {
 		Name:       o.GetName(),
 	}
 
-	log.Info("add newresource", "ref", ref.String())
+	log.Debug("add newresource", "ref", ref.String())
 
 	r.newResources[ref] = o
 }
@@ -117,15 +117,13 @@ func (r *Resources) getExistingResources(ctx context.Context, cr client.Object) 
 			errm = errors.Join(errm, err)
 			continue
 		}
-		log.Info("getExistingResources items", "gvk", gvk.String(), "items", len(list.Items))
+		log.Debug("getExistingResources items", "gvk", gvk.String(), "items", len(list.Items))
 		for _, o := range list.Items {
-			log.Info("getExistingResources item", "gvk", o.GetObjectKind().GroupVersionKind().String(), "name", o.GetName())
+			log.Debug("getExistingResources item", "gvk", o.GetObjectKind().GroupVersionKind().String(), "name", o.GetName())
 			o := o
 			for _, ref := range o.GetOwnerReferences() {
-				log.Info("ownerref", "refs", fmt.Sprintf("%s/%s", ref.UID, cr.GetUID()))
+				log.Debug("ownerref", "refs", fmt.Sprintf("%s/%s", ref.UID, cr.GetUID()))
 				if ref.UID == cr.GetUID() {
-					//apiVersion, kind := ownObj.SchemaGroupVersionKind().ToAPIVersionAndKind()
-					//log.Info("gvk", "apiVersion", apiVersion, "kind", kind)
 					r.existingResources[corev1.ObjectReference{
 						APIVersion: gvk.GroupVersion().String(),
 						Kind:       gvk.Kind,
@@ -178,7 +176,7 @@ func (r *Resources) apiDelete(ctx context.Context) error {
 
 func (r *Resources) delete(ctx context.Context, ref corev1.ObjectReference, o client.Object) error {
 	log := log.FromContext(ctx)
-	log.Info("api delete existing resource", "referernce", ref.String())
+	log.Debug("api delete existing resource", "referernce", ref.String())
 	if err := r.Delete(ctx, o); err != nil {
 		if resource.IgnoreNotFound(err) != nil {
 			log.Error("api delete", "error", err, "object", o)
@@ -248,7 +246,7 @@ func (r *Resources) apiApply(ctx context.Context) error {
 func (r *Resources) apply(ctx context.Context, o client.Object) error {
 	log := log.FromContext(ctx)
 	key := types.NamespacedName{Namespace: o.GetNamespace(), Name: o.GetName()}
-	log.Info("api apply object", "key", key.String(), "gvk", o.GetObjectKind().GroupVersionKind().String())
+	log.Debug("api apply object", "key", key.String(), "gvk", o.GetObjectKind().GroupVersionKind().String())
 
 	spec, err := getSpecField(o)
 	if err != nil {
