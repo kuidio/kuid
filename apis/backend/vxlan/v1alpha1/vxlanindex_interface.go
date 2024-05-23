@@ -283,8 +283,6 @@ func BuildVXLANIndex(meta metav1.ObjectMeta, spec *VXLANIndexSpec, status *VXLAN
 	}
 }
 
-
-
 func (r *VXLANIndex) GetSpec() any {
 	return r.Spec
 }

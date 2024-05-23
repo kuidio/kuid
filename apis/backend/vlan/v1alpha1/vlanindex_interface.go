@@ -283,7 +283,6 @@ func BuildVLANIndex(meta metav1.ObjectMeta, spec *VLANIndexSpec, status *VLANInd
 	}
 }
 
-
 func (r *VLANIndex) GetSpec() any {
 	return r.Spec
 }

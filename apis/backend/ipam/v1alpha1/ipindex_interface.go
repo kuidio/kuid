@@ -307,7 +307,6 @@ func GetIPClaimFromPrefix(obj client.Object, prefix Prefix) *IPClaim {
 	)
 }
 
-
 func (r *IPIndex) GetSpec() any {
 	return r.Spec
 }

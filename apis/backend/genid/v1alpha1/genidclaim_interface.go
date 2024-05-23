@@ -568,7 +568,6 @@ func (r *GENIDClaim) GetStatusID() *uint64 {
 	return ptr.To[uint64](uint64(*r.Status.ID))
 }
 
-
 func (r *GENIDClaim) GetSpec() any {
 	return r.Spec
 }

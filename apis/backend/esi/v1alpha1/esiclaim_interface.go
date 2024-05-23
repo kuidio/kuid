@@ -504,7 +504,6 @@ func (r *ESIClaim) GetStatusID() *uint64 {
 	return ptr.To[uint64](uint64(*r.Status.ID))
 }
 
-
 func (r *ESIClaim) GetSpec() any {
 	return r.Spec
 }

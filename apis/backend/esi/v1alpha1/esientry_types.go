@@ -73,6 +73,6 @@ type ESIEntryList struct {
 }
 
 var (
-	ESIEntryKind = reflect.TypeOf(ESIEntry{}).Name()
+	ESIEntryKind     = reflect.TypeOf(ESIEntry{}).Name()
 	ESIEntryListKind = reflect.TypeOf(ESIEntryList{}).Name()
 )

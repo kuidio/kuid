@@ -283,7 +283,6 @@ func BuildESIIndex(meta metav1.ObjectMeta, spec *ESIIndexSpec, status *ESIIndexS
 	}
 }
 
-
 func (r *ESIIndex) GetSpec() any {
 	return r.Spec
 }

@@ -504,7 +504,6 @@ func (r *VLANClaim) GetStatusID() *uint64 {
 	return ptr.To[uint64](uint64(*r.Status.ID))
 }
 
-
 func (r *VLANClaim) GetSpec() any {
 	return r.Spec
 }

@@ -73,6 +73,6 @@ type VLANIndexList struct {
 }
 
 var (
-	VLANIndexKind = reflect.TypeOf(VLANIndex{}).Name()
+	VLANIndexKind     = reflect.TypeOf(VLANIndex{}).Name()
 	VLANIndexListKind = reflect.TypeOf(VLANIndexList{}).Name()
 )

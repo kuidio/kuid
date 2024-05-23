@@ -503,7 +503,6 @@ func IPClaimTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 	}
 }
 
-
 func (r *IPClaim) GetSpec() any {
 	return r.Spec
 }

@@ -84,6 +84,6 @@ type VLANClaimList struct {
 }
 
 var (
-	VLANClaimKind = reflect.TypeOf(VLANClaim{}).Name()
+	VLANClaimKind     = reflect.TypeOf(VLANClaim{}).Name()
 	VLANClaimListKind = reflect.TypeOf(VLANClaimList{}).Name()
 )

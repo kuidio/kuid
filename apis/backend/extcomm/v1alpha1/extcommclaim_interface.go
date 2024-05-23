@@ -569,8 +569,6 @@ func (r *EXTCOMMClaim) GetStatusID() *uint64 {
 	return ptr.To[uint64](uint64(*r.Status.ID))
 }
 
-
-
 func (r *EXTCOMMClaim) GetSpec() any {
 	return r.Spec
 }

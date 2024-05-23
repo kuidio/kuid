@@ -73,6 +73,6 @@ type ASIndexList struct {
 }
 
 var (
-	ASIndexKind = reflect.TypeOf(ASIndex{}).Name()
+	ASIndexKind     = reflect.TypeOf(ASIndex{}).Name()
 	ASIndexListKind = reflect.TypeOf(ASIndexList{}).Name()
 )

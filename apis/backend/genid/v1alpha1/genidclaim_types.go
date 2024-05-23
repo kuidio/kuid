@@ -82,6 +82,6 @@ type GENIDClaimList struct {
 }
 
 var (
-	GENIDClaimKind = reflect.TypeOf(GENIDClaim{}).Name()
+	GENIDClaimKind     = reflect.TypeOf(GENIDClaim{}).Name()
 	GENIDClaimListKind = reflect.TypeOf(GENIDClaimList{}).Name()
 )

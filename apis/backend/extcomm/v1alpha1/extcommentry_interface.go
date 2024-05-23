@@ -258,7 +258,6 @@ func (r *EXTCOMMEntry) ValidateSyntax(_ string) field.ErrorList {
 	return allErrs
 }
 
-
 func (r *EXTCOMMEntry) NewObjList() backend.GenericObjectList {
 	return &EXTCOMMEntryList{
 		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: EXTCOMMEntryListKind},

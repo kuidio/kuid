@@ -73,6 +73,6 @@ type VXLANEntryList struct {
 }
 
 var (
-	VXLANEntryKind = reflect.TypeOf(VXLANEntry{}).Name()
+	VXLANEntryKind     = reflect.TypeOf(VXLANEntry{}).Name()
 	VXLANEntryListKind = reflect.TypeOf(VXLANEntryList{}).Name()
 )

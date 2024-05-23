@@ -350,7 +350,6 @@ func EXTCOMMIndexTableConvertor(gr schema.GroupResource) registry.TableConvertor
 	}
 }
 
-
 func (r *EXTCOMMIndex) GetSpec() any {
 	return r.Spec
 }

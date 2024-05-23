@@ -86,6 +86,6 @@ type EXTCOMMIndexList struct {
 }
 
 var (
-	EXTCOMMIndexKind = reflect.TypeOf(EXTCOMMIndex{}).Name()
+	EXTCOMMIndexKind     = reflect.TypeOf(EXTCOMMIndex{}).Name()
 	EXTCOMMIndexListKind = reflect.TypeOf(EXTCOMMIndexList{}).Name()
 )

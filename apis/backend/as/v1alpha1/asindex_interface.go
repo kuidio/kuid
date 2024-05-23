@@ -283,7 +283,6 @@ func BuildASIndex(meta metav1.ObjectMeta, spec *ASIndexSpec, status *ASIndexStat
 	}
 }
 
-
 func (r *ASIndex) GetSpec() any {
 	return r.Spec
 }

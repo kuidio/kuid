@@ -256,7 +256,6 @@ func (r *ASEntry) ValidateSyntax(_ string) field.ErrorList {
 	return allErrs
 }
 
-
 func (r *ASEntry) NewObjList() backend.GenericObjectList {
 	return &ASEntryList{
 		TypeMeta: metav1.TypeMeta{APIVersion: SchemeGroupVersion.Identifier(), Kind: ASEntryListKind},

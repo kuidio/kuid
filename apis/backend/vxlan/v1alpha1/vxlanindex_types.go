@@ -73,6 +73,6 @@ type VXLANIndexList struct {
 }
 
 var (
-	VXLANIndexKind = reflect.TypeOf(VXLANIndex{}).Name()
+	VXLANIndexKind     = reflect.TypeOf(VXLANIndex{}).Name()
 	VXLANIndexListKind = reflect.TypeOf(VXLANIndexList{}).Name()
 )

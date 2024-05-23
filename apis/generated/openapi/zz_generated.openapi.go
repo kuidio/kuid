@@ -3609,8 +3609,16 @@ func schema_apis_backend_infra_v1alpha1_EndpointSpec(ref common.ReferenceCallbac
 							Format:      "",
 						},
 					},
+					"provider": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Provider defines the provider implementing this resource.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
 				},
-				Required: []string{"nodeGroup", "region", "site", "node", "endpoint"},
+				Required: []string{"nodeGroup", "region", "site", "node", "endpoint", "provider"},
 			},
 		},
 	}

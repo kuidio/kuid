@@ -82,6 +82,6 @@ type ESIClaimList struct {
 }
 
 var (
-	ESIClaimKind = reflect.TypeOf(ESIClaim{}).Name()
+	ESIClaimKind     = reflect.TypeOf(ESIClaim{}).Name()
 	ESIClaimListKind = reflect.TypeOf(ESIClaimList{}).Name()
 )

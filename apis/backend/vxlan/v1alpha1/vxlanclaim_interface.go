@@ -504,7 +504,6 @@ func (r *VXLANClaim) GetStatusID() *uint64 {
 	return ptr.To[uint64](uint64(*r.Status.ID))
 }
 
-
 func (r *VXLANClaim) GetSpec() any {
 	return r.Spec
 }

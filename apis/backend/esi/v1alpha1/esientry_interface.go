@@ -230,7 +230,6 @@ func (r *ESIEntry) ValidateSyntax(_ string) field.ErrorList {
 	return allErrs
 }
 
-
 func (r *ESIEntry) GetSpec() any {
 	return r.Spec
 }

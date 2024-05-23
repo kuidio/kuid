@@ -41,6 +41,8 @@ type EndpointSpec struct {
 	Speed *string `json:"speed,omitempty" yaml:"speed,omitempty" protobuf:"bytes,4,opt,name=speed"`
 	// VLANTagging defines if VLAN tagging is enabled or disabled on the interface
 	VLANTagging bool `json:"vlanTagging,omitempty" yaml:"vlanTagging,omitempty" protobuf:"bytes,5,opt,name=vlanTagging"`
+	// Provider defines the provider implementing this resource.
+	Provider string `json:"provider" yaml:"provider" protobuf:"bytes,6,opt,name=provider"`
 }
 
 // EndpointStatus defines the observed state of Endpoint

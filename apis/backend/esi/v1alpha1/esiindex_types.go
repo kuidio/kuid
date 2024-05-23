@@ -73,6 +73,6 @@ type ESIIndexList struct {
 }
 
 var (
-	ESIIndexKind = reflect.TypeOf(ESIIndex{}).Name()
+	ESIIndexKind     = reflect.TypeOf(ESIIndex{}).Name()
 	ESIIndexListKind = reflect.TypeOf(ESIIndexList{}).Name()
 )

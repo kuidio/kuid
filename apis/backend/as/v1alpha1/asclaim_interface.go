@@ -519,7 +519,6 @@ func (r *ASClaim) GetStatusID() *uint64 {
 	return ptr.To[uint64](uint64(*r.Status.ID))
 }
 
-
 func (r *ASClaim) GetSpec() any {
 	return r.Spec
 }
