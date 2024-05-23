@@ -54,7 +54,7 @@ const (
 	KuidINVLinkTypeKey         = "infra.be.kuid.dev/link-type"
 	KuidINVPurpose             = "infra.be.kuid.dev/purpose"
 	// Network Inventory
-	KuidINVNetworkType = "network.infra.be.kuid.dev/type" // edge, core or maybe p and pe
+	KuidINVNetworkDeviceType = "network.infra.be.kuid.dev/device-type" // edge, core or maybe p and pe
 )
 
 var BackendSystemKeys = sets.New[string](KuidOwnerGroupKey,
