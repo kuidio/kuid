@@ -53,6 +53,7 @@ const (
 	KuidINVLinkKey             = "infra.be.kuid.dev/link"
 	KuidINVLinkTypeKey         = "infra.be.kuid.dev/link-type"
 	KuidINVPurpose             = "infra.be.kuid.dev/purpose"
+	KuidINVExclude             = "infra.be.kuid.dev/exclude"
 	// Network Inventory
 	KuidINVNetworkDeviceType = "network.infra.be.kuid.dev/device-type" // edge, core or maybe p and pe
 )
