@@ -37,9 +37,10 @@ type ConditionReason string
 
 // Reasons a resource is ready or not
 const (
-	ConditionReasonReady   ConditionReason = "Ready"
-	ConditionReasonFailed  ConditionReason = "Failed"
-	ConditionReasonUnknown ConditionReason = "Unknown"
+	ConditionReasonReady      ConditionReason = "Ready"
+	ConditionReasonFailed     ConditionReason = "Failed"
+	ConditionReasonUnknown    ConditionReason = "Unknown"
+	ConditionReasonProcessing ConditionReason = "processing"
 )
 
 // +k8s:openapi-gen=true
@@ -188,36 +189,14 @@ func Failed(msg string) Condition {
 	}}
 }
 
-// Ready returns a condition that indicates the resource is
-// ready for use.
-func DeviceConfigReady() Condition {
+// Processing returns a condition that indicates the resource
+// being reconciled.
+func Processing(msg string) Condition {
 	return Condition{metav1.Condition{
-		Type:               string(ConditionTypeDeviceConfigReady),
-		Status:             metav1.ConditionTrue,
-		LastTransitionTime: metav1.Now(),
-		Reason:             string(ConditionReasonReady),
-	}}
-}
-
-// Unknown returns a condition that indicates the resource is in an
-// unknown status.
-func DeviceConfigUnknown() Condition {
-	return Condition{metav1.Condition{
-		Type:               string(ConditionTypeDeviceConfigReady),
+		Type:               string(ConditionTypeReady),
 		Status:             metav1.ConditionFalse,
 		LastTransitionTime: metav1.Now(),
-		Reason:             string(ConditionReasonUnknown),
-	}}
-}
-
-// Failed returns a condition that indicates the resource
-// failed to get reconciled.
-func DeviceConfigFailed(msg string) Condition {
-	return Condition{metav1.Condition{
-		Type:               string(ConditionTypeDeviceConfigReady),
-		Status:             metav1.ConditionFalse,
-		LastTransitionTime: metav1.Now(),
-		Reason:             string(ConditionReasonFailed),
+		Reason:             string(ConditionReasonProcessing),
 		Message:            msg,
 	}}
 }
