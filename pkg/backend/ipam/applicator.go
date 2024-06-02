@@ -69,7 +69,7 @@ func (r *applicator) apply(ctx context.Context, claim *ipambev1alpha1.IPClaim, p
 
 	}
 	for _, newRoute := range newRoutes {
-		fmt.Println("newRoute", newRoute.Prefix().String())
+		//fmt.Println("newRoute", newRoute.Prefix().String())
 		newRoute := newRoute
 		exists := false
 		var curRoute table.Route
@@ -507,7 +507,7 @@ func validateNoParent(ipClaim *ipambev1alpha1.IPClaim) error {
 func getUserDefinedLabels(labels map[string]string) map[string]string {
 	udmLabels := map[string]string{}
 	for k, v := range labels {
-		fmt.Println("getUserDefinedLabels", k, v)
+		//fmt.Println("getUserDefinedLabels", k, v)
 		if backend.BackendIPAMSystemKeys.Has(k) {
 			continue
 		}

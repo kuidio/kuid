@@ -56,7 +56,7 @@ func (r *cache[T1]) Delete(ctx context.Context, k store.Key) {
 	_ = r.store.Delete(ctx, k)
 }
 
-// Get returns the cache; the initialized flag can be used to return a cahce even if not initialized
+// Get returns the cache; the initialized flag can be used to return a cache even if not initialized
 func (r *cache[T1]) Get(ctx context.Context, k store.Key, ignoreInitializing bool) (T1, error) {
 	cacheCtx, err := r.store.Get(ctx, k)
 	if err != nil {
