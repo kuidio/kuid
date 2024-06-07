@@ -57,6 +57,9 @@ type NodeStatus struct {
 	// ConditionedStatus provides the status of the IPClain using conditions
 	// - a ready condition indicates the overall status of the resource
 	conditionv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=conditionedStatus"`
+	// System ID define the unique system id of the node
+	// +optional
+	SystemID *string `json:"systemID,omitempty" yaml:"systemID,omitempty" protobuf:"bytes,2,opt,name=systemID"`
 }
 
 // +genclient

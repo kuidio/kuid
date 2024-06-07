@@ -1409,6 +1409,11 @@ func (in *NodeSpec) DeepCopy() *NodeSpec {
 func (in *NodeStatus) DeepCopyInto(out *NodeStatus) {
 	*out = *in
 	in.ConditionedStatus.DeepCopyInto(&out.ConditionedStatus)
+	if in.SystemID != nil {
+		in, out := &in.SystemID, &out.SystemID
+		*out = new(string)
+		**out = **in
+	}
 	return
 }
 

@@ -5488,6 +5488,13 @@ func schema_apis_backend_infra_v1alpha1_NodeStatus(ref common.ReferenceCallback)
 							},
 						},
 					},
+					"systemID": {
+						SchemaProps: spec.SchemaProps{
+							Description: "System ID define the unique system id of the node",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
 				},
 			},
 		},

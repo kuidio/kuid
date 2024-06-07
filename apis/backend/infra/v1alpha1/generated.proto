@@ -637,6 +637,10 @@ message NodeStatus {
   // ConditionedStatus provides the status of the IPClain using conditions
   // - a ready condition indicates the overall status of the resource
   optional github.com.kuidio.kuid.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
+
+  // System ID define the unique system id of the node
+  // +optional
+  optional string systemID = 2;
 }
 
 // A rack represents a physical equipment rack within your environment. Each rack is designed to accommodate
