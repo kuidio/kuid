@@ -350,3 +350,83 @@ func (r *Link) GetUserDefinedLabels() map[string]string {
 func (r *Link) GetProvider() string {
 	return ""
 }
+
+func (r *Link) GetISISLevel() ISISLevel {
+	if r.Spec.ISIS != nil &&
+		r.Spec.ISIS.Level != nil {
+		return *r.Spec.ISIS.Level
+	}
+	return ISISLevelUnknown
+}
+
+func (r *Link) GetISISNetworkType() NetworkType {
+	if r.Spec.ISIS != nil &&
+		r.Spec.ISIS.NetworkType != nil {
+		return *r.Spec.ISIS.NetworkType
+	}
+	return NetworkTypeUnknown
+}
+
+func (r *Link) GetISISPassive() bool {
+	if r.Spec.ISIS != nil &&
+		r.Spec.ISIS.Passive != nil {
+		return *r.Spec.ISIS.Passive
+	}
+	return false
+}
+
+func (r *Link) GetISISBFD() bool {
+	if r.Spec.ISIS != nil &&
+		r.Spec.ISIS.BFD != nil {
+		return *r.Spec.ISIS.BFD
+	}
+	return false
+}
+
+func (r *Link) GetISISMetric() uint32 {
+	if r.Spec.ISIS != nil &&
+		r.Spec.ISIS.Metric != nil {
+		return *r.Spec.ISIS.Metric
+	}
+	return 0
+}
+
+func (r *Link) GetOSPFArea() string {
+	if r.Spec.OSPF != nil &&
+		r.Spec.OSPF.Area != nil {
+		return *r.Spec.OSPF.Area
+	}
+	return ""
+}
+
+func (r *Link) GetOSPFNetworkType() NetworkType {
+	if r.Spec.OSPF != nil &&
+		r.Spec.OSPF.NetworkType != nil {
+		return *r.Spec.OSPF.NetworkType
+	}
+	return NetworkTypeUnknown
+}
+
+func (r *Link) GetOSPFPassive() bool {
+	if r.Spec.OSPF != nil &&
+		r.Spec.OSPF.Passive != nil {
+		return *r.Spec.OSPF.Passive
+	}
+	return false
+}
+
+func (r *Link) GetOSPFBFD() bool {
+	if r.Spec.OSPF != nil &&
+		r.Spec.OSPF.BFD != nil {
+		return *r.Spec.OSPF.BFD
+	}
+	return false
+}
+
+func (r *Link) GetOSPFMetric() uint32 {
+	if r.Spec.OSPF != nil &&
+		r.Spec.OSPF.Metric != nil {
+		return *r.Spec.OSPF.Metric
+	}
+	return 0
+}
