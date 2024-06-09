@@ -21,21 +21,24 @@ type NetworkType string
 const (
 	NetworkTypeP2P       NetworkType = "pointToPoint"
 	NetworkTypeBroadcast NetworkType = "broadcast"
+	NetworkTypeUnknown   NetworkType = "unknown"
 )
 
 type ISISLevel string
 
 const (
-	ISISLevelL1   ISISLevel = "L1"
-	ISISLevelL2   ISISLevel = "L2"
-	ISISLevelL1L2 ISISLevel = "L1L2"
+	ISISLevelL1      ISISLevel = "L1"
+	ISISLevelL2      ISISLevel = "L2"
+	ISISLevelL1L2    ISISLevel = "L1L2"
+	ISISLevelUnknown ISISLevel = "unknown"
 )
 
 type OSPFVersion string
 
 const (
-	OSPFVersionV2 OSPFVersion = "v2"
-	OSPFVersionV3 OSPFVersion = "v3"
+	OSPFVersionV2      OSPFVersion = "v2"
+	OSPFVersionV3      OSPFVersion = "v3"
+	OSPFVersionUnknown OSPFVersion = "unknown"
 )
 
 type IGPLinkParameters struct {
