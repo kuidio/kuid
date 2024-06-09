@@ -33,6 +33,13 @@ const (
 	ISISLevelUnknown ISISLevel = "unknown"
 )
 
+type ISISMetricStyle string
+
+const (
+	ISISMetricStyleNarrow ISISMetricStyle = "narrow"
+	ISISMetricStyleWide   ISISMetricStyle = "wide"
+)
+
 type OSPFVersion string
 
 const (
