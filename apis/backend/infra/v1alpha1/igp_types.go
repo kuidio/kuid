@@ -31,6 +31,13 @@ const (
 	ISISLevelL1L2 ISISLevel = "L1L2"
 )
 
+type OSPFVersion string
+
+const (
+	OSPFVersionV2 OSPFVersion = "v2"
+	OSPFVersionV3 OSPFVersion = "v3"
+)
+
 type IGPLinkParameters struct {
 	// Type defines the type of network
 	//+kubebuilder:validation:Enum=`pointToPoint`;`broadcast`;
