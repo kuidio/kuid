@@ -32,6 +32,15 @@ type LinkSpec struct {
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
 	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,2,opt,name=userDefinedLabels"`
+	// BFD defines the BFD specific parameters on the link
+	// +optional
+	BFD *BFDLinkParameters `json:"bfd,omitempty" yaml:"bfd,omitempty" protobuf:"bytes,3,opt,name=bfd"`
+	// OSPF defines the OSPF specific parameters on the link
+	// +optional
+	OSPF *OSPFLinkParameters `json:"ospf,omitempty" yaml:"ospf,omitempty" protobuf:"bytes,4,opt,name=ospf"`
+	// ISIS defines the ISIS specific parameters on the link
+	// +optional
+	ISIS *ISISLinkParameters `json:"isis,omitempty" yaml:"isis,omitempty" protobuf:"bytes,5,opt,name=isis"`
 }
 
 // LinkStatus defines the observed state of Link

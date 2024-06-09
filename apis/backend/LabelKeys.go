@@ -55,7 +55,10 @@ const (
 	KuidINVPurpose             = "infra.be.kuid.dev/purpose"
 	KuidINVExclude             = "infra.be.kuid.dev/exclude"
 	// Network Inventory
-	KuidINVNetworkDeviceType = "network.infra.be.kuid.dev/device-type" // edge, core or maybe p and pe
+	KuidINVNetworkDeviceType   = "network.infra.be.kuid.dev/device-type"     // edge, core or maybe p and pe
+	KuidINVNetworkLinkBFD      = "link.network.infra.be.kuid.dev/bfd"        // enable or disable true or false
+	KuidINVNetworkLinkBFDMinTX = "link.network.infra.be.kuid.dev/bfd-min-tx" //
+	KuidINVNetworkLinkBFDMinRX = "link.network.infra.be.kuid.dev/bfd-min-rx" //
 )
 
 var BackendSystemKeys = sets.New[string](KuidOwnerGroupKey,

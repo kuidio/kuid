@@ -27,6 +27,39 @@ import "k8s.io/apimachinery/pkg/runtime/schema/generated.proto";
 // Package-wide variables from generator "generated".
 option go_package = "github.com/kuidio/kuid/apis/backend/infra/v1alpha1";
 
+message BFDLinkParameters {
+  // Disabled defines if bfd is disabled or not
+  // +optional
+  optional bool disabled = 1;
+
+  // MinTx defines the desired minimal interval for sending BFD packets, in msec.
+  // +kubebuilder:default=1000
+  // +optional
+  optional uint32 minTx = 2;
+
+  // MinTx defines the required minimal interval for receiving BFD packets, in msec.
+  // +kubebuilder:default:=1000
+  // +optional
+  optional uint32 minRx = 3;
+
+  // MinEchoRx defines the echo function timer, in msec.
+  // +kubebuilder:default:=0
+  // +optional
+  optional uint32 minEchoRx = 4;
+
+  // Multiplier defines the number of missed packets before the session is considered down
+  // +kubebuilder:default:=5
+  // +optional
+  optional uint32 multiplier = 5;
+
+  // TTL defines the time to live on the outgoing BFD packet
+  // +kubebuilder:validation:Maximum:=255
+  // +kubebuilder:validation:Minimum:=1
+  // +kubebuilder:default:=1
+  // +optional
+  optional uint32 ttl = 6;
+}
+
 // A Cluster represents a kubernetes cluster and is typically used as a nodeGroup identifier.
 // +k8s:openapi-gen=true
 message Cluster {
@@ -207,6 +240,37 @@ message EndpointStatus {
   optional github.com.kuidio.kuid.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
+message IGPLinkParameters {
+  // Type defines the type of network
+  // +kubebuilder:validation:Enum=`pointToPoint`;`broadcast`;
+  // +kubebuilder:default=pointToPoint
+  // +optional
+  optional string networkType = 1;
+
+  // Passive defines if this interface is passive
+  // +optional
+  optional bool minTx = 2;
+
+  // BFD defines if BFD is enabled for the IGP on this interface
+  // +kubebuilder:default:=true
+  // +optional
+  optional bool bfd = 3;
+
+  // Metric defines the interface metric associated with the native routing topology
+  // +optional
+  optional uint32 metric = 4;
+}
+
+message ISISLinkParameters {
+  // Generic IGP Link Parameters
+  // +optional
+  optional IGPLinkParameters igpLinkParameters = 1;
+
+  // Defines the ISIS level the link is assocaited with
+  // +optional
+  optional string area = 2;
+}
+
 // A link represents a physical/logical connection that enables communication and data transfer
 // between 2 endpoints of a node.
 // +k8s:openapi-gen=true
@@ -298,6 +362,18 @@ message LinkSpec {
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
   optional github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 2;
+
+  // BFD defines the BFD specific parameters on the link
+  // +optional
+  optional BFDLinkParameters bfd = 3;
+
+  // OSPF defines the OSPF specific parameters on the link
+  // +optional
+  optional OSPFLinkParameters ospf = 4;
+
+  // ISIS defines the ISIS specific parameters on the link
+  // +optional
+  optional ISISLinkParameters isis = 5;
 }
 
 // LinkStatus defines the observed state of Link
@@ -641,6 +717,16 @@ message NodeStatus {
   // System ID define the unique system id of the node
   // +optional
   optional string systemID = 2;
+}
+
+message OSPFLinkParameters {
+  // Generic IGP Link Parameters
+  // +optional
+  optional IGPLinkParameters igpLinkParameters = 1;
+
+  // Defines the OSPF area the link is assocaited with
+  // +optional
+  optional string area = 2;
 }
 
 // A rack represents a physical equipment rack within your environment. Each rack is designed to accommodate

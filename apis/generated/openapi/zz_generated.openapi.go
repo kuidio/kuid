@@ -91,6 +91,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDIndexStatus":                  schema_apis_backend_genid_v1alpha1_GENIDIndexStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDRangeSyntaxValidator":         schema_apis_backend_genid_v1alpha1_GENIDRangeSyntaxValidator(ref),
 		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDStaticIDSyntaxValidator":      schema_apis_backend_genid_v1alpha1_GENIDStaticIDSyntaxValidator(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.BFDLinkParameters":                 schema_apis_backend_infra_v1alpha1_BFDLinkParameters(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Cluster":                           schema_apis_backend_infra_v1alpha1_Cluster(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ClusterFilter":                     schema_apis_backend_infra_v1alpha1_ClusterFilter(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ClusterList":                       schema_apis_backend_infra_v1alpha1_ClusterList(ref),
@@ -107,6 +108,8 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSetStatus":                 schema_apis_backend_infra_v1alpha1_EndpointSetStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointSpec":                      schema_apis_backend_infra_v1alpha1_EndpointSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.EndpointStatus":                    schema_apis_backend_infra_v1alpha1_EndpointStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.IGPLinkParameters":                 schema_apis_backend_infra_v1alpha1_IGPLinkParameters(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ISISLinkParameters":                schema_apis_backend_infra_v1alpha1_ISISLinkParameters(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Link":                              schema_apis_backend_infra_v1alpha1_Link(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.LinkFilter":                        schema_apis_backend_infra_v1alpha1_LinkFilter(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.LinkList":                          schema_apis_backend_infra_v1alpha1_LinkList(ref),
@@ -151,6 +154,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeSetStatus":                     schema_apis_backend_infra_v1alpha1_NodeSetStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeSpec":                          schema_apis_backend_infra_v1alpha1_NodeSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeStatus":                        schema_apis_backend_infra_v1alpha1_NodeStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.OSPFLinkParameters":                schema_apis_backend_infra_v1alpha1_OSPFLinkParameters(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Rack":                              schema_apis_backend_infra_v1alpha1_Rack(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RackFilter":                        schema_apis_backend_infra_v1alpha1_RackFilter(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.RackList":                          schema_apis_backend_infra_v1alpha1_RackList(ref),
@@ -2927,6 +2931,60 @@ func schema_apis_backend_genid_v1alpha1_GENIDStaticIDSyntaxValidator(ref common.
 	}
 }
 
+func schema_apis_backend_infra_v1alpha1_BFDLinkParameters(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"disabled": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Disabled defines if bfd is disabled or not",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"minTx": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MinTx defines the desired minimal interval for sending BFD packets, in msec.",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"minRx": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MinTx defines the required minimal interval for receiving BFD packets, in msec.",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"minEchoRx": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MinEchoRx defines the echo function timer, in msec.",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"multiplier": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Multiplier defines the number of missed packets before the session is considered down",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"ttl": {
+						SchemaProps: spec.SchemaProps{
+							Description: "TTL defines the time to live on the outgoing BFD packet",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
 func schema_apis_backend_infra_v1alpha1_Cluster(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -3653,6 +3711,93 @@ func schema_apis_backend_infra_v1alpha1_EndpointStatus(ref common.ReferenceCallb
 	}
 }
 
+func schema_apis_backend_infra_v1alpha1_IGPLinkParameters(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"networkType": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Type defines the type of network",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"minTx": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Passive defines if this interface is passive",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"bfd": {
+						SchemaProps: spec.SchemaProps{
+							Description: "BFD defines if BFD is enabled for the IGP on this interface",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"metric": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Metric defines the interface metric associated with the native routing topology",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_ISISLinkParameters(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"networkType": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Type defines the type of network",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"minTx": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Passive defines if this interface is passive",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"bfd": {
+						SchemaProps: spec.SchemaProps{
+							Description: "BFD defines if BFD is enabled for the IGP on this interface",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"metric": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Metric defines the interface metric associated with the native routing topology",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"area": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Defines the ISIS level the link is assocaited with",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
 func schema_apis_backend_infra_v1alpha1_Link(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -4027,12 +4172,30 @@ func schema_apis_backend_infra_v1alpha1_LinkSpec(ref common.ReferenceCallback) c
 							},
 						},
 					},
+					"bfd": {
+						SchemaProps: spec.SchemaProps{
+							Description: "BFD defines the BFD specific parameters on the link",
+							Ref:         ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.BFDLinkParameters"),
+						},
+					},
+					"ospf": {
+						SchemaProps: spec.SchemaProps{
+							Description: "OSPF defines the OSPF specific parameters on the link",
+							Ref:         ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.OSPFLinkParameters"),
+						},
+					},
+					"isis": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ISIS defines the ISIS specific parameters on the link",
+							Ref:         ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ISISLinkParameters"),
+						},
+					},
 				},
 				Required: []string{"endpoints"},
 			},
 		},
 		Dependencies: []string{
-			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupEndpointID"},
+			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.BFDLinkParameters", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ISISLinkParameters", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupEndpointID", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.OSPFLinkParameters"},
 	}
 }
 
@@ -5500,6 +5663,53 @@ func schema_apis_backend_infra_v1alpha1_NodeStatus(ref common.ReferenceCallback)
 		},
 		Dependencies: []string{
 			"github.com/kuidio/kuid/apis/condition/v1alpha1.Condition"},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_OSPFLinkParameters(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"networkType": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Type defines the type of network",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"minTx": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Passive defines if this interface is passive",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"bfd": {
+						SchemaProps: spec.SchemaProps{
+							Description: "BFD defines if BFD is enabled for the IGP on this interface",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"metric": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Metric defines the interface metric associated with the native routing topology",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"area": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Defines the OSPF area the link is assocaited with",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+			},
+		},
 	}
 }
 
