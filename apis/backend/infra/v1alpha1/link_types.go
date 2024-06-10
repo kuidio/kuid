@@ -41,6 +41,9 @@ type LinkSpec struct {
 	// ISIS defines the ISIS specific parameters on the link
 	// +optional
 	ISIS *ISISLinkParameters `json:"isis,omitempty" yaml:"isis,omitempty" protobuf:"bytes,5,opt,name=isis"`
+	// BGP defines the BGP specific parameters on the link
+	// +optional
+	BGP *BGPLinkParameters `json:"bgp,omitempty" yaml:"bgp,omitempty" protobuf:"bytes,6,opt,name=bgp"`
 }
 
 // LinkStatus defines the observed state of Link

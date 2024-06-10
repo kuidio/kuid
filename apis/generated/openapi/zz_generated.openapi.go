@@ -92,6 +92,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDRangeSyntaxValidator":         schema_apis_backend_genid_v1alpha1_GENIDRangeSyntaxValidator(ref),
 		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDStaticIDSyntaxValidator":      schema_apis_backend_genid_v1alpha1_GENIDStaticIDSyntaxValidator(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.BFDLinkParameters":                 schema_apis_backend_infra_v1alpha1_BFDLinkParameters(ref),
+		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.BGPLinkParameters":                 schema_apis_backend_infra_v1alpha1_BGPLinkParameters(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.Cluster":                           schema_apis_backend_infra_v1alpha1_Cluster(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ClusterFilter":                     schema_apis_backend_infra_v1alpha1_ClusterFilter(ref),
 		"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ClusterList":                       schema_apis_backend_infra_v1alpha1_ClusterList(ref),
@@ -2937,7 +2938,7 @@ func schema_apis_backend_infra_v1alpha1_BFDLinkParameters(ref common.ReferenceCa
 			SchemaProps: spec.SchemaProps{
 				Type: []string{"object"},
 				Properties: map[string]spec.Schema{
-					"disabled": {
+					"enabled": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Disabled defines if bfd is disabled or not",
 							Type:        []string{"boolean"},
@@ -2977,6 +2978,25 @@ func schema_apis_backend_infra_v1alpha1_BFDLinkParameters(ref common.ReferenceCa
 							Description: "TTL defines the time to live on the outgoing BFD packet",
 							Type:        []string{"integer"},
 							Format:      "int64",
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func schema_apis_backend_infra_v1alpha1_BGPLinkParameters(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"bfd": {
+						SchemaProps: spec.SchemaProps{
+							Description: "BFD defines if BFD is enabled for the EGP on this interface",
+							Type:        []string{"boolean"},
+							Format:      "",
 						},
 					},
 				},
@@ -4190,12 +4210,18 @@ func schema_apis_backend_infra_v1alpha1_LinkSpec(ref common.ReferenceCallback) c
 							Ref:         ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ISISLinkParameters"),
 						},
 					},
+					"bgp": {
+						SchemaProps: spec.SchemaProps{
+							Description: "BGP defines the BGP specific parameters on the link",
+							Ref:         ref("github.com/kuidio/kuid/apis/backend/infra/v1alpha1.BGPLinkParameters"),
+						},
+					},
 				},
 				Required: []string{"endpoints"},
 			},
 		},
 		Dependencies: []string{
-			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.BFDLinkParameters", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ISISLinkParameters", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupEndpointID", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.OSPFLinkParameters"},
+			"github.com/kuidio/kuid/apis/backend/infra/v1alpha1.BFDLinkParameters", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.BGPLinkParameters", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.ISISLinkParameters", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.NodeGroupEndpointID", "github.com/kuidio/kuid/apis/backend/infra/v1alpha1.OSPFLinkParameters"},
 	}
 }
 

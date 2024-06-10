@@ -30,7 +30,7 @@ option go_package = "github.com/kuidio/kuid/apis/backend/infra/v1alpha1";
 message BFDLinkParameters {
   // Disabled defines if bfd is disabled or not
   // +optional
-  optional bool disabled = 1;
+  optional bool enabled = 1;
 
   // MinTx defines the desired minimal interval for sending BFD packets, in msec.
   // +kubebuilder:default=1000
@@ -58,6 +58,13 @@ message BFDLinkParameters {
   // +kubebuilder:default:=1
   // +optional
   optional uint32 ttl = 6;
+}
+
+message BGPLinkParameters {
+  // BFD defines if BFD is enabled for the EGP on this interface
+  // +kubebuilder:default:=true
+  // +optional
+  optional bool bfd = 1;
 }
 
 // A Cluster represents a kubernetes cluster and is typically used as a nodeGroup identifier.
@@ -374,6 +381,10 @@ message LinkSpec {
   // ISIS defines the ISIS specific parameters on the link
   // +optional
   optional ISISLinkParameters isis = 5;
+
+  // BGP defines the BGP specific parameters on the link
+  // +optional
+  optional BGPLinkParameters bgp = 6;
 }
 
 // LinkStatus defines the observed state of Link

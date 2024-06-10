@@ -430,3 +430,11 @@ func (r *Link) GetOSPFMetric() uint32 {
 	}
 	return 0
 }
+
+func (r *Link) GetBGPBFD() bool {
+	if r.Spec.BGP != nil &&
+		r.Spec.BGP.BFD != nil {
+		return *r.Spec.BGP.BFD
+	}
+	return false
+}
