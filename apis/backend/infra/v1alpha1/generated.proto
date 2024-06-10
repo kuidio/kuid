@@ -33,29 +33,24 @@ message BFDLinkParameters {
   optional bool enabled = 1;
 
   // MinTx defines the desired minimal interval for sending BFD packets, in msec.
-  // +kubebuilder:default=1000
   // +optional
   optional uint32 minTx = 2;
 
   // MinTx defines the required minimal interval for receiving BFD packets, in msec.
-  // +kubebuilder:default:=1000
   // +optional
   optional uint32 minRx = 3;
 
   // MinEchoRx defines the echo function timer, in msec.
-  // +kubebuilder:default:=0
   // +optional
   optional uint32 minEchoRx = 4;
 
   // Multiplier defines the number of missed packets before the session is considered down
-  // +kubebuilder:default:=5
   // +optional
   optional uint32 multiplier = 5;
 
   // TTL defines the time to live on the outgoing BFD packet
   // +kubebuilder:validation:Maximum:=255
-  // +kubebuilder:validation:Minimum:=1
-  // +kubebuilder:default:=1
+  // +kubebuilder:validation:Minimum:=2
   // +optional
   optional uint32 ttl = 6;
 }
