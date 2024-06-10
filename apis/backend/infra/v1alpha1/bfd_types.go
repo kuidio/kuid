@@ -19,7 +19,7 @@ package v1alpha1
 type BFDLinkParameters struct {
 	// Disabled defines if bfd is disabled or not
 	// +optional
-	Enabled *bool `json:"disabled,omitempty" yaml:"disabled,,omitempty" protobuf:"bytes,1,opt,name=disabled"`
+	Enabled *bool `json:"enabled,omitempty" yaml:"enabled,,omitempty" protobuf:"bytes,1,opt,name=enabled"`
 	// MinTx defines the desired minimal interval for sending BFD packets, in msec.
 	// +kubebuilder:default=1000
 	// +optional
