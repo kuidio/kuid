@@ -22,3 +22,7 @@ For more information consult to [https://kuidio.github.io/docs/](https://kuidio.
 * join [our discord server](https://discord.gg/fH35bmcTU9)
 * raise [an issue](https://github.com/kuidio/kuid/issues)
 * create a [pull request](https://github.com/kuidio/kuid/pulls)
+
+## License and governance
+
+Code in the KUID repositories licensed with [Apache License 2.0](LICENSE.md). At the moment the project is governed by the benevolent dictatorship of @henderiw @steiler @karimra and @hansthienpondt . On the long run we plan to move to a meritocracy based governance model.
