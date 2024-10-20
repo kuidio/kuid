@@ -16,6 +16,8 @@ limitations under the License.
 
 package entryserver
 
+/*
+
 import (
 	"context"
 
@@ -39,3 +41,4 @@ func (r *strategy) Watch(ctx context.Context, options *metainternalversion.ListO
 
 	return w, nil
 }
+*/

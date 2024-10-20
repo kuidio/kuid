@@ -16,6 +16,8 @@ limitations under the License.
 
 package indexserver
 
+/*
+
 import (
 	"context"
 
@@ -32,3 +34,4 @@ func (r *strategy) Get(ctx context.Context, key types.NamespacedName) (runtime.O
 	}
 	return obj, nil
 }
+*/

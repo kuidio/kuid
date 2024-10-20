@@ -16,11 +16,13 @@ limitations under the License.
 
 package eventhandler
 
+/*
+
 import (
 	"context"
 
 	"github.com/henderiw/logger/log"
-	vxlanbev1alpha1 "github.com/kuidio/kuid/apis/backend/vxlan/v1alpha1"
+	asbev1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/util/workqueue"
@@ -57,7 +59,7 @@ func (r *ASEntryEventHandler) Generic(ctx context.Context, evt event.GenericEven
 }
 
 func (r *ASEntryEventHandler) add(ctx context.Context, obj runtime.Object, queue adder) {
-	cr, ok := obj.(*vxlanbev1alpha1.VXLANEntry)
+	cr, ok := obj.(*asbev1alpha1.ASEntry)
 	if !ok {
 		return
 	}
@@ -86,3 +88,4 @@ func (r *ASEntryEventHandler) add(ctx context.Context, obj runtime.Object, queue
 		}
 	}
 }
+*/

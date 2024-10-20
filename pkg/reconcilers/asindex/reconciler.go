@@ -16,6 +16,8 @@ limitations under the License.
 
 package asindex
 
+/*
+
 import (
 	"context"
 	"fmt"
@@ -23,8 +25,8 @@ import (
 
 	"github.com/henderiw/logger/log"
 	asbev1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
-	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
-	"github.com/kuidio/kuid/pkg/backend/backend"
+	conditionv1alpha1 "github.com/kform-dev/choreo/apis/condition/v1alpha1"
+	"github.com/kuidio/kuid/pkg/backend"
 	"github.com/kuidio/kuid/pkg/reconcilers"
 	"github.com/kuidio/kuid/pkg/reconcilers/ctrlconfig"
 	"github.com/kuidio/kuid/pkg/reconcilers/eventhandler"
@@ -68,7 +70,7 @@ func (r *reconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manager, c i
 		Named(controllerName).
 		For(&asbev1alpha1.ASIndex{}).
 		Watches(&asbev1alpha1.ASIndex{},
-			&eventhandler.IPEntryEventHandler{
+			&eventhandler.ASEntryEventHandler{
 				Client:  mgr.GetClient(),
 				ObjList: &asbev1alpha1.ASIndexList{},
 			}).
@@ -201,3 +203,4 @@ func (r *reconciler) applyMinMaxRange(ctx context.Context, cr *asbev1alpha1.ASIn
 	}
 	return nil
 }
+*/

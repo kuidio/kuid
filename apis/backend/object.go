@@ -17,19 +17,15 @@ limitations under the License.
 package backend
 
 import (
-	"context"
-	"crypto/sha1"
-
 	"github.com/henderiw/idxtable/pkg/table"
 	"github.com/henderiw/idxtable/pkg/tree"
 	"github.com/henderiw/idxtable/pkg/tree/gtree"
 	"github.com/henderiw/store"
-	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
-	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
+
+	//condv1alpha1 "github.com/kform-dev/choreo/apis/condition/v1alpha1"
+	"github.com/kform-dev/choreo/apis/condition"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
-	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -43,17 +39,18 @@ type IndexObject interface {
 	GetMaxID() *uint64
 	GetMinClaim() ClaimObject
 	GetMaxClaim() ClaimObject
+	GetMax() uint64
 }
 
 type ClaimObject interface {
 	Object
-	GetIndex() string                   // implement
-	GetSelector() *metav1.LabelSelector // implement
+	GetIndex() string
+	GetSelector() *metav1.LabelSelector
 	GetOwnerSelector() (labels.Selector, error)
-	GetClaimType() ClaimType
 	GetLabelSelector() (labels.Selector, error)
 	GetClaimLabels() labels.Set
 	ValidateOwner(labels labels.Set) error
+	GetClaimType() ClaimType
 	GetStaticID() *uint64
 	GetStaticTreeID(t string) tree.ID
 	GetClaimID(t string, id uint64) tree.ID
@@ -71,45 +68,14 @@ type EntryObject interface {
 	Object
 	GetIndex() string
 	GetClaimType() ClaimType
-	GetOwnerGVK() schema.GroupVersionKind
-	GetOwnerNSN() types.NamespacedName
-	SetSpec(x any)
-	GetSpec() any
 	GetSpecID() string
-}
-
-type GenericObject interface {
-	Object
-	SetSpec(x any)
-	GetSpec() any
-	NewObjList() GenericObjectList
-	//SchemaGroupVersionKind() schema.GroupVersionKind
-	//GetUserDefinedLabels() map[string]string
-	//GetProvider() string
 }
 
 type Object interface {
 	client.Object
 	GetNamespacedName() types.NamespacedName
 	GetKey() store.Key
-	GetOwnerReference() *commonv1alpha1.OwnerReference
-	GetObjectMeta() *metav1.ObjectMeta
-	GetCondition(t conditionv1alpha1.ConditionType) conditionv1alpha1.Condition
-	SetConditions(c ...conditionv1alpha1.Condition)
-	CalculateHash() ([sha1.Size]byte, error)
+	GetCondition(t condition.ConditionType) condition.Condition
+	SetConditions(c ...condition.Condition)
 	ValidateSyntax(s string) field.ErrorList
-}
-
-type ObjectList interface {
-	GetItems() []Object
-	client.ObjectList
-}
-
-type GenericObjectList interface {
-	GetObjects() []GenericObject
-	client.ObjectList
-}
-
-type Filter interface {
-	Filter(ctx context.Context, obj runtime.Object) bool
 }

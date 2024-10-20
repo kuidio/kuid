@@ -16,6 +16,8 @@ limitations under the License.
 
 package store
 
+/*
+
 import (
 	"context"
 
@@ -87,3 +89,4 @@ func CreateKVStore(ctx context.Context, db *badger.DB, scheme *runtime.Scheme, o
 func CreateMemStore(ctx context.Context) storebackend.Storer[runtime.Object] {
 	return memory.NewStore[runtime.Object]()
 }
+*/

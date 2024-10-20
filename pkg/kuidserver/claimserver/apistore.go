@@ -16,6 +16,8 @@ limitations under the License.
 
 package claimserver
 
+/*
+
 import (
 	"context"
 
@@ -24,7 +26,7 @@ import (
 	"github.com/henderiw/apiserver-store/pkg/generic/registry"
 	"github.com/henderiw/apiserver-store/pkg/storebackend"
 	"github.com/kuidio/kuid/apis/backend"
-	bebackend "github.com/kuidio/kuid/pkg/backend/backend"
+	bebackend "github.com/kuidio/kuid/pkg/backend"
 	"github.com/kuidio/kuid/pkg/kuidserver/store"
 	"go.opentelemetry.io/otel"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -108,3 +110,4 @@ func NewREST(ctx context.Context, scheme *runtime.Scheme, optsGetter generic.RES
 	}
 	return store, nil
 }
+*/

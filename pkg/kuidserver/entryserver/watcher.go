@@ -16,6 +16,8 @@ limitations under the License.
 
 package entryserver
 
+/*
+
 import (
 	"context"
 	"fmt"
@@ -218,3 +220,4 @@ func (r *watcher) setDone() {
 	defer r.m.Unlock()
 	r.done = true
 }
+*/
