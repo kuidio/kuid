@@ -52,6 +52,10 @@ type ASIndexStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
+// +kubebuilder:storageversion
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:categories={kuid}
 
 // ASIndex is the Schema for the ASIndex API
 type ASIndex struct {
@@ -64,6 +68,9 @@ type ASIndex struct {
 
 // ASIndexList contains a list of ASIndexs
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
+
+// ASIndexList contains a list of ASIndexs
 type ASIndexList struct {
 	metav1.TypeMeta `json:",inline" yaml:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`

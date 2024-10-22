@@ -47,7 +47,10 @@ type ASEntryStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:object:root=true
+// +kubebuilder:storageversion
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:categories={kuid}
 // ASEntry is the Schema for the ASentry API
 type ASEntry struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`
@@ -57,8 +60,11 @@ type ASEntry struct {
 	Status ASEntryStatus `json:"status,omitempty" yaml:"status,omitempty" protobuf:"bytes,3,opt,name=status"`
 }
 
-// ASEntryList contains a list of ASEntries
+
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
+
+// ASEntryList contains a list of ASEntries
 type ASEntryList struct {
 	metav1.TypeMeta `json:",inline" yaml:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`

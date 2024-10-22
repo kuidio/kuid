@@ -47,9 +47,25 @@ What about config maps ??
 
 - FieldSelector would be nice when listing the items to be able to check if they belong to the index
 - Update? How to handle
-- Conversion function for CRD(s) - how does this work ???? -> this will determine if we can keep the resources aligned or not
+- Conversion function for CRD(s) - how does this work ???? -> this will determine if we can keep choreo aligned or not
 
 to be tested:
 - getting storage
 - how to walk over a list ? unstructured ?
 - field manager is handled by
+
+
+
+Choreo -> we need a conversion fucntion conversion function
+
+
+TODO:
+- align the rest interface from choreo with the rest interface of 
+
+
+range:
+- step1: check if changed -> signal; exists/not exists: we dont care at this stage
+- step2: if changed validate parents and children -> we block
+- step3: manage update of the main tree
+
+if a range changed and there are children -> we dont allow this

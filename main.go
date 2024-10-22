@@ -241,6 +241,9 @@ func main() {
 			WithResourceAndHandler(&as.ASIndex{}, asStorageProviders.GetIndexStorageProvider()).
 			WithResourceAndHandler(&as.ASClaim{}, asStorageProviders.GetClaimStorageProvider()).
 			WithResourceAndHandler(&as.ASEntry{}, asStorageProviders.GetEntryStorageProvider()).
+			WithResourceAndHandler(&asbev1alpha1.ASIndex{}, asStorageProviders.GetIndexStorageProvider()).
+			WithResourceAndHandler(&asbev1alpha1.ASClaim{}, asStorageProviders.GetClaimStorageProvider()).
+			WithResourceAndHandler(&asbev1alpha1.ASEntry{}, asStorageProviders.GetEntryStorageProvider()).
 			WithoutEtcd()
 
 		cmd, err := apiserver.Build(ctx)

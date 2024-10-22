@@ -10,6 +10,7 @@ import (
 	"github.com/henderiw/logger/log"
 	"github.com/henderiw/store"
 	"github.com/kuidio/kuid/apis/backend"
+	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/utils/ptr"
 )
 
@@ -137,4 +138,23 @@ func isReserved(parentName, index string) bool {
 		return parentName == fmt.Sprintf("%s.%s", index, backend.IndexReservedMaxName) ||
 			parentName == fmt.Sprintf("%s.%s", index, backend.IndexReservedMinName)
 	*/
+}
+
+func (r *applicator) getExistingCLaimSet(ctx context.Context, claim backend.ClaimObject) (sets.Set[tree.ID], error) {
+	oldClaimIDSet := sets.New[tree.ID]()
+
+	existingEntries, err := r.getEntriesByOwner(ctx, claim)
+	if err != nil {
+		return nil, err
+	}
+	// delete the entries from the claimSet that overlap
+	for treeName, existingEntries := range existingEntries {
+		if treeName != "" {
+			return nil, fmt.Errorf("cannot have a range in non root tree: %s", treeName)
+		}
+		for _, existingEntry := range existingEntries {
+			oldClaimIDSet.Insert(existingEntry.ID())
+		}
+	}
+	return oldClaimIDSet, nil
 }

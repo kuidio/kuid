@@ -4,19 +4,22 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"reflect"
 
 	"github.com/henderiw/idxtable/pkg/table"
 	"github.com/henderiw/logger/log"
 	"github.com/henderiw/store"
-	"github.com/kform-dev/choreo/pkg/server/apiserver/rest"
 	"github.com/kuidio/kuid/apis/backend"
 	bebackend "github.com/kuidio/kuid/pkg/backend"
+	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/apis/meta/internalversion"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/sets"
+	genericapirequest "k8s.io/apiserver/pkg/endpoints/request"
+	"k8s.io/apiserver/pkg/registry/rest"
 )
 
 func (r *be) restore(ctx context.Context, index backend.IndexObject) error {
@@ -78,29 +81,22 @@ func (r *be) saveAll(ctx context.Context, k store.Key) error {
 	for _, newEntry := range newEntries {
 		newEntry := newEntry
 		found := false
-		//var entry backend.EntryObject
+		var oldEntry backend.EntryObject
 		for idx, curEntry := range curEntries {
 			idx := idx
 			curEntry := curEntry
 			if curEntry.GetNamespacedName() == newEntry.GetNamespacedName() {
 				// delete the current entry
 				curEntries = append(curEntries[:idx], curEntries[idx+1:]...)
-				//found = true
-				//entry = curEntry
+				found = true
+				oldEntry = curEntry
 				break
 			}
 		}
 
-		newuobj, err := runtime.DefaultUnstructuredConverter.ToUnstructured(newEntry)
-		if err != nil {
-			return err
-		}
-		newu := &unstructured.Unstructured{
-			Object: newuobj,
-		}
-
+		ctx = genericapirequest.WithNamespace(ctx, newEntry.GetNamespace())
 		if !found {
-			if _, err := r.entryStorage.Create(ctx, newu, nil, &metav1.CreateOptions{
+			if _, err := r.entryStorage.Create(ctx, newEntry, nil, &metav1.CreateOptions{
 				FieldManager: "backend",
 			}); err != nil {
 				log.Error("saveAll create failed", "name", newEntry.GetName(), "error", err.Error())
@@ -108,24 +104,18 @@ func (r *be) saveAll(ctx context.Context, k store.Key) error {
 			}
 			continue
 		}
-		olduobj, err := runtime.DefaultUnstructuredConverter.ToUnstructured(newEntry)
-		if err != nil {
-			return err
-		}
-		oldu := &unstructured.Unstructured{
-			Object: olduobj,
-		}
 
-		oldu.Object["spec"] = newu.Object["spec"]
-		oldu.Object["status"] = newu.Object["status"]
-
-		//log.Debug("save all ipEntry update", "ipEntry", entry.GetName())
-
-		if _, err := r.entryStorage.Update(ctx, newu, &rest.ApplyOptions{FieldManager: "backend"}); err != nil {
+		defaultObjInfo := rest.DefaultUpdatedObjectInfo(oldEntry, entryTransformer)
+		if _, _, err := r.entryStorage.Update(ctx, oldEntry.GetName(), defaultObjInfo, nil, nil, false, &metav1.UpdateOptions{
+			FieldManager: "backend",
+		}); err != nil {
+			fmt.Println("update err", err)
 			return err
 		}
 	}
+
 	for _, curEntry := range curEntries {
+		ctx = genericapirequest.WithNamespace(ctx, curEntry.GetNamespace())
 		if _, _, err := r.entryStorage.Delete(ctx, curEntry.GetName(), nil, &metav1.DeleteOptions{}); err != nil {
 			return err
 		}
@@ -175,6 +165,7 @@ func (r *be) deleteEntries(ctx context.Context, k store.Key) error {
 
 	var errm error
 	for _, entry := range entries {
+		ctx = genericapirequest.WithNamespace(ctx, entry.GetNamespace())
 		if _, _, err := r.entryStorage.Delete(ctx, entry.GetName(), nil, &metav1.DeleteOptions{}); err != nil {
 			log.Error("cannot delete entry", "error", err)
 			errm = errors.Join(errm, err)
@@ -185,6 +176,7 @@ func (r *be) deleteEntries(ctx context.Context, k store.Key) error {
 }
 
 func (r *be) listEntries(ctx context.Context, k store.Key) ([]backend.EntryObject, error) {
+	log := log.FromContext(ctx).With("key", k.String())
 	/*
 			selector, err := selector.ExprSelectorAsSelector(
 				&selectorv1alpha1.ExpressionSelector{
@@ -202,32 +194,29 @@ func (r *be) listEntries(ctx context.Context, k store.Key) ([]backend.EntryObjec
 		return nil, err
 	}
 
-	ulObj, err := runtime.DefaultUnstructuredConverter.ToUnstructured(list)
-	ul := &unstructured.UnstructuredList{
-		Object: ulObj,
+	items, err := meta.ExtractList(list)
+	if err != nil {
+		return nil, err
 	}
 
 	entryList := make([]backend.EntryObject, 0)
-	if ul.IsList() {
-		ul.EachListItem(func(obj runtime.Object) error {
-			u, ok := obj.(runtime.Unstructured)
-			if !ok {
-				return fmt.Errorf("not unstructured")
-			}
-			entryObj, err := r.entryObjectFn(u)
-			if err != nil {
-				return fmt.Errorf("not entry object")
-			}
-			if entryObj.GetIndex() == k.Name {
-				entryList = append(entryList, entryObj)
-			}
-			return nil
-		})
+	var errm error
+	for _, obj := range items {
+		entryObj, ok := obj.(backend.EntryObject)
+		if !ok {
+			log.Error("obj is not an EntryObject", "obj", reflect.TypeOf(obj).Name())
+			errm = errors.Join(errm, err)
+			continue
+		}
+		if entryObj.GetIndex() == k.Name {
+			entryList = append(entryList, entryObj)
+		}
 	}
-	return entryList, nil
+	return entryList, errm
 }
 
 func (r *be) listClaims(ctx context.Context, k store.Key) (map[string]backend.ClaimObject, error) {
+	log := log.FromContext(ctx).With("key", k.String())
 	/*
 		selector, err := selector.ExprSelectorAsSelector(
 			&selectorv1alpha1.ExpressionSelector{
@@ -240,32 +229,28 @@ func (r *be) listClaims(ctx context.Context, k store.Key) (map[string]backend.Cl
 			return nil, err
 		}
 	*/
-	list, err := r.entryStorage.List(ctx, &internalversion.ListOptions{})
+	list, err := r.claimStorage.List(ctx, &internalversion.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
 
-	ulObj, err := runtime.DefaultUnstructuredConverter.ToUnstructured(list)
-	ul := &unstructured.UnstructuredList{
-		Object: ulObj,
+	items, err := meta.ExtractList(list)
+	if err != nil {
+		return nil, err
 	}
 
 	claimMap := make(map[string]backend.ClaimObject)
-	if ul.IsList() {
-		ul.EachListItem(func(obj runtime.Object) error {
-			ru, ok := obj.(runtime.Unstructured)
-			if !ok {
-				return fmt.Errorf("not unstructured")
-			}
-			claimObj, err := r.claimObjectFn(ru)
-			if err != nil {
-				return fmt.Errorf("not claim object")
-			}
-			claimMap[claimObj.GetNamespacedName().String()] = claimObj
-			return nil
-		})
+	var errm error
+	for _, obj := range items {
+		claimObj, ok := obj.(backend.ClaimObject)
+		if !ok {
+			log.Error("obj is not an ClaimObject", "obj", reflect.TypeOf(obj).Name())
+			errm = errors.Join(errm, err)
+			continue
+		}
+		claimMap[claimObj.GetNamespacedName().String()] = claimObj
 	}
-	return claimMap, nil
+	return claimMap, errm
 }
 
 func (r *be) restoreMinMaxRanges(ctx context.Context, cacheInstanceCtx *CacheInstanceContext, entries []backend.EntryObject, index backend.IndexObject) error {
@@ -309,6 +294,8 @@ func (r *be) restoreMinMaxRanges(ctx context.Context, cacheInstanceCtx *CacheIns
 			u := &unstructured.Unstructured{
 				Object: uobj,
 			}
+			ctx = genericapirequest.WithNamespace(ctx, u.GetNamespace())
+
 			if _, err := r.entryStorage.Create(ctx, u, nil, &metav1.CreateOptions{
 				FieldManager: "backend",
 			}); err != nil {
@@ -361,4 +348,22 @@ func (r *be) restoreClaim(ctx context.Context, cacheInstanceCtx *CacheInstanceCo
 		return err
 	}
 	return nil
+}
+
+
+func entryTransformer(_ context.Context, newObj runtime.Object, oldObj runtime.Object) (runtime.Object, error) {
+	// Type assertion to specific object types, assuming we are working with a type that has Spec and Status fields
+	new, ok := newObj.(backend.EntryObject)
+	if !ok {
+		return nil, fmt.Errorf("newObj is not of type EntryObject")
+	}
+	old, ok := oldObj.(backend.EntryObject)
+	if !ok {
+		return nil, fmt.Errorf("oldObj is not of type EntryObject")
+	}
+
+	new.SetResourceVersion(old.GetResourceVersion())
+	new.SetUID(old.GetUID())
+
+	return new, nil
 }

@@ -34,6 +34,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/selection"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 	"k8s.io/utils/ptr"
 )
@@ -161,8 +162,17 @@ func (r *ASClaim) GetIndex() string { return r.Spec.Index }
 
 func (r *ASClaim) GetSelector() *metav1.LabelSelector { return r.Spec.Selector }
 
-// GetOwnerSelector selects the route based on the name of the claim
-func (r *ASClaim) GetOwnerSelector() (labels.Selector, error) {
+func (r *ASClaim) IsOwner(labels labels.Set) bool {
+	ownerLabels := r.getOnwerLabels()
+	for k, v := range ownerLabels {
+		if val, ok := labels[k]; !ok || val != v {
+			return false
+		}
+	}
+	return true
+}
+
+func (r *ASClaim) getOnwerLabels() map[string]string {
 	claimName := r.Name
 	claimKind := r.Kind
 	claimUID := r.UID
@@ -175,11 +185,16 @@ func (r *ASClaim) GetOwnerSelector() (labels.Selector, error) {
 		}
 	}
 
-	l := map[string]string{
+	return map[string]string{
 		backend.KuidClaimNameKey: claimName,
 		backend.KuidClaimUIDKey:  string(claimUID),
 		backend.KuidOwnerKindKey: claimKind,
 	}
+}
+
+// GetOwnerSelector selects the route based on the name of the claim
+func (r *ASClaim) GetOwnerSelector() (labels.Selector, error) {
+	l := r.getOnwerLabels()
 
 	fullselector := labels.NewSelector()
 	for k, v := range l {
@@ -331,6 +346,19 @@ func (r *ASClaim) GetClaimResponse() string {
 		return fmt.Sprintf("%s-%s", getASDot(uint32(range32.From().ID())), getASDot(uint32(range32.To().ID())))
 	}
 	return ""
+}
+
+func (r *ASClaim) GetClaimSet(typ string) (sets.Set[tree.ID], error) {
+	arange, err := r.GetRangeID(typ)
+	if err != nil {
+		return nil, fmt.Errorf("cannot get range from claim: %v", err)
+	}
+	// claim set represents the new entries
+	newClaimSet := sets.New[tree.ID]()
+	for _, rangeID := range arange.IDs() {
+		newClaimSet.Insert(rangeID)
+	}
+	return newClaimSet, nil
 }
 
 func ASClaimFromUnstructured(ru runtime.Unstructured) (backend.ClaimObject, error) {

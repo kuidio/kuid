@@ -19,7 +19,6 @@ import (
 
 	"github.com/henderiw/apiserver-builder/pkg/builder"
 	"github.com/henderiw/apiserver-builder/pkg/builder/rest"
-	"github.com/kuidio/kuid/apis/backend"
 	bebackend "github.com/kuidio/kuid/pkg/backend"
 	genericbackend "github.com/kuidio/kuid/pkg/backend/generic"
 	genericregistry "github.com/kuidio/kuid/pkg/registry/generic"
@@ -29,7 +28,7 @@ import (
 	"k8s.io/apiserver/pkg/registry/generic"
 )
 
-func NewStorageProviders(ctx context.Context, sync bool, options *options.Options) backend.StorageProviders {
+func NewStorageProviders(ctx context.Context, sync bool, options *options.Options) bebackend.StorageProviders {
 	r := &storageProviders{
 		be: genericbackend.New(
 			ASClaimKind,
@@ -87,7 +86,7 @@ func (r *storageProviders) ApplyStorageToBackend(ctx context.Context, apiServer 
 
 	entryStorageProvider := apiServer.StorageProvider[schema.GroupResource{
 		Group:    SchemeGroupVersion.Group,
-		Resource: ASIndexPlural,
+		Resource: ASEntryPlural,
 	}]
 
 	entryStorage, err := entryStorageProvider.Get(ctx, apiServer.Schemes[0], &EntryGetter{})
@@ -97,6 +96,10 @@ func (r *storageProviders) ApplyStorageToBackend(ctx context.Context, apiServer 
 
 	r.be.AddStorage(entryStorage, claimStorage)
 	return nil
+}
+
+func (r *storageProviders) GetBackend() bebackend.Backend {
+	return r.be
 }
 
 var _ generic.RESTOptionsGetter = &ClaimGetter{}

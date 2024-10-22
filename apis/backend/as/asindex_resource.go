@@ -174,20 +174,22 @@ func (r *ASIndex) TableConvertor() func(gr schema.GroupResource) rest.TableConve
 		return registry.NewTableConverter(
 			gr,
 			func(obj runtime.Object) []interface{} {
-				config, ok := obj.(*ASIndex)
+				index, ok := obj.(*ASIndex)
 				if !ok {
 					return nil
 				}
 				return []interface{}{
-					config.Name,
-					config.GetCondition(condition.ConditionTypeReady).Status,
-					config.GetCondition(condition.ConditionTypeReady).Reason,
+					index.GetName(),
+					index.GetCondition(condition.ConditionTypeReady).Status,
+					index.GetMinID(),
+					index.GetMaxID(),
 				}
 			},
 			[]metav1.TableColumnDefinition{
 				{Name: "Name", Type: "string"},
 				{Name: "Ready", Type: "string"},
-				{Name: "Reason", Type: "string"},
+				{Name: "MinID", Type: "integer"},
+				{Name: "MaxID", Type: "integer"},
 			},
 		)
 	}
@@ -268,6 +270,9 @@ func (r *ASIndexFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	o, ok := obj.(*ASIndex)
 	if !ok {
 		return f
+	}
+	if r == nil {
+		return false
 	}
 	if r.Name != "" {
 		if o.GetName() == r.Name {

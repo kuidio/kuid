@@ -19,6 +19,7 @@ package backend
 import (
 	"context"
 
+	"github.com/henderiw/apiserver-store/pkg/generic/registry"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apiserver/pkg/registry/rest"
 )
@@ -34,5 +35,7 @@ type Backend interface {
 	// Release a claim in the backend
 	Release(ctx context.Context, obj runtime.Object) error
 	// PrintEntries prints the entries of the cache
-	//PrintEntries(ctx context.Context, k store.Key) error
+	PrintEntries(ctx context.Context, index string)
+
+	GetClaimStorage() *registry.Store
 }

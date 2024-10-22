@@ -41,7 +41,6 @@ func (r *staticApplicator) Validate(ctx context.Context, claim backend.ClaimObje
 }
 
 func (r *staticApplicator) Apply(ctx context.Context, claim backend.ClaimObject) error {
-
 	claimID, parentTreeName, err := r.validateExists(ctx, claim)
 	if err != nil {
 		return err
@@ -101,7 +100,7 @@ func (r *staticApplicator) validateExists(ctx context.Context, claim backend.Cla
 	}
 
 	claimID, claimTreeName := reclaimIDFromExisitingEntries(existingEntries, *claim.GetStaticID())
-	// remove the existing entries that done match the claimed ID
+	// remove the existing entries that don't match the claimed ID
 	// should be none, but just in case
 	if err := r.deleteNonClaimedEntries(ctx, existingEntries, claimID, claimTreeName); err != nil {
 		return nil, "", err

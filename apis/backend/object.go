@@ -21,12 +21,11 @@ import (
 	"github.com/henderiw/idxtable/pkg/tree"
 	"github.com/henderiw/idxtable/pkg/tree/gtree"
 	"github.com/henderiw/store"
-
-	//condv1alpha1 "github.com/kform-dev/choreo/apis/condition/v1alpha1"
 	"github.com/kform-dev/choreo/apis/condition"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -62,6 +61,8 @@ type ClaimObject interface {
 	GetStatusID() *uint64
 	GetClaimRequest() string
 	GetClaimResponse() string
+	GetClaimSet(typ string) (sets.Set[tree.ID], error)
+	IsOwner(labels labels.Set) bool
 }
 
 type EntryObject interface {

@@ -6,6 +6,8 @@ toolchain go1.23.2
 
 replace k8s.io/api => k8s.io/api v0.31.1
 
+replace k8s.io/kms => k8s.io/kms v0.31.1
+
 replace k8s.io/apimachinery => k8s.io/apimachinery v0.31.1
 
 replace k8s.io/client-go => k8s.io/client-go v0.31.1
@@ -22,12 +24,13 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/henderiw/apiserver-builder v0.0.4-0.20241020093259-47da0b178335
 	github.com/henderiw/apiserver-store v0.0.3-0.20241020093130-09730291ea07
-	github.com/henderiw/idxtable v0.0.0-20241020093436-6b78e5fa3b3c
+	github.com/henderiw/idxtable v0.0.0-20241021085446-f8d804551342
 	github.com/henderiw/logger v0.0.0-20230911123436-8655829b1abe
 	github.com/henderiw/store v0.0.2-0.20241020093537-5a92d3e14a02
 	github.com/kform-dev/choreo v0.0.11
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.8.1
+	github.com/stretchr/testify v1.9.0
 	go.opentelemetry.io/otel v1.28.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/mod v0.21.0
@@ -61,7 +64,7 @@ require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dgraph-io/ristretto v0.1.2-0.20240116140435-c67e07994f91 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
-	github.com/emicklei/go-restful/v3 v3.11.2 // indirect
+	github.com/emicklei/go-restful/v3 v3.12.1 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/evanphx/json-patch/v5 v5.9.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
@@ -85,7 +88,7 @@ require (
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0 // indirect
-	github.com/imdario/mergo v0.3.6 // indirect
+	github.com/imdario/mergo v0.3.13 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
@@ -96,6 +99,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/pjbgf/sha1cd v0.3.0 // indirect
+	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/prometheus/client_golang v1.19.1 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
 	github.com/prometheus/common v0.55.0 // indirect

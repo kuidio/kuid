@@ -174,20 +174,24 @@ func (r *ASEntry) TableConvertor() func(gr schema.GroupResource) rest.TableConve
 		return registry.NewTableConverter(
 			gr,
 			func(obj runtime.Object) []interface{} {
-				config, ok := obj.(*ASEntry)
+				entry, ok := obj.(*ASEntry)
 				if !ok {
 					return nil
 				}
 				return []interface{}{
-					config.Name,
-					config.GetCondition(condition.ConditionTypeReady).Status,
-					config.GetCondition(condition.ConditionTypeReady).Reason,
+					entry.GetName(),
+					entry.GetCondition(condition.ConditionTypeReady).Status,
+					entry.GetIndex(),
+					entry.GetClaimType(),
+					entry.GetSpecID(),
 				}
 			},
 			[]metav1.TableColumnDefinition{
 				{Name: "Name", Type: "string"},
 				{Name: "Ready", Type: "string"},
-				{Name: "Reason", Type: "string"},
+				{Name: "Index", Type: "string"},
+				{Name: "ClaimType", Type: "string"},
+				{Name: "ID", Type: "string"},
 			},
 		)
 	}
@@ -268,6 +272,9 @@ func (r *ASEntryFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	o, ok := obj.(*ASEntry)
 	if !ok {
 		return f
+	}
+	if r == nil {
+		return false
 	}
 	if r.Name != "" {
 		if o.GetName() == r.Name {

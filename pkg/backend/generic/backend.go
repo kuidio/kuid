@@ -58,6 +58,14 @@ type be struct {
 	claimStorage *registry.Store
 }
 
+func (r *be) PrintEntries(ctx context.Context, index string) {
+	entries, _ := r.listEntries(ctx, store.ToKey(index))
+	for _, entry := range entries {
+		uobj, _ := runtime.DefaultUnstructuredConverter.ToUnstructured(entry)
+		fmt.Println("entry", uobj)
+	}
+}
+
 func (r *be) AddStorage(entryStorage, claimStorage rest.Storage) error {
 	entrystore, ok := entryStorage.(*registry.Store)
 	if !ok {
@@ -70,6 +78,10 @@ func (r *be) AddStorage(entryStorage, claimStorage rest.Storage) error {
 	}
 	r.claimStorage = claimstore
 	return nil
+}
+
+func (r *be) GetClaimStorage() *registry.Store {
+	return r.claimStorage
 }
 
 // CreateIndex creates a backend index

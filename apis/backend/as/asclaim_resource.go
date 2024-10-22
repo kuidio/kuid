@@ -179,15 +179,21 @@ func (r *ASClaim) TableConvertor() func(gr schema.GroupResource) rest.TableConve
 					return nil
 				}
 				return []interface{}{
-					claim.Name,
+					claim.GetName(),
 					claim.GetCondition(condition.ConditionTypeReady).Status,
-					claim.GetCondition(condition.ConditionTypeReady).Reason,
+					claim.GetIndex(),
+					string(claim.GetClaimType()),
+					claim.GetClaimRequest(),
+					claim.GetClaimResponse(),
 				}
 			},
 			[]metav1.TableColumnDefinition{
 				{Name: "Name", Type: "string"},
-				{Name: "Ready", Type: "string"},
-				{Name: "Reason", Type: "string"},
+			{Name: "Ready", Type: "string"},
+			{Name: "Index", Type: "string"},
+			{Name: "ClaimType", Type: "string"},
+			{Name: "ClaimReq", Type: "string"},
+			{Name: "ClaimRsp", Type: "string"},
 			},
 		)
 	}
@@ -268,6 +274,9 @@ func (r *ASClaimFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	o, ok := obj.(*ASClaim)
 	if !ok {
 		return f
+	}
+	if r == nil {
+		return false
 	}
 	if r.Name != "" {
 		if o.GetName() == r.Name {

@@ -18,6 +18,7 @@ package generic
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/henderiw/store"
@@ -28,7 +29,6 @@ import (
 type rangeApplicator struct {
 	name string
 	applicator
-	rangeExists bool
 }
 
 // when a range changes the start and stop we delete the range
@@ -39,71 +39,43 @@ func (r *rangeApplicator) Validate(ctx context.Context, claim backend.ClaimObjec
 	// reclaimRange gets the existing entries based on owner
 	// -> 3 scenarios: none exist, they all exist, some exist
 	// -> none exist -> claim them
-	// -> they all exist -> reclaim them
-	// -> same exist -> delete them including the children and reclaim the new range after the entries
+	// -> exists, no change -> don't do much other than updating the labels
+	// -> exists, change -> check childs and parents; when a parent exists and is from a different claim we stop, if children exist we block
 	// have been deleted
-	exists, err := r.validateExists(ctx, claim)
+	changed, err := r.validateChange(ctx, claim)
 	if err != nil {
 		return err
 	}
-	if !exists {
+	if changed {
 		// we need to validate if there are no children
 		if err := r.validateRangeOverlap(ctx, claim); err != nil {
 			return err
 		}
 	}
-	r.rangeExists = exists
 	return nil
 }
 
-// reclaimRange gets the existing entries based on owner
-// -> 3 scenarios: none exist, they all exist, some exist
-// -> none exist -> claim them
-// -> they all exist -> reclaim them
-// -> same exist -> delete them including the children and reclaim the new range aftre the entries
-// have been deleted
-func (r *rangeApplicator) validateExists(ctx context.Context, claim backend.ClaimObject) (bool, error) {
-	arange, err := claim.GetRangeID(r.cacheInstanceCtx.Type())
+// validateChange checks if the range changed; change is only reported when the range existed
+func (r *rangeApplicator) validateChange(ctx context.Context, claim backend.ClaimObject) (bool, error) {
+	newClaimSet, err := claim.GetClaimSet(r.cacheInstanceCtx.Type())
 	if err != nil {
 		return false, err
 	}
-	rangeExists := true // we are optimistic and set the claimset to true since we have entries
-	claimSet := map[string]struct{}{}
-	for _, rangeID := range arange.IDs() {
-		claimSet[rangeID.String()] = struct{}{}
-	}
 
-	existingEntries, err := r.getEntriesByOwner(ctx, claim)
+	oldClaimSet, err := r.getExistingCLaimSet(ctx, claim)
 	if err != nil {
 		return false, err
 	}
-	// delete the
-	for treeName, existingEntries := range existingEntries {
-		if treeName != "" {
-			return false, fmt.Errorf("cannot have a range in non root tree: %s", treeName)
-		}
-		for _, existingEntry := range existingEntries {
-			delete(claimSet, existingEntry.ID().String())
-		}
-	}
 
-	if len(claimSet) != 0 {
-		// cleanup
-		rangeExists = false
-		// remove all entries as the range change
-		if err := r.deleteNonClaimedEntries(ctx, existingEntries, nil, ""); err != nil {
-			return false, err
-		}
-		k := store.ToKey(claim.GetName())
-		if _, err := r.cacheInstanceCtx.ranges.Get(k); err == nil {
-			// exists
-			if err := r.cacheInstanceCtx.ranges.Delete(k); err != nil {
-				return false, err
-			}
-		}
+	newEntries := newClaimSet.Difference(oldClaimSet)
+	deletedEntries := oldClaimSet.Difference(newClaimSet)
+
+	if len(newEntries.UnsortedList()) != 0 || len(deletedEntries.UnsortedList()) != 0 {
+		// changed
+		return true, nil
 	}
-	// all good -> they either all exist or none exists or we cleaned up
-	return rangeExists, nil
+	// no change
+	return false, nil
 }
 
 func (r *rangeApplicator) validateRangeOverlap(_ context.Context, claim backend.ClaimObject) error {
@@ -111,25 +83,22 @@ func (r *rangeApplicator) validateRangeOverlap(_ context.Context, claim backend.
 	if err != nil {
 		return err
 	}
+	var errm error
 	for _, id := range arange.IDs() {
-		entry, err := r.cacheInstanceCtx.tree.Get(id)
-		if err == nil {
-			// this shouls always fail since the range existance was already validated
-			labels := entry.Labels()
-			if err := claim.ValidateOwner(labels); err != nil {
-				return err
-			}
-		}
 		childEntries := r.cacheInstanceCtx.tree.Children(id)
 		if len(childEntries) != 0 {
-			return fmt.Errorf("range overlaps with children: %v", childEntries)
+			errm = errors.Join(errm, fmt.Errorf("range id %s overlaps with children: %v", id.String(), childEntries))
 		}
 		parentEntries := r.cacheInstanceCtx.tree.Parents(id)
 		if len(parentEntries) > 0 {
-			return fmt.Errorf("range overlaps with parent: %v", parentEntries)
+			for _, entry := range parentEntries {
+				if !claim.IsOwner(entry.Labels()) {
+					errm = errors.Join(errm, fmt.Errorf("range id %s overlaps with parent: %v", id.String(), parentEntries))
+				}
+			}
 		}
 	}
-	return nil
+	return errm
 }
 
 func (r *rangeApplicator) Apply(ctx context.Context, claim backend.ClaimObject) error {
@@ -137,18 +106,36 @@ func (r *rangeApplicator) Apply(ctx context.Context, claim backend.ClaimObject) 
 	if err != nil {
 		return err
 	}
-	for _, id := range arange.IDs() {
-		if r.rangeExists {
-			if err := r.cacheInstanceCtx.tree.Update(id, claim.GetClaimLabels()); err != nil {
-				return err
-			}
-		} else {
-			if err := r.cacheInstanceCtx.tree.ClaimID(id, claim.GetClaimLabels()); err != nil {
-				return err
-			}
-		}
-
+	newClaimSet, err := claim.GetClaimSet(r.cacheInstanceCtx.Type())
+	if err != nil {
+		return err
 	}
+
+	oldClaimSet, err := r.getExistingCLaimSet(ctx, claim)
+	if err != nil {
+		return err
+	}
+
+	newEntries := newClaimSet.Difference(oldClaimSet)
+	existingEntries := newClaimSet.Intersection(oldClaimSet)
+	deletedEntries := oldClaimSet.Difference(newClaimSet)
+
+	for id := range deletedEntries {
+		if err := r.cacheInstanceCtx.tree.ReleaseID(id); err != nil {
+			return err
+		}
+	}
+	for id := range newEntries {
+		if err := r.cacheInstanceCtx.tree.ClaimID(id, claim.GetClaimLabels()); err != nil {
+			return err
+		}
+	}
+	for id := range existingEntries {
+		if err := r.cacheInstanceCtx.tree.Update(id, claim.GetClaimLabels()); err != nil {
+			return err
+		}
+	}
+
 	k := store.ToKey(claim.GetName())
 	if _, err := r.cacheInstanceCtx.ranges.Get(k); err != nil {
 		//table := table.New(uint32(arange.From().ID()), uint32(arange.To().ID()))

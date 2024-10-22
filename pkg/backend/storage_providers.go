@@ -28,4 +28,5 @@ type StorageProviders interface {
 	GetClaimStorageProvider() *rest.StorageProvider
 	GetEntryStorageProvider() *rest.StorageProvider
 	ApplyStorageToBackend(ctx context.Context, apiServer *builder.Server) error
+	GetBackend() Backend
 }
