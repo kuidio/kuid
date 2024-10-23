@@ -8,26 +8,22 @@ replace k8s.io/api => k8s.io/api v0.31.1
 
 replace k8s.io/kms => k8s.io/kms v0.31.1
 
-replace k8s.io/apimachinery => k8s.io/apimachinery v0.31.1
+//replace k8s.io/apimachinery => k8s.io/apimachinery v0.31.1
 
-replace k8s.io/client-go => k8s.io/client-go v0.31.1
+//replace k8s.io/client-go => k8s.io/client-go v0.31.1
 
 replace k8s.io/gengo/v2 => k8s.io/gengo/v2 v2.0.0-20240228010128-51d4e06bde70
-
-replace github.com/henderiw/apiserver-store => /Users/henderiw/code/tmp/apiserver-store
-
-replace github.com/henderiw/apiserver-builder => /Users/henderiw/code/tmp/apiserver-builder
 
 require (
 	github.com/dgraph-io/badger/v4 v4.3.0
 	github.com/google/go-cmp v0.6.0
 	github.com/google/uuid v1.6.0
-	github.com/henderiw/apiserver-builder v0.0.4-0.20241020093259-47da0b178335
-	github.com/henderiw/apiserver-store v0.0.3-0.20241020093130-09730291ea07
+	github.com/henderiw/apiserver-builder v0.0.4-0.20241021160127-f10a4b489c64
+	github.com/henderiw/apiserver-store v0.0.3-0.20241022143604-0995425b3d06
 	github.com/henderiw/idxtable v0.0.0-20241021085446-f8d804551342
 	github.com/henderiw/logger v0.0.0-20230911123436-8655829b1abe
 	github.com/henderiw/store v0.0.2-0.20241020093537-5a92d3e14a02
-	github.com/kform-dev/choreo v0.0.11
+	github.com/kform-dev/choreo v0.0.14-0.20241022144122-dcc4abf0f562
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.9.0
@@ -36,9 +32,9 @@ require (
 	golang.org/x/mod v0.21.0
 	golang.org/x/sync v0.8.0
 	k8s.io/api v0.32.0-alpha.1
-	k8s.io/apimachinery v0.32.0-alpha.1
+	k8s.io/apimachinery v0.31.1
 	k8s.io/apiserver v0.31.1
-	k8s.io/client-go v0.32.0-alpha.1
+	k8s.io/client-go v0.31.1
 	k8s.io/code-generator v0.31.1
 	k8s.io/component-base v0.31.1
 	k8s.io/kube-openapi v0.0.0-20240827152857-f7e401e7b4c2
@@ -88,7 +84,7 @@ require (
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0 // indirect
-	github.com/imdario/mergo v0.3.13 // indirect
+	github.com/imdario/mergo v0.3.16 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
@@ -134,7 +130,7 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20240814211410-ddb44dafa142 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240814211410-ddb44dafa142 // indirect
 	google.golang.org/grpc v1.67.1 // indirect
-	google.golang.org/protobuf v1.34.2 // indirect
+	google.golang.org/protobuf v1.35.1 // indirect
 	gopkg.in/evanphx/json-patch.v4 v4.12.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
