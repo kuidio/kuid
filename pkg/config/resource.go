@@ -24,6 +24,7 @@ import (
 	"github.com/henderiw/apiserver-builder/pkg/builder/rest"
 	bebackend "github.com/kuidio/kuid/pkg/backend"
 	"github.com/kuidio/kuid/pkg/registry/options"
+	"k8s.io/apimachinery/pkg/runtime"
 )
 
 var Groups = map[string]*GroupConfig{}
@@ -35,7 +36,7 @@ type StorageProviderFn func(ctx context.Context, be bebackend.Backend, sync bool
 type ApplyStorageToBackendFn func(ctx context.Context, be bebackend.Backend, apiServer *builder.Server) error
 
 type GroupConfig struct {
-	//AddToScheme []func(s *runtime.Scheme) error
+	AddToScheme             func(s *runtime.Scheme) error
 	BackendFn               BackendFn
 	ApplyStorageToBackendFn ApplyStorageToBackendFn
 	Resources               []*ResourceConfig
@@ -46,8 +47,9 @@ type ResourceConfig struct {
 	ResourceVersions  []resource.Object
 }
 
-func Register(groupName string, befn BackendFn, applybefn ApplyStorageToBackendFn, resources []*ResourceConfig) {
+func Register(groupName string, addToScheme func(s *runtime.Scheme) error, befn BackendFn, applybefn ApplyStorageToBackendFn, resources []*ResourceConfig) {
 	Groups[groupName] = &GroupConfig{
+		AddToScheme:             addToScheme,
 		BackendFn:               befn,
 		ApplyStorageToBackendFn: applybefn,
 		Resources:               resources,

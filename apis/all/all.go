@@ -19,3 +19,10 @@ package all
 import (
 	_ "github.com/kuidio/kuid/apis/backend/as/register"
 )
+
+//infrabev1alpha1.AddToScheme,
+//ipambev1alpha1.AddToScheme,
+//vlanbev1alpha1.AddToScheme,
+//vxlanbev1alpha1.AddToScheme,
+//extcommbev1alpha1.AddToScheme,
+//genidbev1alpha1.AddToScheme,

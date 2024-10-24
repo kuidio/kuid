@@ -18,15 +18,12 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"os"
-	"strings"
 
 	"github.com/henderiw/apiserver-builder/pkg/builder"
 	"github.com/henderiw/logger/log"
 	_ "github.com/kuidio/kuid/apis/all"
-	asbev1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
 	"github.com/kuidio/kuid/pkg/backend"
 	"github.com/kuidio/kuid/pkg/config"
 	"github.com/kuidio/kuid/pkg/generated/openapi"
@@ -47,6 +44,11 @@ const (
 // defaultEtcdPathPrefix = "/registry/backend.kuid.dev"
 )
 
+type ReconcilerGroup struct {
+	addToSchema func(*runtime.Scheme) error
+	reconcilers []reconcilers.Reconciler
+}
+
 func main() {
 	logs.InitLogs()
 	defer logs.FlushLogs()
@@ -63,7 +65,7 @@ func main() {
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
 
 	// if no async we dont have to start any, the reconcilers len will determine this
-	recs := map[string]reconcilers.Reconciler{}
+	groupReconcilers := map[string]*ReconcilerGroup{}
 	ctrlCfg := &ctrlconfig.ControllerConfig{Backends: map[string]backend.Backend{}}
 	kuidConfig, err := config.GetKuidConfig()
 	if err != nil {
@@ -122,9 +124,13 @@ func main() {
 
 		// reconcilers get registered when async operations are configured
 		if !kuidGroupConfig.Sync {
-			if reconcilers, ok := reconcilers.ReconcilerGroups[group]; ok {
-				for reconilerName, reconciler := range reconcilers {
-					recs[reconilerName] = reconciler
+			if recs, ok := reconcilers.ReconcilerGroups[group]; ok {
+				groupReconcilers[group] = &ReconcilerGroup{
+					addToSchema: groupConfig.AddToScheme,
+					reconcilers: make([]reconcilers.Reconciler, 0, len(recs)),
+				}
+				for _, reconciler := range recs {
+					groupReconcilers[group].reconcilers = append(groupReconcilers[group].reconcilers, reconciler)
 				}
 			}
 			// add the backend -> for etcd this needs to be configmaps -> tbd how we handle this
@@ -159,21 +165,16 @@ func main() {
 		}
 	}
 
-	if len(recs) != 0 {
+	if len(groupReconcilers) != 0 {
 		// setup scheme for controllers
 		runScheme := runtime.NewScheme()
-		// add the core object to the scheme
-		for _, api := range (runtime.SchemeBuilder{
-			clientgoscheme.AddToScheme,
-			//infrabev1alpha1.AddToScheme,
-			asbev1alpha1.AddToScheme,
-			//ipambev1alpha1.AddToScheme,
-			//vlanbev1alpha1.AddToScheme,
-			//vxlanbev1alpha1.AddToScheme,
-			//extcommbev1alpha1.AddToScheme,
-			//genidbev1alpha1.AddToScheme,
-		}) {
-			if err := api(runScheme); err != nil {
+		if err := clientgoscheme.AddToScheme(runScheme); err != nil {
+			log.Error("cannot add scheme", "err", err)
+			os.Exit(1)
+		}
+		// add all schemas for the reconcilers to
+		for _, reconcilerGroup := range groupReconcilers {
+			if err := reconcilerGroup.addToSchema(runScheme); err != nil {
 				log.Error("cannot add scheme", "err", err)
 				os.Exit(1)
 			}
@@ -186,9 +187,8 @@ func main() {
 			log.Error("cannot start manager", "err", err)
 			os.Exit(1)
 		}
-		for name, reconciler := range recs {
-			log.Info("reconciler", "name", name, "enabled", IsReconcilerEnabled(name))
-			if IsReconcilerEnabled(name) {
+		for _, reconcilerGroup := range groupReconcilers {
+			for _, reconciler := range reconcilerGroup.reconcilers {
 				_, err := reconciler.SetupWithManager(ctx, mgr, ctrlCfg)
 				if err != nil {
 					log.Error("cannot add controllers to manager", "err", err.Error())
@@ -215,44 +215,4 @@ func main() {
 			log.Info("context cancelled...")
 		}
 	}
-
-	/*
-		asStorageProviders := as.NewStorageProviders(ctx, true, registryOptions)
-
-		go func() {
-			apiserver := builder.APIServer.
-				WithServerName("kuid-api-server").
-				WithOpenAPIDefinitions("Config", "v1alpha1", openapi.GetOpenAPIDefinitions).
-				WithoutEtcd().
-				WithResourceAndHandler(&as.ASIndex{}, asStorageProviders.GetIndexStorageProvider()).
-				WithResourceAndHandler(&as.ASClaim{}, asStorageProviders.GetClaimStorageProvider()).
-				WithResourceAndHandler(&as.ASEntry{}, asStorageProviders.GetEntryStorageProvider()).
-				WithResourceAndHandler(&asbev1alpha1.ASIndex{}, asStorageProviders.GetIndexStorageProvider()).
-				WithResourceAndHandler(&asbev1alpha1.ASClaim{}, asStorageProviders.GetClaimStorageProvider()).
-				WithResourceAndHandler(&asbev1alpha1.ASEntry{}, asStorageProviders.GetEntryStorageProvider())
-
-			cmd, err := apiserver.Build(ctx)
-			if err != nil {
-				panic(err)
-			}
-			if err := asStorageProviders.ApplyStorageToBackend(ctx, apiserver); err != nil {
-				panic(err)
-			}
-			if err := cmd.Execute(); err != nil {
-				panic(err)
-			}
-		}()
-	*/
-
-}
-
-// IsReconcilerEnabled checks if an environment variable `ENABLE_<reconcilerName>` exists
-// return "true" if the var is set and is not equal to "false".
-func IsReconcilerEnabled(reconcilerName string) bool {
-	if val, found := os.LookupEnv(fmt.Sprintf("ENABLE_%s", strings.ToUpper(reconcilerName))); found {
-		if strings.ToLower(val) != "false" {
-			return true
-		}
-	}
-	return false
 }

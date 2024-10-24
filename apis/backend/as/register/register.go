@@ -37,6 +37,7 @@ import (
 func init() {
 	config.Register(
 		as.SchemeGroupVersion.Group,
+		asbev1alpha1.AddToScheme,
 		NewBackend,
 		ApplyStorageToBackend,
 		[]*config.ResourceConfig{
