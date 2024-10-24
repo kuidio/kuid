@@ -22,7 +22,6 @@ import (
 
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
 	"github.com/henderiw/apiserver-store/pkg/generic/registry"
-	"github.com/kform-dev/choreo/apis/condition"
 	apiequality "k8s.io/apimachinery/pkg/api/equality"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -180,7 +179,7 @@ func (r *ASEntry) TableConvertor() func(gr schema.GroupResource) rest.TableConve
 				}
 				return []interface{}{
 					entry.GetName(),
-					entry.GetCondition(condition.ConditionTypeReady).Status,
+					//entry.GetCondition(condition.ConditionTypeReady).Status,
 					entry.GetIndex(),
 					entry.GetClaimType(),
 					entry.GetSpecID(),
@@ -188,7 +187,7 @@ func (r *ASEntry) TableConvertor() func(gr schema.GroupResource) rest.TableConve
 			},
 			[]metav1.TableColumnDefinition{
 				{Name: "Name", Type: "string"},
-				{Name: "Ready", Type: "string"},
+				//{Name: "Ready", Type: "string"},
 				{Name: "Index", Type: "string"},
 				{Name: "ClaimType", Type: "string"},
 				{Name: "ID", Type: "string"},

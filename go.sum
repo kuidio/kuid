@@ -145,6 +145,16 @@ github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0 h1:bkypFPDjIYGfCYD5mRBvpqxfYX1
 github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0/go.mod h1:P+Lt/0by1T8bfcF3z737NnSbmxQAppXMRziHUxPOC8k=
 github.com/henderiw/apiserver-builder v0.0.4-0.20241023220418-f1bacfdbb4da h1:vAG0d1ZYB7+KS7V6YehDFJ9FMicNoBlxLM7/b4tZ/bk=
 github.com/henderiw/apiserver-builder v0.0.4-0.20241023220418-f1bacfdbb4da/go.mod h1:LfJu1JURnxHwnFa8CVb2XPw50TwdU1xQvuUNxpaSOlE=
+github.com/henderiw/apiserver-builder v0.0.4-0.20241024082441-d93c947488cc h1:fF9JSus7Tdd1nMputDiOxO7GX5wSaSQub8HB5VP4bko=
+github.com/henderiw/apiserver-builder v0.0.4-0.20241024082441-d93c947488cc/go.mod h1:LfJu1JURnxHwnFa8CVb2XPw50TwdU1xQvuUNxpaSOlE=
+github.com/henderiw/apiserver-builder v0.0.4-0.20241024083714-4b01a6506b20 h1:7KXAkd2pbh0x4fDF3P6+T5i9Tr13X/1h21TjZUsL++Q=
+github.com/henderiw/apiserver-builder v0.0.4-0.20241024083714-4b01a6506b20/go.mod h1:LfJu1JURnxHwnFa8CVb2XPw50TwdU1xQvuUNxpaSOlE=
+github.com/henderiw/apiserver-builder v0.0.4-0.20241024084215-939617b3b6a8 h1:nf+UrluqIGptmmEaPDxcAMWwNrEGrWpqEIEpOLyNbXg=
+github.com/henderiw/apiserver-builder v0.0.4-0.20241024084215-939617b3b6a8/go.mod h1:LfJu1JURnxHwnFa8CVb2XPw50TwdU1xQvuUNxpaSOlE=
+github.com/henderiw/apiserver-builder v0.0.4-0.20241024085036-d72069d078f8 h1:EoPSG8cO3eZdOfPR3Ih+dLwEcPkMGkXiecxKG9L07YQ=
+github.com/henderiw/apiserver-builder v0.0.4-0.20241024085036-d72069d078f8/go.mod h1:LfJu1JURnxHwnFa8CVb2XPw50TwdU1xQvuUNxpaSOlE=
+github.com/henderiw/apiserver-builder v0.0.4-0.20241024124759-f780409e1b2f h1:7bYTVY2xFvVh06bQkGDXVue9FutcQ7dguDvGaYAd0Ns=
+github.com/henderiw/apiserver-builder v0.0.4-0.20241024124759-f780409e1b2f/go.mod h1:LfJu1JURnxHwnFa8CVb2XPw50TwdU1xQvuUNxpaSOlE=
 github.com/henderiw/apiserver-store v0.0.3-0.20241022143604-0995425b3d06 h1:1RVj1x0ykpmuxynrLww0oHgs5TdkciwJZr996SmGDf0=
 github.com/henderiw/apiserver-store v0.0.3-0.20241022143604-0995425b3d06/go.mod h1:VVkUptd3MTyREmpo+C/t6l+mJAwo3A1UWvHi0QSH0yE=
 github.com/henderiw/idxtable v0.0.0-20241021085446-f8d804551342 h1:gkdOvjxM6rNTkcyoykZLjAfPjn06/MEY4o8cy+3uj2g=

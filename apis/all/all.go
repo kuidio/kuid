@@ -14,22 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package ctrlconfig
+package all
 
 import (
-	"context"
-
-	"github.com/henderiw/logger/log"
-	"github.com/kuidio/kuid/pkg/backend"
-	"k8s.io/apimachinery/pkg/types"
+	_ "github.com/kuidio/kuid/apis/backend/as/register"
 )
-
-type ControllerConfig struct {
-	// key is group
-	Backends map[string]backend.Backend
-}
-
-func InitContext(ctx context.Context, controllerName string, req types.NamespacedName) context.Context {
-	l := log.FromContext(ctx).With("controller", controllerName, "req", req)
-	return log.IntoContext(ctx, l)
-}

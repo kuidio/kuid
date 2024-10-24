@@ -105,10 +105,10 @@ func doGen() error {
 			// dont expand the versions with modules
 			informerListergenVersions = append(informerListergenVersions, fmt.Sprintf("./%s", path.Join(version, "...")))
 		}
-		typeVersions = append(typeVersions, version)
+		typeVersions = append(typeVersions, path.Join(module, version))
 	}
 
-	//versions := strings.Join(clientgenVersions, ",")
+	//typeVersions := strings.Join(typeVersions, ",")
 
 	gen := map[string]bool{}
 	for _, g := range generators {
@@ -143,8 +143,10 @@ func doGen() error {
 			"k8s.io/apimachinery/pkg/api/resource",
 			"k8s.io/apimachinery/pkg/runtime",
 			"k8s.io/apimachinery/pkg/version",
+			"github.com/kform-dev/choreo/apis/condition",
+			"github.com/kform-dev/choreo/apis/condition/v1alpha1",
 		}
-		cmdArgs = append(cmdArgs, clientgenVersions...)
+		cmdArgs = append(cmdArgs, typeVersions...)
 		err := run(getCmdSimple("bin/openapi-gen", cmdArgs...))
 
 		if err != nil {

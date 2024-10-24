@@ -58,13 +58,13 @@ func (r *ASEntry) GetObjectMeta() *metav1.ObjectMeta {
 // New return an empty resource
 // New implements resource.Object
 func (ASEntry) New() runtime.Object {
-	return &ASClaim{}
+	return &ASEntry{}
 }
 
 // NewList return an empty resourceList
 // NewList implements resource.Object
 func (ASEntry) NewList() runtime.Object {
-	return &ASClaimList{}
+	return &ASEntryList{}
 }
 
 // GetListMeta returns the ListMeta

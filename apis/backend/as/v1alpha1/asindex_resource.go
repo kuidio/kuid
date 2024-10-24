@@ -58,13 +58,13 @@ func (r *ASIndex) GetObjectMeta() *metav1.ObjectMeta {
 // New return an empty resource
 // New implements resource.Object
 func (ASIndex) New() runtime.Object {
-	return &ASClaim{}
+	return &ASIndex{}
 }
 
 // NewList return an empty resourceList
 // NewList implements resource.Object
 func (ASIndex) NewList() runtime.Object {
-	return &ASClaimList{}
+	return &ASIndexList{}
 }
 
 // GetListMeta returns the ListMeta

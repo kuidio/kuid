@@ -5,8 +5,11 @@ import (
 	"testing"
 
 	"github.com/henderiw/apiserver-builder/pkg/builder"
+	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
 	"github.com/kuidio/kuid/apis/backend/as"
+	"github.com/kuidio/kuid/apis/backend/as/register"
 	asbev1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
+	"github.com/kuidio/kuid/pkg/config"
 	"github.com/kuidio/kuid/pkg/generated/openapi"
 	"github.com/kuidio/kuid/pkg/registry/options"
 	"github.com/stretchr/testify/assert"
@@ -27,27 +30,38 @@ func TestIndex(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 
 			ctx := context.Background()
-			asStorageProviders := as.NewStorageProviders(ctx, true, &options.Options{
-				Type: options.StorageType_Memory,
-			})
 			apiserver := builder.APIServer.
 				WithServerName("kuid-api-server").
 				WithOpenAPIDefinitions("Config", "v1alpha1", openapi.GetOpenAPIDefinitions).
-				WithResourceAndHandler(&as.ASIndex{}, asStorageProviders.GetIndexStorageProvider()).
-				WithResourceAndHandler(&as.ASClaim{}, asStorageProviders.GetClaimStorageProvider()).
-				WithResourceAndHandler(&as.ASEntry{}, asStorageProviders.GetEntryStorageProvider()).
-				WithResourceAndHandler(&asbev1alpha1.ASIndex{}, asStorageProviders.GetIndexStorageProvider()).
-				WithResourceAndHandler(&asbev1alpha1.ASClaim{}, asStorageProviders.GetClaimStorageProvider()).
-				WithResourceAndHandler(&asbev1alpha1.ASEntry{}, asStorageProviders.GetEntryStorageProvider()).
 				WithoutEtcd()
+
+			groupConfig := config.GroupConfig{
+				BackendFn:               register.NewBackend,
+				ApplyStorageToBackendFn: register.ApplyStorageToBackend,
+				Resources: []*config.ResourceConfig{
+					{StorageProviderFn: register.NewIndexStorageProvider, ResourceVersions: []resource.Object{&as.ASIndex{}, &asbev1alpha1.ASIndex{}}},
+					{StorageProviderFn: register.NewClaimStorageProvider, ResourceVersions: []resource.Object{&as.ASClaim{}, &asbev1alpha1.ASClaim{}}},
+					{StorageProviderFn: register.NewEntryStorageProvider, ResourceVersions: []resource.Object{&as.ASEntry{}, &asbev1alpha1.ASEntry{}}},
+				},
+			}
+
+			be := groupConfig.BackendFn()
+			for _, resource := range groupConfig.Resources {
+				storageProvider := resource.StorageProviderFn(ctx, be, true, &options.Options{
+					Type: options.StorageType_Memory,
+				})
+				for _, resourceVersion := range resource.ResourceVersions {
+					apiserver.WithResourceAndHandler(resourceVersion, storageProvider)
+				}
+			}
 
 			if _, err := apiserver.Build(ctx); err != nil {
 				panic(err)
 			}
-			if err := asStorageProviders.ApplyStorageToBackend(ctx, apiserver); err != nil {
+			if err := groupConfig.ApplyStorageToBackendFn(ctx, be, apiserver); err != nil {
 				panic(err)
 			}
-			be := asStorageProviders.GetBackend()
+
 			index, err := getIndex(tc.index, tc.testType)
 			assert.NoError(t, err)
 			if err := be.CreateIndex(ctx, index); err != nil {

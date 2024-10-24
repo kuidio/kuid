@@ -4,17 +4,13 @@ go 1.23.0
 
 toolchain go1.23.2
 
-//replace k8s.io/api => k8s.io/api v0.31.1
-
-//replace k8s.io/kms => k8s.io/kms v0.31.1
-
 replace k8s.io/gengo/v2 => k8s.io/gengo/v2 v2.0.0-20240228010128-51d4e06bde70
 
 require (
 	github.com/dgraph-io/badger/v4 v4.3.0
 	github.com/google/go-cmp v0.6.0
 	github.com/google/uuid v1.6.0
-	github.com/henderiw/apiserver-builder v0.0.4-0.20241023220418-f1bacfdbb4da
+	github.com/henderiw/apiserver-builder v0.0.4-0.20241024124759-f780409e1b2f
 	github.com/henderiw/apiserver-store v0.0.3-0.20241022143604-0995425b3d06
 	github.com/henderiw/idxtable v0.0.0-20241021085446-f8d804551342
 	github.com/henderiw/logger v0.0.0-20230911123436-8655829b1abe

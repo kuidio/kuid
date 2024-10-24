@@ -29,73 +29,237 @@ import (
 
 func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenAPIDefinition {
 	return map[string]common.OpenAPIDefinition{
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaim":        schema_apis_backend_as_v1alpha1_ASClaim(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaimList":    schema_apis_backend_as_v1alpha1_ASClaimList(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaimSpec":    schema_apis_backend_as_v1alpha1_ASClaimSpec(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaimStatus":  schema_apis_backend_as_v1alpha1_ASClaimStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntry":        schema_apis_backend_as_v1alpha1_ASEntry(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntryList":    schema_apis_backend_as_v1alpha1_ASEntryList(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntrySpec":    schema_apis_backend_as_v1alpha1_ASEntrySpec(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntryStatus":  schema_apis_backend_as_v1alpha1_ASEntryStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndex":        schema_apis_backend_as_v1alpha1_ASIndex(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexList":    schema_apis_backend_as_v1alpha1_ASIndexList(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexSpec":    schema_apis_backend_as_v1alpha1_ASIndexSpec(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexStatus":  schema_apis_backend_as_v1alpha1_ASIndexStatus(ref),
-		"k8s.io/apimachinery/pkg/api/resource.Quantity":                  schema_apimachinery_pkg_api_resource_Quantity(ref),
-		"k8s.io/apimachinery/pkg/api/resource.int64Amount":               schema_apimachinery_pkg_api_resource_int64Amount(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIGroup":                  schema_pkg_apis_meta_v1_APIGroup(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIGroupList":              schema_pkg_apis_meta_v1_APIGroupList(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIResource":               schema_pkg_apis_meta_v1_APIResource(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIResourceList":           schema_pkg_apis_meta_v1_APIResourceList(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIVersions":               schema_pkg_apis_meta_v1_APIVersions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ApplyOptions":              schema_pkg_apis_meta_v1_ApplyOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Condition":                 schema_pkg_apis_meta_v1_Condition(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.CreateOptions":             schema_pkg_apis_meta_v1_CreateOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.DeleteOptions":             schema_pkg_apis_meta_v1_DeleteOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Duration":                  schema_pkg_apis_meta_v1_Duration(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.FieldSelectorRequirement":  schema_pkg_apis_meta_v1_FieldSelectorRequirement(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.FieldsV1":                  schema_pkg_apis_meta_v1_FieldsV1(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GetOptions":                schema_pkg_apis_meta_v1_GetOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupKind":                 schema_pkg_apis_meta_v1_GroupKind(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupResource":             schema_pkg_apis_meta_v1_GroupResource(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersion":              schema_pkg_apis_meta_v1_GroupVersion(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionForDiscovery":  schema_pkg_apis_meta_v1_GroupVersionForDiscovery(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionKind":          schema_pkg_apis_meta_v1_GroupVersionKind(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionResource":      schema_pkg_apis_meta_v1_GroupVersionResource(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.InternalEvent":             schema_pkg_apis_meta_v1_InternalEvent(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector":             schema_pkg_apis_meta_v1_LabelSelector(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelectorRequirement":  schema_pkg_apis_meta_v1_LabelSelectorRequirement(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.List":                      schema_pkg_apis_meta_v1_List(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta":                  schema_pkg_apis_meta_v1_ListMeta(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ListOptions":               schema_pkg_apis_meta_v1_ListOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ManagedFieldsEntry":        schema_pkg_apis_meta_v1_ManagedFieldsEntry(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.MicroTime":                 schema_pkg_apis_meta_v1_MicroTime(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta":                schema_pkg_apis_meta_v1_ObjectMeta(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.OwnerReference":            schema_pkg_apis_meta_v1_OwnerReference(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.PartialObjectMetadata":     schema_pkg_apis_meta_v1_PartialObjectMetadata(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.PartialObjectMetadataList": schema_pkg_apis_meta_v1_PartialObjectMetadataList(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Patch":                     schema_pkg_apis_meta_v1_Patch(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.PatchOptions":              schema_pkg_apis_meta_v1_PatchOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Preconditions":             schema_pkg_apis_meta_v1_Preconditions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.RootPaths":                 schema_pkg_apis_meta_v1_RootPaths(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ServerAddressByClientCIDR": schema_pkg_apis_meta_v1_ServerAddressByClientCIDR(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Status":                    schema_pkg_apis_meta_v1_Status(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.StatusCause":               schema_pkg_apis_meta_v1_StatusCause(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.StatusDetails":             schema_pkg_apis_meta_v1_StatusDetails(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Table":                     schema_pkg_apis_meta_v1_Table(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TableColumnDefinition":     schema_pkg_apis_meta_v1_TableColumnDefinition(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TableOptions":              schema_pkg_apis_meta_v1_TableOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TableRow":                  schema_pkg_apis_meta_v1_TableRow(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TableRowCondition":         schema_pkg_apis_meta_v1_TableRowCondition(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Time":                      schema_pkg_apis_meta_v1_Time(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Timestamp":                 schema_pkg_apis_meta_v1_Timestamp(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TypeMeta":                  schema_pkg_apis_meta_v1_TypeMeta(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.UpdateOptions":             schema_pkg_apis_meta_v1_UpdateOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.WatchEvent":                schema_pkg_apis_meta_v1_WatchEvent(ref),
-		"k8s.io/apimachinery/pkg/runtime.RawExtension":                   schema_k8sio_apimachinery_pkg_runtime_RawExtension(ref),
-		"k8s.io/apimachinery/pkg/runtime.TypeMeta":                       schema_k8sio_apimachinery_pkg_runtime_TypeMeta(ref),
-		"k8s.io/apimachinery/pkg/runtime.Unknown":                        schema_k8sio_apimachinery_pkg_runtime_Unknown(ref),
-		"k8s.io/apimachinery/pkg/version.Info":                           schema_k8sio_apimachinery_pkg_version_Info(ref),
+		"github.com/kform-dev/choreo/apis/condition.Condition":                  schema_kform_dev_choreo_apis_condition_Condition(ref),
+		"github.com/kform-dev/choreo/apis/condition/v1alpha1.Condition":         schema_choreo_apis_condition_v1alpha1_Condition(ref),
+		"github.com/kform-dev/choreo/apis/condition/v1alpha1.ConditionedStatus": schema_choreo_apis_condition_v1alpha1_ConditionedStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaim":               schema_apis_backend_as_v1alpha1_ASClaim(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaimList":           schema_apis_backend_as_v1alpha1_ASClaimList(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaimSpec":           schema_apis_backend_as_v1alpha1_ASClaimSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaimStatus":         schema_apis_backend_as_v1alpha1_ASClaimStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntry":               schema_apis_backend_as_v1alpha1_ASEntry(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntryList":           schema_apis_backend_as_v1alpha1_ASEntryList(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntrySpec":           schema_apis_backend_as_v1alpha1_ASEntrySpec(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntryStatus":         schema_apis_backend_as_v1alpha1_ASEntryStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndex":               schema_apis_backend_as_v1alpha1_ASIndex(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexList":           schema_apis_backend_as_v1alpha1_ASIndexList(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexSpec":           schema_apis_backend_as_v1alpha1_ASIndexSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexStatus":         schema_apis_backend_as_v1alpha1_ASIndexStatus(ref),
+		"github.com/kuidio/kuid/apis/common/v1alpha1.ClaimLabels":               schema_kuid_apis_common_v1alpha1_ClaimLabels(ref),
+		"github.com/kuidio/kuid/apis/common/v1alpha1.UserDefinedLabels":         schema_kuid_apis_common_v1alpha1_UserDefinedLabels(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.AdaptorID":                     schema_kuid_apis_id_v1alpha1_AdaptorID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.ClusterID":                     schema_kuid_apis_id_v1alpha1_ClusterID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.EndpointID":                    schema_kuid_apis_id_v1alpha1_EndpointID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.NodeID":                        schema_kuid_apis_id_v1alpha1_NodeID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionAttachmentID":         schema_kuid_apis_id_v1alpha1_PartitionAttachmentID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionClusterID":            schema_kuid_apis_id_v1alpha1_PartitionClusterID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionEndpointID":           schema_kuid_apis_id_v1alpha1_PartitionEndpointID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionNodeID":               schema_kuid_apis_id_v1alpha1_PartitionNodeID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.PortID":                        schema_kuid_apis_id_v1alpha1_PortID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.SiteID":                        schema_kuid_apis_id_v1alpha1_SiteID(ref),
+		"k8s.io/apimachinery/pkg/api/resource.Quantity":                         schema_apimachinery_pkg_api_resource_Quantity(ref),
+		"k8s.io/apimachinery/pkg/api/resource.int64Amount":                      schema_apimachinery_pkg_api_resource_int64Amount(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIGroup":                         schema_pkg_apis_meta_v1_APIGroup(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIGroupList":                     schema_pkg_apis_meta_v1_APIGroupList(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIResource":                      schema_pkg_apis_meta_v1_APIResource(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIResourceList":                  schema_pkg_apis_meta_v1_APIResourceList(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIVersions":                      schema_pkg_apis_meta_v1_APIVersions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ApplyOptions":                     schema_pkg_apis_meta_v1_ApplyOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Condition":                        schema_pkg_apis_meta_v1_Condition(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.CreateOptions":                    schema_pkg_apis_meta_v1_CreateOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.DeleteOptions":                    schema_pkg_apis_meta_v1_DeleteOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Duration":                         schema_pkg_apis_meta_v1_Duration(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.FieldSelectorRequirement":         schema_pkg_apis_meta_v1_FieldSelectorRequirement(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.FieldsV1":                         schema_pkg_apis_meta_v1_FieldsV1(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GetOptions":                       schema_pkg_apis_meta_v1_GetOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupKind":                        schema_pkg_apis_meta_v1_GroupKind(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupResource":                    schema_pkg_apis_meta_v1_GroupResource(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersion":                     schema_pkg_apis_meta_v1_GroupVersion(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionForDiscovery":         schema_pkg_apis_meta_v1_GroupVersionForDiscovery(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionKind":                 schema_pkg_apis_meta_v1_GroupVersionKind(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionResource":             schema_pkg_apis_meta_v1_GroupVersionResource(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.InternalEvent":                    schema_pkg_apis_meta_v1_InternalEvent(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector":                    schema_pkg_apis_meta_v1_LabelSelector(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelectorRequirement":         schema_pkg_apis_meta_v1_LabelSelectorRequirement(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.List":                             schema_pkg_apis_meta_v1_List(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta":                         schema_pkg_apis_meta_v1_ListMeta(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ListOptions":                      schema_pkg_apis_meta_v1_ListOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ManagedFieldsEntry":               schema_pkg_apis_meta_v1_ManagedFieldsEntry(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.MicroTime":                        schema_pkg_apis_meta_v1_MicroTime(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta":                       schema_pkg_apis_meta_v1_ObjectMeta(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.OwnerReference":                   schema_pkg_apis_meta_v1_OwnerReference(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.PartialObjectMetadata":            schema_pkg_apis_meta_v1_PartialObjectMetadata(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.PartialObjectMetadataList":        schema_pkg_apis_meta_v1_PartialObjectMetadataList(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Patch":                            schema_pkg_apis_meta_v1_Patch(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.PatchOptions":                     schema_pkg_apis_meta_v1_PatchOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Preconditions":                    schema_pkg_apis_meta_v1_Preconditions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.RootPaths":                        schema_pkg_apis_meta_v1_RootPaths(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ServerAddressByClientCIDR":        schema_pkg_apis_meta_v1_ServerAddressByClientCIDR(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Status":                           schema_pkg_apis_meta_v1_Status(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.StatusCause":                      schema_pkg_apis_meta_v1_StatusCause(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.StatusDetails":                    schema_pkg_apis_meta_v1_StatusDetails(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Table":                            schema_pkg_apis_meta_v1_Table(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TableColumnDefinition":            schema_pkg_apis_meta_v1_TableColumnDefinition(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TableOptions":                     schema_pkg_apis_meta_v1_TableOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TableRow":                         schema_pkg_apis_meta_v1_TableRow(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TableRowCondition":                schema_pkg_apis_meta_v1_TableRowCondition(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Time":                             schema_pkg_apis_meta_v1_Time(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Timestamp":                        schema_pkg_apis_meta_v1_Timestamp(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TypeMeta":                         schema_pkg_apis_meta_v1_TypeMeta(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.UpdateOptions":                    schema_pkg_apis_meta_v1_UpdateOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.WatchEvent":                       schema_pkg_apis_meta_v1_WatchEvent(ref),
+		"k8s.io/apimachinery/pkg/runtime.RawExtension":                          schema_k8sio_apimachinery_pkg_runtime_RawExtension(ref),
+		"k8s.io/apimachinery/pkg/runtime.TypeMeta":                              schema_k8sio_apimachinery_pkg_runtime_TypeMeta(ref),
+		"k8s.io/apimachinery/pkg/runtime.Unknown":                               schema_k8sio_apimachinery_pkg_runtime_Unknown(ref),
+		"k8s.io/apimachinery/pkg/version.Info":                                  schema_k8sio_apimachinery_pkg_version_Info(ref),
+	}
+}
+
+func schema_kform_dev_choreo_apis_condition_Condition(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"type": {
+						SchemaProps: spec.SchemaProps{
+							Description: "type of condition in CamelCase or in foo.example.com/CamelCase.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"status": {
+						SchemaProps: spec.SchemaProps{
+							Description: "status of the condition, one of True, False, Unknown.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"observedGeneration": {
+						SchemaProps: spec.SchemaProps{
+							Description: "observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"lastTransitionTime": {
+						SchemaProps: spec.SchemaProps{
+							Description: "lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.",
+							Ref:         ref("k8s.io/apimachinery/pkg/apis/meta/v1.Time"),
+						},
+					},
+					"reason": {
+						SchemaProps: spec.SchemaProps{
+							Description: "reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"message": {
+						SchemaProps: spec.SchemaProps{
+							Description: "message is a human readable message indicating details about the transition. This may be an empty string.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"type", "status", "lastTransitionTime", "reason", "message"},
+			},
+		},
+		Dependencies: []string{
+			"k8s.io/apimachinery/pkg/apis/meta/v1.Time"},
+	}
+}
+
+func schema_choreo_apis_condition_v1alpha1_Condition(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"type": {
+						SchemaProps: spec.SchemaProps{
+							Description: "type of condition in CamelCase or in foo.example.com/CamelCase.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"status": {
+						SchemaProps: spec.SchemaProps{
+							Description: "status of the condition, one of True, False, Unknown.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"observedGeneration": {
+						SchemaProps: spec.SchemaProps{
+							Description: "observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"lastTransitionTime": {
+						SchemaProps: spec.SchemaProps{
+							Description: "lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.",
+							Ref:         ref("k8s.io/apimachinery/pkg/apis/meta/v1.Time"),
+						},
+					},
+					"reason": {
+						SchemaProps: spec.SchemaProps{
+							Description: "reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"message": {
+						SchemaProps: spec.SchemaProps{
+							Description: "message is a human readable message indicating details about the transition. This may be an empty string.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"type", "status", "lastTransitionTime", "reason", "message"},
+			},
+		},
+		Dependencies: []string{
+			"k8s.io/apimachinery/pkg/apis/meta/v1.Time"},
+	}
+}
+
+func schema_choreo_apis_condition_v1alpha1_ConditionedStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "A ConditionedStatus reflects the observed status of a resource. Only one condition of each type may exist.",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"conditions": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Conditions of the resource.",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kform-dev/choreo/apis/condition/v1alpha1.Condition"),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kform-dev/choreo/apis/condition/v1alpha1.Condition"},
 	}
 }
 
@@ -669,6 +833,620 @@ func schema_apis_backend_as_v1alpha1_ASIndexStatus(ref common.ReferenceCallback)
 		},
 		Dependencies: []string{
 			"github.com/kform-dev/choreo/apis/condition/v1alpha1.Condition"},
+	}
+}
+
+func schema_kuid_apis_common_v1alpha1_ClaimLabels(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"labels": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Labels as user defined labels",
+							Type:        []string{"object"},
+							AdditionalProperties: &spec.SchemaOrBool{
+								Allows: true,
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+					"selector": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Selector defines the selector criterias",
+							Ref:         ref("k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector"},
+	}
+}
+
+func schema_kuid_apis_common_v1alpha1_UserDefinedLabels(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "UserDefinedLabels define metadata to the resource.",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"labels": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Labels as user defined labels",
+							Type:        []string{"object"},
+							AdditionalProperties: &spec.SchemaOrBool{
+								Allows: true,
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func schema_kuid_apis_id_v1alpha1_AdaptorID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"node": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Node defines the name of the node",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"moduleBay": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ModuleBay defines the moduleBay reference id",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"module": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Module defines the module reference id",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"port": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Port defines the id of the port",
+							Default:     0,
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"adaptor": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Adaptor defines the name of the adaptor",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"region", "site", "node", "port", "adaptor"},
+			},
+		},
+	}
+}
+
+func schema_kuid_apis_id_v1alpha1_ClusterID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"cluster": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Cluster defines the name of the cluster",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"region", "site", "cluster"},
+			},
+		},
+	}
+}
+
+func schema_kuid_apis_id_v1alpha1_EndpointID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"node": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Node defines the name of the node",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"moduleBay": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ModuleBay defines the moduleBay reference id",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"module": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Module defines the module reference id",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"port": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Port defines the id of the port",
+							Default:     0,
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"adaptor": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Adaptor defines the name of the adaptor",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"endpoint": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Endpoint defines the name of the endpoint",
+							Default:     0,
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+				},
+				Required: []string{"region", "site", "node", "port", "adaptor", "endpoint"},
+			},
+		},
+	}
+}
+
+func schema_kuid_apis_id_v1alpha1_NodeID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"node": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Node defines the name of the node",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"region", "site", "node"},
+			},
+		},
+	}
+}
+
+func schema_kuid_apis_id_v1alpha1_PartitionAttachmentID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"partition": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Partition defines the partition this resource belongs to",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"cluster": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Cluster defines the name of the cluster",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"node": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Node defines the name of the node",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"nodeset": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Node defines the name of the nodeset",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"interface": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Interface defines the name of the interface",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"partition", "region", "site", "interface"},
+			},
+		},
+	}
+}
+
+func schema_kuid_apis_id_v1alpha1_PartitionClusterID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"partition": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Partition defines the partition this resource belongs to",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"cluster": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Cluster defines the name of the cluster",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"partition", "region", "site", "cluster"},
+			},
+		},
+	}
+}
+
+func schema_kuid_apis_id_v1alpha1_PartitionEndpointID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"partition": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Partition defines the partition this resource belongs to",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"node": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Node defines the name of the node",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"moduleBay": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ModuleBay defines the moduleBay reference id",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"module": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Module defines the module reference id",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"port": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Port defines the id of the port",
+							Default:     0,
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"adaptor": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Adaptor defines the name of the adaptor",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"endpoint": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Endpoint defines the name of the endpoint",
+							Default:     0,
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name is used to refer to internal names of the node",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"partition", "region", "site", "node", "port", "endpoint"},
+			},
+		},
+	}
+}
+
+func schema_kuid_apis_id_v1alpha1_PartitionNodeID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"partition": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Partition defines the partition this resource belongs to",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"node": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Node defines the name of the node",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"partition", "region", "site", "node"},
+			},
+		},
+	}
+}
+
+func schema_kuid_apis_id_v1alpha1_PortID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"node": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Node defines the name of the node",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"moduleBay": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ModuleBay defines the moduleBay reference id",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"module": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Module defines the module reference id",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"port": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Port defines the id of the port",
+							Default:     0,
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+				},
+				Required: []string{"region", "site", "node", "port"},
+			},
+		},
+	}
+}
+
+func schema_kuid_apis_id_v1alpha1_SiteID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"region", "site"},
+			},
+		},
 	}
 }
 
