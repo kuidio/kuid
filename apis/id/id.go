@@ -16,7 +16,6 @@ limitations under the License.
 
 package id
 
-// +k8s:openapi-gen=true
 type SiteID struct {
 	// Region defines the region of the resource
 	Region string `json:"region" yaml:"region" protobuf:"bytes,1,opt,name=region"`
@@ -24,14 +23,12 @@ type SiteID struct {
 	Site string `json:"site" yaml:"site" protobuf:"bytes,2,opt,name=site"`
 }
 
-// +k8s:openapi-gen=true
 type NodeID struct {
 	SiteID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=siteID"`
 	// Node defines the name of the node
 	Node string `json:"node" yaml:"node" protobuf:"bytes,2,opt,name=node"`
 }
 
-// +k8s:openapi-gen=true
 type PartitionNodeID struct {
 	// Partition defines the partition this resource belongs to
 	Partition string `json:"partition" yaml:"partition" protobuf:"bytes,1,opt,name=partition"`
@@ -41,7 +38,6 @@ type PartitionNodeID struct {
 	Node string `json:"node" yaml:"node" protobuf:"bytes,3,opt,name=node"`
 }
 
-// +k8s:openapi-gen=true
 type PortID struct {
 	NodeID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeID"`
 	// ModuleBay defines the moduleBay reference id
@@ -52,7 +48,6 @@ type PortID struct {
 	Port int `json:"port" yaml:"port" protobuf:"bytes,4,opt,name=port"`
 }
 
-// +k8s:openapi-gen=true
 type AdaptorID struct {
 	NodeID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeID"`
 	// ModuleBay defines the moduleBay reference id
@@ -65,7 +60,6 @@ type AdaptorID struct {
 	Adaptor string `json:"adaptor" yaml:"adaptor" protobuf:"bytes,5,opt,name=adaptor"`
 }
 
-// +k8s:openapi-gen=true
 type EndpointID struct {
 	NodeID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeID"`
 	// ModuleBay defines the moduleBay reference id
@@ -80,7 +74,6 @@ type EndpointID struct {
 	Endpoint int `json:"endpoint" yaml:"endpoint" protobuf:"bytes,6,opt,name=endpoint"`
 }
 
-// +k8s:openapi-gen=true
 type PartitionEndpointID struct {
 	// Partition defines the partition this resource belongs to
 	Partition string `json:"partition" yaml:"partition" protobuf:"bytes,1,opt,name=partition"`
@@ -100,14 +93,12 @@ type PartitionEndpointID struct {
 	Name *string `json:"name,omitempty" yaml:"name,omitempty" protobuf:"bytes,8,opt,name=name"`
 }
 
-// +k8s:openapi-gen=true
 type ClusterID struct {
 	SiteID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=siteID"`
 	// Cluster defines the name of the cluster
 	Cluster string `json:"cluster" yaml:"cluster" protobuf:"bytes,2,opt,name=cluster"`
 }
 
-// +k8s:openapi-gen=true
 type PartitionClusterID struct {
 	// Partition defines the partition this resource belongs to
 	Partition string `json:"partition" yaml:"partition" protobuf:"bytes,1,opt,name=partition"`
@@ -117,7 +108,6 @@ type PartitionClusterID struct {
 	Cluster string `json:"cluster" yaml:"cluster" protobuf:"bytes,3,opt,name=cluster"`
 }
 
-// +k8s:openapi-gen=true
 type PartitionAttachmentID struct {
 	// Partition defines the partition this resource belongs to
 	Partition string `json:"partition" yaml:"partition" protobuf:"bytes,1,opt,name=partition"`

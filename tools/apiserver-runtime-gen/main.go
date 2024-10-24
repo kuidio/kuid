@@ -97,18 +97,18 @@ func doGen() error {
 	// clientgen
 	clientgenVersions := []string{}
 	informerListergenVersions := []string{}
-	protobufVersions := []string{}
+	typeVersions := []string{}
 	for _, version := range versions {
-		if !strings.Contains(version, "common") && !strings.Contains(version, "id"){
+		if !strings.Contains(version, "common") && !strings.Contains(version, "id") {
 			// expand the path with the module
 			clientgenVersions = append(clientgenVersions, path.Join(module, version))
 			// dont expand the versions with modules
 			informerListergenVersions = append(informerListergenVersions, fmt.Sprintf("./%s", path.Join(version, "...")))
 		}
-		protobufVersions = append(protobufVersions, version)
+		typeVersions = append(typeVersions, version)
 	}
 
-	//protoInputs := strings.Join(rawVersions, ",")
+	//versions := strings.Join(clientgenVersions, ",")
 
 	gen := map[string]bool{}
 	for _, g := range generators {
@@ -124,17 +124,29 @@ func doGen() error {
 		}
 	}
 
+	/*
+			/Users/henderiw/code/tmp/kube-openapi/openapi-gen \
+		    --output-dir pkg/generated/openapi \
+		    --output-pkg openapi \
+		    --output-file zz_generated.openapi.go \
+		    --go-header-file hack/boilerplate.go.txt \
+		    github.com/kuidio/kuid/apis/backend/as/v1alpha1 github.com/kuidio/kuid/apis/id/v1alpha1 github.com/kuidio/kuid/apis/common/v1alpha1
+	*/
+
 	if gen["openapi-gen"] {
-		err := run(getCmd("openapi-gen",
-			"--output-file", "zz_generated.openapi.go",
+		// HACK had to use openapi-gen and use go mod v1.23 iso go.mod v1.20
+		cmdArgs := []string{
 			"--output-dir", "pkg/generated/openapi",
 			"--output-pkg", "openapi",
-			"./apis/...",
+			"--output-file", "zz_generated.openapi.go",
 			"k8s.io/apimachinery/pkg/apis/meta/v1",
 			"k8s.io/apimachinery/pkg/api/resource",
 			"k8s.io/apimachinery/pkg/runtime",
 			"k8s.io/apimachinery/pkg/version",
-		))
+		}
+		cmdArgs = append(cmdArgs, clientgenVersions...)
+		err := run(getCmdSimple("bin/openapi-gen", cmdArgs...))
+
 		if err != nil {
 			return err
 		}
@@ -203,7 +215,7 @@ func doGen() error {
 	if gen["go-to-protobuf"] {
 		err := run(getCmd(
 			"go-to-protobuf",
-			"--packages", strings.Join(protobufVersions, ","),
+			"--packages", strings.Join(typeVersions, ","),
 			"--apimachinery-packages", "-k8s.io/apimachinery/pkg/api/resource,-k8s.io/apimachinery/pkg/runtime/schema,-k8s.io/apimachinery/pkg/runtime,-k8s.io/apimachinery/pkg/apis/meta/v1",
 			//"--proto-import", "./vendor",
 		))
@@ -286,6 +298,14 @@ func run(cmd *exec.Cmd) error {
 func getCmd(cmd string, args ...string) *exec.Cmd {
 	// nolint:gosec
 	e := exec.Command(filepath.Join(bin, cmd), "--go-header-file", header)
+
+	e.Args = append(e.Args, args...)
+	return e
+}
+
+func getCmdSimple(cmd string, args ...string) *exec.Cmd {
+	// nolint:gosec
+	e := exec.Command(cmd, "--go-header-file", header)
 
 	e.Args = append(e.Args, args...)
 	return e

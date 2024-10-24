@@ -54,12 +54,12 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 	// +kubebuilder:scaffold:install
 
 	scheme.AddKnownTypes(SchemeGroupVersion,
+		&ASIndex{},
+		&ASIndexList{},
 		&ASClaim{},
 		&ASClaimList{},
 		&ASEntry{},
 		&ASEntryList{},
-		&ASIndex{},
-		&ASIndexList{},
 	)
 
 	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)

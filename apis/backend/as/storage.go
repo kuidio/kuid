@@ -38,7 +38,6 @@ func NewStorageProviders(ctx context.Context, sync bool, options *options.Option
 			GetASEntry,
 		),
 	}
-
 	if sync {
 		opts := *options
 		opts.BackendInvoker = bebackend.NewIndexInvoker(r.be)
@@ -50,7 +49,6 @@ func NewStorageProviders(ctx context.Context, sync bool, options *options.Option
 		r.claimStorageProvider = genericregistry.NewStorageProvider(ctx, &ASClaim{}, &opts)
 	}
 	r.entryStorageProvider = genericregistry.NewStorageProvider(ctx, &ASEntry{}, options)
-
 	return r
 }
 

@@ -4,13 +4,9 @@ go 1.23.0
 
 toolchain go1.23.2
 
-replace k8s.io/api => k8s.io/api v0.31.1
+//replace k8s.io/api => k8s.io/api v0.31.1
 
-replace k8s.io/kms => k8s.io/kms v0.31.1
-
-//replace k8s.io/apimachinery => k8s.io/apimachinery v0.31.1
-
-//replace k8s.io/client-go => k8s.io/client-go v0.31.1
+//replace k8s.io/kms => k8s.io/kms v0.31.1
 
 replace k8s.io/gengo/v2 => k8s.io/gengo/v2 v2.0.0-20240228010128-51d4e06bde70
 
@@ -18,7 +14,7 @@ require (
 	github.com/dgraph-io/badger/v4 v4.3.0
 	github.com/google/go-cmp v0.6.0
 	github.com/google/uuid v1.6.0
-	github.com/henderiw/apiserver-builder v0.0.4-0.20241021160127-f10a4b489c64
+	github.com/henderiw/apiserver-builder v0.0.4-0.20241023220418-f1bacfdbb4da
 	github.com/henderiw/apiserver-store v0.0.3-0.20241022143604-0995425b3d06
 	github.com/henderiw/idxtable v0.0.0-20241021085446-f8d804551342
 	github.com/henderiw/logger v0.0.0-20230911123436-8655829b1abe
@@ -31,7 +27,7 @@ require (
 	go.uber.org/zap v1.27.0
 	golang.org/x/mod v0.21.0
 	golang.org/x/sync v0.8.0
-	k8s.io/api v0.32.0-alpha.1
+	k8s.io/api v0.31.1
 	k8s.io/apimachinery v0.31.1
 	k8s.io/apiserver v0.31.1
 	k8s.io/client-go v0.31.1
@@ -140,7 +136,7 @@ require (
 	k8s.io/apiextensions-apiserver v0.31.1 // indirect
 	k8s.io/gengo/v2 v2.0.0-20240911193312-2b36238f13e9 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
-	k8s.io/kms v0.32.0-alpha.2 // indirect
+	k8s.io/kms v0.31.1 // indirect
 	sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.30.3 // indirect
 	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3 // indirect
 )
