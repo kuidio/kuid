@@ -16,6 +16,8 @@ limitations under the License.
 
 package entryserver
 
+/*
+
 import (
 	"context"
 	"encoding/hex"
@@ -113,3 +115,4 @@ func updateResourceVersion(_ context.Context, obj, old runtime.Object) error {
 	accessorNew.SetResourceVersion(strconv.Itoa(resourceVersion))
 	return nil
 }
+*/

@@ -16,6 +16,8 @@ limitations under the License.
 
 package genericserver
 
+/*
+
 import (
 	"context"
 	"fmt"
@@ -38,7 +40,13 @@ import (
 )
 
 // NewStrategy creates and returns a fischerStrategy instance
-func NewStrategy(ctx context.Context, typer runtime.ObjectTyper, client client.Client, serverObjContext *ServerObjContext, store storebackend.Storer[runtime.Object]) *strategy {
+func NewStrategy(
+	ctx context.Context,
+	typer runtime.ObjectTyper,
+	client client.Client,
+	serverObjContext *ServerObjContext,
+	store storebackend.Storer[runtime.Object]) *strategy {
+
 	watcherManager := watchermanager.New(32)
 
 	go watcherManager.Start(ctx)
@@ -111,3 +119,4 @@ func (r *strategy) notifyWatcher(ctx context.Context, event watch.Event) {
 
 	r.watcherManager.WatchChan() <- event
 }
+*/

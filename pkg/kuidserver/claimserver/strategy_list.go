@@ -16,6 +16,8 @@ limitations under the License.
 
 package claimserver
 
+/*
+
 import (
 	"context"
 	"fmt"
@@ -119,3 +121,4 @@ func getListPrt(listObj runtime.Object) (reflect.Value, error) {
 func appendItem(v reflect.Value, obj runtime.Object) {
 	v.Set(reflect.Append(v, reflect.ValueOf(obj).Elem()))
 }
+*/

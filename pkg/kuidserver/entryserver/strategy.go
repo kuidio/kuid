@@ -16,6 +16,8 @@ limitations under the License.
 
 package entryserver
 
+/*
+
 import (
 	"context"
 	"fmt"
@@ -25,7 +27,7 @@ import (
 	"github.com/henderiw/apiserver-store/pkg/storebackend"
 	"github.com/henderiw/logger/log"
 	"github.com/kuidio/kuid/apis/backend"
-	bebackend "github.com/kuidio/kuid/pkg/backend/backend"
+	bebackend "github.com/kuidio/kuid/pkg/backend"
 	watchermanager "github.com/kuidio/kuid/pkg/kuidserver/watcher-manager"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/labels"
@@ -112,3 +114,4 @@ func (r *strategy) notifyWatcher(ctx context.Context, event watch.Event) {
 
 	r.watcherManager.WatchChan() <- event
 }
+*/

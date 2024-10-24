@@ -2,6 +2,7 @@ apiVersion: ipam.be.kuid.dev/v1alpha1
 kind: IPClaim
 metadata:
   name: vpc1.10.0.0.1-24
+  namespace: default
 spec:
   index: vpc1
   prefixType: network

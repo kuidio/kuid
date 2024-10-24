@@ -16,6 +16,8 @@ limitations under the License.
 
 package asclaim
 
+/*
+
 import (
 	"context"
 	"fmt"
@@ -25,8 +27,8 @@ import (
 
 	"github.com/henderiw/logger/log"
 	asbev1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
-	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
-	"github.com/kuidio/kuid/pkg/backend/backend"
+	conditionv1alpha1 "github.com/kform-dev/choreo/apis/condition/v1alpha1"
+	"github.com/kuidio/kuid/pkg/backend"
 	"github.com/kuidio/kuid/pkg/reconcilers"
 	"github.com/kuidio/kuid/pkg/reconcilers/ctrlconfig"
 	"github.com/kuidio/kuid/pkg/reconcilers/eventhandler"
@@ -52,7 +54,6 @@ const (
 	errGetCr        = "cannot get cr"
 	errUpdateStatus = "cannot update status"
 )
-
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *reconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manager, c interface{}) (map[schema.GroupVersionKind]chan event.GenericEvent, error) {
@@ -90,7 +91,7 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 	log.Info("reconcile")
 
 	cr := &asbev1alpha1.ASClaim{}
-	if err := r.Get(ctx, req.NamespacedName, cr); err != nil {
+	if err := r.Client.Get(ctx, req.NamespacedName, cr); err != nil {
 		// if the resource no longer exists the reconcile loop is done
 		if resource.IgnoreNotFound(err) != nil {
 			log.Error(errGetCr, "error", err)
@@ -104,13 +105,13 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		if err := r.be.Release(ctx, cr); err != nil {
 			if !strings.Contains(err.Error(), "not initialized") {
 				r.handleError(ctx, cr, "cannot delete claim", err)
-				return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+				return ctrl.Result{Requeue: true}, errors.Wrap(r.Client.Status().Update(ctx, cr), errUpdateStatus)
 			}
 		}
 
 		if err := r.finalizer.RemoveFinalizer(ctx, cr); err != nil {
 			r.handleError(ctx, cr, "cannot remove finalizer", err)
-			return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+			return ctrl.Result{Requeue: true}, errors.Wrap(r.Client.Status().Update(ctx, cr), errUpdateStatus)
 		}
 		log.Debug("Successfully deleted resource")
 		return ctrl.Result{}, nil
@@ -118,21 +119,21 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 
 	if err := r.finalizer.AddFinalizer(ctx, cr); err != nil {
 		r.handleError(ctx, cr, "cannot add finalizer", err)
-		return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+		return ctrl.Result{Requeue: true}, errors.Wrap(r.Client.Status().Update(ctx, cr), errUpdateStatus)
 	}
 
 	if err := r.be.Claim(ctx, cr); err != nil {
 		r.handleError(ctx, cr, "cannot claim resource", err)
 		if strings.Contains(err.Error(), "reserved range") {
 			// a user need to intervene to recover
-			return ctrl.Result{}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+			return ctrl.Result{}, errors.Wrap(r.Client.Status().Update(ctx, cr), errUpdateStatus)
 		}
-		return ctrl.Result{RequeueAfter: 5 * time.Second}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+		return ctrl.Result{RequeueAfter: 5 * time.Second}, errors.Wrap(r.Client.Status().Update(ctx, cr), errUpdateStatus)
 	}
 
 	cr.SetConditions(conditionv1alpha1.Ready())
 	r.recorder.Eventf(cr, corev1.EventTypeNormal, crName, "ready")
-	return ctrl.Result{}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+	return ctrl.Result{}, errors.Wrap(r.Client.Status().Update(ctx, cr), errUpdateStatus)
 }
 
 func (r *reconciler) handleError(ctx context.Context, cr *asbev1alpha1.ASClaim, msg string, err error) {
@@ -147,3 +148,4 @@ func (r *reconciler) handleError(ctx context.Context, cr *asbev1alpha1.ASClaim, 
 		r.recorder.Eventf(cr, corev1.EventTypeWarning, crName, fmt.Sprintf("%s, err: %s", msg, err.Error()))
 	}
 }
+*/

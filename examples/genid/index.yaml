@@ -7,3 +7,4 @@ spec:
   maxID: 4095
   labels:
     inv.kuid.dev/node: node1
+  

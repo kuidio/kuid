@@ -16,10 +16,12 @@ limitations under the License.
 
 package genericserver
 
+/*
+
 import (
 	"github.com/henderiw/apiserver-store/pkg/generic/registry"
 	"github.com/kuidio/kuid/apis/backend"
-	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
+	condv1alpha1 "github.com/kform-dev/choreo/apis/condition/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -35,7 +37,7 @@ func DefaultTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 			}
 			return []interface{}{
 				genObj.GetName(),
-				genObj.GetCondition(conditionv1alpha1.ConditionTypeReady).Status,
+				genObj.GetCondition(condv1alpha1.ConditionTypeReady).Status,
 			}
 		},
 		Columns: []metav1.TableColumnDefinition{
@@ -44,3 +46,4 @@ func DefaultTableConvertor(gr schema.GroupResource) registry.TableConvertor {
 		},
 	}
 }
+*/

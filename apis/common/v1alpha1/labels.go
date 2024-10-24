@@ -22,7 +22,6 @@ import (
 	"k8s.io/apimachinery/pkg/selection"
 )
 
-// +k8s:openapi-gen=true
 // UserDefinedLabels define metadata to the resource.
 type UserDefinedLabels struct {
 	// Labels as user defined labels
@@ -42,7 +41,6 @@ func (r *UserDefinedLabels) GetUserDefinedLabels() map[string]string {
 	return l
 }
 
-// +k8s:openapi-gen=true
 type ClaimLabels struct {
 	UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=userDefinedLabels"`
 	// Selector defines the selector criterias
@@ -68,21 +66,6 @@ func (r *ClaimLabels) GetSelectorLabels() map[string]string {
 	return l
 }
 
-/*
-// GetFullLabels returns a map with a copy of the
-// user defined labels and the selector labels
-func (r *ClaimLabels) GetFullLabels() map[string]string {
-	l := make(map[string]string)
-	for k, v := range r.GetUserDefinedLabels() {
-		l[k] = v
-	}
-	for k, v := range r.GetSelectorLabels() {
-		l[k] = v
-	}
-	return l
-}
-*/
-
 // GetLabelSelector returns a labels selector based
 // on the label selector
 func (r *ClaimLabels) GetLabelSelector() (labels.Selector, error) {
@@ -97,27 +80,3 @@ func (r *ClaimLabels) GetLabelSelector() (labels.Selector, error) {
 	}
 	return fullselector, nil
 }
-
-/*
-// GetOwnerSelector returns a label selector to select the owner
-// of the claim in the backend
-func (r *ClaimLabels) GetOwnerSelector() (labels.Selector, error) {
-	l := map[string]string{
-		backend.KuidOwnerAPIVersionKey: r.Labels[backend.KuidOwnerAPIVersionKey],
-		backend.KuidOwnerKindKey:       r.Labels[backend.KuidOwnerKindKey],
-		backend.KuidOwnerNamespaceKey:  r.Labels[backend.KuidOwnerNamespaceKey],
-		backend.KuidOwnerNameKey:       r.Labels[backend.KuidOwnerNameKey],
-		backend.KuidClaimNameKey:       r.Labels[backend.KuidClaimNameKey],
-	}
-
-	fullselector := labels.NewSelector()
-	for k, v := range l {
-		req, err := labels.NewRequirement(k, selection.Equals, []string{v})
-		if err != nil {
-			return nil, err
-		}
-		fullselector = fullselector.Add(*req)
-	}
-	return fullselector, nil
-}
-*/

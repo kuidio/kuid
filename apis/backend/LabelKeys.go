@@ -20,20 +20,21 @@ import "k8s.io/apimachinery/pkg/util/sets"
 
 const (
 	// system defined common
-	KuidOwnerGroupKey     = "be.kuid.dev/owner-group"
-	KuidOwnerVersionKey   = "be.kuid.dev/owner-version"
-	KuidOwnerKindKey      = "be.kuid.dev/owner-kind"
-	KuidOwnerNameKey      = "be.kuid.dev/owner-name"
-	KuidOwnerNamespaceKey = "be.kuid.dev/owner-namespace"
-	KuidClaimNameKey      = "be.kuid.dev/claim-name"
-	KuidClaimTypeKey      = "be.kuid.dev/claim-type"
+	//KuidOwnerGroupKey     = "be.kuid.dev/owner-group"
+	//KuidOwnerVersionKey   = "be.kuid.dev/owner-version"
+	//KuidOwnerNameKey      = "be.kuid.dev/owner-name"
+	//KuidOwnerNamespaceKey = "be.kuid.dev/owner-namespace"
+	KuidOwnerKindKey = "be.kuid.dev/owner-kind" // we need to track this to ensure a claim from an index is distinguished from a regular claim
+	KuidClaimNameKey = "be.kuid.dev/claim-name"
+	KuidClaimUIDKey  = "be.kuid.dev/claim-uid"
+	KuidClaimTypeKey = "be.kuid.dev/claim-type"
 	// system defined ipam
 	KuidIPAMIPPrefixTypeKey     = "ipam.be.kuid.dev/ipprefix-type"
-	KuidIPAMClaimSummaryTypeKey = "ipam.be.kuid.dev/claim-summary-type"
+	KuidIPAMClaimSummaryTypeKey = "ipam.be.kuid.dev/claim-summary-type" // used for easy lookup
 	KuidIPAMddressFamilyKey     = "ipam.be.kuid.dev/address-family"
 	KuidIPAMSubnetKey           = "ipam.be.kuid.dev/subnet" // this is the subnet in prefix annotation used for GW selection
 	KuidIPAMDefaultGatewayKey   = "ipam.be.kuid.dev/default-gateway"
-	KuidIPAMIndexKey            = "ipam.be.kuid.dev/index"
+	//KuidIPAMIndexKey            = "ipam.be.kuid.dev/index"
 
 	// DNS used keys
 	KuidINVNetworkKey  = "inv.kuid.dev/network"
@@ -61,23 +62,26 @@ const (
 	KuidINVNetworkLinkBFDMinRX = "link.network.infra.be.kuid.dev/bfd-min-rx" //
 )
 
-var BackendSystemKeys = sets.New[string](KuidOwnerGroupKey,
-	KuidOwnerVersionKey,
-	KuidOwnerKindKey,
-	KuidOwnerNameKey,
-	KuidOwnerNamespaceKey,
+// BackendSystemKeys defined the system keys
+// used internally in the cache for faster label based lookups.
+// Used to filter the system keys from the information presented
+// to the outside world when generating the XXEntry object
+var BackendSystemKeys = sets.New[string](
 	KuidClaimNameKey,
+	KuidClaimUIDKey,
+	KuidOwnerKindKey,
+	KuidClaimTypeKey,
 )
 
-var BackendIPAMSystemKeys = sets.New[string](KuidOwnerGroupKey,
+// BackendIPAMSystemKeys defined the system IPAM keys
+// used internally in the cache for faster label based lookups
+// Used to filter the system keys from the information presented
+// to the outside world when generating the IP Entry object
+var BackendIPAMSystemKeys = sets.New[string](
 	KuidIPAMIPPrefixTypeKey,
 	KuidIPAMClaimSummaryTypeKey,
+	KuidClaimTypeKey,
 	KuidIPAMddressFamilyKey,
 	KuidIPAMSubnetKey,
 	KuidIPAMDefaultGatewayKey,
-	KuidIPAMIndexKey,
-)
-
-var BackendSystemClaimKeys = sets.New[string](KuidOwnerGroupKey,
-	KuidClaimTypeKey,
 )

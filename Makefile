@@ -17,10 +17,12 @@ KFORM ?= $(LOCALBIN)/kform
 KFORM_VERSION ?= v0.0.2
 
 # go versions
-TARGET_GO_VERSION := go1.21.4
-GO_FALLBACK := go
+#TARGET_GO_VERSION := go1.21.4
+#GO_FALLBACK := go
 # We prefer $TARGET_GO_VERSION if it is not available we go with whatever go we find ($GO_FALLBACK)
-GO_BIN := $(shell if [ "$$(which $(TARGET_GO_VERSION))" != "" ]; then echo $$(which $(TARGET_GO_VERSION)); else echo $$(which $(GO_FALLBACK)); fi)
+#GO_BIN := $(shell if [ "$$(which $(TARGET_GO_VERSION))" != "" ]; then echo $$(which $(TARGET_GO_VERSION)); else echo $$(which $(GO_FALLBACK)); fi)
+
+GOBIN := $(shell go env GOPATH)/bin
 
 .PHONY: codegen fix fmt vet lint test tidy
 
@@ -60,23 +62,22 @@ genclients:
 		-g informer-gen \
 		-g lister-gen \
 		-g openapi-gen \
-		-g go-to-protobuf \
+		-g defaulter-gen \
+		-g conversion-gen \
+		#-g go-to-protobuf \
 		--module $(REPO) \
-		--versions $(REPO)/apis/condition/v1alpha1,$(REPO)/apis/common/v1alpha1,$(REPO)/apis/backend/ipam/v1alpha1,$(REPO)/apis/backend/vlan/v1alpha1,$(REPO)/apis/backend/vxlan/v1alpha1,$(REPO)/apis/backend/as/v1alpha1,$(REPO)/apis/backend/esi/v1alpha1,$(REPO)/apis/backend/extcomm/v1alpha1,$(REPO)/apis/backend/genid/v1alpha1,$(REPO)/apis/backend/infra/v1alpha1
 
 .PHONY: generate
 generate: controller-gen 
-	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./apis/inv/..."
+	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./apis/..."
 
-.PHONY: manifests
-manifests: controller-gen artifacts ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
-	mkdir -p artifacts
-	##$(CONTROLLER_GEN) rbac:roleName=manager-role crd webhook paths="./apis/resource/..." output:crd:artifacts:config=artifacts
-	##$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./apis/resource/..."
-	##$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./apis/inv/..."
+.PHONY: crds
+crds: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
+	mkdir -p crds
+	$(CONTROLLER_GEN) rbac:roleName=manager-role crd webhook paths="./apis/..." output:crd:artifacts:config=crds
 	
 .PHONY: artifacts
-artifacts: kform manifests
+artifacts: kform
 	mkdir -p artifacts/out
 	$(KFORM) apply artifacts -o artifacts/out/artifacts.yaml
 

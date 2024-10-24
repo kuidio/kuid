@@ -16,6 +16,8 @@ limitations under the License.
 
 package genericserver
 
+/*
+
 import (
 	"context"
 	"fmt"
@@ -111,3 +113,4 @@ func (r *storerFilter) Filter(ctx context.Context, obj runtime.Object) bool {
 	}
 	return f
 }
+*/
