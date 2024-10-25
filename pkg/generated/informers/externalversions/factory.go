@@ -26,6 +26,7 @@ import (
 	as "github.com/kuidio/kuid/pkg/generated/informers/externalversions/as"
 	infra "github.com/kuidio/kuid/pkg/generated/informers/externalversions/infra"
 	internalinterfaces "github.com/kuidio/kuid/pkg/generated/informers/externalversions/internalinterfaces"
+	vlan "github.com/kuidio/kuid/pkg/generated/informers/externalversions/vlan"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -256,6 +257,7 @@ type SharedInformerFactory interface {
 
 	As() as.Interface
 	Infra() infra.Interface
+	Vlan() vlan.Interface
 }
 
 func (f *sharedInformerFactory) As() as.Interface {
@@ -264,4 +266,8 @@ func (f *sharedInformerFactory) As() as.Interface {
 
 func (f *sharedInformerFactory) Infra() infra.Interface {
 	return infra.New(f, f.namespace, f.tweakListOptions)
+}
+
+func (f *sharedInformerFactory) Vlan() vlan.Interface {
+	return vlan.New(f, f.namespace, f.tweakListOptions)
 }

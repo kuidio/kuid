@@ -14,17 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package all
+//go:generate deepcopy-gen -O zz_generated.deepcopy -i . -h ../../../../boilerplate.go.txt
+//go:generate defaulter-gen -O zz_generated.defaults -i . -h ../../../../boilerplate.go.txt
+//go:generate conversion-gen -O zz_generated.conversion -i . -h ../../../../boilerplate.go.txt
 
-import (
-	_ "github.com/kuidio/kuid/apis/backend/as/register"
-	_ "github.com/kuidio/kuid/apis/backend/vlan/register"
-	_ "github.com/kuidio/kuid/apis/infra/register"
-)
+// +k8s:openapi-gen=true
+// +k8s:deepcopy-gen=package,register
+// +k8s:conversion-gen=github.com/kuidio/kuid/apis/backend/vlan
+// +k8s:defaulter-gen=TypeMeta
+// +groupName=vlan.be.kuid.dev
 
-//infrabev1alpha1.AddToScheme,
-//ipambev1alpha1.AddToScheme,
-//vlanbev1alpha1.AddToScheme,
-//vxlanbev1alpha1.AddToScheme,
-//extcommbev1alpha1.AddToScheme,
-//genidbev1alpha1.AddToScheme,
+// v1alpha1 is the v1alpha1 version of the API.
+package v1alpha1

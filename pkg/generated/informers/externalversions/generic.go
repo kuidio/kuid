@@ -21,6 +21,7 @@ import (
 	"fmt"
 
 	v1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
+	vlanv1alpha1 "github.com/kuidio/kuid/apis/backend/vlan/v1alpha1"
 	infrav1alpha1 "github.com/kuidio/kuid/apis/infra/v1alpha1"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	cache "k8s.io/client-go/tools/cache"
@@ -89,6 +90,14 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Regions().Informer()}, nil
 	case infrav1alpha1.SchemeGroupVersion.WithResource("sites"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Sites().Informer()}, nil
+
+		// Group=vlan.be.kuid.dev, Version=v1alpha1
+	case vlanv1alpha1.SchemeGroupVersion.WithResource("vlanclaims"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Vlan().V1alpha1().VLANClaims().Informer()}, nil
+	case vlanv1alpha1.SchemeGroupVersion.WithResource("vlanentries"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Vlan().V1alpha1().VLANEntries().Informer()}, nil
+	case vlanv1alpha1.SchemeGroupVersion.WithResource("vlanindexes"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Vlan().V1alpha1().VLANIndexes().Informer()}, nil
 
 	}
 

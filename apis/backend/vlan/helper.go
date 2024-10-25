@@ -14,17 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package all
+package vlan
 
 import (
-	_ "github.com/kuidio/kuid/apis/backend/as/register"
-	_ "github.com/kuidio/kuid/apis/backend/vlan/register"
-	_ "github.com/kuidio/kuid/apis/infra/register"
+	"fmt"
 )
 
-//infrabev1alpha1.AddToScheme,
-//ipambev1alpha1.AddToScheme,
-//vlanbev1alpha1.AddToScheme,
-//vxlanbev1alpha1.AddToScheme,
-//extcommbev1alpha1.AddToScheme,
-//genidbev1alpha1.AddToScheme,
+const VLANID_Min = 0
+const VLANID_Max = 4095
+
+func validateVLANID(id int) error {
+	if id < VLANID_Min {
+		return fmt.Errorf("invalid vlan id, got %d", id)
+	}
+	if id > VLANID_Max {
+		return fmt.Errorf("invalid vlan id, got %d", id)
+	}
+	return nil
+}

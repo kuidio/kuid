@@ -23,6 +23,8 @@ import (
 	fakeasv1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/as/v1alpha1/fake"
 	infrav1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/infra/v1alpha1"
 	fakeinfrav1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/infra/v1alpha1/fake"
+	vlanv1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/vlan/v1alpha1"
+	fakevlanv1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/vlan/v1alpha1/fake"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/discovery"
@@ -92,4 +94,9 @@ func (c *Clientset) AsV1alpha1() asv1alpha1.AsV1alpha1Interface {
 // InfraV1alpha1 retrieves the InfraV1alpha1Client
 func (c *Clientset) InfraV1alpha1() infrav1alpha1.InfraV1alpha1Interface {
 	return &fakeinfrav1alpha1.FakeInfraV1alpha1{Fake: &c.Fake}
+}
+
+// VlanV1alpha1 retrieves the VlanV1alpha1Client
+func (c *Clientset) VlanV1alpha1() vlanv1alpha1.VlanV1alpha1Interface {
+	return &fakevlanv1alpha1.FakeVlanV1alpha1{Fake: &c.Fake}
 }

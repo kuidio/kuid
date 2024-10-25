@@ -114,7 +114,7 @@ func Convert_v1alpha1_ClaimLabels_To_common_ClaimLabels(in *commonv1alpha1.Claim
 	return autoConvert_v1alpha1_ClaimLabels_To_common_ClaimLabels(in, out, s)
 }
 
-func autoConvert_v1alpha1_ClaimLabels_To_common_ClaimLabels(in *commonv1alpha1.ClaimLabels, out *common.ClaimLabels, s conversion.Scope) error {
+func autoConvert_v1alpha1_ClaimLabels_To_common_ClaimLabels(in *commonv1alpha1.ClaimLabels, out *common.ClaimLabels, _ conversion.Scope) error {
     if in == nil {
         return errors.New("input v1alpha1.ClaimLabels is nil")
     }
