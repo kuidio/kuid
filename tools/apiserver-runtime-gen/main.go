@@ -59,19 +59,21 @@ func runE(cmd *cobra.Command, args []string) error {
 	}
 	// install the generators
 	if install {
-		for _, gen := range generators {
+		//for _, gen := range generators {
 			// nolint:gosec
-			if gen == "openapi-gen" {
-				err := run(exec.Command("go", "install", "k8s.io/kube-openapi/cmd/openapi-gen@latest"))
-				if err != nil {
-					return err
+			/*
+				if gen == "openapi-gen" {
+					err := run(exec.Command("go", "install", "k8s.io/kube-openapi/cmd/openapi-gen@latest"))
+					if err != nil {
+						return err
+					}
+				} else {
+					err := run(exec.Command("go", "install", path.Join("k8s.io/code-generator/cmd", gen)))
+					if err != nil {
+						return err
+					}
 				}
-			} else {
-				err := run(exec.Command("go", "install", path.Join("k8s.io/code-generator/cmd", gen)))
-				if err != nil {
-					return err
-				}
-			}
+			*/
 			/*
 				if gen == "go-to-protobuf" {
 
@@ -86,7 +88,7 @@ func runE(cmd *cobra.Command, args []string) error {
 
 				}
 			*/
-		}
+		//}
 	}
 
 	return doGen()

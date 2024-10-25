@@ -31,7 +31,7 @@ var Groups = map[string]*GroupConfig{}
 
 type BackendFn func() bebackend.Backend
 
-type StorageProviderFn func(ctx context.Context, be bebackend.Backend, sync bool, options *options.Options) *rest.StorageProvider
+type StorageProviderFn func(ctx context.Context, obj resource.InternalObject, be bebackend.Backend, sync bool, options *options.Options) *rest.StorageProvider
 
 type ApplyStorageToBackendFn func(ctx context.Context, be bebackend.Backend, apiServer *builder.Server) error
 
@@ -44,6 +44,7 @@ type GroupConfig struct {
 
 type ResourceConfig struct {
 	StorageProviderFn StorageProviderFn
+	Internal          resource.InternalObject
 	ResourceVersions  []resource.Object
 }
 

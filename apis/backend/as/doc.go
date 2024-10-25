@@ -17,5 +17,5 @@ limitations under the License.
 // +k8s:deepcopy-gen=package,register
 // +groupName=as.be.kuid.dev
 
-// Package v1alpha1 is the internal version of the API.
+// Package as is the internal version of the API.
 package as // import "github.com/kuidio/kuid/apis/backend/as"

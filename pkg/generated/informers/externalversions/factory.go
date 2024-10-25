@@ -24,6 +24,7 @@ import (
 
 	versioned "github.com/kuidio/kuid/pkg/generated/clientset/versioned"
 	as "github.com/kuidio/kuid/pkg/generated/informers/externalversions/as"
+	infra "github.com/kuidio/kuid/pkg/generated/informers/externalversions/infra"
 	internalinterfaces "github.com/kuidio/kuid/pkg/generated/informers/externalversions/internalinterfaces"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
@@ -254,8 +255,13 @@ type SharedInformerFactory interface {
 	InformerFor(obj runtime.Object, newFunc internalinterfaces.NewInformerFunc) cache.SharedIndexInformer
 
 	As() as.Interface
+	Infra() infra.Interface
 }
 
 func (f *sharedInformerFactory) As() as.Interface {
 	return as.New(f, f.namespace, f.tweakListOptions)
+}
+
+func (f *sharedInformerFactory) Infra() infra.Interface {
+	return infra.New(f, f.namespace, f.tweakListOptions)
 }

@@ -39,15 +39,15 @@ func TestIndex(t *testing.T) {
 				BackendFn:               register.NewBackend,
 				ApplyStorageToBackendFn: register.ApplyStorageToBackend,
 				Resources: []*config.ResourceConfig{
-					{StorageProviderFn: register.NewIndexStorageProvider, ResourceVersions: []resource.Object{&as.ASIndex{}, &asbev1alpha1.ASIndex{}}},
-					{StorageProviderFn: register.NewClaimStorageProvider, ResourceVersions: []resource.Object{&as.ASClaim{}, &asbev1alpha1.ASClaim{}}},
-					{StorageProviderFn: register.NewEntryStorageProvider, ResourceVersions: []resource.Object{&as.ASEntry{}, &asbev1alpha1.ASEntry{}}},
+					{StorageProviderFn: register.NewIndexStorageProvider, Internal: &as.ASIndex{},ResourceVersions: []resource.Object{&as.ASIndex{}, &asbev1alpha1.ASIndex{}}},
+					{StorageProviderFn: register.NewClaimStorageProvider, Internal: &as.ASClaim{}, ResourceVersions: []resource.Object{&as.ASClaim{}, &asbev1alpha1.ASClaim{}}},
+					{StorageProviderFn: register.NewStorageProvider, Internal: &as.ASEntry{}, ResourceVersions: []resource.Object{&as.ASEntry{}, &asbev1alpha1.ASEntry{}}},
 				},
 			}
 
 			be := groupConfig.BackendFn()
 			for _, resource := range groupConfig.Resources {
-				storageProvider := resource.StorageProviderFn(ctx, be, true, &options.Options{
+				storageProvider := resource.StorageProviderFn(ctx,resource.Internal, be, true, &options.Options{
 					Type: options.StorageType_Memory,
 				})
 				for _, resourceVersion := range resource.ResourceVersions {

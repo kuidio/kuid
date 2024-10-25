@@ -63,7 +63,7 @@ genclients:
 		-g lister-gen \
 		-g openapi-gen \
 		-g defaulter-gen \
-		-g conversion-gen \
+		#-g conversion-gen \
 		#-g go-to-protobuf \
 		--module $(REPO) \
 

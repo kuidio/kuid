@@ -71,6 +71,7 @@ func getDefaultConfig() *KuidConfig {
 		Storage: StorageType_Badgerdb,
 		Groups: []*KuidGroupConfig{
 			{Group: "as.be.kuid.dev", Enabled: true, Sync: true},
+			{Group: "infra.kuid.dev", Enabled: true, Sync: true},
 		},
 	}
 }

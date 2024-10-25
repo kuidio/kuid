@@ -107,14 +107,14 @@ func main() {
 				be := groupConfig.BackendFn()
 				backends[group] = be
 				for _, resource := range groupConfig.Resources {
-					storageProvider := resource.StorageProviderFn(ctx, be, kuidGroupConfig.Sync, registryOptions)
+					storageProvider := resource.StorageProviderFn(ctx, resource.Internal, be, kuidGroupConfig.Sync, registryOptions)
 					for _, resourceVersion := range resource.ResourceVersions {
 						apiserver.WithResourceAndHandler(resourceVersion, storageProvider)
 					}
 				}
 			} else {
 				for _, resource := range groupConfig.Resources {
-					storageProvider := resource.StorageProviderFn(ctx, nil, kuidGroupConfig.Sync, registryOptions)
+					storageProvider := resource.StorageProviderFn(ctx, resource.Internal, nil, kuidGroupConfig.Sync, registryOptions)
 					for _, resourceVersion := range resource.ResourceVersions {
 						apiserver.WithResourceAndHandler(resourceVersion, storageProvider)
 					}

@@ -41,9 +41,9 @@ func init() {
 		NewBackend,
 		ApplyStorageToBackend,
 		[]*config.ResourceConfig{
-			{StorageProviderFn: NewIndexStorageProvider, ResourceVersions: []resource.Object{&as.ASIndex{}, &asbev1alpha1.ASIndex{}}},
-			{StorageProviderFn: NewClaimStorageProvider, ResourceVersions: []resource.Object{&as.ASClaim{}, &asbev1alpha1.ASClaim{}}},
-			{StorageProviderFn: NewEntryStorageProvider, ResourceVersions: []resource.Object{&as.ASEntry{}, &asbev1alpha1.ASEntry{}}},
+			{StorageProviderFn: NewIndexStorageProvider, Internal: &as.ASIndex{}, ResourceVersions: []resource.Object{&as.ASIndex{}, &asbev1alpha1.ASIndex{}}},
+			{StorageProviderFn: NewClaimStorageProvider, Internal: &as.ASClaim{}, ResourceVersions: []resource.Object{&as.ASClaim{}, &asbev1alpha1.ASClaim{}}},
+			{StorageProviderFn: NewStorageProvider, Internal: &as.ASEntry{}, ResourceVersions: []resource.Object{&as.ASEntry{}, &asbev1alpha1.ASEntry{}}},
 		},
 	)
 }
@@ -58,26 +58,26 @@ func NewBackend() bebackend.Backend {
 	)
 }
 
-func NewIndexStorageProvider(ctx context.Context, be bebackend.Backend, sync bool, options *options.Options) *rest.StorageProvider {
+func NewIndexStorageProvider(ctx context.Context, obj resource.InternalObject, be bebackend.Backend, sync bool, options *options.Options) *rest.StorageProvider {
 	opts := *options
 	if sync {
 		opts.BackendInvoker = bebackend.NewIndexInvoker(be)
-		return genericregistry.NewStorageProvider(ctx, &as.ASIndex{}, &opts)
+		return genericregistry.NewStorageProvider(ctx, obj, &opts)
 	}
-	return genericregistry.NewStorageProvider(ctx, &as.ASIndex{}, &opts)
+	return genericregistry.NewStorageProvider(ctx, obj, &opts)
 }
 
-func NewClaimStorageProvider(ctx context.Context, be bebackend.Backend, sync bool, options *options.Options) *rest.StorageProvider {
+func NewClaimStorageProvider(ctx context.Context, obj resource.InternalObject, be bebackend.Backend, sync bool, options *options.Options) *rest.StorageProvider {
 	opts := *options
 	if sync {
 		opts.BackendInvoker = bebackend.NewClaimInvoker(be)
-		return genericregistry.NewStorageProvider(ctx, &as.ASClaim{}, &opts)
+		return genericregistry.NewStorageProvider(ctx, obj, &opts)
 	}
-	return genericregistry.NewStorageProvider(ctx, &as.ASClaim{}, &opts)
+	return genericregistry.NewStorageProvider(ctx, obj, &opts)
 }
 
-func NewEntryStorageProvider(ctx context.Context, be bebackend.Backend, sync bool, options *options.Options) *rest.StorageProvider {
-	return genericregistry.NewStorageProvider(ctx, &as.ASEntry{}, options)
+func NewStorageProvider(ctx context.Context, obj resource.InternalObject, be bebackend.Backend, sync bool, options *options.Options) *rest.StorageProvider {
+	return genericregistry.NewStorageProvider(ctx, obj, options)
 }
 
 func ApplyStorageToBackend(ctx context.Context, be bebackend.Backend, apiServer *builder.Server) error {

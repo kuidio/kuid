@@ -19,6 +19,7 @@ package fake
 
 import (
 	asv1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
+	infrav1alpha1 "github.com/kuidio/kuid/apis/infra/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -31,6 +32,7 @@ var codecs = serializer.NewCodecFactory(scheme)
 
 var localSchemeBuilder = runtime.SchemeBuilder{
 	asv1alpha1.AddToScheme,
+	infrav1alpha1.AddToScheme,
 }
 
 // AddToScheme adds all types of this clientset into the given scheme. This allows composition

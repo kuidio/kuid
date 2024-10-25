@@ -42,6 +42,3 @@ func getASDot(asn uint32) string {
 	}
 	return strconv.Itoa(int(asn))
 }
-
-// storage
-// create a backend

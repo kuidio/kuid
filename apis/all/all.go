@@ -18,6 +18,7 @@ package all
 
 import (
 	_ "github.com/kuidio/kuid/apis/backend/as/register"
+	_ "github.com/kuidio/kuid/apis/infra/register"
 )
 
 //infrabev1alpha1.AddToScheme,

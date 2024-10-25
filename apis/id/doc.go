@@ -16,5 +16,5 @@ limitations under the License.
 
 // +k8s:deepcopy-gen=package,register
 
-// id defines the id api
-package id 
+// Package id is the internal version of the API.
+package id // import "github.com/kuidio/kuid/apis/id"

@@ -21,6 +21,8 @@ import (
 	clientset "github.com/kuidio/kuid/pkg/generated/clientset/versioned"
 	asv1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/as/v1alpha1"
 	fakeasv1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/as/v1alpha1/fake"
+	infrav1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/infra/v1alpha1"
+	fakeinfrav1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/infra/v1alpha1/fake"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/discovery"
@@ -85,4 +87,9 @@ var (
 // AsV1alpha1 retrieves the AsV1alpha1Client
 func (c *Clientset) AsV1alpha1() asv1alpha1.AsV1alpha1Interface {
 	return &fakeasv1alpha1.FakeAsV1alpha1{Fake: &c.Fake}
+}
+
+// InfraV1alpha1 retrieves the InfraV1alpha1Client
+func (c *Clientset) InfraV1alpha1() infrav1alpha1.InfraV1alpha1Interface {
+	return &fakeinfrav1alpha1.FakeInfraV1alpha1{Fake: &c.Fake}
 }

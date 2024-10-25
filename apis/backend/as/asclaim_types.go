@@ -51,18 +51,12 @@ type ASClaimStatus struct {
 	// +optional
 	Range *string `json:"range,omitempty" yaml:"range,omitempty" protobuf:"bytes,3,opt,name=range"`
 	// ExpiryTime defines when the claim expires
-	// +kubebuilder:validation:Optional
 	// +optional
 	ExpiryTime *string `json:"expiryTime,omitempty" yaml:"expiryTime,omitempty" protobuf:"bytes,4,opt,name=expiryTime"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:object:root=true
-// +kubebuilder:storageversion
-// +kubebuilder:subresource:status
-// +kubebuilder:resource:categories={kuid}
-
 // ASClaim is the Schema for the ASClaim API
 type ASClaim struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`
@@ -74,8 +68,6 @@ type ASClaim struct {
 
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:object:root=true
-
 // ASClaimList contains a list of ASClaims
 type ASClaimList struct {
 	metav1.TypeMeta `json:",inline" yaml:",inline"`
