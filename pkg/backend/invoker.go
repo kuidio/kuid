@@ -33,16 +33,16 @@ type claimInvoker struct {
 	be Backend
 }
 
-func (r *claimInvoker) InvokeCreate(ctx context.Context, obj runtime.Object) error {
-	return r.be.Claim(ctx, obj)
+func (r *claimInvoker) InvokeCreate(ctx context.Context, obj runtime.Object, recursion bool) error {
+	return r.be.Claim(ctx, obj, recursion)
 }
 
-func (r *claimInvoker) InvokeUpdate(ctx context.Context, obj, old runtime.Object) error {
-	return r.be.Claim(ctx, obj)
+func (r *claimInvoker) InvokeUpdate(ctx context.Context, obj, old runtime.Object, recursion bool) error {
+	return r.be.Claim(ctx, obj, recursion)
 }
 
-func (r *claimInvoker) InvokeDelete(ctx context.Context, obj runtime.Object) error {
-	return r.be.Release(ctx, obj)
+func (r *claimInvoker) InvokeDelete(ctx context.Context, obj runtime.Object, recursion bool) error {
+	return r.be.Release(ctx, obj, recursion)
 }
 
 func NewIndexInvoker(be Backend) options.BackendInvoker {
@@ -55,14 +55,14 @@ type indexPreparator struct {
 	be Backend
 }
 
-func (r *indexPreparator) InvokeCreate(ctx context.Context, obj runtime.Object) error {
+func (r *indexPreparator) InvokeCreate(ctx context.Context, obj runtime.Object, recursion bool) error {
 	return r.be.CreateIndex(ctx, obj)
 }
 
-func (r *indexPreparator) InvokeUpdate(ctx context.Context, obj, old runtime.Object) error {
+func (r *indexPreparator) InvokeUpdate(ctx context.Context, obj, old runtime.Object, recursion bool) error {
 	return r.be.CreateIndex(ctx, obj)
 }
 
-func (r *indexPreparator) InvokeDelete(ctx context.Context, obj runtime.Object) error {
+func (r *indexPreparator) InvokeDelete(ctx context.Context, obj runtime.Object, recursion bool) error {
 	return r.be.DeleteIndex(ctx, obj)
 }

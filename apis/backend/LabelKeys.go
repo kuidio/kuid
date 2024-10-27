@@ -28,6 +28,7 @@ const (
 	KuidClaimNameKey = "be.kuid.dev/claim-name"
 	KuidClaimUIDKey  = "be.kuid.dev/claim-uid"
 	KuidClaimTypeKey = "be.kuid.dev/claim-type"
+	KuidIndexEntryKey = "be.kuid.dev/index-entry"
 	// system defined ipam
 	KuidIPAMIPPrefixTypeKey     = "ipam.be.kuid.dev/ipprefix-type"
 	KuidIPAMClaimSummaryTypeKey = "ipam.be.kuid.dev/claim-summary-type" // used for easy lookup
@@ -71,6 +72,7 @@ var BackendSystemKeys = sets.New[string](
 	KuidClaimUIDKey,
 	KuidOwnerKindKey,
 	KuidClaimTypeKey,
+	KuidIndexEntryKey,
 )
 
 // BackendIPAMSystemKeys defined the system IPAM keys

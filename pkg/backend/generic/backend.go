@@ -2,8 +2,8 @@ package generic
 
 import (
 	"context"
-	"errors"
 	"fmt"
+	"reflect"
 	"sync"
 
 	"github.com/henderiw/apiserver-store/pkg/generic/registry"
@@ -18,9 +18,6 @@ import (
 
 func New(
 	claimKind string,
-	//indexGVK schema.GroupVersionKind,
-	//claimGVK schema.GroupVersionKind,
-	//entryGVK schema.GroupVersionKind,
 	indexObjectFn func(runtime.Object) (backend.IndexObject, error),
 	claimObjectFn func(runtime.Object) (backend.ClaimObject, error),
 	entryObjectFn func(runtime.Object) (backend.EntryObject, error),
@@ -30,11 +27,8 @@ func New(
 	cache := bebackend.NewCache[*CacheInstanceContext]()
 
 	return &be{
-		cache:     cache,
-		claimKind: claimKind,
-		//indexGVK:         indexGVK,
-		//claimGVK:         claimGVK,
-		//entryGVK:         entryGVK,
+		cache:            cache,
+		claimKind:        claimKind,
 		indexObjectFn:    indexObjectFn,
 		claimObjectFn:    claimObjectFn,
 		entryObjectFn:    entryObjectFn,
@@ -43,12 +37,9 @@ func New(
 }
 
 type be struct {
-	cache     bebackend.Cache[*CacheInstanceContext]
-	m         sync.RWMutex
-	claimKind string
-	//indexGVK         schema.GroupVersionKind
-	//claimGVK         schema.GroupVersionKind
-	//entryGVK         schema.GroupVersionKind
+	cache            bebackend.Cache[*CacheInstanceContext]
+	m                sync.RWMutex
+	claimKind        string
 	indexObjectFn    func(runtime.Object) (backend.IndexObject, error)
 	claimObjectFn    func(runtime.Object) (backend.ClaimObject, error)
 	entryObjectFn    func(runtime.Object) (backend.EntryObject, error)
@@ -69,12 +60,12 @@ func (r *be) PrintEntries(ctx context.Context, index string) {
 func (r *be) AddStorage(entryStorage, claimStorage rest.Storage) error {
 	entrystore, ok := entryStorage.(*registry.Store)
 	if !ok {
-		return errors.New("entry store is not a *registry.Store")
+		return fmt.Errorf("entry store is not a *registry.Store, got: %v", reflect.TypeOf(claimStorage).Name())
 	}
 	r.entryStorage = entrystore
 	claimstore, ok := claimStorage.(*registry.Store)
 	if !ok {
-		return errors.New("claim store is not a *registry.Store")
+		return fmt.Errorf("claim store is not a *registry.Store, got: %v", reflect.TypeOf(claimStorage).Name())
 	}
 	r.claimStorage = claimstore
 	return nil
@@ -86,8 +77,8 @@ func (r *be) GetClaimStorage() *registry.Store {
 
 // CreateIndex creates a backend index
 func (r *be) CreateIndex(ctx context.Context, obj runtime.Object) error {
-	//r.m.Lock()
-	//defer r.m.Unlock()
+	r.m.Lock()
+	defer r.m.Unlock()
 	index, err := r.indexObjectFn(obj)
 	if err != nil {
 		return err
@@ -146,7 +137,7 @@ func (r *be) DeleteIndex(ctx context.Context, obj runtime.Object) error {
 	return nil
 }
 
-func (r *be) Claim(ctx context.Context, obj runtime.Object) error {
+func (r *be) Claim(ctx context.Context, obj runtime.Object, recursion bool) error {
 	r.m.Lock()
 	defer r.m.Unlock()
 	claim, err := r.claimObjectFn(obj)
@@ -184,7 +175,7 @@ func (r *be) Claim(ctx context.Context, obj runtime.Object) error {
 	return nil
 }
 
-func (r *be) Release(ctx context.Context, obj runtime.Object) error {
+func (r *be) Release(ctx context.Context, obj runtime.Object, recursion bool) error {
 	r.m.Lock()
 	defer r.m.Unlock()
 	claim, err := r.claimObjectFn(obj)

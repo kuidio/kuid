@@ -23,6 +23,7 @@ import (
 
 	asv1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/as/v1alpha1"
 	infrav1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/infra/v1alpha1"
+	ipamv1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/ipam/v1alpha1"
 	vlanv1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/vlan/v1alpha1"
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
@@ -33,6 +34,7 @@ type Interface interface {
 	Discovery() discovery.DiscoveryInterface
 	AsV1alpha1() asv1alpha1.AsV1alpha1Interface
 	InfraV1alpha1() infrav1alpha1.InfraV1alpha1Interface
+	IpamV1alpha1() ipamv1alpha1.IpamV1alpha1Interface
 	VlanV1alpha1() vlanv1alpha1.VlanV1alpha1Interface
 }
 
@@ -41,6 +43,7 @@ type Clientset struct {
 	*discovery.DiscoveryClient
 	asV1alpha1    *asv1alpha1.AsV1alpha1Client
 	infraV1alpha1 *infrav1alpha1.InfraV1alpha1Client
+	ipamV1alpha1  *ipamv1alpha1.IpamV1alpha1Client
 	vlanV1alpha1  *vlanv1alpha1.VlanV1alpha1Client
 }
 
@@ -52,6 +55,11 @@ func (c *Clientset) AsV1alpha1() asv1alpha1.AsV1alpha1Interface {
 // InfraV1alpha1 retrieves the InfraV1alpha1Client
 func (c *Clientset) InfraV1alpha1() infrav1alpha1.InfraV1alpha1Interface {
 	return c.infraV1alpha1
+}
+
+// IpamV1alpha1 retrieves the IpamV1alpha1Client
+func (c *Clientset) IpamV1alpha1() ipamv1alpha1.IpamV1alpha1Interface {
+	return c.ipamV1alpha1
 }
 
 // VlanV1alpha1 retrieves the VlanV1alpha1Client
@@ -111,6 +119,10 @@ func NewForConfigAndClient(c *rest.Config, httpClient *http.Client) (*Clientset,
 	if err != nil {
 		return nil, err
 	}
+	cs.ipamV1alpha1, err = ipamv1alpha1.NewForConfigAndClient(&configShallowCopy, httpClient)
+	if err != nil {
+		return nil, err
+	}
 	cs.vlanV1alpha1, err = vlanv1alpha1.NewForConfigAndClient(&configShallowCopy, httpClient)
 	if err != nil {
 		return nil, err
@@ -138,6 +150,7 @@ func New(c rest.Interface) *Clientset {
 	var cs Clientset
 	cs.asV1alpha1 = asv1alpha1.New(c)
 	cs.infraV1alpha1 = infrav1alpha1.New(c)
+	cs.ipamV1alpha1 = ipamv1alpha1.New(c)
 	cs.vlanV1alpha1 = vlanv1alpha1.New(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClient(c)

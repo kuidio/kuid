@@ -1,22 +1,34 @@
-package astest
+/*
+Copyright 2024 Nokia.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+package testas
 
 import (
 	"context"
 	"fmt"
+	"reflect"
 	"testing"
 
-	"github.com/henderiw/apiserver-builder/pkg/builder"
-	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
 	"github.com/kuidio/kuid/apis/backend"
 	"github.com/kuidio/kuid/apis/backend/as"
-	"github.com/kuidio/kuid/apis/backend/as/register"
-	asbev1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
-	"github.com/kuidio/kuid/pkg/config"
-	"github.com/kuidio/kuid/pkg/generated/openapi"
-	"github.com/kuidio/kuid/pkg/registry/options"
+	genericbe "github.com/kuidio/kuid/pkg/backend/generic"
 	"github.com/stretchr/testify/assert"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	genericapirequest "k8s.io/apiserver/pkg/endpoints/request"
 	"k8s.io/apiserver/pkg/registry/rest"
 	"k8s.io/utils/ptr"
@@ -65,46 +77,35 @@ func Test(t *testing.T) {
 			t.Run(name, func(t *testing.T) {
 				ctx := context.Background()
 
-				apiserver := builder.APIServer.
-					WithServerName("kuid-api-server").
-					WithOpenAPIDefinitions("Config", "v1alpha1", openapi.GetOpenAPIDefinitions).
-					WithoutEtcd()
-
-				groupConfig := config.GroupConfig{
-					BackendFn:               register.NewBackend,
-					ApplyStorageToBackendFn: register.ApplyStorageToBackend,
-					Resources: []*config.ResourceConfig{
-						{StorageProviderFn: register.NewIndexStorageProvider, Internal: &as.ASIndex{},ResourceVersions: []resource.Object{&as.ASIndex{}, &asbev1alpha1.ASIndex{}}},
-						{StorageProviderFn: register.NewClaimStorageProvider, Internal: &as.ASClaim{}, ResourceVersions: []resource.Object{&as.ASClaim{}, &asbev1alpha1.ASClaim{}}},
-						{StorageProviderFn: register.NewStorageProvider, Internal: &as.ASEntry{}, ResourceVersions: []resource.Object{&as.ASEntry{}, &asbev1alpha1.ASEntry{}}},
-					},
+				apiserver := apiServer()
+				_, err := initBackend(ctx, apiserver)
+				if err != nil {
+					t.Errorf("cannot get backend, err: %v", err)
 				}
 
-				be := groupConfig.BackendFn()
-				for _, resource := range groupConfig.Resources {
-					storageProvider := resource.StorageProviderFn(ctx,resource.Internal, be, true, &options.Options{
-						Type: options.StorageType_Memory,
-					})
-					for _, resourceVersion := range resource.ResourceVersions {
-						apiserver.WithResourceAndHandler(resourceVersion, storageProvider)
-					}
+				indexStorage, err := getStorage(ctx, apiserver, schema.GroupResource{
+					Group:    as.SchemeGroupVersion.Group,
+					Resource: as.ASIndexPlural,
+				})
+				if err != nil {
+					t.Errorf("cannot get index storage, err: %v", err)
 				}
 
-				if _, err := apiserver.Build(ctx); err != nil {
-					panic(err)
+				claimStorage, err := getStorage(ctx, apiserver, schema.GroupResource{
+					Group:    as.SchemeGroupVersion.Group,
+					Resource: as.ASClaimPlural,
+				})
+				if err != nil {
+					t.Errorf("cannot get claim storage, err: %v", err)
 				}
-				if err := groupConfig.ApplyStorageToBackendFn(ctx, be, apiserver); err != nil {
-					panic(err)
-				}
-				
-				claimStorage := be.GetClaimStorage()
 
-				if tc.index != "" {
-					index, err := getIndex(tc.index, testType)
-					assert.NoError(t, err)
-					err = be.CreateIndex(ctx, index)
-					assert.NoError(t, err)
-				}
+				index, err := getIndex(tc.index, testType)
+				assert.NoError(t, err)
+				ctx = genericapirequest.WithNamespace(ctx, index.GetNamespace())
+				_, err = indexStorage.Create(ctx, index, nil, &metav1.CreateOptions{
+					FieldManager: "backend",
+				})
+				assert.NoError(t, err)
 
 				for _, v := range tc.ctxs {
 					v := v
@@ -125,8 +126,6 @@ func Test(t *testing.T) {
 						return
 					}
 
-					ctx = genericapirequest.WithNamespace(ctx, claim.GetNamespace())
-
 					exists := true
 					if _, err := claimStorage.Get(ctx, claim.GetName(), &metav1.GetOptions{}); err != nil {
 						exists = false
@@ -136,7 +135,7 @@ func Test(t *testing.T) {
 						newClaim, err = claimStorage.Create(ctx, claim, nil, &metav1.CreateOptions{FieldManager: "test"})
 					} else {
 
-						defaultObjInfo := rest.DefaultUpdatedObjectInfo(claim, transformer)
+						defaultObjInfo := rest.DefaultUpdatedObjectInfo(claim, genericbe.ClaimTransformer)
 						newClaim, _, err = claimStorage.Update(ctx, claim.GetName(), defaultObjInfo, nil, nil, false, &metav1.UpdateOptions{
 							FieldManager: "backend",
 						})
@@ -145,25 +144,31 @@ func Test(t *testing.T) {
 					if v.expectedError {
 						assert.Error(t, err)
 						continue
-					} else {
-						assert.NoError(t, err)
 					}
-					//fmt.Println("newCLaim", newClaim, err)
-					//fmt.Println("newClaim", newClaim)
-
-					uobj, err := runtime.DefaultUnstructuredConverter.ToUnstructured(newClaim)
 					if err != nil {
-						assert.Error(t, err)
+						assert.NoError(t, err)
 						continue
 					}
+
+					asClaim, ok := newClaim.(*as.ASClaim)
+					if !ok {
+						t.Errorf("expecting ipClaim, got: %v", reflect.TypeOf(newClaim).Name())
+						continue
+					}
+
+					//uobj, err := runtime.DefaultUnstructuredConverter.ToUnstructured(newClaim)
+					//if err != nil {
+					//	assert.Error(t, err)
+					//	continue
+					//}
 					//u := &unstructured.Unstructured{
 					//	Object: uobj,
 					//}
-					status := uobj["status"]
-					statusObj, ok := status.(map[string]any)
-					if !ok {
-						t.Errorf("expecting status id got nil")
-					}
+					//status := uobj["status"]
+					//statusObj, ok := status.(map[string]any)
+					//if !ok {
+					//	t.Errorf("expecting status id got nil")
+					//}
 
 					switch v.claimType {
 					case staticClaim, dynamicClaim:
@@ -171,7 +176,7 @@ func Test(t *testing.T) {
 						if v.expectedID != nil {
 							expectedID = *v.expectedID
 						}
-						fmt.Printf("expected/received %v/%v\n", expectedID, statusObj["id"])
+						fmt.Printf("expected/received %v/%v\n", expectedID, asClaim.Status.ID)
 					/*
 						id, ok := statusObj["id"]
 						if !ok {
@@ -192,7 +197,7 @@ func Test(t *testing.T) {
 						if v.expectedRange != nil {
 							expectedRange = *v.expectedRange
 						}
-						fmt.Printf("expected/received %v/%v\n", expectedRange, statusObj["range"])
+						fmt.Printf("expected/received %v/%v\n", expectedRange, asClaim.Status.Range)
 						/*
 							if claim.Status.Range == nil {
 								t.Errorf("expecting status id got nil")

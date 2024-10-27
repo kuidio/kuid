@@ -24,7 +24,6 @@ import (
 
 func (r *be) restore(ctx context.Context, index backend.IndexObject) error {
 	log := log.FromContext(ctx)
-
 	k := index.GetKey()
 
 	cacheInstanceCtx, err := r.cache.Get(ctx, k)
@@ -105,7 +104,7 @@ func (r *be) saveAll(ctx context.Context, k store.Key) error {
 			continue
 		}
 
-		defaultObjInfo := rest.DefaultUpdatedObjectInfo(oldEntry, entryTransformer)
+		defaultObjInfo := rest.DefaultUpdatedObjectInfo(oldEntry, EntryTransformer)
 		if _, _, err := r.entryStorage.Update(ctx, oldEntry.GetName(), defaultObjInfo, nil, nil, false, &metav1.UpdateOptions{
 			FieldManager: "backend",
 		}); err != nil {
@@ -248,7 +247,10 @@ func (r *be) listClaims(ctx context.Context, k store.Key) (map[string]backend.Cl
 			errm = errors.Join(errm, err)
 			continue
 		}
-		claimMap[claimObj.GetNamespacedName().String()] = claimObj
+		if claimObj.GetIndex() == k.Name {
+			claimMap[claimObj.GetNamespacedName().String()] = claimObj
+		}
+
 	}
 	return claimMap, errm
 }
@@ -350,8 +352,7 @@ func (r *be) restoreClaim(ctx context.Context, cacheInstanceCtx *CacheInstanceCo
 	return nil
 }
 
-
-func entryTransformer(_ context.Context, newObj runtime.Object, oldObj runtime.Object) (runtime.Object, error) {
+func EntryTransformer(_ context.Context, newObj runtime.Object, oldObj runtime.Object) (runtime.Object, error) {
 	// Type assertion to specific object types, assuming we are working with a type that has Spec and Status fields
 	new, ok := newObj.(backend.EntryObject)
 	if !ok {
@@ -360,6 +361,23 @@ func entryTransformer(_ context.Context, newObj runtime.Object, oldObj runtime.O
 	old, ok := oldObj.(backend.EntryObject)
 	if !ok {
 		return nil, fmt.Errorf("oldObj is not of type EntryObject")
+	}
+
+	new.SetResourceVersion(old.GetResourceVersion())
+	new.SetUID(old.GetUID())
+
+	return new, nil
+}
+
+func ClaimTransformer(_ context.Context, newObj runtime.Object, oldObj runtime.Object) (runtime.Object, error) {
+	// Type assertion to specific object types, assuming we are working with a type that has Spec and Status fields
+	new, ok := newObj.(backend.ClaimObject)
+	if !ok {
+		return nil, fmt.Errorf("newObj is not of type ClaimObject, got: %v", reflect.TypeOf(newObj).Name())
+	}
+	old, ok := oldObj.(backend.ClaimObject)
+	if !ok {
+		return nil, fmt.Errorf("oldObj is not of type ClaimObject, got: %v", reflect.TypeOf(newObj).Name())
 	}
 
 	new.SetResourceVersion(old.GetResourceVersion())

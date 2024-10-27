@@ -23,14 +23,16 @@ import (
 
 	"github.com/henderiw/logger/log"
 	"github.com/kuidio/kuid/apis/backend"
+	"k8s.io/apimachinery/pkg/types"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func InitIndexContext(ctx context.Context, op string, idx backend.IndexObject) context.Context {
+func InitIndexContext(ctx context.Context, op string, idx client.Object) context.Context {
 	l := log.FromContext(ctx).
 		With(
 			"op", fmt.Sprintf("%s index", op),
 			"gvk", idx.GetObjectKind().GroupVersionKind().String(),
-			"nsn", idx.GetNamespacedName().String(),
+			"nsn", types.NamespacedName{Namespace: idx.GetNamespace(), Name: idx.GetName()}.String(),
 		)
 	return log.IntoContext(ctx, l)
 }

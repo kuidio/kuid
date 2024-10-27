@@ -10,9 +10,11 @@ require (
 	github.com/dgraph-io/badger/v4 v4.3.0
 	github.com/google/go-cmp v0.6.0
 	github.com/google/uuid v1.6.0
-	github.com/henderiw/apiserver-builder v0.0.4-0.20241024124759-f780409e1b2f
-	github.com/henderiw/apiserver-store v0.0.3-0.20241022143604-0995425b3d06
+	github.com/hansthienpondt/nipam v0.0.5
+	github.com/henderiw/apiserver-builder v0.0.4-0.20241027084658-10d7f9d97252
+	github.com/henderiw/apiserver-store v0.0.3-0.20241027163114-c382e2d133b7
 	github.com/henderiw/idxtable v0.0.0-20241021085446-f8d804551342
+	github.com/henderiw/iputil v0.0.0-20231218081610-37f78ad9c81c
 	github.com/henderiw/logger v0.0.0-20230911123436-8655829b1abe
 	github.com/henderiw/store v0.0.2-0.20241020093537-5a92d3e14a02
 	github.com/kform-dev/choreo v0.0.14-0.20241022144122-dcc4abf0f562
@@ -21,6 +23,7 @@ require (
 	github.com/stretchr/testify v1.9.0
 	go.opentelemetry.io/otel v1.28.0
 	go.uber.org/zap v1.27.0
+	go4.org/netipx v0.0.0-20231129151722-fdeea329fbba
 	golang.org/x/mod v0.21.0
 	golang.org/x/sync v0.8.0
 	k8s.io/api v0.31.1
@@ -81,6 +84,7 @@ require (
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/kentik/patricia v1.2.0 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect

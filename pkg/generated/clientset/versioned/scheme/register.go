@@ -19,6 +19,7 @@ package scheme
 
 import (
 	asv1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
+	ipamv1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 	vlanv1alpha1 "github.com/kuidio/kuid/apis/backend/vlan/v1alpha1"
 	infrav1alpha1 "github.com/kuidio/kuid/apis/infra/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -34,6 +35,7 @@ var ParameterCodec = runtime.NewParameterCodec(Scheme)
 var localSchemeBuilder = runtime.SchemeBuilder{
 	asv1alpha1.AddToScheme,
 	infrav1alpha1.AddToScheme,
+	ipamv1alpha1.AddToScheme,
 	vlanv1alpha1.AddToScheme,
 }
 

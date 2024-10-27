@@ -19,7 +19,6 @@ package backend
 import (
 	"context"
 
-	"github.com/henderiw/apiserver-store/pkg/generic/registry"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apiserver/pkg/registry/rest"
 )
@@ -31,11 +30,9 @@ type Backend interface {
 	// DeleteIndex deletes a backend index
 	DeleteIndex(ctx context.Context, obj runtime.Object) error
 	// Claim claims an entry in the backend index
-	Claim(ctx context.Context, obj runtime.Object) error
+	Claim(ctx context.Context, obj runtime.Object, recursion bool) error
 	// Release a claim in the backend
-	Release(ctx context.Context, obj runtime.Object) error
+	Release(ctx context.Context, obj runtime.Object, recursion bool) error
 	// PrintEntries prints the entries of the cache
 	PrintEntries(ctx context.Context, index string)
-
-	GetClaimStorage() *registry.Store
 }

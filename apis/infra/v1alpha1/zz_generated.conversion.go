@@ -118,16 +118,6 @@ func RegisterConversions(s *runtime.Scheme) error {
 	}); err != nil {
 		return err
 	}
-	if err := s.AddGeneratedConversionFunc((*EndpointSetSpec)(nil), (*infra.EndpointSetSpec)(nil), func(a, b interface{}, scope conversion.Scope) error {
-		return Convert_v1alpha1_EndpointSetSpec_To_infra_EndpointSetSpec(a.(*EndpointSetSpec), b.(*infra.EndpointSetSpec), scope)
-	}); err != nil {
-		return err
-	}
-	if err := s.AddGeneratedConversionFunc((*infra.EndpointSetSpec)(nil), (*EndpointSetSpec)(nil), func(a, b interface{}, scope conversion.Scope) error {
-		return Convert_infra_EndpointSetSpec_To_v1alpha1_EndpointSetSpec(a.(*infra.EndpointSetSpec), b.(*EndpointSetSpec), scope)
-	}); err != nil {
-		return err
-	}
 	if err := s.AddGeneratedConversionFunc((*EndpointSetStatus)(nil), (*infra.EndpointSetStatus)(nil), func(a, b interface{}, scope conversion.Scope) error {
 		return Convert_v1alpha1_EndpointSetStatus_To_infra_EndpointSetStatus(a.(*EndpointSetStatus), b.(*infra.EndpointSetStatus), scope)
 	}); err != nil {
@@ -198,16 +188,6 @@ func RegisterConversions(s *runtime.Scheme) error {
 	}); err != nil {
 		return err
 	}
-	if err := s.AddGeneratedConversionFunc((*LinkSetSpec)(nil), (*infra.LinkSetSpec)(nil), func(a, b interface{}, scope conversion.Scope) error {
-		return Convert_v1alpha1_LinkSetSpec_To_infra_LinkSetSpec(a.(*LinkSetSpec), b.(*infra.LinkSetSpec), scope)
-	}); err != nil {
-		return err
-	}
-	if err := s.AddGeneratedConversionFunc((*infra.LinkSetSpec)(nil), (*LinkSetSpec)(nil), func(a, b interface{}, scope conversion.Scope) error {
-		return Convert_infra_LinkSetSpec_To_v1alpha1_LinkSetSpec(a.(*infra.LinkSetSpec), b.(*LinkSetSpec), scope)
-	}); err != nil {
-		return err
-	}
 	if err := s.AddGeneratedConversionFunc((*LinkSetStatus)(nil), (*infra.LinkSetStatus)(nil), func(a, b interface{}, scope conversion.Scope) error {
 		return Convert_v1alpha1_LinkSetStatus_To_infra_LinkSetStatus(a.(*LinkSetStatus), b.(*infra.LinkSetStatus), scope)
 	}); err != nil {
@@ -218,16 +198,6 @@ func RegisterConversions(s *runtime.Scheme) error {
 	}); err != nil {
 		return err
 	}
-	if err := s.AddGeneratedConversionFunc((*LinkSpec)(nil), (*infra.LinkSpec)(nil), func(a, b interface{}, scope conversion.Scope) error {
-		return Convert_v1alpha1_LinkSpec_To_infra_LinkSpec(a.(*LinkSpec), b.(*infra.LinkSpec), scope)
-	}); err != nil {
-		return err
-	}
-	if err := s.AddGeneratedConversionFunc((*infra.LinkSpec)(nil), (*LinkSpec)(nil), func(a, b interface{}, scope conversion.Scope) error {
-		return Convert_infra_LinkSpec_To_v1alpha1_LinkSpec(a.(*infra.LinkSpec), b.(*LinkSpec), scope)
-	}); err != nil {
-		return err
-	}
 	if err := s.AddGeneratedConversionFunc((*LinkStatus)(nil), (*infra.LinkStatus)(nil), func(a, b interface{}, scope conversion.Scope) error {
 		return Convert_v1alpha1_LinkStatus_To_infra_LinkStatus(a.(*LinkStatus), b.(*infra.LinkStatus), scope)
 	}); err != nil {
@@ -235,6 +205,16 @@ func RegisterConversions(s *runtime.Scheme) error {
 	}
 	if err := s.AddGeneratedConversionFunc((*infra.LinkStatus)(nil), (*LinkStatus)(nil), func(a, b interface{}, scope conversion.Scope) error {
 		return Convert_infra_LinkStatus_To_v1alpha1_LinkStatus(a.(*infra.LinkStatus), b.(*LinkStatus), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddGeneratedConversionFunc((*Location)(nil), (*infra.Location)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_Location_To_infra_Location(a.(*Location), b.(*infra.Location), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddGeneratedConversionFunc((*infra.Location)(nil), (*Location)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_infra_Location_To_v1alpha1_Location(a.(*infra.Location), b.(*Location), scope)
 	}); err != nil {
 		return err
 	}
@@ -648,6 +628,21 @@ func RegisterConversions(s *runtime.Scheme) error {
 	}); err != nil {
 		return err
 	}
+	if err := s.AddConversionFunc((*infra.EndpointSetSpec)(nil), (*EndpointSetSpec)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_infra_EndpointSetSpec_To_v1alpha1_EndpointSetSpec(a.(*infra.EndpointSetSpec), b.(*EndpointSetSpec), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddConversionFunc((*infra.LinkSetSpec)(nil), (*LinkSetSpec)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_infra_LinkSetSpec_To_v1alpha1_LinkSetSpec(a.(*infra.LinkSetSpec), b.(*LinkSetSpec), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddConversionFunc((*infra.LinkSpec)(nil), (*LinkSpec)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_infra_LinkSpec_To_v1alpha1_LinkSpec(a.(*infra.LinkSpec), b.(*LinkSpec), scope)
+	}); err != nil {
+		return err
+	}
 	if err := s.AddConversionFunc((*idv1alpha1.AdaptorID)(nil), (*id.AdaptorID)(nil), func(a, b interface{}, scope conversion.Scope) error {
 		return Convert_v1alpha1_AdaptorID_To_id_AdaptorID(a.(*idv1alpha1.AdaptorID), b.(*id.AdaptorID), scope)
 	}); err != nil {
@@ -660,6 +655,21 @@ func RegisterConversions(s *runtime.Scheme) error {
 	}
 	if err := s.AddConversionFunc((*idv1alpha1.EndpointID)(nil), (*id.EndpointID)(nil), func(a, b interface{}, scope conversion.Scope) error {
 		return Convert_v1alpha1_EndpointID_To_id_EndpointID(a.(*idv1alpha1.EndpointID), b.(*id.EndpointID), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddConversionFunc((*EndpointSetSpec)(nil), (*infra.EndpointSetSpec)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_EndpointSetSpec_To_infra_EndpointSetSpec(a.(*EndpointSetSpec), b.(*infra.EndpointSetSpec), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddConversionFunc((*LinkSetSpec)(nil), (*infra.LinkSetSpec)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_LinkSetSpec_To_infra_LinkSetSpec(a.(*LinkSetSpec), b.(*infra.LinkSetSpec), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddConversionFunc((*LinkSpec)(nil), (*infra.LinkSpec)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_LinkSpec_To_infra_LinkSpec(a.(*LinkSpec), b.(*infra.LinkSpec), scope)
 	}); err != nil {
 		return err
 	}
@@ -981,55 +991,6 @@ func Convert_infra_EndpointSetList_To_v1alpha1_EndpointSetList(in *infra.Endpoin
 	return autoConvert_infra_EndpointSetList_To_v1alpha1_EndpointSetList(in, out, s)
 }
 
-func autoConvert_v1alpha1_EndpointSetSpec_To_infra_EndpointSetSpec(in *EndpointSetSpec, out *infra.EndpointSetSpec, s conversion.Scope) error {
-	if in.Endpoints != nil {
-		in, out := &in.Endpoints, &out.Endpoints
-		*out = make([]*id.PartitionEndpointID, len(*in))
-		for i := range *in {
-			// FIXME: Provide conversion function to convert *idv1alpha1.PartitionEndpointID to *id.PartitionEndpointID
-			if err := Convert_v1alpha1_PartitionEndpointID_To_id_PartitionEndpointID((*in)[i], (*out)[i], s); err != nil {
-				return err
-			}
-		}
-	} else {
-		out.Endpoints = nil
-	}
-	out.Lacp = (*bool)(unsafe.Pointer(in.Lacp))
-	if err := asv1alpha1.Convert_v1alpha1_UserDefinedLabels_To_common_UserDefinedLabels(&in.UserDefinedLabels, &out.UserDefinedLabels, s); err != nil {
-		return err
-	}
-	return nil
-}
-
-// Convert_v1alpha1_EndpointSetSpec_To_infra_EndpointSetSpec is an autogenerated conversion function.
-func Convert_v1alpha1_EndpointSetSpec_To_infra_EndpointSetSpec(in *EndpointSetSpec, out *infra.EndpointSetSpec, s conversion.Scope) error {
-	return autoConvert_v1alpha1_EndpointSetSpec_To_infra_EndpointSetSpec(in, out, s)
-}
-
-func autoConvert_infra_EndpointSetSpec_To_v1alpha1_EndpointSetSpec(in *infra.EndpointSetSpec, out *EndpointSetSpec, s conversion.Scope) error {
-	if in.Endpoints != nil {
-		in, out := &in.Endpoints, &out.Endpoints
-		*out = make([]*idv1alpha1.PartitionEndpointID, len(*in))
-		for i := range *in {
-			// FIXME: Provide conversion function to convert *id.PartitionEndpointID to *idv1alpha1.PartitionEndpointID
-			if err := Convert_id_PartitionEndpointID_To_v1alpha1_PartitionEndpointID((*in)[i], (*out)[i], s); err != nil {
-				return err
-			}
-		}
-	} else {
-		out.Endpoints = nil
-	}
-	out.Lacp = (*bool)(unsafe.Pointer(in.Lacp))
-	if err := asv1alpha1.Convert_common_UserDefinedLabels_To_v1alpha1_UserDefinedLabels(&in.UserDefinedLabels, &out.UserDefinedLabels, s); err != nil {
-		return err
-	}
-	return nil
-}
-
-// Convert_infra_EndpointSetSpec_To_v1alpha1_EndpointSetSpec is an autogenerated conversion function.
-func Convert_infra_EndpointSetSpec_To_v1alpha1_EndpointSetSpec(in *infra.EndpointSetSpec, out *EndpointSetSpec, s conversion.Scope) error {
-	return autoConvert_infra_EndpointSetSpec_To_v1alpha1_EndpointSetSpec(in, out, s)
-}
 
 func autoConvert_v1alpha1_EndpointSetStatus_To_infra_EndpointSetStatus(in *EndpointSetStatus, out *infra.EndpointSetStatus, s conversion.Scope) error {
 	if err := asv1alpha1.Convert_v1alpha1_ConditionedStatus_To_condition_ConditionedStatus(&in.ConditionedStatus, &out.ConditionedStatus, s); err != nil {
@@ -1265,54 +1226,6 @@ func Convert_infra_LinkSetList_To_v1alpha1_LinkSetList(in *infra.LinkSetList, ou
 	return autoConvert_infra_LinkSetList_To_v1alpha1_LinkSetList(in, out, s)
 }
 
-func autoConvert_v1alpha1_LinkSetSpec_To_infra_LinkSetSpec(in *LinkSetSpec, out *infra.LinkSetSpec, s conversion.Scope) error {
-	if in.Endpoints != nil {
-		in, out := &in.Endpoints, &out.Endpoints
-		*out = make([]*id.PartitionEndpointID, len(*in))
-		for i := range *in {
-			// FIXME: Provide conversion function to convert *idv1alpha1.PartitionEndpointID to *id.PartitionEndpointID
-			if err := Convert_v1alpha1_PartitionEndpointID_To_id_PartitionEndpointID((*in)[i], (*out)[i], s); err != nil {
-				return err
-			}
-		}
-	} else {
-		out.Endpoints = nil
-	}
-	if err := asv1alpha1.Convert_v1alpha1_UserDefinedLabels_To_common_UserDefinedLabels(&in.UserDefinedLabels, &out.UserDefinedLabels, s); err != nil {
-		return err
-	}
-	return nil
-}
-
-// Convert_v1alpha1_LinkSetSpec_To_infra_LinkSetSpec is an autogenerated conversion function.
-func Convert_v1alpha1_LinkSetSpec_To_infra_LinkSetSpec(in *LinkSetSpec, out *infra.LinkSetSpec, s conversion.Scope) error {
-	return autoConvert_v1alpha1_LinkSetSpec_To_infra_LinkSetSpec(in, out, s)
-}
-
-func autoConvert_infra_LinkSetSpec_To_v1alpha1_LinkSetSpec(in *infra.LinkSetSpec, out *LinkSetSpec, s conversion.Scope) error {
-	if in.Endpoints != nil {
-		in, out := &in.Endpoints, &out.Endpoints
-		*out = make([]*idv1alpha1.PartitionEndpointID, len(*in))
-		for i := range *in {
-			// FIXME: Provide conversion function to convert *id.PartitionEndpointID to *idv1alpha1.PartitionEndpointID
-			if err := Convert_id_PartitionEndpointID_To_v1alpha1_PartitionEndpointID((*in)[i], (*out)[i], s); err != nil {
-				return err
-			}
-		}
-	} else {
-		out.Endpoints = nil
-	}
-	if err := asv1alpha1.Convert_common_UserDefinedLabels_To_v1alpha1_UserDefinedLabels(&in.UserDefinedLabels, &out.UserDefinedLabels, s); err != nil {
-		return err
-	}
-	return nil
-}
-
-// Convert_infra_LinkSetSpec_To_v1alpha1_LinkSetSpec is an autogenerated conversion function.
-func Convert_infra_LinkSetSpec_To_v1alpha1_LinkSetSpec(in *infra.LinkSetSpec, out *LinkSetSpec, s conversion.Scope) error {
-	return autoConvert_infra_LinkSetSpec_To_v1alpha1_LinkSetSpec(in, out, s)
-}
-
 func autoConvert_v1alpha1_LinkSetStatus_To_infra_LinkSetStatus(in *LinkSetStatus, out *infra.LinkSetStatus, s conversion.Scope) error {
 	if err := asv1alpha1.Convert_v1alpha1_ConditionedStatus_To_condition_ConditionedStatus(&in.ConditionedStatus, &out.ConditionedStatus, s); err != nil {
 		return err
@@ -1341,54 +1254,6 @@ func Convert_infra_LinkSetStatus_To_v1alpha1_LinkSetStatus(in *infra.LinkSetStat
 	return autoConvert_infra_LinkSetStatus_To_v1alpha1_LinkSetStatus(in, out, s)
 }
 
-func autoConvert_v1alpha1_LinkSpec_To_infra_LinkSpec(in *LinkSpec, out *infra.LinkSpec, s conversion.Scope) error {
-	if in.Endpoints != nil {
-		in, out := &in.Endpoints, &out.Endpoints
-		*out = make([]*id.PartitionEndpointID, len(*in))
-		for i := range *in {
-			// FIXME: Provide conversion function to convert *idv1alpha1.PartitionEndpointID to *id.PartitionEndpointID
-			if err := Convert_v1alpha1_PartitionEndpointID_To_id_PartitionEndpointID((*in)[i], (*out)[i], s); err != nil {
-				return err
-			}
-		}
-	} else {
-		out.Endpoints = nil
-	}
-	if err := asv1alpha1.Convert_v1alpha1_UserDefinedLabels_To_common_UserDefinedLabels(&in.UserDefinedLabels, &out.UserDefinedLabels, s); err != nil {
-		return err
-	}
-	return nil
-}
-
-// Convert_v1alpha1_LinkSpec_To_infra_LinkSpec is an autogenerated conversion function.
-func Convert_v1alpha1_LinkSpec_To_infra_LinkSpec(in *LinkSpec, out *infra.LinkSpec, s conversion.Scope) error {
-	return autoConvert_v1alpha1_LinkSpec_To_infra_LinkSpec(in, out, s)
-}
-
-func autoConvert_infra_LinkSpec_To_v1alpha1_LinkSpec(in *infra.LinkSpec, out *LinkSpec, s conversion.Scope) error {
-	if in.Endpoints != nil {
-		in, out := &in.Endpoints, &out.Endpoints
-		*out = make([]*idv1alpha1.PartitionEndpointID, len(*in))
-		for i := range *in {
-			// FIXME: Provide conversion function to convert *id.PartitionEndpointID to *idv1alpha1.PartitionEndpointID
-			if err := Convert_id_PartitionEndpointID_To_v1alpha1_PartitionEndpointID((*in)[i], (*out)[i], s); err != nil {
-				return err
-			}
-		}
-	} else {
-		out.Endpoints = nil
-	}
-	if err := asv1alpha1.Convert_common_UserDefinedLabels_To_v1alpha1_UserDefinedLabels(&in.UserDefinedLabels, &out.UserDefinedLabels, s); err != nil {
-		return err
-	}
-	return nil
-}
-
-// Convert_infra_LinkSpec_To_v1alpha1_LinkSpec is an autogenerated conversion function.
-func Convert_infra_LinkSpec_To_v1alpha1_LinkSpec(in *infra.LinkSpec, out *LinkSpec, s conversion.Scope) error {
-	return autoConvert_infra_LinkSpec_To_v1alpha1_LinkSpec(in, out, s)
-}
-
 func autoConvert_v1alpha1_LinkStatus_To_infra_LinkStatus(in *LinkStatus, out *infra.LinkStatus, s conversion.Scope) error {
 	if err := asv1alpha1.Convert_v1alpha1_ConditionedStatus_To_condition_ConditionedStatus(&in.ConditionedStatus, &out.ConditionedStatus, s); err != nil {
 		return err
@@ -1411,6 +1276,28 @@ func autoConvert_infra_LinkStatus_To_v1alpha1_LinkStatus(in *infra.LinkStatus, o
 // Convert_infra_LinkStatus_To_v1alpha1_LinkStatus is an autogenerated conversion function.
 func Convert_infra_LinkStatus_To_v1alpha1_LinkStatus(in *infra.LinkStatus, out *LinkStatus, s conversion.Scope) error {
 	return autoConvert_infra_LinkStatus_To_v1alpha1_LinkStatus(in, out, s)
+}
+
+func autoConvert_v1alpha1_Location_To_infra_Location(in *Location, out *infra.Location, s conversion.Scope) error {
+	out.Latitude = in.Latitude
+	out.Longitude = in.Longitude
+	return nil
+}
+
+// Convert_v1alpha1_Location_To_infra_Location is an autogenerated conversion function.
+func Convert_v1alpha1_Location_To_infra_Location(in *Location, out *infra.Location, s conversion.Scope) error {
+	return autoConvert_v1alpha1_Location_To_infra_Location(in, out, s)
+}
+
+func autoConvert_infra_Location_To_v1alpha1_Location(in *infra.Location, out *Location, s conversion.Scope) error {
+	out.Latitude = in.Latitude
+	out.Longitude = in.Longitude
+	return nil
+}
+
+// Convert_infra_Location_To_v1alpha1_Location is an autogenerated conversion function.
+func Convert_infra_Location_To_v1alpha1_Location(in *infra.Location, out *Location, s conversion.Scope) error {
+	return autoConvert_infra_Location_To_v1alpha1_Location(in, out, s)
 }
 
 func autoConvert_v1alpha1_Module_To_infra_Module(in *Module, out *infra.Module, s conversion.Scope) error {

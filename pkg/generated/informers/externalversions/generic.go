@@ -21,6 +21,7 @@ import (
 	"fmt"
 
 	v1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
+	ipamv1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 	vlanv1alpha1 "github.com/kuidio/kuid/apis/backend/vlan/v1alpha1"
 	infrav1alpha1 "github.com/kuidio/kuid/apis/infra/v1alpha1"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -90,6 +91,14 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Regions().Informer()}, nil
 	case infrav1alpha1.SchemeGroupVersion.WithResource("sites"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Infra().V1alpha1().Sites().Informer()}, nil
+
+		// Group=ipam.be.kuid.dev, Version=v1alpha1
+	case ipamv1alpha1.SchemeGroupVersion.WithResource("ipclaims"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Ipam().V1alpha1().IPClaims().Informer()}, nil
+	case ipamv1alpha1.SchemeGroupVersion.WithResource("ipentries"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Ipam().V1alpha1().IPEntries().Informer()}, nil
+	case ipamv1alpha1.SchemeGroupVersion.WithResource("ipindexes"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Ipam().V1alpha1().IPIndexes().Informer()}, nil
 
 		// Group=vlan.be.kuid.dev, Version=v1alpha1
 	case vlanv1alpha1.SchemeGroupVersion.WithResource("vlanclaims"):

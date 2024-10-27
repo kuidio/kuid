@@ -3,7 +3,7 @@ kind: IPClaim
 metadata:
   name: net1-claim1
 spec:
-  networkInstance: vpc1
+  index: vpc1
   selector:
     matchLabels:
       inv.kuid.dev/network: net1

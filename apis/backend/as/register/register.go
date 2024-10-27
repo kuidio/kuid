@@ -86,7 +86,7 @@ func ApplyStorageToBackend(ctx context.Context, be bebackend.Backend, apiServer 
 		Resource: as.ASClaimPlural,
 	}]
 
-	claimStorage, err := claimStorageProvider.Get(ctx, apiServer.Schemes[0], &ClaimGetter{})
+	claimStorage, err := claimStorageProvider.Get(ctx, apiServer.Schemes[0], &Getter{})
 	if err != nil {
 		return err
 	}
@@ -96,7 +96,7 @@ func ApplyStorageToBackend(ctx context.Context, be bebackend.Backend, apiServer 
 		Resource: as.ASEntryPlural,
 	}]
 
-	entryStorage, err := entryStorageProvider.Get(ctx, apiServer.Schemes[0], &EntryGetter{})
+	entryStorage, err := entryStorageProvider.Get(ctx, apiServer.Schemes[0], &Getter{})
 	if err != nil {
 		return err
 	}
@@ -104,18 +104,10 @@ func ApplyStorageToBackend(ctx context.Context, be bebackend.Backend, apiServer 
 	return be.AddStorage(entryStorage, claimStorage)
 }
 
-var _ generic.RESTOptionsGetter = &ClaimGetter{}
+var _ generic.RESTOptionsGetter = &Getter{}
 
-type ClaimGetter struct{}
+type Getter struct{}
 
-func (r *ClaimGetter) GetRESTOptions(resource schema.GroupResource, example runtime.Object) (generic.RESTOptions, error) {
-	return generic.RESTOptions{}, nil
-}
-
-var _ generic.RESTOptionsGetter = &EntryGetter{}
-
-type EntryGetter struct{}
-
-func (r *EntryGetter) GetRESTOptions(resource schema.GroupResource, example runtime.Object) (generic.RESTOptions, error) {
+func (r *Getter) GetRESTOptions(resource schema.GroupResource, example runtime.Object) (generic.RESTOptions, error) {
 	return generic.RESTOptions{}, nil
 }

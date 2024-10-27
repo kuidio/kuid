@@ -82,7 +82,7 @@ func main() {
 	// apiserver is only relevant when not using etcd
 	var apiserver *builder.Server
 	if kuidConfig.Storage != config.StorageType_Etcd {
-		apiserver = builder.APIServer.
+		apiserver = builder.NewAPIServer().
 			WithServerName("kuid-api-server").
 			WithOpenAPIDefinitions("Config", "v1alpha1", openapi.GetOpenAPIDefinitions).
 			WithoutEtcd()

@@ -3,6 +3,6 @@ kind: IPClaim
 metadata:
   name: vpc1.172-0-199-199-32
 spec:
-  networkInstance: vpc1
+  index: vpc1
   address: 172.0.199.199/32
     

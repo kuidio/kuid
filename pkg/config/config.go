@@ -70,9 +70,10 @@ func getDefaultConfig() *KuidConfig {
 	return &KuidConfig{
 		Storage: StorageType_Badgerdb,
 		Groups: []*KuidGroupConfig{
+			{Group: "infra.kuid.dev", Enabled: true, Sync: true},
 			{Group: "as.be.kuid.dev", Enabled: true, Sync: true},
 			{Group: "vlan.be.kuid.dev", Enabled: true, Sync: true},
-			{Group: "infra.kuid.dev", Enabled: true, Sync: true},
+			{Group: "ipam.be.kuid.dev", Enabled: true, Sync: true},
 		},
 	}
 }
