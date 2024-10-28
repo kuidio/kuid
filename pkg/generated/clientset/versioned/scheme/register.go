@@ -19,6 +19,7 @@ package scheme
 
 import (
 	asv1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
+	extcommv1alpha1 "github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1"
 	ipamv1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 	vlanv1alpha1 "github.com/kuidio/kuid/apis/backend/vlan/v1alpha1"
 	infrav1alpha1 "github.com/kuidio/kuid/apis/infra/v1alpha1"
@@ -34,6 +35,7 @@ var Codecs = serializer.NewCodecFactory(Scheme)
 var ParameterCodec = runtime.NewParameterCodec(Scheme)
 var localSchemeBuilder = runtime.SchemeBuilder{
 	asv1alpha1.AddToScheme,
+	extcommv1alpha1.AddToScheme,
 	infrav1alpha1.AddToScheme,
 	ipamv1alpha1.AddToScheme,
 	vlanv1alpha1.AddToScheme,

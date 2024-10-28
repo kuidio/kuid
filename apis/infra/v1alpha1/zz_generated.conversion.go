@@ -991,7 +991,6 @@ func Convert_infra_EndpointSetList_To_v1alpha1_EndpointSetList(in *infra.Endpoin
 	return autoConvert_infra_EndpointSetList_To_v1alpha1_EndpointSetList(in, out, s)
 }
 
-
 func autoConvert_v1alpha1_EndpointSetStatus_To_infra_EndpointSetStatus(in *EndpointSetStatus, out *infra.EndpointSetStatus, s conversion.Scope) error {
 	if err := asv1alpha1.Convert_v1alpha1_ConditionedStatus_To_condition_ConditionedStatus(&in.ConditionedStatus, &out.ConditionedStatus, s); err != nil {
 		return err

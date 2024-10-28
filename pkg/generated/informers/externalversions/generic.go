@@ -21,6 +21,7 @@ import (
 	"fmt"
 
 	v1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
+	extcommv1alpha1 "github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1"
 	ipamv1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
 	vlanv1alpha1 "github.com/kuidio/kuid/apis/backend/vlan/v1alpha1"
 	infrav1alpha1 "github.com/kuidio/kuid/apis/infra/v1alpha1"
@@ -61,6 +62,14 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.As().V1alpha1().ASEntries().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("asindexes"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.As().V1alpha1().ASIndexes().Informer()}, nil
+
+		// Group=extcomm.be.kuid.dev, Version=v1alpha1
+	case extcommv1alpha1.SchemeGroupVersion.WithResource("extcommclaims"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Extcomm().V1alpha1().EXTCOMMClaims().Informer()}, nil
+	case extcommv1alpha1.SchemeGroupVersion.WithResource("extcommentries"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Extcomm().V1alpha1().EXTCOMMEntries().Informer()}, nil
+	case extcommv1alpha1.SchemeGroupVersion.WithResource("extcommindexes"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Extcomm().V1alpha1().EXTCOMMIndexes().Informer()}, nil
 
 		// Group=infra.kuid.dev, Version=v1alpha1
 	case infrav1alpha1.SchemeGroupVersion.WithResource("clusters"):

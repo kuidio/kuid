@@ -24,6 +24,7 @@ import (
 
 	versioned "github.com/kuidio/kuid/pkg/generated/clientset/versioned"
 	as "github.com/kuidio/kuid/pkg/generated/informers/externalversions/as"
+	extcomm "github.com/kuidio/kuid/pkg/generated/informers/externalversions/extcomm"
 	infra "github.com/kuidio/kuid/pkg/generated/informers/externalversions/infra"
 	internalinterfaces "github.com/kuidio/kuid/pkg/generated/informers/externalversions/internalinterfaces"
 	ipam "github.com/kuidio/kuid/pkg/generated/informers/externalversions/ipam"
@@ -257,6 +258,7 @@ type SharedInformerFactory interface {
 	InformerFor(obj runtime.Object, newFunc internalinterfaces.NewInformerFunc) cache.SharedIndexInformer
 
 	As() as.Interface
+	Extcomm() extcomm.Interface
 	Infra() infra.Interface
 	Ipam() ipam.Interface
 	Vlan() vlan.Interface
@@ -264,6 +266,10 @@ type SharedInformerFactory interface {
 
 func (f *sharedInformerFactory) As() as.Interface {
 	return as.New(f, f.namespace, f.tweakListOptions)
+}
+
+func (f *sharedInformerFactory) Extcomm() extcomm.Interface {
+	return extcomm.New(f, f.namespace, f.tweakListOptions)
 }
 
 func (f *sharedInformerFactory) Infra() infra.Interface {

@@ -22,6 +22,7 @@ import (
 	"net/http"
 
 	asv1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/as/v1alpha1"
+	extcommv1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/extcomm/v1alpha1"
 	infrav1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/infra/v1alpha1"
 	ipamv1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/ipam/v1alpha1"
 	vlanv1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/vlan/v1alpha1"
@@ -33,6 +34,7 @@ import (
 type Interface interface {
 	Discovery() discovery.DiscoveryInterface
 	AsV1alpha1() asv1alpha1.AsV1alpha1Interface
+	ExtcommV1alpha1() extcommv1alpha1.ExtcommV1alpha1Interface
 	InfraV1alpha1() infrav1alpha1.InfraV1alpha1Interface
 	IpamV1alpha1() ipamv1alpha1.IpamV1alpha1Interface
 	VlanV1alpha1() vlanv1alpha1.VlanV1alpha1Interface
@@ -41,15 +43,21 @@ type Interface interface {
 // Clientset contains the clients for groups.
 type Clientset struct {
 	*discovery.DiscoveryClient
-	asV1alpha1    *asv1alpha1.AsV1alpha1Client
-	infraV1alpha1 *infrav1alpha1.InfraV1alpha1Client
-	ipamV1alpha1  *ipamv1alpha1.IpamV1alpha1Client
-	vlanV1alpha1  *vlanv1alpha1.VlanV1alpha1Client
+	asV1alpha1      *asv1alpha1.AsV1alpha1Client
+	extcommV1alpha1 *extcommv1alpha1.ExtcommV1alpha1Client
+	infraV1alpha1   *infrav1alpha1.InfraV1alpha1Client
+	ipamV1alpha1    *ipamv1alpha1.IpamV1alpha1Client
+	vlanV1alpha1    *vlanv1alpha1.VlanV1alpha1Client
 }
 
 // AsV1alpha1 retrieves the AsV1alpha1Client
 func (c *Clientset) AsV1alpha1() asv1alpha1.AsV1alpha1Interface {
 	return c.asV1alpha1
+}
+
+// ExtcommV1alpha1 retrieves the ExtcommV1alpha1Client
+func (c *Clientset) ExtcommV1alpha1() extcommv1alpha1.ExtcommV1alpha1Interface {
+	return c.extcommV1alpha1
 }
 
 // InfraV1alpha1 retrieves the InfraV1alpha1Client
@@ -115,6 +123,10 @@ func NewForConfigAndClient(c *rest.Config, httpClient *http.Client) (*Clientset,
 	if err != nil {
 		return nil, err
 	}
+	cs.extcommV1alpha1, err = extcommv1alpha1.NewForConfigAndClient(&configShallowCopy, httpClient)
+	if err != nil {
+		return nil, err
+	}
 	cs.infraV1alpha1, err = infrav1alpha1.NewForConfigAndClient(&configShallowCopy, httpClient)
 	if err != nil {
 		return nil, err
@@ -149,6 +161,7 @@ func NewForConfigOrDie(c *rest.Config) *Clientset {
 func New(c rest.Interface) *Clientset {
 	var cs Clientset
 	cs.asV1alpha1 = asv1alpha1.New(c)
+	cs.extcommV1alpha1 = extcommv1alpha1.New(c)
 	cs.infraV1alpha1 = infrav1alpha1.New(c)
 	cs.ipamV1alpha1 = ipamv1alpha1.New(c)
 	cs.vlanV1alpha1 = vlanv1alpha1.New(c)

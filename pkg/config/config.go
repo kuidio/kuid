@@ -47,7 +47,7 @@ type KuidGroupConfig struct {
 }
 
 type KuidConfig struct {
-	Storage StorageType    `json:"Storage"`
+	Storage StorageType        `json:"Storage"`
 	Groups  []*KuidGroupConfig `json:"groups"`
 }
 
@@ -74,6 +74,8 @@ func getDefaultConfig() *KuidConfig {
 			{Group: "as.be.kuid.dev", Enabled: true, Sync: true},
 			{Group: "vlan.be.kuid.dev", Enabled: true, Sync: true},
 			{Group: "ipam.be.kuid.dev", Enabled: true, Sync: true},
+			{Group: "genid.be.kuid.dev", Enabled: true, Sync: true},
+			{Group: "extcomm.be.kuid.dev", Enabled: true, Sync: true},
 		},
 	}
 }

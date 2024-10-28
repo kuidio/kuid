@@ -21,6 +21,8 @@ import (
 	clientset "github.com/kuidio/kuid/pkg/generated/clientset/versioned"
 	asv1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/as/v1alpha1"
 	fakeasv1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/as/v1alpha1/fake"
+	extcommv1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/extcomm/v1alpha1"
+	fakeextcommv1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/extcomm/v1alpha1/fake"
 	infrav1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/infra/v1alpha1"
 	fakeinfrav1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/infra/v1alpha1/fake"
 	ipamv1alpha1 "github.com/kuidio/kuid/pkg/generated/clientset/versioned/typed/ipam/v1alpha1"
@@ -91,6 +93,11 @@ var (
 // AsV1alpha1 retrieves the AsV1alpha1Client
 func (c *Clientset) AsV1alpha1() asv1alpha1.AsV1alpha1Interface {
 	return &fakeasv1alpha1.FakeAsV1alpha1{Fake: &c.Fake}
+}
+
+// ExtcommV1alpha1 retrieves the ExtcommV1alpha1Client
+func (c *Clientset) ExtcommV1alpha1() extcommv1alpha1.ExtcommV1alpha1Interface {
+	return &fakeextcommv1alpha1.FakeExtcommV1alpha1{Fake: &c.Fake}
 }
 
 // InfraV1alpha1 retrieves the InfraV1alpha1Client

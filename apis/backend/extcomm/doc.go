@@ -14,17 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package all
+// +k8s:deepcopy-gen=package,register
+// +groupName=extcomm.be.kuid.dev
 
-import (
-	_ "github.com/kuidio/kuid/apis/infra/register"
-	_ "github.com/kuidio/kuid/apis/backend/as/register"
-	_ "github.com/kuidio/kuid/apis/backend/ipam/register"
-	_ "github.com/kuidio/kuid/apis/backend/vlan/register"
-	_ "github.com/kuidio/kuid/apis/backend/genid/register"
-	_ "github.com/kuidio/kuid/apis/backend/extcomm/register"
-	
-)
-
-//vxlanbev1alpha1.AddToScheme,
-//extcommbev1alpha1.AddToScheme,
+// Package genid is the internal version of the API.
+package extcomm // import "github.com/kuidio/kuid/apis/backend/extcomm"
