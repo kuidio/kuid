@@ -147,12 +147,6 @@ github.com/hansthienpondt/nipam v0.0.5 h1:83Mdwdgx3l9tvio8u8ufan97MWx49n38IJwgSB
 github.com/hansthienpondt/nipam v0.0.5/go.mod h1:dJI5FdzV6iaQyaOH4htGqJNs6wGieJeX3lhPj1Ah19U=
 github.com/henderiw/apiserver-builder v0.0.4-0.20241027084658-10d7f9d97252 h1:+I3bHSWCKCKLoUZHRSMCxs5Q7DMFFgdE+DfhOsOOGko=
 github.com/henderiw/apiserver-builder v0.0.4-0.20241027084658-10d7f9d97252/go.mod h1:LfJu1JURnxHwnFa8CVb2XPw50TwdU1xQvuUNxpaSOlE=
-github.com/henderiw/apiserver-store v0.0.3-0.20241022143604-0995425b3d06 h1:1RVj1x0ykpmuxynrLww0oHgs5TdkciwJZr996SmGDf0=
-github.com/henderiw/apiserver-store v0.0.3-0.20241022143604-0995425b3d06/go.mod h1:VVkUptd3MTyREmpo+C/t6l+mJAwo3A1UWvHi0QSH0yE=
-github.com/henderiw/apiserver-store v0.0.3-0.20241027161332-ea9aa2ddc2c2 h1:DhBwOL+tAxHGIPaESQy0GDj2TTTRbFzmTUl/nE2Dz98=
-github.com/henderiw/apiserver-store v0.0.3-0.20241027161332-ea9aa2ddc2c2/go.mod h1:VVkUptd3MTyREmpo+C/t6l+mJAwo3A1UWvHi0QSH0yE=
-github.com/henderiw/apiserver-store v0.0.3-0.20241027162826-7a30b5bfc5ff h1:iEFyzjBUqNviHT4/Evp8EnlDP4Bw7vYH+S9EbCwOSEs=
-github.com/henderiw/apiserver-store v0.0.3-0.20241027162826-7a30b5bfc5ff/go.mod h1:VVkUptd3MTyREmpo+C/t6l+mJAwo3A1UWvHi0QSH0yE=
 github.com/henderiw/apiserver-store v0.0.3-0.20241027163114-c382e2d133b7 h1:gqpv6oJ0XN9H8/pXq2B7sXFdXH+YmjE05ivs/ffNAq0=
 github.com/henderiw/apiserver-store v0.0.3-0.20241027163114-c382e2d133b7/go.mod h1:VVkUptd3MTyREmpo+C/t6l+mJAwo3A1UWvHi0QSH0yE=
 github.com/henderiw/idxtable v0.0.0-20241021085446-f8d804551342 h1:gkdOvjxM6rNTkcyoykZLjAfPjn06/MEY4o8cy+3uj2g=

@@ -91,8 +91,12 @@ func (r *statusStrategy) InvokeUpdate(ctx context.Context, obj, old runtime.Obje
 }
 
 func (r *statusStrategy) Update(ctx context.Context, key types.NamespacedName, obj, old runtime.Object, dryrun bool) (runtime.Object, error) {
+	log := log.FromContext(ctx)
+	log.Debug("Update status", "key", key.String(), "old", old)
+	log.Debug("Update status", "key", key.String(), "new", obj)
 	// check if there is a change
 	if r.obj.IsStatusEqual(ctx, obj, old) {
+		log.Debug("Update status equal", "key", key.String())
 		return obj, nil
 	}
 

@@ -137,7 +137,7 @@ func (r *IPClaim) PrepareForStatusUpdate(ctx context.Context, obj, old runtime.O
 	oldObj := old.(*IPClaim)
 	newObj.Spec = oldObj.Spec
 
-	// Status updates are for only for updating status, not objectmeta.
+	// Status updates are only for updating status, not objectmeta.
 	metav1.ResetObjectMetaForStatus(&newObj.ObjectMeta, &newObj.ObjectMeta)
 }
 

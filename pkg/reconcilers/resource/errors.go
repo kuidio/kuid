@@ -50,9 +50,3 @@ func IgnoreAny(err error, is ...ErrorIs) error {
 func IgnoreNotFound(err error) error {
 	return Ignore(errors.IsNotFound, err)
 }
-
-// IgnoreAlreadyExist returns the supplied error, or nil if the error indicates a
-// Kubernetes resource that  already exists.
-func IgnoreAlreadyExist(err error) error {
-	return Ignore(errors.IsAlreadyExists, err)
-}

@@ -88,7 +88,6 @@ func main() {
 			WithoutEtcd()
 	}
 
-	backends := map[string]backend.Backend{}
 	for _, kuidGroupConfig := range kuidConfig.Groups {
 		group := kuidGroupConfig.Group
 		log.Info("kuid group configured", "group", group, "enabled", kuidGroupConfig.Enabled, "sync", kuidGroupConfig.Sync)
@@ -105,7 +104,7 @@ func main() {
 		if kuidConfig.Storage != config.StorageType_Etcd {
 			if groupConfig.BackendFn != nil {
 				be := groupConfig.BackendFn()
-				backends[group] = be
+				ctrlCfg.Backends[group] = be
 				for _, resource := range groupConfig.Resources {
 					storageProvider := resource.StorageProviderFn(ctx, resource.Internal, be, kuidGroupConfig.Sync, registryOptions)
 					for _, resourceVersion := range resource.ResourceVersions {
@@ -122,19 +121,19 @@ func main() {
 			}
 		}
 
-		// reconcilers get registered when async operations are configured
-		if !kuidGroupConfig.Sync {
-			if recs, ok := reconcilers.ReconcilerGroups[group]; ok {
-				groupReconcilers[group] = &ReconcilerGroup{
-					addToSchema: groupConfig.AddToScheme,
-					reconcilers: make([]reconcilers.Reconciler, 0, len(recs)),
-				}
-				for _, reconciler := range recs {
-					groupReconcilers[group].reconcilers = append(groupReconcilers[group].reconcilers, reconciler)
-				}
+		// TODO: determine if the reconsilers behave different for sync compared to async
+		if recs, ok := reconcilers.ReconcilerGroups[group]; ok {
+			log.Info("reconciler group", "group", group)
+			groupReconcilers[group] = &ReconcilerGroup{
+				addToSchema: groupConfig.AddToScheme,
+				reconcilers: make([]reconcilers.Reconciler, 0, len(recs)),
 			}
-			// add the backend -> for etcd this needs to be configmaps -> tbd how we handle this
+			for name, reconciler := range recs {
+				log.Info("reconciler", "group", group, "name", name)
+				groupReconcilers[group].reconcilers = append(groupReconcilers[group].reconcilers, reconciler)
+			}
 		}
+		// add the backend -> for etcd this needs to be configmaps -> tbd how we handle this
 	}
 
 	if kuidConfig.Storage != config.StorageType_Etcd {
@@ -154,17 +153,20 @@ func main() {
 			}
 
 			if groupConfig.ApplyStorageToBackendFn != nil {
-				if err := groupConfig.ApplyStorageToBackendFn(ctx, backends[group], apiserver); err != nil {
+				if err := groupConfig.ApplyStorageToBackendFn(ctx, ctrlCfg.Backends[group], apiserver); err != nil {
 					log.Error("cannot apply storage to backend", "error", err.Error())
 					os.Exit(1)
 				}
 			}
 		}
-		if err := cmd.Execute(); err != nil {
-			panic(err)
-		}
+		go func() {
+			if err := cmd.Execute(); err != nil {
+				panic(err)
+			}
+		}()
 	}
 
+	log.Info("groupReconcilers", "total", len(groupReconcilers))
 	if len(groupReconcilers) != 0 {
 		// setup scheme for controllers
 		runScheme := runtime.NewScheme()

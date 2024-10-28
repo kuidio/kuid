@@ -481,7 +481,6 @@ func (r *be) listIndexClaims(ctx context.Context, k store.Key) (map[string]*ipam
 			continue
 		}
 		if claim.GetIndex() == k.Name {
-			fmt.Println("listIndexClaims", claim.Name, claim.OwnerReferences)
 			for _, ownerRef := range claim.OwnerReferences {
 				if ownerRef.Kind == ipam.IPIndexKind {
 					claimMap[claim.GetNamespacedName().String()] = claim

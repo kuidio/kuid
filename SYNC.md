@@ -18,7 +18,7 @@
 - sync/async: reconciler update status with status subresource (reconciler needed)
 
 4. order is important
-- sync: when something fails the client need to handle this
+- sync: when something fails the client need to handle this; once accepted it remains in the system
 - async: reconciler tries to recover
 
 5. 

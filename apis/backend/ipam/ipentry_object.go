@@ -108,7 +108,7 @@ func IPEntryFromRuntime(ru runtime.Object) (*IPEntry, error) {
 
 func GetIPEntry(ctx context.Context, k store.Key, rangeName string, prefix netip.Prefix, labels map[string]string) *IPEntry {
 	log := log.FromContext(ctx)
-	log.Info("get ipEntry from iptables", "key", k.String(), "range", rangeName, "prefix", prefix, "labels", labels)
+	log.Debug("get ipEntry from iptables", "key", k.String(), "range", rangeName, "prefix", prefix, "labels", labels)
 
 	pi := iputil.NewPrefixInfo(prefix)
 

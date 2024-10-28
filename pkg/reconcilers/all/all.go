@@ -17,6 +17,6 @@ limitations under the License.
 package all
 
 import (
-	_ "github.com/kuidio/kuid/pkg/reconcilers/asclaim"
-	_ "github.com/kuidio/kuid/pkg/reconcilers/asindex"
+	_ "github.com/kuidio/kuid/pkg/reconcilers/ipindex"
+	_ "github.com/kuidio/kuid/pkg/reconcilers/ipclaim"
 )
