@@ -20,16 +20,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"reflect"
 	"sync"
 
-	"github.com/henderiw/apiserver-store/pkg/generic/registry"
 	"github.com/henderiw/logger/log"
 	"github.com/henderiw/store"
 	"github.com/kform-dev/choreo/apis/condition"
 	"github.com/kuidio/kuid/apis/backend/ipam"
 	bebackend "github.com/kuidio/kuid/pkg/backend"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apiserver/pkg/registry/rest"
 )
 
 func New() bebackend.Backend {
@@ -43,8 +42,9 @@ type be struct {
 	cache bebackend.Cache[*CacheInstanceContext]
 	m     sync.RWMutex
 	// added later
-	entryStorage *registry.Store
-	claimStorage *registry.Store
+	//entryStorage *registry.Store
+	//claimStorage *registry.Store
+	bestorage BackendStorage
 }
 
 func (r *be) PrintEntries(ctx context.Context, index string) {
@@ -55,17 +55,24 @@ func (r *be) PrintEntries(ctx context.Context, index string) {
 	}
 }
 
-func (r *be) AddStorage(entryStorage, claimStorage rest.Storage) error {
-	entrystore, ok := entryStorage.(*registry.Store)
+func (r *be) AddStorageInterfaces(bes any) error {
+	bestorage, ok := bes.(BackendStorage)
 	if !ok {
-		return errors.New("entry store is not a *registry.Store")
+		return fmt.Errorf("AddStorageInterfaces did not supply a ipam BackendStorage interface, got: %s", reflect.TypeOf(bes).Name())
 	}
-	r.entryStorage = entrystore
-	claimstore, ok := claimStorage.(*registry.Store)
-	if !ok {
-		return errors.New("claim store is not a *registry.Store")
-	}
-	r.claimStorage = claimstore
+	r.bestorage = bestorage
+	/*
+		entrystore, ok := entryStorage.(*registry.Store)
+		if !ok {
+			return errors.New("entry store is not a *registry.Store")
+		}
+		r.entryStorage = entrystore
+		claimstore, ok := claimStorage.(*registry.Store)
+		if !ok {
+			return errors.New("claim store is not a *registry.Store")
+		}
+		r.claimStorage = claimstore
+	*/
 	return nil
 }
 

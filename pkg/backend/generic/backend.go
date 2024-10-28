@@ -6,14 +6,12 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/henderiw/apiserver-store/pkg/generic/registry"
 	"github.com/henderiw/logger/log"
 	"github.com/henderiw/store"
 	"github.com/kform-dev/choreo/apis/condition"
 	"github.com/kuidio/kuid/apis/backend"
 	bebackend "github.com/kuidio/kuid/pkg/backend"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apiserver/pkg/registry/rest"
 )
 
 func New(
@@ -45,8 +43,9 @@ type be struct {
 	entryObjectFn    func(runtime.Object) (backend.EntryObject, error)
 	entryFromCacheFn func(k store.Key, vrange, id string, labels map[string]string) backend.EntryObject
 	// added later
-	entryStorage *registry.Store
-	claimStorage *registry.Store
+	//entryStorage *registry.Store
+	//claimStorage *registry.Store
+	bestorage BackendStorage
 }
 
 func (r *be) PrintEntries(ctx context.Context, index string) {
@@ -57,6 +56,28 @@ func (r *be) PrintEntries(ctx context.Context, index string) {
 	}
 }
 
+func (r *be) AddStorageInterfaces(bes any) error {
+	bestorage, ok := bes.(BackendStorage)
+	if !ok {
+		return fmt.Errorf("AddStorageInterfaces did not supply a generic BackendStorage interface, got: %s", reflect.TypeOf(bes).Name())
+	}
+	r.bestorage = bestorage
+	/*
+		entrystore, ok := entryStorage.(*registry.Store)
+		if !ok {
+			return errors.New("entry store is not a *registry.Store")
+		}
+		r.entryStorage = entrystore
+		claimstore, ok := claimStorage.(*registry.Store)
+		if !ok {
+			return errors.New("claim store is not a *registry.Store")
+		}
+		r.claimStorage = claimstore
+	*/
+	return nil
+}
+
+/*
 func (r *be) AddStorage(entryStorage, claimStorage rest.Storage) error {
 	entrystore, ok := entryStorage.(*registry.Store)
 	if !ok {
@@ -70,10 +91,13 @@ func (r *be) AddStorage(entryStorage, claimStorage rest.Storage) error {
 	r.claimStorage = claimstore
 	return nil
 }
+*/
 
+/*
 func (r *be) GetClaimStorage() *registry.Store {
 	return r.claimStorage
 }
+*/
 
 // CreateIndex creates a backend index
 func (r *be) CreateIndex(ctx context.Context, obj runtime.Object) error {

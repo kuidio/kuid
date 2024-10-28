@@ -27,13 +27,9 @@ import (
 	"github.com/henderiw/logger/log"
 	"github.com/henderiw/store"
 	"github.com/kuidio/kuid/apis/backend/ipam"
-	"k8s.io/apimachinery/pkg/api/meta"
-	"k8s.io/apimachinery/pkg/apis/meta/internalversion"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	genericapirequest "k8s.io/apiserver/pkg/endpoints/request"
-	"k8s.io/apiserver/pkg/registry/rest"
 )
 
 func (r *be) restore(ctx context.Context, index *ipam.IPIndex) error {
@@ -138,28 +134,46 @@ func (r *be) saveAll(ctx context.Context, k store.Key) error {
 
 		ctx = genericapirequest.WithNamespace(ctx, newEntry.GetNamespace())
 		if !found {
-			if _, err := r.entryStorage.Create(ctx, newEntry, nil, &metav1.CreateOptions{
-				FieldManager: "backend",
-			}); err != nil {
+			if err := r.bestorage.CreateEntry(ctx, newEntry); err != nil {
 				log.Error("saveAll create failed", "name", newEntry.GetName(), "error", err.Error())
 				return err
 			}
+
+			/*
+				if _, err := r.entryStorage.Create(ctx, newEntry, nil, &metav1.CreateOptions{
+					FieldManager: "backend",
+				}); err != nil {
+
+				}
+			*/
 			continue
 		}
-
-		defaultObjInfo := rest.DefaultUpdatedObjectInfo(oldEntry, EntryTransformer)
-		if _, _, err := r.entryStorage.Update(ctx, oldEntry.GetName(), defaultObjInfo, nil, nil, false, &metav1.UpdateOptions{
-			FieldManager: "backend",
-		}); err != nil {
-			fmt.Println("update err", err)
+		if err := r.bestorage.UpdateEntry(ctx, newEntry, oldEntry); err != nil {
+			log.Error("saveAll update failed", "name", newEntry.GetName(), "error", err.Error())
 			return err
 		}
+
+		/*
+			defaultObjInfo := rest.DefaultUpdatedObjectInfo(oldEntry, EntryTransformer)
+			if _, _, err := r.entryStorage.Update(ctx, oldEntry.GetName(), defaultObjInfo, nil, nil, false, &metav1.UpdateOptions{
+				FieldManager: "backend",
+			}); err != nil {
+				fmt.Println("update err", err)
+				return err
+			}
+		*/
 	}
 	for _, curEntry := range curEntries {
-		ctx = genericapirequest.WithNamespace(ctx, curEntry.GetNamespace())
-		if _, _, err := r.entryStorage.Delete(ctx, curEntry.GetName(), nil, &metav1.DeleteOptions{}); err != nil {
+		if err := r.bestorage.DeleteEntry(ctx, curEntry); err != nil {
+			log.Error("saveAll update failed", "name", curEntry.GetName(), "error", err.Error())
 			return err
 		}
+		/*
+			ctx = genericapirequest.WithNamespace(ctx, curEntry.GetNamespace())
+			if _, _, err := r.entryStorage.Delete(ctx, curEntry.GetName(), nil, &metav1.DeleteOptions{}); err != nil {
+				return err
+			}
+		*/
 	}
 	return nil
 }
@@ -207,13 +221,19 @@ func (r *be) deleteEntries(ctx context.Context, k store.Key) error {
 	}
 
 	var errm error
-	for _, entry := range entries {
-		ctx = genericapirequest.WithNamespace(ctx, entry.GetNamespace())
-		if _, _, err := r.entryStorage.Delete(ctx, entry.GetName(), nil, &metav1.DeleteOptions{}); err != nil {
-			log.Error("cannot delete entry", "error", err)
-			errm = errors.Join(errm, err)
-			continue
+	for _, curEntry := range entries {
+		if err := r.bestorage.DeleteEntry(ctx, curEntry); err != nil {
+			log.Error("delete entry failed", "name", curEntry.GetName(), "error", err.Error())
+			return err
 		}
+		/*
+			ctx = genericapirequest.WithNamespace(ctx, entry.GetNamespace())
+			if _, _, err := r.entryStorage.Delete(ctx, entry.GetName(), nil, &metav1.DeleteOptions{}); err != nil {
+				log.Error("cannot delete entry", "error", err)
+				errm = errors.Join(errm, err)
+				continue
+			}
+		*/
 	}
 	return errm
 }
@@ -231,90 +251,102 @@ func (r *be) deleteClaims(ctx context.Context, k store.Key) error {
 	var errm error
 	for _, claim := range claims {
 		log.Debug("deleteClaim from storage", "claim", claim.GetName())
-		ctx = genericapirequest.WithNamespace(ctx, claim.GetNamespace())
-		if _, _, err := r.claimStorage.Delete(ctx, claim.GetName(), nil, &metav1.DeleteOptions{
-			DryRun: []string{"recursion"},
-		}); err != nil {
+
+		if err := r.bestorage.DeleteClaim(ctx, claim); err != nil {
 			log.Error("cannot delete claim", "error", err)
 			errm = errors.Join(errm, err)
 			continue
 		}
+
+		/*
+			ctx = genericapirequest.WithNamespace(ctx, claim.GetNamespace())
+			if _, _, err := r.claimStorage.Delete(ctx, claim.GetName(), nil, &metav1.DeleteOptions{
+				DryRun: []string{"recursion"},
+			}); err != nil {
+				log.Error("cannot delete claim", "error", err)
+				errm = errors.Join(errm, err)
+				continue
+			}
+		*/
 	}
 	return errm
 }
 
 func (r *be) listEntries(ctx context.Context, k store.Key) ([]*ipam.IPEntry, error) {
-	log := log.FromContext(ctx).With("key", k.String())
+	//log := log.FromContext(ctx).With("key", k.String())
+	return r.bestorage.ListEntries(ctx, k)
+
+	//	selector, err := selector.ExprSelectorAsSelector(
+	//		&selectorv1alpha1.ExpressionSelector{
+	//			Match: map[string]string{
+	//				"spec.index": k.Name,
+	//			},
+	//		},
+	//	)
+	//	if err != nil {
+	//		return nil, err
+	//	}
 	/*
-		selector, err := selector.ExprSelectorAsSelector(
-			&selectorv1alpha1.ExpressionSelector{
-				Match: map[string]string{
-					"spec.index": k.Name,
-				},
-			},
-		)
+		log.Debug("list entries from storage")
+		list, err := r.entryStorage.List(ctx, &internalversion.ListOptions{})
 		if err != nil {
 			return nil, err
 		}
+		items, err := meta.ExtractList(list)
+		if err != nil {
+			return nil, err
+		}
+		entryList := make([]*ipam.IPEntry, 0)
+		var errm error
+		for _, obj := range items {
+			entryObj, ok := obj.(*ipam.IPEntry)
+			if !ok {
+				log.Error("obj is not an IPEntry", "obj", reflect.TypeOf(obj).Name())
+				errm = errors.Join(errm, err)
+				continue
+			}
+			if entryObj.GetIndex() == k.Name {
+				entryList = append(entryList, entryObj)
+			}
+		}
+		return entryList, nil
 	*/
-	log.Debug("list entries from storage")
-	list, err := r.entryStorage.List(ctx, &internalversion.ListOptions{})
-	if err != nil {
-		return nil, err
-	}
-	items, err := meta.ExtractList(list)
-	if err != nil {
-		return nil, err
-	}
-	entryList := make([]*ipam.IPEntry, 0)
-	var errm error
-	for _, obj := range items {
-		entryObj, ok := obj.(*ipam.IPEntry)
-		if !ok {
-			log.Error("obj is not an IPEntry", "obj", reflect.TypeOf(obj).Name())
-			errm = errors.Join(errm, err)
-			continue
-		}
-		if entryObj.GetIndex() == k.Name {
-			entryList = append(entryList, entryObj)
-		}
-	}
-	return entryList, nil
 }
 
 func (r *be) listClaims(ctx context.Context, k store.Key) (map[string]*ipam.IPClaim, error) {
-	log := log.FromContext(ctx).With("key", k.String())
+	//log := log.FromContext(ctx).With("key", k.String())
+	return r.bestorage.ListClaims(ctx, k)
+	//	selector, err := selector.ExprSelectorAsSelector(
+	//		&selectorv1alpha1.ExpressionSelector{
+	//			Match: match,
+	//		},
+	//	)
+	//	if err != nil {
+	//		return nil, err
+	//	}
 	/*
-		selector, err := selector.ExprSelectorAsSelector(
-			&selectorv1alpha1.ExpressionSelector{
-				Match: match,
-			},
-		)
+		log.Debug("list claims from storage")
+		list, err := r.claimStorage.List(ctx, &internalversion.ListOptions{})
 		if err != nil {
 			return nil, err
 		}
-	*/
-	log.Debug("list claims from storage")
-	list, err := r.claimStorage.List(ctx, &internalversion.ListOptions{})
-	if err != nil {
-		return nil, err
-	}
-	items, err := meta.ExtractList(list)
-	if err != nil {
-		return nil, err
-	}
-	claimMap := map[string]*ipam.IPClaim{}
-	var errm error
-	for _, obj := range items {
-		claimObj, ok := obj.(*ipam.IPClaim)
-		if !ok {
-			log.Error("obj is not an IPClaim", "obj", reflect.TypeOf(obj).Name())
-			errm = errors.Join(errm, err)
-			continue
+		items, err := meta.ExtractList(list)
+		if err != nil {
+			return nil, err
 		}
-		claimMap[claimObj.GetNamespacedName().String()] = claimObj
-	}
-	return claimMap, errm
+		claimMap := map[string]*ipam.IPClaim{}
+		var errm error
+		for _, obj := range items {
+			claimObj, ok := obj.(*ipam.IPClaim)
+			if !ok {
+				log.Error("obj is not an IPClaim", "obj", reflect.TypeOf(obj).Name())
+				errm = errors.Join(errm, err)
+				continue
+			}
+			claimMap[claimObj.GetNamespacedName().String()] = claimObj
+		}
+		return claimMap, errm
+	*/
 }
 
 func (r *be) restoreClaims(ctx context.Context, cacheInstanceCtx *CacheInstanceContext, entries []*ipam.IPEntry, kind string, claimType ipam.IPClaimType, ipclaimmap map[string]*ipam.IPClaim) error {
@@ -389,35 +421,58 @@ func (r *be) updateIPIndexClaims(ctx context.Context, index *ipam.IPIndex) error
 		ctx = genericapirequest.WithNamespace(ctx, newClaim.GetNamespace())
 		oldClaim, exists := existingClaims[newClaim.GetNamespacedName().String()]
 		if !exists {
-			if _, err := r.claimStorage.Create(ctx, newClaim, nil, &metav1.CreateOptions{
-				FieldManager: "backend",
-				DryRun:       []string{"recursion"},
-			}); err != nil {
+			if err := r.bestorage.CreateClaim(ctx, newClaim); err != nil {
 				log.Error("updateIPIndexClaims create failed", "name", newClaim.GetName(), "error", err.Error())
 				errm = errors.Join(errm, err)
 				continue
 			}
+			/*
+				if _, err := r.claimStorage.Create(ctx, newClaim, nil, &metav1.CreateOptions{
+					FieldManager: "backend",
+					DryRun:       []string{"recursion"},
+				}); err != nil {
+					log.Error("updateIPIndexClaims create failed", "name", newClaim.GetName(), "error", err.Error())
+					errm = errors.Join(errm, err)
+					continue
+				}
+			*/
 			continue
 
 		}
-		defaultObjInfo := rest.DefaultUpdatedObjectInfo(oldClaim, ClaimTransformer)
-		if _, _, err := r.claimStorage.Update(ctx, oldClaim.GetName(), defaultObjInfo, nil, nil, false, &metav1.UpdateOptions{
-			FieldManager: "backend",
-			DryRun:       []string{"recursion"},
-		}); err != nil {
-			log.Error("updateIPIndexClaims update failed", "name", newClaim.GetName(), "error", err.Error())
+		if err := r.bestorage.UpdateClaim(ctx, newClaim, oldClaim); err != nil {
+			log.Error("updateIPIndexClaims create failed", "name", newClaim.GetName(), "error", err.Error())
 			errm = errors.Join(errm, err)
 			continue
 		}
+
+		/*
+			defaultObjInfo := rest.DefaultUpdatedObjectInfo(oldClaim, ClaimTransformer)
+			if _, _, err := r.claimStorage.Update(ctx, oldClaim.GetName(), defaultObjInfo, nil, nil, false, &metav1.UpdateOptions{
+				FieldManager: "backend",
+				DryRun:       []string{"recursion"},
+			}); err != nil {
+				log.Error("updateIPIndexClaims update failed", "name", newClaim.GetName(), "error", err.Error())
+				errm = errors.Join(errm, err)
+				continue
+			}
+		*/
 		delete(existingClaims, newClaim.GetNamespacedName().String())
 	}
 	for _, claim := range existingClaims {
-		ctx = genericapirequest.WithNamespace(ctx, claim.GetNamespace())
-		if _, _, err := r.entryStorage.Delete(ctx, claim.GetName(), nil, &metav1.DeleteOptions{}); err != nil {
+		if err := r.bestorage.DeleteClaim(ctx, claim); err != nil {
 			log.Error("updateIPIndexClaims delete failed", "name", claim.GetName(), "error", err.Error())
 			errm = errors.Join(errm, err)
 			continue
 		}
+
+		/*
+			ctx = genericapirequest.WithNamespace(ctx, claim.GetNamespace())
+			if _, _, err := r.entryStorage.Delete(ctx, claim.GetName(), nil, &metav1.DeleteOptions{}); err != nil {
+				log.Error("updateIPIndexClaims delete failed", "name", claim.GetName(), "error", err.Error())
+				errm = errors.Join(errm, err)
+				continue
+			}
+		*/
 	}
 
 	if errm != nil {
@@ -462,31 +517,36 @@ func ClaimTransformer(_ context.Context, newObj runtime.Object, oldObj runtime.O
 }
 
 func (r *be) listIndexClaims(ctx context.Context, k store.Key) (map[string]*ipam.IPClaim, error) {
-	log := log.FromContext(ctx).With("key", k.String())
-	list, err := r.claimStorage.List(ctx, &internalversion.ListOptions{})
-	if err != nil {
-		return nil, err
-	}
-	items, err := meta.ExtractList(list)
-	if err != nil {
-		return nil, err
-	}
-	claimMap := map[string]*ipam.IPClaim{}
-	var errm error
-	for _, obj := range items {
-		claim, ok := obj.(*ipam.IPClaim)
-		if !ok {
-			log.Error("obj is not an IPClaim", "obj", reflect.TypeOf(obj).Name())
-			errm = errors.Join(errm, err)
-			continue
+	return r.bestorage.ListClaims(ctx, k, &ListOptions{
+		OwnerKind: ipam.IPIndexKind,
+	})
+	/*
+		log := log.FromContext(ctx).With("key", k.String())
+		list, err := r.claimStorage.List(ctx, &internalversion.ListOptions{})
+		if err != nil {
+			return nil, err
 		}
-		if claim.GetIndex() == k.Name {
-			for _, ownerRef := range claim.OwnerReferences {
-				if ownerRef.Kind == ipam.IPIndexKind {
-					claimMap[claim.GetNamespacedName().String()] = claim
+		items, err := meta.ExtractList(list)
+		if err != nil {
+			return nil, err
+		}
+		claimMap := map[string]*ipam.IPClaim{}
+		var errm error
+		for _, obj := range items {
+			claim, ok := obj.(*ipam.IPClaim)
+			if !ok {
+				log.Error("obj is not an IPClaim", "obj", reflect.TypeOf(obj).Name())
+				errm = errors.Join(errm, err)
+				continue
+			}
+			if claim.GetIndex() == k.Name {
+				for _, ownerRef := range claim.OwnerReferences {
+					if ownerRef.Kind == ipam.IPIndexKind {
+						claimMap[claim.GetNamespacedName().String()] = claim
+					}
 				}
 			}
 		}
-	}
-	return claimMap, errm
+		return claimMap, errm
+	*/
 }

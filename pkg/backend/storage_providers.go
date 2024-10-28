@@ -23,7 +23,7 @@ import (
 	"github.com/henderiw/apiserver-builder/pkg/builder/rest"
 )
 
-type StorageProviders interface {
+type StorageProviders[T1 any] interface {
 	GetIndexStorageProvider() *rest.StorageProvider
 	GetClaimStorageProvider() *rest.StorageProvider
 	GetEntryStorageProvider() *rest.StorageProvider

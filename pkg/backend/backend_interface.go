@@ -20,11 +20,11 @@ import (
 	"context"
 
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apiserver/pkg/registry/rest"
 )
 
 type Backend interface {
-	AddStorage(entryStorage, claimStorage rest.Storage) error
+	// AddStorageInterfaces
+	AddStorageInterfaces(bestorage any) error
 	// CreateIndex creates a backend index
 	CreateIndex(ctx context.Context, obj runtime.Object) error
 	// DeleteIndex deletes a backend index

@@ -18,6 +18,7 @@ package register
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/henderiw/apiserver-builder/pkg/builder"
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
@@ -32,6 +33,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apiserver/pkg/registry/generic"
+	"github.com/henderiw/apiserver-store/pkg/generic/registry"
 )
 
 func init() {
@@ -86,9 +88,13 @@ func ApplyStorageToBackend(ctx context.Context, be bebackend.Backend, apiServer 
 		Resource: vlan.VLANClaimPlural,
 	}]
 
-	claimStorage, err := claimStorageProvider.Get(ctx, apiServer.Schemes[0], &ClaimGetter{})
+	claimStorage, err := claimStorageProvider.Get(ctx, apiServer.Schemes[0], &Getter{})
 	if err != nil {
 		return err
+	}
+	claimStore, ok := claimStorage.(*registry.Store)
+	if !ok {
+		return fmt.Errorf("claimstore is not a registry store")
 	}
 
 	entryStorageProvider := apiServer.StorageProvider[schema.GroupResource{
@@ -96,26 +102,22 @@ func ApplyStorageToBackend(ctx context.Context, be bebackend.Backend, apiServer 
 		Resource: vlan.VLANEntryPlural,
 	}]
 
-	entryStorage, err := entryStorageProvider.Get(ctx, apiServer.Schemes[0], &EntryGetter{})
+	entryStorage, err := entryStorageProvider.Get(ctx, apiServer.Schemes[0], &Getter{})
 	if err != nil {
 		return err
 	}
+	entryStore, ok := entryStorage.(*registry.Store)
+	if !ok {
+		return fmt.Errorf("entrystore is not a registry store")
+	}
 
-	return be.AddStorage(entryStorage, claimStorage)
+	return be.AddStorageInterfaces(genericbackend.NewKuidBackendstorage(entryStore, claimStore))
 }
 
-var _ generic.RESTOptionsGetter = &ClaimGetter{}
+var _ generic.RESTOptionsGetter = &Getter{}
 
-type ClaimGetter struct{}
+type Getter struct{}
 
-func (r *ClaimGetter) GetRESTOptions(resource schema.GroupResource, example runtime.Object) (generic.RESTOptions, error) {
-	return generic.RESTOptions{}, nil
-}
-
-var _ generic.RESTOptionsGetter = &EntryGetter{}
-
-type EntryGetter struct{}
-
-func (r *EntryGetter) GetRESTOptions(resource schema.GroupResource, example runtime.Object) (generic.RESTOptions, error) {
+func (r *Getter) GetRESTOptions(resource schema.GroupResource, example runtime.Object) (generic.RESTOptions, error) {
 	return generic.RESTOptions{}, nil
 }

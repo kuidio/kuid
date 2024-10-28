@@ -18,10 +18,12 @@ package register
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/henderiw/apiserver-builder/pkg/builder"
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
 	"github.com/henderiw/apiserver-builder/pkg/builder/rest"
+	"github.com/henderiw/apiserver-store/pkg/generic/registry"
 	"github.com/kuidio/kuid/apis/backend/genid"
 	genidbev1alpha1 "github.com/kuidio/kuid/apis/backend/genid/v1alpha1"
 	bebackend "github.com/kuidio/kuid/pkg/backend"
@@ -90,6 +92,10 @@ func ApplyStorageToBackend(ctx context.Context, be bebackend.Backend, apiServer 
 	if err != nil {
 		return err
 	}
+	claimStore, ok := claimStorage.(*registry.Store)
+	if !ok {
+		return fmt.Errorf("claimstore is not a registry store")
+	}
 
 	entryStorageProvider := apiServer.StorageProvider[schema.GroupResource{
 		Group:    genid.SchemeGroupVersion.Group,
@@ -100,8 +106,12 @@ func ApplyStorageToBackend(ctx context.Context, be bebackend.Backend, apiServer 
 	if err != nil {
 		return err
 	}
+	entryStore, ok := entryStorage.(*registry.Store)
+	if !ok {
+		return fmt.Errorf("entrystore is not a registry store")
+	}
 
-	return be.AddStorage(entryStorage, claimStorage)
+	return be.AddStorageInterfaces(genericbackend.NewKuidBackendstorage(entryStore, claimStore))
 }
 
 var _ generic.RESTOptionsGetter = &Getter{}
