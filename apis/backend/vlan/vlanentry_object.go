@@ -70,6 +70,15 @@ func VLANEntryFromRuntime(ru runtime.Object) (backend.EntryObject, error) {
 	return entry, nil
 }
 
+func VLANEntryFromUnstructured(ru runtime.Unstructured) (backend.EntryObject, error) {
+	obj := &VLANEntry{}
+	err := runtime.DefaultUnstructuredConverter.FromUnstructured(ru.UnstructuredContent(), obj)
+	if err != nil {
+		return nil, fmt.Errorf("error converting unstructured: %v", err)
+	}
+	return obj, nil
+}
+
 func GetVLANEntry(k store.Key, vrange, id string, labels map[string]string) backend.EntryObject {
 	index := k.Name
 	ns := k.Namespace

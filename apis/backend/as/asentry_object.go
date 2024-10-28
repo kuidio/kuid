@@ -70,6 +70,15 @@ func ASEntryFromRuntime(ru runtime.Object) (backend.EntryObject, error) {
 	return entry, nil
 }
 
+func ASEntryFromUnstructured(ru runtime.Unstructured) (backend.EntryObject, error) {
+	obj := &ASEntry{}
+	err := runtime.DefaultUnstructuredConverter.FromUnstructured(ru.UnstructuredContent(), obj)
+	if err != nil {
+		return nil, fmt.Errorf("error converting unstructured: %v", err)
+	}
+	return obj, nil
+}
+
 func GetASEntry(k store.Key, vrange, id string, labels map[string]string) backend.EntryObject {
 	index := k.Name
 	ns := k.Namespace
