@@ -23,7 +23,7 @@ import (
 	"github.com/hansthienpondt/nipam/pkg/table"
 	"github.com/henderiw/iputil"
 	"github.com/henderiw/logger/log"
-	"github.com/kform-dev/choreo/apis/kuid/backend"
+	"github.com/kuidio/kuid/apis/backend"
 	"github.com/kuidio/kuid/apis/backend/ipam"
 	"go4.org/netipx"
 )

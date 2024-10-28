@@ -18,7 +18,7 @@ package ipam
 
 import (
 	"github.com/hansthienpondt/nipam/pkg/table"
-	"github.com/kform-dev/choreo/apis/kuid/backend"
+	"github.com/kuidio/kuid/apis/backend"
 )
 
 func isParentRouteSelectable(route table.Route, prefixLength uint8) bool {
