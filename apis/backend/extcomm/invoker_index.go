@@ -14,14 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package v1alpha1
+package extcomm
 
 import (
 	"context"
 	"fmt"
 	"reflect"
 
-	"github.com/kuidio/kuid/apis/backend/as"
 	"github.com/kuidio/kuid/pkg/backend"
 	"github.com/kuidio/kuid/pkg/registry/options"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -38,30 +37,22 @@ type idxinvoker struct {
 	be backend.Backend
 }
 
-func indexConvertToInternal(obj runtime.Object) (*as.ASIndex, error) {
+func indexConvertToInternal(obj runtime.Object) (*EXTCOMMIndex, error) {
 	ru, ok := obj.(runtime.Unstructured)
 	if !ok {
 		return nil, fmt.Errorf("not an unstructured obj, got: %s", reflect.TypeOf(obj).Name())
 	}
-	index := &ASIndex{}
+	index := &EXTCOMMIndex{}
 	if err := runtime.DefaultUnstructuredConverter.FromUnstructured(ru.UnstructuredContent(), index); err != nil {
 		return nil, fmt.Errorf("unable to convert unstructured object to index: %v", err)
 	}
-	indexInternal := &as.ASIndex{}
-	if err := Convert_v1alpha1_ASIndex_To_as_ASIndex(index, indexInternal, nil); err != nil {
-		return nil, fmt.Errorf("unable to convert unstructured object to index: %v", err)
-	}
-	return indexInternal, nil
+	return index, nil
 }
 
 func indexConvertFromInternal(obj runtime.Object) (runtime.Unstructured, error) {
-	indexInternal, ok := obj.(*as.ASIndex)
+	index, ok := obj.(*EXTCOMMIndex)
 	if !ok {
 		return nil, fmt.Errorf("not an unstructured obj, got: %s", reflect.TypeOf(obj).Name())
-	}
-	index := &ASIndex{}
-	if err := Convert_as_ASIndex_To_v1alpha1_ASIndex(indexInternal, index, nil); err != nil {
-		return nil, fmt.Errorf("unable to convert unstructured object to index: %v", err)
 	}
 
 	uobj, err := runtime.DefaultUnstructuredConverter.ToUnstructured(index)

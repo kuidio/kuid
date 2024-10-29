@@ -14,14 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package v1alpha1
+package genid
 
 import (
 	"context"
 	"fmt"
 	"reflect"
 
-	"github.com/kuidio/kuid/apis/backend/ipam"
 	"github.com/kuidio/kuid/pkg/backend"
 	"github.com/kuidio/kuid/pkg/registry/options"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -38,30 +37,22 @@ type idxinvoker struct {
 	be backend.Backend
 }
 
-func indexConvertToInternal(obj runtime.Object) (*ipam.IPIndex, error) {
+func indexConvertToInternal(obj runtime.Object) (*GENIDIndex, error) {
 	ru, ok := obj.(runtime.Unstructured)
 	if !ok {
 		return nil, fmt.Errorf("not an unstructured obj, got: %s", reflect.TypeOf(obj).Name())
 	}
-	index := &IPIndex{}
+	index := &GENIDIndex{}
 	if err := runtime.DefaultUnstructuredConverter.FromUnstructured(ru.UnstructuredContent(), index); err != nil {
 		return nil, fmt.Errorf("unable to convert unstructured object to index: %v", err)
 	}
-	indexInternal := &ipam.IPIndex{}
-	if err := Convert_v1alpha1_IPIndex_To_ipam_IPIndex(index, indexInternal, nil); err != nil {
-		return nil, fmt.Errorf("unable to convert unstructured object to index: %v", err)
-	}
-	return indexInternal, nil
+	return index, nil
 }
 
 func indexConvertFromInternal(obj runtime.Object) (runtime.Unstructured, error) {
-	indexInternal, ok := obj.(*ipam.IPIndex)
+	index, ok := obj.(*GENIDIndex)
 	if !ok {
 		return nil, fmt.Errorf("not an unstructured obj, got: %s", reflect.TypeOf(obj).Name())
-	}
-	index := &IPIndex{}
-	if err := Convert_ipam_IPIndex_To_v1alpha1_IPIndex(indexInternal, index, nil); err != nil {
-		return nil, fmt.Errorf("unable to convert unstructured object to index: %v", err)
 	}
 
 	uobj, err := runtime.DefaultUnstructuredConverter.ToUnstructured(index)

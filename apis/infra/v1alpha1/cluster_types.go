@@ -55,7 +55,6 @@ type ClusterStatus struct {
 // +kubebuilder:storageversion
 // +kubebuilder:subresource:status
 // +kubebuilder:resource:categories={kuid}
-
 // A Cluster represents a kubernetes cluster and is typically used as a nodeGroup identifier.
 type Cluster struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`

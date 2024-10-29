@@ -67,7 +67,10 @@ type NodeStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:object:root=true
+// +kubebuilder:storageversion
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:categories={kuid}
 // A Node represents a fundamental unit that implements compute, storage, and/or networking within your environment.
 // Nodes can embody physical, virtual, or containerized entities, offering versatility in deployment options to suit
 // diverse infrastructure requirements.

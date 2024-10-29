@@ -49,10 +49,11 @@ type EXTCOMMEntryStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:object:root=true
+// +kubebuilder:storageversion
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:categories={kuid}
 // EXTCOMMEntry is the Schema for the EXTCOMMentry API
-//
-// +k8s:openapi-gen=true
 type EXTCOMMEntry struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`

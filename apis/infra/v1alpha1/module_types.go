@@ -45,7 +45,10 @@ type ModuleStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:object:root=true
+// +kubebuilder:storageversion
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:categories={kuid}
 // A module refers to a hardware component or expansion module that can be installed within a ModuleBay of a Node.
 // Modules provide additional functionality and capabilities to the infrastructure environment,
 // allowing users to enhance and customize their deployments according to specific requirements.

@@ -50,7 +50,10 @@ type LinkSetStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:object:root=true
+// +kubebuilder:storageversion
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:categories={kuid}
 // A linkSet represents a set of links that belong together within a node group or accross nodeGroups.
 // E.g. it can be used to model a logical Link Aggregation group between 2 nodes or
 // it can be used to represent a logical multi-homing construction between a set of nodes

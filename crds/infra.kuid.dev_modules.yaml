@@ -8,6 +8,8 @@ metadata:
 spec:
   group: infra.kuid.dev
   names:
+    categories:
+    - kuid
     kind: Module
     listKind: ModuleList
     plural: modules
@@ -265,4 +267,6 @@ spec:
             type: object
         type: object
     served: true
-    storage: false
+    storage: true
+    subresources:
+      status: {}

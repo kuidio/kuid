@@ -45,7 +45,10 @@ type ModuleBayStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:object:root=true
+// +kubebuilder:storageversion
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:categories={kuid}
 // A ModuleBay serves as a modular slot or enclosure within a Node, designed to accommodate additional modules.
 // ModuleBays provide a flexible and scalable approach to extending the capabilities of Nodes,
 // allowing users to customize and enhance their infrastructure deployments according to specific requirements.

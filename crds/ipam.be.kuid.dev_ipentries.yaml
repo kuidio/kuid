@@ -8,6 +8,8 @@ metadata:
 spec:
   group: ipam.be.kuid.dev
   names:
+    categories:
+    - kuid
     kind: IPEntry
     listKind: IPEntryList
     plural: ipentries
@@ -159,7 +161,9 @@ spec:
             type: object
         type: object
     served: true
-    storage: false
+    storage: true
+    subresources:
+      status: {}
   - name: v1alpha1
     schema:
       openAPIV3Schema:
@@ -306,3 +310,5 @@ spec:
         type: object
     served: true
     storage: false
+    subresources:
+      status: {}

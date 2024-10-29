@@ -8,6 +8,8 @@ metadata:
 spec:
   group: vlan.be.kuid.dev
   names:
+    categories:
+    - kuid
     kind: VLANIndex
     listKind: VLANIndexList
     plural: vlanindices
@@ -131,6 +133,8 @@ spec:
         type: object
     served: true
     storage: false
+    subresources:
+      status: {}
   - name: vlan
     schema:
       openAPIV3Schema:
@@ -247,4 +251,6 @@ spec:
             type: object
         type: object
     served: true
-    storage: false
+    storage: true
+    subresources:
+      status: {}

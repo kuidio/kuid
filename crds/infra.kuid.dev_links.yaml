@@ -8,6 +8,8 @@ metadata:
 spec:
   group: infra.kuid.dev
   names:
+    categories:
+    - kuid
     kind: Link
     listKind: LinkList
     plural: links
@@ -317,4 +319,6 @@ spec:
             type: object
         type: object
     served: true
-    storage: false
+    storage: true
+    subresources:
+      status: {}

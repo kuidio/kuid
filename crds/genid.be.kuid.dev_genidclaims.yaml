@@ -8,6 +8,8 @@ metadata:
 spec:
   group: genid.be.kuid.dev
   names:
+    categories:
+    - kuid
     kind: GENIDClaim
     listKind: GENIDClaimList
     plural: genidclaims
@@ -185,7 +187,9 @@ spec:
             type: object
         type: object
     served: true
-    storage: false
+    storage: true
+    subresources:
+      status: {}
   - name: v1alpha1
     schema:
       openAPIV3Schema:
@@ -358,3 +362,5 @@ spec:
         type: object
     served: true
     storage: false
+    subresources:
+      status: {}

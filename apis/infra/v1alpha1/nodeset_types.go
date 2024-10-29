@@ -44,7 +44,10 @@ type NodeSetStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:object:root=true
+// +kubebuilder:storageversion
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:categories={kuid}
 // A NodeSet represents a set of nodes.
 // E.g. it can be used to model a set of nodes in a NodeSet that share the same
 // charecteristics wrt, Numa, interfaces, etc.

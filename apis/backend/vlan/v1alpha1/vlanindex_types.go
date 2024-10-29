@@ -52,7 +52,9 @@ type VLANIndexStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:categories={kuid}
 // VLANIndex is the Schema for the VLANIndex API
 type VLANIndex struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`

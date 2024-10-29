@@ -14,14 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package v1alpha1
+package as
 
 import (
 	"context"
 	"fmt"
 	"reflect"
 
-	"github.com/kuidio/kuid/apis/backend/as"
 	"github.com/kuidio/kuid/pkg/backend"
 	"github.com/kuidio/kuid/pkg/registry/options"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -38,7 +37,7 @@ type claiminvoker struct {
 	be backend.Backend
 }
 
-func claimConvertToInternal(obj runtime.Object) (*as.ASClaim, error) {
+func claimConvertToInternal(obj runtime.Object) (*ASClaim, error) {
 	ru, ok := obj.(runtime.Unstructured)
 	if !ok {
 		return nil, fmt.Errorf("not an unstructured obj, got: %s", reflect.TypeOf(obj).Name())
@@ -47,28 +46,19 @@ func claimConvertToInternal(obj runtime.Object) (*as.ASClaim, error) {
 	if err := runtime.DefaultUnstructuredConverter.FromUnstructured(ru.UnstructuredContent(), claim); err != nil {
 		return nil, fmt.Errorf("unable to convert unstructured object to ipclaim: %v", err)
 	}
-	claimInternal := &as.ASClaim{}
-	if err := Convert_v1alpha1_ASClaim_To_as_ASClaim(claim, claimInternal, nil); err != nil {
-		return nil, fmt.Errorf("unable to convert unstructured object to ipclaim: %v", err)
-	}
-	return claimInternal, nil
+	return claim, nil
 }
 
 func claimConvertFromInternal(obj runtime.Object) (runtime.Unstructured, error) {
-	claimInternal, ok := obj.(*as.ASClaim)
+	claim, ok := obj.(*ASClaim)
 	if !ok {
 		return nil, fmt.Errorf("not an unstructured obj, got: %s", reflect.TypeOf(obj).Name())
-	}
-	claim := &ASClaim{}
-	if err := Convert_as_ASClaim_To_v1alpha1_ASClaim(claimInternal, claim, nil); err != nil {
-		return nil, fmt.Errorf("unable to convert unstructured object to ipclaim: %v", err)
 	}
 
 	uobj, err := runtime.DefaultUnstructuredConverter.ToUnstructured(claim)
 	if err != nil {
 		return nil, fmt.Errorf("unable to convert to unstructured: %v", err)
 	}
-
 	return &unstructured.Unstructured{Object: uobj}, nil
 }
 

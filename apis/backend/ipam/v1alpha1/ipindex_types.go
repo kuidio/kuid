@@ -59,7 +59,9 @@ type IPIndexStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:categories={kuid}
 // IPIndex is the Schema for the IPIndex API
 type IPIndex struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`

@@ -14,14 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package v1alpha1
+package ipam
 
 import (
 	"context"
 	"fmt"
 	"reflect"
 
-	"github.com/kuidio/kuid/apis/backend/vlan"
 	"github.com/kuidio/kuid/pkg/backend"
 	"github.com/kuidio/kuid/pkg/registry/options"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -38,30 +37,22 @@ type idxinvoker struct {
 	be backend.Backend
 }
 
-func indexConvertToInternal(obj runtime.Object) (*vlan.VLANIndex, error) {
+func indexConvertToInternal(obj runtime.Object) (*IPIndex, error) {
 	ru, ok := obj.(runtime.Unstructured)
 	if !ok {
 		return nil, fmt.Errorf("not an unstructured obj, got: %s", reflect.TypeOf(obj).Name())
 	}
-	index := &VLANIndex{}
+	index := &IPIndex{}
 	if err := runtime.DefaultUnstructuredConverter.FromUnstructured(ru.UnstructuredContent(), index); err != nil {
 		return nil, fmt.Errorf("unable to convert unstructured object to index: %v", err)
 	}
-	indexInternal := &vlan.VLANIndex{}
-	if err := Convert_v1alpha1_VLANIndex_To_vlan_VLANIndex(index, indexInternal, nil); err != nil {
-		return nil, fmt.Errorf("unable to convert unstructured object to index: %v", err)
-	}
-	return indexInternal, nil
+	return index, nil
 }
 
 func indexConvertFromInternal(obj runtime.Object) (runtime.Unstructured, error) {
-	indexInternal, ok := obj.(*vlan.VLANIndex)
+	index, ok := obj.(*IPIndex)
 	if !ok {
 		return nil, fmt.Errorf("not an unstructured obj, got: %s", reflect.TypeOf(obj).Name())
-	}
-	index := &VLANIndex{}
-	if err := Convert_vlan_VLANIndex_To_v1alpha1_VLANIndex(indexInternal, index, nil); err != nil {
-		return nil, fmt.Errorf("unable to convert unstructured object to index: %v", err)
 	}
 
 	uobj, err := runtime.DefaultUnstructuredConverter.ToUnstructured(index)

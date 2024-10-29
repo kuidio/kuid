@@ -50,7 +50,10 @@ type EndpointStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:object:root=true
+// +kubebuilder:storageversion
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:categories={kuid}
 // An Endpoint represents a communication interface or connection point within a Node,
 // facilitating network communication and data transfer between different components
 // or systems within the environment. `Endpoints` serve as gateways for transmitting and

@@ -58,7 +58,10 @@ type EndpointSetStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:object:root=true
+// +kubebuilder:storageversion
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:categories={kuid}
 // A EndpointSet represents a set of endpoints that belong together within a nodeGroup.
 // E.g. it can be used to model a logical Link Aggregation group within
 // a node or it can be used to represent a logical multi-homing construction

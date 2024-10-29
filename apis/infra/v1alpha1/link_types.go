@@ -56,7 +56,10 @@ type LinkStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:object:root=true
+// +kubebuilder:storageversion
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:categories={kuid}
 // A link represents a physical/logical connection that enables communication and data transfer
 // between 2 endpoints of a node.
 // +k8s:openapi-gen=true

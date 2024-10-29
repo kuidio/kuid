@@ -8,6 +8,8 @@ metadata:
 spec:
   group: infra.kuid.dev
   names:
+    categories:
+    - kuid
     kind: LinkSet
     listKind: LinkSetList
     plural: linksets
@@ -343,4 +345,6 @@ spec:
             type: object
         type: object
     served: true
-    storage: false
+    storage: true
+    subresources:
+      status: {}
