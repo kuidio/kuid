@@ -188,6 +188,6 @@ func (r *staticPrefixApplicator) Apply(ctx context.Context, claim *ipam.IPClaim)
 
 func (r *staticPrefixApplicator) Delete(ctx context.Context, claim *ipam.IPClaim) error {
 	log := log.FromContext(ctx)
-	log.Info("delete")
+	log.Debug("delete")
 	return r.delete(ctx, claim)
 }

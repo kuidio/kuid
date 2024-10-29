@@ -63,50 +63,47 @@ func indexConvertFromInternal(obj runtime.Object) (runtime.Unstructured, error) 
 	return &unstructured.Unstructured{Object: uobj}, nil
 }
 
-func (r *idxinvoker) InvokeCreate(ctx context.Context, obj runtime.Object, recursion bool) error {
+func (r *idxinvoker) InvokeCreate(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
 	index, err := indexConvertToInternal(obj)
 	if err != nil {
-		return err
+		return obj, err
 	}
 	if err := r.be.CreateIndex(ctx, index); err != nil {
-		return err
+		return obj, err
 	}
 	newIndex, err := indexConvertFromInternal(index)
 	if err != nil {
-		return err
+		return obj, err
 	}
-	obj = newIndex
-	return nil
+	return newIndex, nil
 }
 
-func (r *idxinvoker) InvokeUpdate(ctx context.Context, obj, old runtime.Object, recursion bool) error {
+func (r *idxinvoker) InvokeUpdate(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
 	index, err := indexConvertToInternal(obj)
 	if err != nil {
-		return err
+		return obj, err
 	}
 	if err := r.be.CreateIndex(ctx, index); err != nil {
-		return err
+		return obj, err
 	}
 	newIndex, err := indexConvertFromInternal(index)
 	if err != nil {
-		return err
+		return obj, err
 	}
-	obj = newIndex
-	return nil
+	return newIndex, nil
 }
 
-func (r *idxinvoker) InvokeDelete(ctx context.Context, obj runtime.Object, recursion bool) error {
+func (r *idxinvoker) InvokeDelete(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
 	index, err := indexConvertToInternal(obj)
 	if err != nil {
-		return err
+		return obj, err
 	}
 	if err := r.be.DeleteIndex(ctx, index); err != nil {
-		return err
+		return obj, err
 	}
 	newIndex, err := indexConvertFromInternal(index)
 	if err != nil {
-		return err
+		return obj, err
 	}
-	obj = newIndex
-	return nil
+	return newIndex, nil
 }

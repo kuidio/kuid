@@ -99,9 +99,9 @@ func (r *strategy) Validate(ctx context.Context, obj runtime.Object) field.Error
 	return r.obj.ValidateCreate(ctx, obj)
 }
 
-func (r *strategy) InvokeCreate(ctx context.Context, obj runtime.Object, recursion bool) error {
+func (r *strategy) InvokeCreate(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
 	if r.opts.BackendInvoker == nil {
-		return nil
+		return obj, nil
 	}
 	return r.opts.BackendInvoker.InvokeCreate(ctx, obj, recursion)
 }
@@ -141,11 +141,11 @@ func (r *strategy) ValidateUpdate(ctx context.Context, obj, old runtime.Object) 
 	return r.obj.ValidateUpdate(ctx, obj, old)
 }
 
-func (r *strategy) InvokeUpdate(ctx context.Context, obj, old runtime.Object, recursion bool) error {
+func (r *strategy) InvokeUpdate(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
 	if r.opts.BackendInvoker == nil {
-		return nil
+		return obj, nil
 	}
-	return r.opts.BackendInvoker.InvokeUpdate(ctx, obj, old, recursion)
+	return r.opts.BackendInvoker.InvokeUpdate(ctx, obj, recursion)
 }
 
 func (r *strategy) Update(ctx context.Context, key types.NamespacedName, obj, old runtime.Object, dryrun bool) (runtime.Object, error) {
@@ -184,9 +184,9 @@ func (r *strategy) BeginDelete(ctx context.Context) error {
 	return nil
 }
 
-func (r *strategy) InvokeDelete(ctx context.Context, obj runtime.Object, recursion bool) error {
+func (r *strategy) InvokeDelete(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
 	if r.opts.BackendInvoker == nil {
-		return nil
+		return obj, nil
 	}
 	return r.opts.BackendInvoker.InvokeDelete(ctx, obj, recursion)
 }

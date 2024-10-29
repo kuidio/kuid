@@ -33,16 +33,25 @@ type claimInvoker struct {
 	be Backend
 }
 
-func (r *claimInvoker) InvokeCreate(ctx context.Context, obj runtime.Object, recursion bool) error {
-	return r.be.Claim(ctx, obj, recursion)
+func (r *claimInvoker) InvokeCreate(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
+	if err := r.be.Claim(ctx, obj, recursion); err != nil {
+		return obj, err
+	}
+	return obj, nil
 }
 
-func (r *claimInvoker) InvokeUpdate(ctx context.Context, obj, old runtime.Object, recursion bool) error {
-	return r.be.Claim(ctx, obj, recursion)
+func (r *claimInvoker) InvokeUpdate(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
+	if err := r.be.Claim(ctx, obj, recursion); err != nil {
+		return obj, err
+	}
+	return obj, nil
 }
 
-func (r *claimInvoker) InvokeDelete(ctx context.Context, obj runtime.Object, recursion bool) error {
-	return r.be.Release(ctx, obj, recursion)
+func (r *claimInvoker) InvokeDelete(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
+	if err := r.be.Release(ctx, obj, recursion); err != nil {
+		return obj, err
+	}
+	return obj, nil
 }
 
 func NewIndexInvoker(be Backend) options.BackendInvoker {
@@ -55,14 +64,23 @@ type indexPreparator struct {
 	be Backend
 }
 
-func (r *indexPreparator) InvokeCreate(ctx context.Context, obj runtime.Object, recursion bool) error {
-	return r.be.CreateIndex(ctx, obj)
+func (r *indexPreparator) InvokeCreate(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
+	if err := r.be.CreateIndex(ctx, obj); err != nil {
+		return obj, err
+	}
+	return obj, nil
 }
 
-func (r *indexPreparator) InvokeUpdate(ctx context.Context, obj, old runtime.Object, recursion bool) error {
-	return r.be.CreateIndex(ctx, obj)
+func (r *indexPreparator) InvokeUpdate(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
+	if err := r.be.CreateIndex(ctx, obj); err != nil {
+		return obj, err
+	}
+	return obj, nil
 }
 
-func (r *indexPreparator) InvokeDelete(ctx context.Context, obj runtime.Object, recursion bool) error {
-	return r.be.DeleteIndex(ctx, obj)
+func (r *indexPreparator) InvokeDelete(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
+	if err := r.be.DeleteIndex(ctx, obj); err != nil {
+		return obj, err
+	}
+	return obj, nil
 }

@@ -95,7 +95,7 @@ func (r *IPIndex) GetClaim(prefix Prefix) (*IPClaim, error) {
 			Name:      fmt.Sprintf("%s.%s", r.Name, pi.GetSubnetName()),
 			OwnerReferences: []metav1.OwnerReference{
 				{
-					APIVersion: schema.GroupVersion{Group: SchemeGroupVersion.Group, Version: "v1alpah1"}.Identifier(),
+					APIVersion: schema.GroupVersion{Group: SchemeGroupVersion.Group, Version: "v1alpha1"}.Identifier(),
 					Kind:       IPIndexKind,
 					Name:       r.Name,
 					UID:        r.UID,

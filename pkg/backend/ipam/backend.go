@@ -61,18 +61,6 @@ func (r *be) AddStorageInterfaces(bes any) error {
 		return fmt.Errorf("AddStorageInterfaces did not supply a ipam BackendStorage interface, got: %s", reflect.TypeOf(bes).Name())
 	}
 	r.bestorage = bestorage
-	/*
-		entrystore, ok := entryStorage.(*registry.Store)
-		if !ok {
-			return errors.New("entry store is not a *registry.Store")
-		}
-		r.entryStorage = entrystore
-		claimstore, ok := claimStorage.(*registry.Store)
-		if !ok {
-			return errors.New("claim store is not a *registry.Store")
-		}
-		r.claimStorage = claimstore
-	*/
 	return nil
 }
 
@@ -89,7 +77,7 @@ func (r *be) CreateIndex(ctx context.Context, obj runtime.Object) error {
 	log := log.FromContext(ctx)
 	key := index.GetKey()
 
-	log.Debug("start", "isInitialized", r.cache.IsInitialized(ctx, key))
+	log.Info("create index", "isInitialized", r.cache.IsInitialized(ctx, key))
 	// if the Cache is not initialized -> restore the cache
 	// this happens upon initialization or backend restart
 	if _, err := r.cache.Get(ctx, key); err != nil {
@@ -111,7 +99,7 @@ func (r *be) CreateIndex(ctx context.Context, obj runtime.Object) error {
 			return err
 		}
 	}
-	log.Debug("update IPIndex clains")
+	log.Info("update IPIndex claims", "object", obj)
 	return r.updateIPIndexClaims(ctx, index)
 }
 
@@ -126,7 +114,7 @@ func (r *be) DeleteIndex(ctx context.Context, obj runtime.Object) error {
 
 	ctx = bebackend.InitIndexContext(ctx, "delete", index)
 	log := log.FromContext(ctx)
-	log.Debug("start")
+	log.Info("start")
 	key := index.GetKey()
 
 	log.Debug("start", "isInitialized", r.cache.IsInitialized(ctx, key))
@@ -135,10 +123,10 @@ func (r *be) DeleteIndex(ctx context.Context, obj runtime.Object) error {
 		log.Error("cannot delete Index", "error", err.Error())
 		return err
 	}
-	log.Debug("destroyed")
+	log.Info("destroyed")
 	r.cache.Delete(ctx, key)
 
-	log.Debug("finished")
+	log.Info("finished")
 	return nil
 }
 

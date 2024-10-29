@@ -86,8 +86,8 @@ func (r *statusStrategy) ValidateUpdate(ctx context.Context, obj, old runtime.Ob
 	return r.obj.ValidateStatusUpdate(ctx, obj, old)
 }
 
-func (r *statusStrategy) InvokeUpdate(ctx context.Context, obj, old runtime.Object, recursion bool) error {
-	return nil
+func (r *statusStrategy) InvokeUpdate(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
+	return obj, nil
 }
 
 func (r *statusStrategy) Update(ctx context.Context, key types.NamespacedName, obj, old runtime.Object, dryrun bool) (runtime.Object, error) {

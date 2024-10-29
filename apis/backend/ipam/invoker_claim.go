@@ -62,50 +62,47 @@ func claimConvertFromInternal(obj runtime.Object) (runtime.Unstructured, error) 
 	return &unstructured.Unstructured{Object: uobj}, nil
 }
 
-func (r *claiminvoker) InvokeCreate(ctx context.Context, obj runtime.Object, recursion bool) error {
+func (r *claiminvoker) InvokeCreate(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
 	claim, err := claimConvertToInternal(obj)
 	if err != nil {
-		return err
+		return obj, err
 	}
 	if err := r.be.Claim(ctx, claim, recursion); err != nil {
-		return err
+		return obj, err
 	}
 	newClaim, err := claimConvertFromInternal(claim)
 	if err != nil {
-		return err
+		return obj, err
 	}
-	obj = newClaim
-	return nil
+	return newClaim, nil
 }
 
-func (r *claiminvoker) InvokeUpdate(ctx context.Context, obj, old runtime.Object, recursion bool) error {
+func (r *claiminvoker) InvokeUpdate(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
 	claim, err := claimConvertToInternal(obj)
 	if err != nil {
-		return err
+		return obj, err
 	}
 	if err := r.be.Claim(ctx, claim, recursion); err != nil {
-		return err
+		return obj, err
 	}
 	newClaim, err := claimConvertFromInternal(claim)
 	if err != nil {
-		return err
+		return obj, err
 	}
-	obj = newClaim
-	return nil
+	return newClaim, nil
 }
 
-func (r *claiminvoker) InvokeDelete(ctx context.Context, obj runtime.Object, recursion bool) error {
+func (r *claiminvoker) InvokeDelete(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
 	claim, err := claimConvertToInternal(obj)
 	if err != nil {
-		return err
+		return obj, err
 	}
 	if err := r.be.Release(ctx, claim, recursion); err != nil {
-		return err
+		return obj,err
 	}
 	newClaim, err := claimConvertFromInternal(claim)
 	if err != nil {
-		return err
+		return obj, err
 	}
-	obj = newClaim
-	return nil
+	return newClaim, nil
 }
