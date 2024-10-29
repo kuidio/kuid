@@ -16,14 +16,17 @@ limitations under the License.
 
 package generic
 
+/*
 import (
 	"context"
 
 	"k8s.io/apimachinery/pkg/runtime"
 )
 
+
 type BackendInvoker interface {
 	InvokeCreate(ctx context.Context, obj runtime.Object) error
 	InvokeUpdate(ctx context.Context, obj, old runtime.Object) error
 	InvokeDelete(ctx context.Context, obj runtime.Object) error
 }
+*/
