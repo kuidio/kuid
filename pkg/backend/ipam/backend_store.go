@@ -52,39 +52,31 @@ func (r *be) restore(ctx context.Context, index *ipam.IPIndex) error {
 	if err != nil {
 		return nil
 	}
-
-	/*
-		prefixes := make(map[string]ipamv1alpha1.Prefix)
-		for _, prefix := range index.Spec.Prefixes {
-			prefixes[prefix.Prefix] = prefix
-		}
-	*/
-
-	/*
-		if err := r.restoreIndexPrefixes(ctx, cacheInstanceCtx, curEntries, index, prefixes); err != nil {
-			return err
-		}
-	*/
+	// first restore the claims related to the ipindex
 	if err := r.restoreClaims(ctx, cacheInstanceCtx, curEntries, ipam.IPIndexKind, ipam.IPClaimType_StaticPrefix, claimmap); err != nil {
 		return err
 	}
+	// 2nd restore the static prefix claims
 	if err := r.restoreClaims(ctx, cacheInstanceCtx, curEntries, ipam.IPClaimKind, ipam.IPClaimType_StaticPrefix, claimmap); err != nil {
 		return err
 	}
+	// 3rd restore the static range claims
 	if err := r.restoreClaims(ctx, cacheInstanceCtx, curEntries, ipam.IPClaimKind, ipam.IPClaimType_StaticRange, claimmap); err != nil {
 		return err
 	}
+	// 3rd restore the dynamic prefix claims
 	if err := r.restoreClaims(ctx, cacheInstanceCtx, curEntries, ipam.IPClaimKind, ipam.IPClaimType_DynamicPrefix, claimmap); err != nil {
 		return err
 	}
+	// 4th restore the static address claims
 	if err := r.restoreClaims(ctx, cacheInstanceCtx, curEntries, ipam.IPClaimKind, ipam.IPClaimType_StaticAddress, claimmap); err != nil {
 		return err
 	}
+	// 4th restore the dynamic address claims
 	if err := r.restoreClaims(ctx, cacheInstanceCtx, curEntries, ipam.IPClaimKind, ipam.IPClaimType_DynamicAddress, claimmap); err != nil {
 		return err
 	}
 	log.Debug("restore prefixes entries left", "items", len(curEntries))
-
 	return nil
 }
 
