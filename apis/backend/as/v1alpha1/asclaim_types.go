@@ -19,8 +19,8 @@ package v1alpha1
 import (
 	"reflect"
 
+	condv1alpha1 "github.com/kform-dev/choreo/apis/condition/v1alpha1"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
-	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -37,16 +37,13 @@ type ASClaimSpec struct {
 	// ClaimLabels define the user defined labels and selector labels used
 	// in resource claim
 	commonv1alpha1.ClaimLabels `json:",inline" yaml:",inline" protobuf:"bytes,4,opt,name=claimLabels"`
-	// Owner defines the ownerReference of the ASClaim
-	// Allow for different namesapces, hence it is part of the spec
-	Owner *commonv1alpha1.OwnerReference `json:"owner,omitempty" yaml:"owner,omitempty" protobuf:"bytes,5,opt,name=owner"`
 }
 
 // ASClaimStatus defines the observed state of ASClaim
 type ASClaimStatus struct {
-	// ConditionedStatus provides the status of the IPClain using conditions
+	// ConditionedStatus provides the status of the ASClain using conditions
 	// - a ready condition indicates the overall status of the resource
-	conditionv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=conditionedStatus"`
+	condv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=conditionedStatus"`
 	// ASID defines the AS for the AS claim
 	// +optional
 	ID *uint32 `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,2,opt,name=id"`
@@ -61,10 +58,10 @@ type ASClaimStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:categories={kuid}
 // ASClaim is the Schema for the ASClaim API
-//
-// +k8s:openapi-gen=true
 type ASClaim struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
@@ -73,8 +70,10 @@ type ASClaim struct {
 	Status ASClaimStatus `json:"status,omitempty" yaml:"status,omitempty" protobuf:"bytes,3,opt,name=status"`
 }
 
-// ASClaimList contains a list of ASClaims
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
+
+// ASClaimList contains a list of ASClaims
 type ASClaimList struct {
 	metav1.TypeMeta `json:",inline" yaml:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`

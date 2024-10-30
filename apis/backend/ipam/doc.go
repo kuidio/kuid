@@ -17,5 +17,5 @@ limitations under the License.
 // +k8s:deepcopy-gen=package,register
 // +groupName=ipam.be.kuid.dev
 
-// ipam defines the ipam api
-package ipam 
+// Package vlan is the internal version of the API.
+package ipam // import "github.com/kuidio/kuid/apis/backend/ipam"

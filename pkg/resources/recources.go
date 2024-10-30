@@ -112,7 +112,7 @@ func (r *Resources) getExistingResources(ctx context.Context, cr client.Object) 
 		//ownObjList := ownObj.NewObjList()
 		list := &unstructured.UnstructuredList{}
 		list.SetGroupVersionKind(gvk)
-		if err := r.List(ctx, list, opts...); err != nil {
+		if err := r.Client.List(ctx, list, opts...); err != nil {
 			log.Error("getExistingResources list failed", "err", err.Error())
 			errm = errors.Join(errm, err)
 			continue
@@ -177,7 +177,7 @@ func (r *Resources) apiDelete(ctx context.Context) error {
 func (r *Resources) delete(ctx context.Context, ref corev1.ObjectReference, o client.Object) error {
 	log := log.FromContext(ctx)
 	log.Debug("api delete existing resource", "referernce", ref.String())
-	if err := r.Delete(ctx, o); err != nil {
+	if err := r.Client.Delete(ctx, o); err != nil {
 		if resource.IgnoreNotFound(err) != nil {
 			log.Error("api delete", "error", err, "object", o)
 			return err

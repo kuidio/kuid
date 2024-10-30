@@ -33,8 +33,13 @@ type Reconciler interface {
 	SetupWithManager(ctx context.Context, mgr ctrl.Manager, c any) (map[schema.GroupVersionKind]chan event.GenericEvent, error)
 }
 
-var Reconcilers = map[string]Reconciler{}
+var ReconcilerGroups = map[string]Reconcilers{}
 
-func Register(name string, r Reconciler) {
-	Reconcilers[name] = r
+type Reconcilers map[string]Reconciler
+
+func Register(groupName, reconcilerName string, r Reconciler) {
+	if _, ok := ReconcilerGroups[groupName]; !ok {
+		ReconcilerGroups[groupName] = map[string]Reconciler{}
+	}
+	ReconcilerGroups[groupName][reconcilerName] = r
 }

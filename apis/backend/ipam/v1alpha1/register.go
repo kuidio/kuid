@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// +kubebuilder:object:generate=true
-// +groupName=ipam.res.kuid.dev
 package v1alpha1
 
 import (
@@ -56,12 +54,12 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 	// +kubebuilder:scaffold:install
 
 	scheme.AddKnownTypes(SchemeGroupVersion,
+		&IPIndex{},
+		&IPIndexList{},
 		&IPClaim{},
 		&IPClaimList{},
 		&IPEntry{},
 		&IPEntryList{},
-		&IPIndex{},
-		&IPIndexList{},
 	)
 
 	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)

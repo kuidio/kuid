@@ -14,24 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// +kubebuilder:object:generate=true
-// +groupName=genid.be.kuid.dev
 package v1alpha1
 
 import (
+	"github.com/kuidio/kuid/apis/backend/genid"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
 const (
-	Group   = "genid.be.kuid.dev"
 	Version = "v1alpha1"
 )
 
 var (
 	// SchemeGroupVersion contains the API group and version information for the types in this package.
-	SchemeGroupVersion = schema.GroupVersion{Group: Group, Version: Version}
+	SchemeGroupVersion = schema.GroupVersion{Group: genid.GroupName, Version: Version}
 	// AddToScheme applies all the stored functions to the scheme. A non-nil error
 	// indicates that one function failed and the attempt was abandoned.
 	//AddToScheme = (&runtime.SchemeBuilder{}).AddToScheme
@@ -56,12 +54,12 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 	// +kubebuilder:scaffold:install
 
 	scheme.AddKnownTypes(SchemeGroupVersion,
+		&GENIDIndex{},
+		&GENIDIndexList{},
 		&GENIDClaim{},
 		&GENIDClaimList{},
 		&GENIDEntry{},
 		&GENIDEntryList{},
-		&GENIDIndex{},
-		&GENIDIndexList{},
 	)
 
 	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)

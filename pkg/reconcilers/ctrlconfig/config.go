@@ -20,17 +20,13 @@ import (
 	"context"
 
 	"github.com/henderiw/logger/log"
-	"github.com/kuidio/kuid/pkg/backend/backend"
+	"github.com/kuidio/kuid/pkg/backend"
 	"k8s.io/apimachinery/pkg/types"
 )
 
 type ControllerConfig struct {
-	IPAMBackend    backend.Backend
-	VLANBackend    backend.Backend
-	VXLANBackend   backend.Backend
-	ASBackend      backend.Backend
-	EXTCOMMBackend backend.Backend
-	GENIDBackend   backend.Backend
+	// key is group
+	Backends map[string]backend.Backend
 }
 
 func InitContext(ctx context.Context, controllerName string, req types.NamespacedName) context.Context {

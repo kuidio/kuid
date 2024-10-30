@@ -17,5 +17,5 @@ limitations under the License.
 // +k8s:deepcopy-gen=package,register
 // +groupName=extcomm.be.kuid.dev
 
-// extcomm defines the extcomm api
-package extcomm 
+// Package genid is the internal version of the API.
+package extcomm // import "github.com/kuidio/kuid/apis/backend/extcomm"

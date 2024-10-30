@@ -16,7 +16,6 @@ limitations under the License.
 
 package backend
 
-
 // +k8s:openapi-gen=true
 // ClaimType define the type of the claim
 type ClaimType string

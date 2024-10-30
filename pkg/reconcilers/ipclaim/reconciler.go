@@ -21,15 +21,14 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
-	"time"
 
 	"github.com/henderiw/logger/log"
+	condv1alpha1 "github.com/kform-dev/choreo/apis/condition/v1alpha1"
+	"github.com/kuidio/kuid/apis/backend/ipam"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
-	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
-	"github.com/kuidio/kuid/pkg/backend/backend"
+	"github.com/kuidio/kuid/pkg/backend"
 	"github.com/kuidio/kuid/pkg/reconcilers"
 	"github.com/kuidio/kuid/pkg/reconcilers/ctrlconfig"
-	"github.com/kuidio/kuid/pkg/reconcilers/eventhandler"
 	"github.com/kuidio/kuid/pkg/reconcilers/resource"
 	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
@@ -41,20 +40,16 @@ import (
 )
 
 func init() {
-	reconcilers.Register("ipclaim", &reconciler{})
+	reconcilers.Register(ipambev1alpha1.Group, ipambev1alpha1.IPClaimKind, &reconciler{})
 }
 
 const (
-	crName         = "ipClaim"
-	controllerName = "IPClaimController"
+	reconcilerName = "IPClaimController"
 	finalizer      = "ipclaim.ipam.be.kuid.dev/finalizer"
 	// errors
 	errGetCr        = "cannot get cr"
 	errUpdateStatus = "cannot update status"
 )
-
-//+kubebuilder:rbac:groups=ipclaim.ipam.be.kuid.dev,resources=ipclaims,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=ipclaim.ipam.be.kuid.dev,resources=ipclaims/status,verbs=get;update;patch
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *reconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manager, c interface{}) (map[schema.GroupVersionKind]chan event.GenericEvent, error) {
@@ -64,18 +59,18 @@ func (r *reconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manager, c i
 	}
 
 	r.Client = mgr.GetClient()
-	r.finalizer = resource.NewAPIFinalizer(mgr.GetClient(), finalizer)
-	r.recorder = mgr.GetEventRecorderFor(controllerName)
-	r.be = cfg.IPAMBackend
+	r.finalizer = resource.NewAPIFinalizer(mgr.GetClient(), finalizer, reconcilerName)
+	r.recorder = mgr.GetEventRecorderFor(reconcilerName)
+	r.be = cfg.Backends[ipambev1alpha1.SchemeGroupVersion.Group]
 
 	return nil, ctrl.NewControllerManagedBy(mgr).
-		Named(controllerName).
+		Named(reconcilerName).
 		For(&ipambev1alpha1.IPClaim{}).
-		Watches(&ipambev1alpha1.IPEntry{},
-			&eventhandler.IPEntryEventHandler{
-				Client:  mgr.GetClient(),
-				ObjList: &ipambev1alpha1.IPClaimList{},
-			}).
+		//Watches(&ipambev1alpha1.IPEntry{},
+		//	&eventhandler.IPEntryEventHandler{
+		//		Client:  mgr.GetClient(),
+		//		ObjList: &ipambev1alpha1.IPClaimList{},
+		//	}).
 		Complete(r)
 }
 
@@ -87,12 +82,12 @@ type reconciler struct {
 }
 
 func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	ctx = ctrlconfig.InitContext(ctx, controllerName, req.NamespacedName)
+	ctx = ctrlconfig.InitContext(ctx, reconcilerName, req.NamespacedName)
 	log := log.FromContext(ctx)
 	log.Info("reconcile")
 
-	cr := &ipambev1alpha1.IPClaim{}
-	if err := r.Get(ctx, req.NamespacedName, cr); err != nil {
+	ipclaim := &ipambev1alpha1.IPClaim{}
+	if err := r.Get(ctx, req.NamespacedName, ipclaim); err != nil {
 		// if the resource no longer exists the reconcile loop is done
 		if resource.IgnoreNotFound(err) != nil {
 			log.Error(errGetCr, "error", err)
@@ -100,48 +95,90 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		}
 		return ctrl.Result{}, nil
 	}
-	cr = cr.DeepCopy()
+	ipclaimOrig := ipclaim.DeepCopy()
+	log.Debug("reconcile", "status orig", ipclaimOrig.Status)
 
-	if !cr.GetDeletionTimestamp().IsZero() {
-		if err := r.be.Release(ctx, cr); err != nil {
+	if !ipclaim.GetDeletionTimestamp().IsZero() {
+		intIPClaim := &ipam.IPClaim{}
+		if err := ipambev1alpha1.Convert_v1alpha1_IPClaim_To_ipam_IPClaim(ipclaim, intIPClaim, nil); err != nil {
+			return ctrl.Result{Requeue: true},
+				errors.Wrap(r.handleError(ctx, ipclaimOrig, "cannot convert ipclaim before delete claim", err), errUpdateStatus)
+		}
+
+		if err := r.be.Release(ctx, intIPClaim, false); err != nil {
 			if !strings.Contains(err.Error(), "not initialized") {
-				r.handleError(ctx, cr, "cannot delete ipclaim", err)
-				return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+				return ctrl.Result{Requeue: true},
+					errors.Wrap(r.handleError(ctx, ipclaimOrig, "cannot delete ipclaim", err), errUpdateStatus)
 			}
 		}
-
-		if err := r.finalizer.RemoveFinalizer(ctx, cr); err != nil {
-			r.handleError(ctx, cr, "cannot remove finalizer", err)
-			return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+		if err := ipambev1alpha1.Convert_ipam_IPClaim_To_v1alpha1_IPClaim(intIPClaim, ipclaim, nil); err != nil {
+			return ctrl.Result{Requeue: true},
+				errors.Wrap(r.handleError(ctx, ipclaimOrig, "cannot convert ipclaim after delete claim", err), errUpdateStatus)
 		}
-		log.Debug("Successfully deleted resource")
+
+		if err := r.finalizer.RemoveFinalizer(ctx, ipclaim); err != nil {
+			return ctrl.Result{Requeue: true},
+				errors.Wrap(r.handleError(ctx, ipclaimOrig, "cannot delete finalizer", err), errUpdateStatus)
+		}
 		return ctrl.Result{}, nil
 	}
 
-	if err := r.finalizer.AddFinalizer(ctx, cr); err != nil {
-		r.handleError(ctx, cr, "cannot add finalizer", err)
-		return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+	if err := r.finalizer.AddFinalizer(ctx, ipclaim); err != nil {
+		return ctrl.Result{Requeue: true},
+			errors.Wrap(r.handleError(ctx, ipclaimOrig, "cannot add finalizer", err), errUpdateStatus)
 	}
 
-	if err := r.be.Claim(ctx, cr); err != nil {
-		r.handleError(ctx, cr, "cannot claim ip", err)
-		return ctrl.Result{RequeueAfter: 5 * time.Second}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+	intIPClaim := &ipam.IPClaim{}
+	if err := ipambev1alpha1.Convert_v1alpha1_IPClaim_To_ipam_IPClaim(ipclaim, intIPClaim, nil); err != nil {
+		return ctrl.Result{Requeue: true},
+			errors.Wrap(r.handleError(ctx, ipclaimOrig, "cannot convert ipclaim before claim", err), errUpdateStatus)
+	}
+	if err := r.be.Claim(ctx, intIPClaim, false); err != nil {
+		return ctrl.Result{Requeue: true},
+			errors.Wrap(r.handleError(ctx, ipclaimOrig, "cannot claim ip", err), errUpdateStatus)
+	}
+	if err := ipambev1alpha1.Convert_ipam_IPClaim_To_v1alpha1_IPClaim(intIPClaim, ipclaim, nil); err != nil {
+		return ctrl.Result{Requeue: true},
+			errors.Wrap(r.handleError(ctx, ipclaimOrig, "cannot convert ipclaim after claim", err), errUpdateStatus)
 	}
 
-	cr.SetConditions(conditionv1alpha1.Ready())
-	r.recorder.Eventf(cr, corev1.EventTypeNormal, crName, "ready")
-	return ctrl.Result{}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+	return ctrl.Result{}, errors.Wrap(r.handleSuccess(ctx, ipclaimOrig), errUpdateStatus)
 }
 
-func (r *reconciler) handleError(ctx context.Context, cr *ipambev1alpha1.IPClaim, msg string, err error) {
+func (r *reconciler) handleSuccess(ctx context.Context, ipClaim *ipambev1alpha1.IPClaim) error {
 	log := log.FromContext(ctx)
-	if err == nil {
-		cr.SetConditions(conditionv1alpha1.Failed(msg))
-		log.Error(msg)
-		r.recorder.Eventf(cr, corev1.EventTypeWarning, crName, msg)
-	} else {
-		cr.SetConditions(conditionv1alpha1.Failed(err.Error()))
-		log.Error(msg, "error", err)
-		r.recorder.Eventf(cr, corev1.EventTypeWarning, crName, fmt.Sprintf("%s, err: %s", msg, err.Error()))
+	log.Debug("handleSuccess", "key", ipClaim.GetNamespacedName(), "status old", ipClaim.DeepCopy().Status)
+	// take a snapshot of the current object
+	patch := client.MergeFrom(ipClaim.DeepCopy())
+	// update status
+	ipClaim.SetConditions(condv1alpha1.Ready())
+	r.recorder.Eventf(ipClaim, corev1.EventTypeNormal, ipambev1alpha1.IPClaimKind, "ready")
+
+	
+	log.Debug("handleSuccess", "key", ipClaim.GetNamespacedName(), "status new", ipClaim.Status)
+
+	return r.Client.Status().Patch(ctx, ipClaim, patch, &client.SubResourcePatchOptions{
+		PatchOptions: client.PatchOptions{
+			FieldManager: "backend",
+		},
+	})
+}
+
+func (r *reconciler) handleError(ctx context.Context, ipClaim *ipambev1alpha1.IPClaim, msg string, err error) error {
+	log := log.FromContext(ctx)
+	// take a snapshot of the current object
+	patch := client.MergeFrom(ipClaim.DeepCopy())
+
+	if err != nil {
+		msg = fmt.Sprintf("%s err %s", msg, err.Error())
 	}
+	ipClaim.SetConditions(condv1alpha1.Failed(msg))
+	log.Error(msg)
+	r.recorder.Eventf(ipClaim, corev1.EventTypeWarning, ipambev1alpha1.IPClaimKind, msg)
+
+	return r.Client.Status().Patch(ctx, ipClaim, patch, &client.SubResourcePatchOptions{
+		PatchOptions: client.PatchOptions{
+			FieldManager: "backend",
+		},
+	})
 }

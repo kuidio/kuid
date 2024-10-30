@@ -19,8 +19,8 @@ package v1alpha1
 import (
 	"reflect"
 
-	resourcev1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
-	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
+	condv1alpha1 "github.com/kform-dev/choreo/apis/condition/v1alpha1"
+	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -35,26 +35,34 @@ type Prefix struct {
 	// Prefix defines the ip cidr in prefix notation.
 	// +kubebuilder:validation:Pattern=`(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/(([0-9])|([1-2][0-9])|(3[0-2]))|((:|[0-9a-fA-F]{0,4}):)([0-9a-fA-F]{0,4}:){0,5}((([0-9a-fA-F]{0,4}:)?(:|[0-9a-fA-F]{0,4}))|(((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])))(/(([0-9])|([0-9]{2})|(1[0-1][0-9])|(12[0-8])))`
 	Prefix string `json:"prefix" yaml:"prefix" protobuf:"bytes,1,opt,name=prefix"`
+	// PrefixType defines the prefixtype of IPIndex;
+	// - network kind is used for physical, virtual nics on a device
+	// - pool kind is used for allocating dedicated IP addresses
+	// - aggregate kind is used for claiming an aggregate prefix; only used for networkInstance prefixes
+	// +kubebuilder:validation:Enum=network;aggregate;pool;
+	// +kubebuilder:default:=aggregate
+	// +optional
+	PrefixType *IPPrefixType `json:"prefixType,omitempty" yaml:"prefixType,omitempty" protobuf:"bytes,2,opt,name=prefixType"`
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
-	resourcev1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,2,opt,name=userDefinedLabels"`
+	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,2,opt,name=userDefinedLabels"`
 }
 
 // IPIndexStatus defines the observed state of IPIndex
 type IPIndexStatus struct {
 	// ConditionedStatus provides the status of the IPClain using conditions
 	// - a ready condition indicates the overall status of the resource
-	conditionv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=conditionedStatus"`
+	condv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=conditionedStatus"`
 	// Prefixes defines the prefixes, claimed through the IPAM backend
 	Prefixes []Prefix `json:"prefixes,omitempty" yaml:"prefixes,omitempty" protobuf:"bytes,2,rep,name=prefixes"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:categories={kuid}
 // IPIndex is the Schema for the IPIndex API
-//
-// +k8s:openapi-gen=true
 type IPIndex struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`

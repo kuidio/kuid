@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 package entryserver
+/*
 
 import (
 	"context"
@@ -84,3 +85,4 @@ func parseFieldSelector(ctx context.Context, fieldSelector fields.Selector) (*Fi
 
 	return filter, nil
 }
+*/

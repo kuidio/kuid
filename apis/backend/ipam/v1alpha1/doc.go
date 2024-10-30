@@ -24,5 +24,5 @@ limitations under the License.
 // +k8s:defaulter-gen=TypeMeta
 // +groupName=ipam.be.kuid.dev
 
-// Package v1alpha1 is the v1alpha1 version of the API.
-package v1alpha1 // import "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
+// v1alpha1 is the v1alpha1 version of the API.
+package v1alpha1

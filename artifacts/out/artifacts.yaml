@@ -57,9 +57,9 @@ spec:
 apiVersion: apiregistration.k8s.io/v1
 kind: APIService
 metadata:
-  name: v1alpha1.infra.be.kuid.dev
+  name: v1alpha1.infra.kuid.dev
 spec:
-  group: infra.be.kuid.dev
+  group: infra.kuid.dev
   groupPriorityMinimum: 1000
   insecureSkipTLSVerify: true
   service:
@@ -141,7 +141,6 @@ spec:
       - args:
         - --tls-cert-file=/apiserver.local.config/certificates/tls.crt
         - --tls-private-key-file=/apiserver.local.config/certificates/tls.key
-        - --feature-gates=APIPriorityAndFairness=false
         - --audit-log-path=-
         - --audit-log-maxage=0
         - --audit-log-maxbackup=0
@@ -243,6 +242,8 @@ rules:
   resources:
   - mutatingwebhookconfigurations
   - validatingwebhookconfigurations
+  - validatingadmissionpolicies
+  - validatingadmissionpolicybindings
   verbs:
   - get
   - watch
@@ -507,7 +508,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: kuid:system:auth-delegator
+  name: config:system:auth-delegator
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

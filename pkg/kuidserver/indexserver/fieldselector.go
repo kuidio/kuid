@@ -16,6 +16,8 @@ limitations under the License.
 
 package indexserver
 
+/*
+
 import (
 	"context"
 	"fmt"
@@ -80,3 +82,4 @@ func parseFieldSelector(ctx context.Context, fieldSelector fields.Selector) (*Fi
 
 	return filter, nil
 }
+*/

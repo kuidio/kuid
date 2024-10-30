@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 package entryserver
+/*
 
 import (
 	"context"
@@ -45,3 +46,4 @@ func (r *strategy) Delete(ctx context.Context, key types.NamespacedName, obj run
 	})
 	return obj, nil
 }
+*/

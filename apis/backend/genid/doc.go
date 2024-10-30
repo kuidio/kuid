@@ -17,5 +17,5 @@ limitations under the License.
 // +k8s:deepcopy-gen=package,register
 // +groupName=genid.be.kuid.dev
 
-// genid defines the genid api
-package genid 
+// Package genid is the internal version of the API.
+package genid // import "github.com/kuidio/kuid/apis/backend/genid"

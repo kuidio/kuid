@@ -8,7 +8,7 @@ You may obtain a copy of the License at
     http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
+distributed under the License is distributed on an "VLAN IS" BVLANIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
@@ -19,9 +19,9 @@ package v1alpha1
 import (
 	"reflect"
 
-	"github.com/kuidio/kuid/apis/backend"
+	condv1alpha1 "github.com/kform-dev/choreo/apis/condition/v1alpha1"
 	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
-	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
+	"github.com/kuidio/kuid/apis/backend"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -38,24 +38,21 @@ type EXTCOMMEntrySpec struct {
 	commonv1alpha1.ClaimLabels `json:",inline" yaml:",inline" protobuf:"bytes,4,opt,name=claimLabels"`
 	// Claim defines the name of the claim that is the origin of this  entry
 	Claim string `json:"claim" yaml:"claim" protobuf:"bytes,5,opt,name=claim"`
-	// Owner defines the ownerReference of the EXTCOMMClaim
-	// Allow for different namesapces, hence it is part of the spec
-	Owner *commonv1alpha1.OwnerReference `json:"owner,omitempty" yaml:"owner,omitempty" protobuf:"bytes,6,opt,name=owner"`
 }
 
 // EXTCOMMEntryStatus defines the observed state of EXTCOMMEntry
 type EXTCOMMEntryStatus struct {
 	// ConditionedStatus provides the status of the EXTCOMMEntry using conditions
 	// - a ready condition indicates the overall status of the resource
-	conditionv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=conditionedStatus"`
+	condv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=conditionedStatus"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:categories={kuid}
 // EXTCOMMEntry is the Schema for the EXTCOMMentry API
-//
-// +k8s:openapi-gen=true
 type EXTCOMMEntry struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`

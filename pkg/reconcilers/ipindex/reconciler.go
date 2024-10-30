@@ -20,16 +20,14 @@ import (
 	"context"
 	"fmt"
 	"reflect"
-	"strings"
-	"time"
 
 	"github.com/henderiw/logger/log"
+	condv1alpha1 "github.com/kform-dev/choreo/apis/condition/v1alpha1"
+	"github.com/kuidio/kuid/apis/backend/ipam"
 	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
-	conditionv1alpha1 "github.com/kuidio/kuid/apis/condition/v1alpha1"
-	"github.com/kuidio/kuid/pkg/backend/backend"
+	"github.com/kuidio/kuid/pkg/backend"
 	"github.com/kuidio/kuid/pkg/reconcilers"
 	"github.com/kuidio/kuid/pkg/reconcilers/ctrlconfig"
-	"github.com/kuidio/kuid/pkg/reconcilers/eventhandler"
 	"github.com/kuidio/kuid/pkg/reconcilers/resource"
 	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
@@ -41,13 +39,12 @@ import (
 )
 
 func init() {
-	reconcilers.Register("ipindex", &reconciler{})
+	reconcilers.Register(ipambev1alpha1.Group, ipambev1alpha1.IPIndexKind, &reconciler{})
 }
 
 const (
-	crName         = "ipindex"
-	controllerName = "IPIndexController"
-	finalizer      = "ipindex.ipam.res.kuid.dev/finalizer"
+	reconcilerName = "IPIndexController"
+	finalizer      = "ipindex.ipam.be.kuid.dev/finalizer"
 	// errors
 	errGetCr        = "cannot get cr"
 	errUpdateStatus = "cannot update status"
@@ -55,25 +52,24 @@ const (
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *reconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manager, c interface{}) (map[schema.GroupVersionKind]chan event.GenericEvent, error) {
-
 	cfg, ok := c.(*ctrlconfig.ControllerConfig)
 	if !ok {
 		return nil, fmt.Errorf("cannot initialize, expecting controllerConfig, got: %s", reflect.TypeOf(c).Name())
 	}
 
 	r.Client = mgr.GetClient()
-	r.finalizer = resource.NewAPIFinalizer(mgr.GetClient(), finalizer)
-	r.recorder = mgr.GetEventRecorderFor(controllerName)
-	r.be = cfg.IPAMBackend
+	r.finalizer = resource.NewAPIFinalizer(mgr.GetClient(), finalizer, reconcilerName)
+	r.recorder = mgr.GetEventRecorderFor(reconcilerName)
+	r.be = cfg.Backends[ipambev1alpha1.SchemeGroupVersion.Group]
 
 	return nil, ctrl.NewControllerManagedBy(mgr).
-		Named(controllerName).
+		Named(reconcilerName).
 		For(&ipambev1alpha1.IPIndex{}).
-		Watches(&ipambev1alpha1.IPEntry{},
-			&eventhandler.IPEntryEventHandler{
-				Client:  mgr.GetClient(),
-				ObjList: &ipambev1alpha1.IPIndexList{},
-			}).
+		//Watches(&ipambev1alpha1.IPEntry{},
+		//	&eventhandler.IPEntryEventHandler{
+		//		Client:  mgr.GetClient(),
+		//		ObjList: &ipambev1alpha1.IPIndexList{},
+		//	}).
 		Complete(r)
 }
 
@@ -85,12 +81,12 @@ type reconciler struct {
 }
 
 func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	ctx = ctrlconfig.InitContext(ctx, controllerName, req.NamespacedName)
+	ctx = ctrlconfig.InitContext(ctx, reconcilerName, req.NamespacedName)
 	log := log.FromContext(ctx)
 	log.Info("reconcile")
 
-	cr := &ipambev1alpha1.IPIndex{}
-	if err := r.Get(ctx, req.NamespacedName, cr); err != nil {
+	ipIndex := &ipambev1alpha1.IPIndex{}
+	if err := r.Get(ctx, req.NamespacedName, ipIndex); err != nil {
 		// if the resource no longer exists the reconcile loop is done
 		if resource.IgnoreNotFound(err) != nil {
 			log.Error(errGetCr, "error", err)
@@ -98,81 +94,129 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		}
 		return ctrl.Result{}, nil
 	}
-	cr = cr.DeepCopy()
+	ipIndexOrig := ipIndex.DeepCopy()
+	log.Debug("reconcile", "status orig", ipIndexOrig.Status)
 
-	if !cr.GetDeletionTimestamp().IsZero() {
+	if !ipIndex.GetDeletionTimestamp().IsZero() {
 		// if prefixes are provided from the network instance we treat them as
-		// aggregate prefixes.
-		for _, prefix := range cr.Spec.Prefixes {
-			if err := r.deleteIPClaim(ctx, cr, prefix); err != nil {
-				return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+		// ipindex prefixes.
+		/*
+			for _, prefix := range index.Spec.Prefixes {
+				if err := r.deleteIPClaim(ctx, cr, prefix); err != nil {
+					if resource.IgnoreNotFound(err) != nil {
+						return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+					}
+				}
+			}
+		*/
+		intIPIndex := &ipam.IPIndex{}
+		if err := ipambev1alpha1.Convert_v1alpha1_IPIndex_To_ipam_IPIndex(ipIndex, intIPIndex, nil); err != nil {
+			return ctrl.Result{Requeue: true},
+				errors.Wrap(r.handleError(ctx, ipIndexOrig, "cannot convert ipIndex before delete", err), errUpdateStatus)
+		}
+		if err := r.be.DeleteIndex(ctx, intIPIndex); err != nil {
+			if resource.IgnoreNotFound(err) != nil {
+				return ctrl.Result{Requeue: true},
+					errors.Wrap(r.handleError(ctx, ipIndexOrig, "cannot delete index", err), errUpdateStatus)
 			}
 		}
-		if err := r.deleteIndex(ctx, cr); err != nil {
-			return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+		if err := ipambev1alpha1.Convert_ipam_IPIndex_To_v1alpha1_IPIndex(intIPIndex, ipIndex, nil); err != nil {
+			return ctrl.Result{Requeue: true},
+				errors.Wrap(r.handleError(ctx, ipIndexOrig, "cannot convert ipIndex after delete", err), errUpdateStatus)
 		}
 
-		if err := r.finalizer.RemoveFinalizer(ctx, cr); err != nil {
-			r.handleError(ctx, cr, "cannot remove finalizer", err)
-			return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+		// We use owner reference so the k8s garbage collector takes care of the cleanup
+		if err := r.finalizer.RemoveFinalizer(ctx, ipIndex); err != nil {
+			return ctrl.Result{Requeue: true},
+				errors.Wrap(r.handleError(ctx, ipIndexOrig, "cannot remove finalizer", err), errUpdateStatus)
 		}
-		log.Debug("Successfully deleted resource")
 		return ctrl.Result{}, nil
 	}
 
-	if err := r.finalizer.AddFinalizer(ctx, cr); err != nil {
-		r.handleError(ctx, cr, "cannot add finalizer", err)
-		return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+	if err := r.finalizer.AddFinalizer(ctx, ipIndex); err != nil {
+		return ctrl.Result{Requeue: true},
+			errors.Wrap(r.handleError(ctx, ipIndexOrig, "cannot add finalizer", err), errUpdateStatus)
 	}
 
 	// create ip index
-	if err := r.applyIndex(ctx, cr); err != nil {
-		return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+	intIPIndex := &ipam.IPIndex{}
+	if err := ipambev1alpha1.Convert_v1alpha1_IPIndex_To_ipam_IPIndex(ipIndex, intIPIndex, nil); err != nil {
+		return ctrl.Result{Requeue: true},
+			errors.Wrap(r.handleError(ctx, ipIndexOrig, "cannot convert ipIndex before create", err), errUpdateStatus)
+	}
+	if err := r.be.CreateIndex(ctx, intIPIndex); err != nil {
+		return ctrl.Result{Requeue: true},
+			errors.Wrap(r.handleError(ctx, ipIndexOrig, "cannot apply index", err), errUpdateStatus)
+	}
+	if err := ipambev1alpha1.Convert_ipam_IPIndex_To_v1alpha1_IPIndex(intIPIndex, ipIndex, nil); err != nil {
+		return ctrl.Result{Requeue: true},
+			errors.Wrap(r.handleError(ctx, ipIndexOrig, "cannot convert ipIndex after create", err), errUpdateStatus)
 	}
 
 	// first validate if the previously claimed prefixes are still needed
 	// if not delete them
-	for _, claimedPrefix := range cr.Status.Prefixes {
-		found := false
-		for _, prefix := range cr.Spec.Prefixes {
-			if claimedPrefix.Prefix == prefix.Prefix {
-				found = true
-				break
+	/*
+		for _, claimedPrefix := range cr.Status.Prefixes {
+			found := false
+			for _, prefix := range cr.Spec.Prefixes {
+				if claimedPrefix.Prefix == prefix.Prefix {
+					found = true
+					break
+				}
+			}
+			if !found {
+				if err := r.deleteIPClaim(ctx, cr, claimedPrefix); err != nil {
+					return ctrl.Result{RequeueAfter: 1 * time.Second}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+				}
 			}
 		}
-		if !found {
-			if err := r.deleteIPClaim(ctx, cr, claimedPrefix); err != nil {
+		// if prefixes are provided from the network instance we treat them as
+		// aggregate prefixes.
+		for _, prefix := range cr.Spec.Prefixes {
+			prefix := prefix
+			if err := r.applyIPClaim(ctx, cr, prefix); err != nil {
 				return ctrl.Result{RequeueAfter: 1 * time.Second}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
 			}
 		}
-	}
-	// if prefixes are provided from the network instance we treat them as
-	// aggregate prefixes.
-	for _, prefix := range cr.Spec.Prefixes {
-		prefix := prefix
-		if err := r.applyIPClaim(ctx, cr, prefix); err != nil {
-			return ctrl.Result{RequeueAfter: 1 * time.Second}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
-		}
-	}
+	*/
 
-	cr.SetConditions(conditionv1alpha1.Ready())
-	r.recorder.Eventf(cr, corev1.EventTypeNormal, crName, "ready")
-	return ctrl.Result{}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+	return ctrl.Result{}, errors.Wrap(r.handleSuccess(ctx, ipIndexOrig), errUpdateStatus)
 }
 
-func (r *reconciler) handleError(ctx context.Context, cr *ipambev1alpha1.IPIndex, msg string, err error) {
+func (r *reconciler) handleSuccess(ctx context.Context, ipIndex *ipambev1alpha1.IPIndex) error {
+	// take a snapshot of the current object
+	patch := client.MergeFrom(ipIndex.DeepCopy())
+	// update status
+	ipIndex.SetConditions(condv1alpha1.Ready())
+	r.recorder.Eventf(ipIndex, corev1.EventTypeNormal, ipambev1alpha1.IPIndexKind, "ready")
+
+	return r.Client.Status().Patch(ctx, ipIndex, patch, &client.SubResourcePatchOptions{
+		PatchOptions: client.PatchOptions{
+			FieldManager: "backend",
+		},
+	})
+}
+
+func (r *reconciler) handleError(ctx context.Context, ipIndex *ipambev1alpha1.IPIndex, msg string, err error) error {
 	log := log.FromContext(ctx)
-	if err == nil {
-		cr.SetConditions(conditionv1alpha1.Failed(msg))
-		log.Error(msg)
-		r.recorder.Eventf(cr, corev1.EventTypeWarning, crName, msg)
-	} else {
-		cr.SetConditions(conditionv1alpha1.Failed(err.Error()))
-		log.Error(msg, "error", err)
-		r.recorder.Eventf(cr, corev1.EventTypeWarning, crName, fmt.Sprintf("%s, err: %s", msg, err.Error()))
+	// take a snapshot of the current object
+	patch := client.MergeFrom(ipIndex.DeepCopy())
+
+	if err != nil {
+		msg = fmt.Sprintf("%s err %s", msg, err.Error())
 	}
+	ipIndex.SetConditions(condv1alpha1.Failed(msg))
+	log.Error(msg)
+	r.recorder.Eventf(ipIndex, corev1.EventTypeWarning, ipambev1alpha1.IPIndexKind, msg)
+
+	return r.Client.Status().Patch(ctx, ipIndex, patch, &client.SubResourcePatchOptions{
+		PatchOptions: client.PatchOptions{
+			FieldManager: "backend",
+		},
+	})
 }
 
+/*
 func (r *reconciler) deleteIndex(ctx context.Context, cr *ipambev1alpha1.IPIndex) error {
 	if err := r.be.DeleteIndex(ctx, cr); err != nil {
 		r.handleError(ctx, cr, "cannot delete index", err)
@@ -188,7 +232,9 @@ func (r *reconciler) applyIndex(ctx context.Context, cr *ipambev1alpha1.IPIndex)
 	}
 	return nil
 }
+*/
 
+/*
 func (r *reconciler) applyIPClaim(ctx context.Context, cr *ipambev1alpha1.IPIndex, prefix ipambev1alpha1.Prefix) error {
 	ipclaim, err := cr.GetClaim(prefix)
 	if err != nil { // strange if this happens since the prefix was already processed
@@ -222,3 +268,4 @@ func (r *reconciler) deleteIPClaim(ctx context.Context, cr *ipambev1alpha1.IPInd
 	}
 	return nil
 }
+*/

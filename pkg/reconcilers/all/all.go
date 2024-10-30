@@ -17,16 +17,6 @@ limitations under the License.
 package all
 
 import (
-	_ "github.com/kuidio/kuid/pkg/reconcilers/asclaim"
-	_ "github.com/kuidio/kuid/pkg/reconcilers/asindex"
-	_ "github.com/kuidio/kuid/pkg/reconcilers/extcommclaim"
-	_ "github.com/kuidio/kuid/pkg/reconcilers/extcommindex"
-	_ "github.com/kuidio/kuid/pkg/reconcilers/ipclaim"
 	_ "github.com/kuidio/kuid/pkg/reconcilers/ipindex"
-	_ "github.com/kuidio/kuid/pkg/reconcilers/vlanclaim"
-	_ "github.com/kuidio/kuid/pkg/reconcilers/vlanindex"
-	_ "github.com/kuidio/kuid/pkg/reconcilers/vxlanclaim"
-	_ "github.com/kuidio/kuid/pkg/reconcilers/vxlanindex"
-	_ "github.com/kuidio/kuid/pkg/reconcilers/genidclaim"
-	_ "github.com/kuidio/kuid/pkg/reconcilers/genidindex"
+	_ "github.com/kuidio/kuid/pkg/reconcilers/ipclaim"
 )

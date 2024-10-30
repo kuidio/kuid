@@ -21,7 +21,6 @@ limitations under the License.
 package v1alpha1
 
 import (
-	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -100,11 +99,6 @@ func (in *VLANClaimSpec) DeepCopyInto(out *VLANClaimSpec) {
 		**out = **in
 	}
 	in.ClaimLabels.DeepCopyInto(&out.ClaimLabels)
-	if in.Owner != nil {
-		in, out := &in.Owner, &out.Owner
-		*out = new(commonv1alpha1.OwnerReference)
-		**out = **in
-	}
 	return
 }
 
@@ -215,11 +209,6 @@ func (in *VLANEntryList) DeepCopyObject() runtime.Object {
 func (in *VLANEntrySpec) DeepCopyInto(out *VLANEntrySpec) {
 	*out = *in
 	in.ClaimLabels.DeepCopyInto(&out.ClaimLabels)
-	if in.Owner != nil {
-		in, out := &in.Owner, &out.Owner
-		*out = new(commonv1alpha1.OwnerReference)
-		**out = **in
-	}
 	return
 }
 
