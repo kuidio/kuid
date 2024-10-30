@@ -77,7 +77,7 @@ func (r *be) CreateIndex(ctx context.Context, obj runtime.Object) error {
 	log := log.FromContext(ctx)
 	key := index.GetKey()
 
-	log.Info("create index", "isInitialized", r.cache.IsInitialized(ctx, key))
+	log.Debug("create index", "isInitialized", r.cache.IsInitialized(ctx, key))
 	// if the Cache is not initialized -> restore the cache
 	// this happens upon initialization or backend restart
 	if _, err := r.cache.Get(ctx, key); err != nil {
@@ -114,7 +114,7 @@ func (r *be) DeleteIndex(ctx context.Context, obj runtime.Object) error {
 
 	ctx = bebackend.InitIndexContext(ctx, "delete", index)
 	log := log.FromContext(ctx)
-	log.Info("start")
+	log.Debug("start")
 	key := index.GetKey()
 
 	log.Debug("start", "isInitialized", r.cache.IsInitialized(ctx, key))
@@ -123,10 +123,10 @@ func (r *be) DeleteIndex(ctx context.Context, obj runtime.Object) error {
 		log.Error("cannot delete Index", "error", err.Error())
 		return err
 	}
-	log.Info("destroyed")
+	log.Debug("destroyed")
 	r.cache.Delete(ctx, key)
 
-	log.Info("finished")
+	log.Debug("finished")
 	return nil
 }
 

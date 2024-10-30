@@ -145,13 +145,13 @@ func (r *be) saveAll(ctx context.Context, k store.Key) error {
 			return err
 		}
 	}
-	//for _, curEntry := range curEntries {
-	//	log.Info("saveAll delete entry", "entry", curEntry.GetNamespacedName())
-	//	if err := r.bestorage.DeleteEntry(ctx, curEntry); err != nil {
-	//		log.Error("saveAll update failed", "name", curEntry.GetName(), "error", err.Error())
-	//		return err
-	//	}
-	//}
+	for _, curEntry := range curEntries {
+		log.Debug("saveAll delete entry", "entry", curEntry.GetNamespacedName())
+		if err := r.bestorage.DeleteEntry(ctx, curEntry); err != nil {
+			log.Error("saveAll update failed", "name", curEntry.GetName(), "error", err.Error())
+			return err
+		}
+	}
 	return nil
 }
 
@@ -324,16 +324,16 @@ func (r *be) updateIPIndexClaims(ctx context.Context, index *ipam.IPIndex) error
 		}
 		delete(existingClaims, newClaim.GetNamespacedName().String())
 	}
-	/*
-		for _, claim := range existingClaims {
-			log.Info("updateIPIndexClaims: delete existing claims", "claim", claim.GetName())
-			if err := r.bestorage.DeleteClaim(ctx, claim); err != nil {
-				log.Error("updateIPIndexClaims delete failed", "name", claim.GetName(), "error", err.Error())
-				errm = errors.Join(errm, err)
-				continue
-			}
+
+	for _, claim := range existingClaims {
+		log.Debug("updateIPIndexClaims: delete existing claims", "claim", claim.GetName())
+		if err := r.bestorage.DeleteClaim(ctx, claim); err != nil {
+			log.Error("updateIPIndexClaims delete failed", "name", claim.GetName(), "error", err.Error())
+			errm = errors.Join(errm, err)
+			continue
 		}
-	*/
+	}
+
 	if errm != nil {
 		return errm
 	}
