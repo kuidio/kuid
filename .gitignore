@@ -22,3 +22,4 @@ dist
 # Go workspace file
 go.work
 vendor
+db

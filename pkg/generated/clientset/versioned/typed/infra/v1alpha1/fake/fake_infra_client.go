@@ -27,6 +27,10 @@ type FakeInfraV1alpha1 struct {
 	*testing.Fake
 }
 
+func (c *FakeInfraV1alpha1) Adaptors(namespace string) v1alpha1.AdaptorInterface {
+	return &FakeAdaptors{c, namespace}
+}
+
 func (c *FakeInfraV1alpha1) Clusters(namespace string) v1alpha1.ClusterInterface {
 	return &FakeClusters{c, namespace}
 }
@@ -69,6 +73,10 @@ func (c *FakeInfraV1alpha1) NodeSets(namespace string) v1alpha1.NodeSetInterface
 
 func (c *FakeInfraV1alpha1) Partitions(namespace string) v1alpha1.PartitionInterface {
 	return &FakePartitions{c, namespace}
+}
+
+func (c *FakeInfraV1alpha1) Ports(namespace string) v1alpha1.PortInterface {
+	return &FakePorts{c, namespace}
 }
 
 func (c *FakeInfraV1alpha1) Racks(namespace string) v1alpha1.RackInterface {

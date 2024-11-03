@@ -38,6 +38,46 @@ func init() {
 // RegisterConversions adds conversion functions to the given scheme.
 // Public to allow building arbitrary schemes.
 func RegisterConversions(s *runtime.Scheme) error {
+	if err := s.AddGeneratedConversionFunc((*Adaptor)(nil), (*infra.Adaptor)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_Adaptor_To_infra_Adaptor(a.(*Adaptor), b.(*infra.Adaptor), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddGeneratedConversionFunc((*infra.Adaptor)(nil), (*Adaptor)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_infra_Adaptor_To_v1alpha1_Adaptor(a.(*infra.Adaptor), b.(*Adaptor), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddGeneratedConversionFunc((*AdaptorList)(nil), (*infra.AdaptorList)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_AdaptorList_To_infra_AdaptorList(a.(*AdaptorList), b.(*infra.AdaptorList), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddGeneratedConversionFunc((*infra.AdaptorList)(nil), (*AdaptorList)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_infra_AdaptorList_To_v1alpha1_AdaptorList(a.(*infra.AdaptorList), b.(*AdaptorList), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddGeneratedConversionFunc((*AdaptorSpec)(nil), (*infra.AdaptorSpec)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_AdaptorSpec_To_infra_AdaptorSpec(a.(*AdaptorSpec), b.(*infra.AdaptorSpec), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddGeneratedConversionFunc((*infra.AdaptorSpec)(nil), (*AdaptorSpec)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_infra_AdaptorSpec_To_v1alpha1_AdaptorSpec(a.(*infra.AdaptorSpec), b.(*AdaptorSpec), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddGeneratedConversionFunc((*AdaptorStatus)(nil), (*infra.AdaptorStatus)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_AdaptorStatus_To_infra_AdaptorStatus(a.(*AdaptorStatus), b.(*infra.AdaptorStatus), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddGeneratedConversionFunc((*infra.AdaptorStatus)(nil), (*AdaptorStatus)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_infra_AdaptorStatus_To_v1alpha1_AdaptorStatus(a.(*infra.AdaptorStatus), b.(*AdaptorStatus), scope)
+	}); err != nil {
+		return err
+	}
 	if err := s.AddGeneratedConversionFunc((*Cluster)(nil), (*infra.Cluster)(nil), func(a, b interface{}, scope conversion.Scope) error {
 		return Convert_v1alpha1_Cluster_To_infra_Cluster(a.(*Cluster), b.(*infra.Cluster), scope)
 	}); err != nil {
@@ -458,6 +498,46 @@ func RegisterConversions(s *runtime.Scheme) error {
 	}); err != nil {
 		return err
 	}
+	if err := s.AddGeneratedConversionFunc((*Port)(nil), (*infra.Port)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_Port_To_infra_Port(a.(*Port), b.(*infra.Port), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddGeneratedConversionFunc((*infra.Port)(nil), (*Port)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_infra_Port_To_v1alpha1_Port(a.(*infra.Port), b.(*Port), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddGeneratedConversionFunc((*PortList)(nil), (*infra.PortList)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_PortList_To_infra_PortList(a.(*PortList), b.(*infra.PortList), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddGeneratedConversionFunc((*infra.PortList)(nil), (*PortList)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_infra_PortList_To_v1alpha1_PortList(a.(*infra.PortList), b.(*PortList), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddGeneratedConversionFunc((*PortSpec)(nil), (*infra.PortSpec)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_PortSpec_To_infra_PortSpec(a.(*PortSpec), b.(*infra.PortSpec), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddGeneratedConversionFunc((*infra.PortSpec)(nil), (*PortSpec)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_infra_PortSpec_To_v1alpha1_PortSpec(a.(*infra.PortSpec), b.(*PortSpec), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddGeneratedConversionFunc((*PortStatus)(nil), (*infra.PortStatus)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_PortStatus_To_infra_PortStatus(a.(*PortStatus), b.(*infra.PortStatus), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddGeneratedConversionFunc((*infra.PortStatus)(nil), (*PortStatus)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_infra_PortStatus_To_v1alpha1_PortStatus(a.(*infra.PortStatus), b.(*PortStatus), scope)
+	}); err != nil {
+		return err
+	}
 	if err := s.AddGeneratedConversionFunc((*Rack)(nil), (*infra.Rack)(nil), func(a, b interface{}, scope conversion.Scope) error {
 		return Convert_v1alpha1_Rack_To_infra_Rack(a.(*Rack), b.(*infra.Rack), scope)
 	}); err != nil {
@@ -578,11 +658,6 @@ func RegisterConversions(s *runtime.Scheme) error {
 	}); err != nil {
 		return err
 	}
-	if err := s.AddConversionFunc((*id.AdaptorID)(nil), (*idv1alpha1.AdaptorID)(nil), func(a, b interface{}, scope conversion.Scope) error {
-		return Convert_id_AdaptorID_To_v1alpha1_AdaptorID(a.(*id.AdaptorID), b.(*idv1alpha1.AdaptorID), scope)
-	}); err != nil {
-		return err
-	}
 	if err := s.AddConversionFunc((*id.ClusterID)(nil), (*idv1alpha1.ClusterID)(nil), func(a, b interface{}, scope conversion.Scope) error {
 		return Convert_id_ClusterID_To_v1alpha1_ClusterID(a.(*id.ClusterID), b.(*idv1alpha1.ClusterID), scope)
 	}); err != nil {
@@ -595,6 +670,11 @@ func RegisterConversions(s *runtime.Scheme) error {
 	}
 	if err := s.AddConversionFunc((*id.NodeID)(nil), (*idv1alpha1.NodeID)(nil), func(a, b interface{}, scope conversion.Scope) error {
 		return Convert_id_NodeID_To_v1alpha1_NodeID(a.(*id.NodeID), b.(*idv1alpha1.NodeID), scope)
+	}); err != nil {
+		return err
+	}
+	if err := s.AddConversionFunc((*id.PartitionAdaptorID)(nil), (*idv1alpha1.PartitionAdaptorID)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_id_PartitionAdaptorID_To_v1alpha1_PartitionAdaptorID(a.(*id.PartitionAdaptorID), b.(*idv1alpha1.PartitionAdaptorID), scope)
 	}); err != nil {
 		return err
 	}
@@ -618,8 +698,8 @@ func RegisterConversions(s *runtime.Scheme) error {
 	}); err != nil {
 		return err
 	}
-	if err := s.AddConversionFunc((*id.PortID)(nil), (*idv1alpha1.PortID)(nil), func(a, b interface{}, scope conversion.Scope) error {
-		return Convert_id_PortID_To_v1alpha1_PortID(a.(*id.PortID), b.(*idv1alpha1.PortID), scope)
+	if err := s.AddConversionFunc((*id.PartitionPortID)(nil), (*idv1alpha1.PartitionPortID)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_id_PartitionPortID_To_v1alpha1_PartitionPortID(a.(*id.PartitionPortID), b.(*idv1alpha1.PartitionPortID), scope)
 	}); err != nil {
 		return err
 	}
@@ -640,11 +720,6 @@ func RegisterConversions(s *runtime.Scheme) error {
 	}
 	if err := s.AddConversionFunc((*infra.LinkSpec)(nil), (*LinkSpec)(nil), func(a, b interface{}, scope conversion.Scope) error {
 		return Convert_infra_LinkSpec_To_v1alpha1_LinkSpec(a.(*infra.LinkSpec), b.(*LinkSpec), scope)
-	}); err != nil {
-		return err
-	}
-	if err := s.AddConversionFunc((*idv1alpha1.AdaptorID)(nil), (*id.AdaptorID)(nil), func(a, b interface{}, scope conversion.Scope) error {
-		return Convert_v1alpha1_AdaptorID_To_id_AdaptorID(a.(*idv1alpha1.AdaptorID), b.(*id.AdaptorID), scope)
 	}); err != nil {
 		return err
 	}
@@ -678,6 +753,11 @@ func RegisterConversions(s *runtime.Scheme) error {
 	}); err != nil {
 		return err
 	}
+	if err := s.AddConversionFunc((*idv1alpha1.PartitionAdaptorID)(nil), (*id.PartitionAdaptorID)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_PartitionAdaptorID_To_id_PartitionAdaptorID(a.(*idv1alpha1.PartitionAdaptorID), b.(*id.PartitionAdaptorID), scope)
+	}); err != nil {
+		return err
+	}
 	if err := s.AddConversionFunc((*idv1alpha1.PartitionAttachmentID)(nil), (*id.PartitionAttachmentID)(nil), func(a, b interface{}, scope conversion.Scope) error {
 		return Convert_v1alpha1_PartitionAttachmentID_To_id_PartitionAttachmentID(a.(*idv1alpha1.PartitionAttachmentID), b.(*id.PartitionAttachmentID), scope)
 	}); err != nil {
@@ -698,8 +778,8 @@ func RegisterConversions(s *runtime.Scheme) error {
 	}); err != nil {
 		return err
 	}
-	if err := s.AddConversionFunc((*idv1alpha1.PortID)(nil), (*id.PortID)(nil), func(a, b interface{}, scope conversion.Scope) error {
-		return Convert_v1alpha1_PortID_To_id_PortID(a.(*idv1alpha1.PortID), b.(*id.PortID), scope)
+	if err := s.AddConversionFunc((*idv1alpha1.PartitionPortID)(nil), (*id.PartitionPortID)(nil), func(a, b interface{}, scope conversion.Scope) error {
+		return Convert_v1alpha1_PartitionPortID_To_id_PartitionPortID(a.(*idv1alpha1.PartitionPortID), b.(*id.PartitionPortID), scope)
 	}); err != nil {
 		return err
 	}
@@ -709,6 +789,134 @@ func RegisterConversions(s *runtime.Scheme) error {
 		return err
 	}
 	return nil
+}
+
+func autoConvert_v1alpha1_Adaptor_To_infra_Adaptor(in *Adaptor, out *infra.Adaptor, s conversion.Scope) error {
+	out.ObjectMeta = in.ObjectMeta
+	if err := Convert_v1alpha1_AdaptorSpec_To_infra_AdaptorSpec(&in.Spec, &out.Spec, s); err != nil {
+		return err
+	}
+	if err := Convert_v1alpha1_AdaptorStatus_To_infra_AdaptorStatus(&in.Status, &out.Status, s); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Convert_v1alpha1_Adaptor_To_infra_Adaptor is an autogenerated conversion function.
+func Convert_v1alpha1_Adaptor_To_infra_Adaptor(in *Adaptor, out *infra.Adaptor, s conversion.Scope) error {
+	return autoConvert_v1alpha1_Adaptor_To_infra_Adaptor(in, out, s)
+}
+
+func autoConvert_infra_Adaptor_To_v1alpha1_Adaptor(in *infra.Adaptor, out *Adaptor, s conversion.Scope) error {
+	out.ObjectMeta = in.ObjectMeta
+	if err := Convert_infra_AdaptorSpec_To_v1alpha1_AdaptorSpec(&in.Spec, &out.Spec, s); err != nil {
+		return err
+	}
+	if err := Convert_infra_AdaptorStatus_To_v1alpha1_AdaptorStatus(&in.Status, &out.Status, s); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Convert_infra_Adaptor_To_v1alpha1_Adaptor is an autogenerated conversion function.
+func Convert_infra_Adaptor_To_v1alpha1_Adaptor(in *infra.Adaptor, out *Adaptor, s conversion.Scope) error {
+	return autoConvert_infra_Adaptor_To_v1alpha1_Adaptor(in, out, s)
+}
+
+func autoConvert_v1alpha1_AdaptorList_To_infra_AdaptorList(in *AdaptorList, out *infra.AdaptorList, s conversion.Scope) error {
+	out.ListMeta = in.ListMeta
+	if in.Items != nil {
+		in, out := &in.Items, &out.Items
+		*out = make([]infra.Adaptor, len(*in))
+		for i := range *in {
+			if err := Convert_v1alpha1_Adaptor_To_infra_Adaptor(&(*in)[i], &(*out)[i], s); err != nil {
+				return err
+			}
+		}
+	} else {
+		out.Items = nil
+	}
+	return nil
+}
+
+// Convert_v1alpha1_AdaptorList_To_infra_AdaptorList is an autogenerated conversion function.
+func Convert_v1alpha1_AdaptorList_To_infra_AdaptorList(in *AdaptorList, out *infra.AdaptorList, s conversion.Scope) error {
+	return autoConvert_v1alpha1_AdaptorList_To_infra_AdaptorList(in, out, s)
+}
+
+func autoConvert_infra_AdaptorList_To_v1alpha1_AdaptorList(in *infra.AdaptorList, out *AdaptorList, s conversion.Scope) error {
+	out.ListMeta = in.ListMeta
+	if in.Items != nil {
+		in, out := &in.Items, &out.Items
+		*out = make([]Adaptor, len(*in))
+		for i := range *in {
+			if err := Convert_infra_Adaptor_To_v1alpha1_Adaptor(&(*in)[i], &(*out)[i], s); err != nil {
+				return err
+			}
+		}
+	} else {
+		out.Items = nil
+	}
+	return nil
+}
+
+// Convert_infra_AdaptorList_To_v1alpha1_AdaptorList is an autogenerated conversion function.
+func Convert_infra_AdaptorList_To_v1alpha1_AdaptorList(in *infra.AdaptorList, out *AdaptorList, s conversion.Scope) error {
+	return autoConvert_infra_AdaptorList_To_v1alpha1_AdaptorList(in, out, s)
+}
+
+func autoConvert_v1alpha1_AdaptorSpec_To_infra_AdaptorSpec(in *AdaptorSpec, out *infra.AdaptorSpec, s conversion.Scope) error {
+	if err := Convert_v1alpha1_PartitionAdaptorID_To_id_PartitionAdaptorID(&in.PartitionAdaptorID, &out.PartitionAdaptorID, s); err != nil {
+		return err
+	}
+	if err := asv1alpha1.Convert_v1alpha1_UserDefinedLabels_To_common_UserDefinedLabels(&in.UserDefinedLabels, &out.UserDefinedLabels, s); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Convert_v1alpha1_AdaptorSpec_To_infra_AdaptorSpec is an autogenerated conversion function.
+func Convert_v1alpha1_AdaptorSpec_To_infra_AdaptorSpec(in *AdaptorSpec, out *infra.AdaptorSpec, s conversion.Scope) error {
+	return autoConvert_v1alpha1_AdaptorSpec_To_infra_AdaptorSpec(in, out, s)
+}
+
+func autoConvert_infra_AdaptorSpec_To_v1alpha1_AdaptorSpec(in *infra.AdaptorSpec, out *AdaptorSpec, s conversion.Scope) error {
+	if err := Convert_id_PartitionAdaptorID_To_v1alpha1_PartitionAdaptorID(&in.PartitionAdaptorID, &out.PartitionAdaptorID, s); err != nil {
+		return err
+	}
+	if err := asv1alpha1.Convert_common_UserDefinedLabels_To_v1alpha1_UserDefinedLabels(&in.UserDefinedLabels, &out.UserDefinedLabels, s); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Convert_infra_AdaptorSpec_To_v1alpha1_AdaptorSpec is an autogenerated conversion function.
+func Convert_infra_AdaptorSpec_To_v1alpha1_AdaptorSpec(in *infra.AdaptorSpec, out *AdaptorSpec, s conversion.Scope) error {
+	return autoConvert_infra_AdaptorSpec_To_v1alpha1_AdaptorSpec(in, out, s)
+}
+
+func autoConvert_v1alpha1_AdaptorStatus_To_infra_AdaptorStatus(in *AdaptorStatus, out *infra.AdaptorStatus, s conversion.Scope) error {
+	if err := asv1alpha1.Convert_v1alpha1_ConditionedStatus_To_condition_ConditionedStatus(&in.ConditionedStatus, &out.ConditionedStatus, s); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Convert_v1alpha1_AdaptorStatus_To_infra_AdaptorStatus is an autogenerated conversion function.
+func Convert_v1alpha1_AdaptorStatus_To_infra_AdaptorStatus(in *AdaptorStatus, out *infra.AdaptorStatus, s conversion.Scope) error {
+	return autoConvert_v1alpha1_AdaptorStatus_To_infra_AdaptorStatus(in, out, s)
+}
+
+func autoConvert_infra_AdaptorStatus_To_v1alpha1_AdaptorStatus(in *infra.AdaptorStatus, out *AdaptorStatus, s conversion.Scope) error {
+	if err := asv1alpha1.Convert_condition_ConditionedStatus_To_v1alpha1_ConditionedStatus(&in.ConditionedStatus, &out.ConditionedStatus, s); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Convert_infra_AdaptorStatus_To_v1alpha1_AdaptorStatus is an autogenerated conversion function.
+func Convert_infra_AdaptorStatus_To_v1alpha1_AdaptorStatus(in *infra.AdaptorStatus, out *AdaptorStatus, s conversion.Scope) error {
+	return autoConvert_infra_AdaptorStatus_To_v1alpha1_AdaptorStatus(in, out, s)
 }
 
 func autoConvert_v1alpha1_Cluster_To_infra_Cluster(in *Cluster, out *infra.Cluster, s conversion.Scope) error {
@@ -2077,6 +2285,134 @@ func autoConvert_infra_PartitionStatus_To_v1alpha1_PartitionStatus(in *infra.Par
 // Convert_infra_PartitionStatus_To_v1alpha1_PartitionStatus is an autogenerated conversion function.
 func Convert_infra_PartitionStatus_To_v1alpha1_PartitionStatus(in *infra.PartitionStatus, out *PartitionStatus, s conversion.Scope) error {
 	return autoConvert_infra_PartitionStatus_To_v1alpha1_PartitionStatus(in, out, s)
+}
+
+func autoConvert_v1alpha1_Port_To_infra_Port(in *Port, out *infra.Port, s conversion.Scope) error {
+	out.ObjectMeta = in.ObjectMeta
+	if err := Convert_v1alpha1_PortSpec_To_infra_PortSpec(&in.Spec, &out.Spec, s); err != nil {
+		return err
+	}
+	if err := Convert_v1alpha1_PortStatus_To_infra_PortStatus(&in.Status, &out.Status, s); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Convert_v1alpha1_Port_To_infra_Port is an autogenerated conversion function.
+func Convert_v1alpha1_Port_To_infra_Port(in *Port, out *infra.Port, s conversion.Scope) error {
+	return autoConvert_v1alpha1_Port_To_infra_Port(in, out, s)
+}
+
+func autoConvert_infra_Port_To_v1alpha1_Port(in *infra.Port, out *Port, s conversion.Scope) error {
+	out.ObjectMeta = in.ObjectMeta
+	if err := Convert_infra_PortSpec_To_v1alpha1_PortSpec(&in.Spec, &out.Spec, s); err != nil {
+		return err
+	}
+	if err := Convert_infra_PortStatus_To_v1alpha1_PortStatus(&in.Status, &out.Status, s); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Convert_infra_Port_To_v1alpha1_Port is an autogenerated conversion function.
+func Convert_infra_Port_To_v1alpha1_Port(in *infra.Port, out *Port, s conversion.Scope) error {
+	return autoConvert_infra_Port_To_v1alpha1_Port(in, out, s)
+}
+
+func autoConvert_v1alpha1_PortList_To_infra_PortList(in *PortList, out *infra.PortList, s conversion.Scope) error {
+	out.ListMeta = in.ListMeta
+	if in.Items != nil {
+		in, out := &in.Items, &out.Items
+		*out = make([]infra.Port, len(*in))
+		for i := range *in {
+			if err := Convert_v1alpha1_Port_To_infra_Port(&(*in)[i], &(*out)[i], s); err != nil {
+				return err
+			}
+		}
+	} else {
+		out.Items = nil
+	}
+	return nil
+}
+
+// Convert_v1alpha1_PortList_To_infra_PortList is an autogenerated conversion function.
+func Convert_v1alpha1_PortList_To_infra_PortList(in *PortList, out *infra.PortList, s conversion.Scope) error {
+	return autoConvert_v1alpha1_PortList_To_infra_PortList(in, out, s)
+}
+
+func autoConvert_infra_PortList_To_v1alpha1_PortList(in *infra.PortList, out *PortList, s conversion.Scope) error {
+	out.ListMeta = in.ListMeta
+	if in.Items != nil {
+		in, out := &in.Items, &out.Items
+		*out = make([]Port, len(*in))
+		for i := range *in {
+			if err := Convert_infra_Port_To_v1alpha1_Port(&(*in)[i], &(*out)[i], s); err != nil {
+				return err
+			}
+		}
+	} else {
+		out.Items = nil
+	}
+	return nil
+}
+
+// Convert_infra_PortList_To_v1alpha1_PortList is an autogenerated conversion function.
+func Convert_infra_PortList_To_v1alpha1_PortList(in *infra.PortList, out *PortList, s conversion.Scope) error {
+	return autoConvert_infra_PortList_To_v1alpha1_PortList(in, out, s)
+}
+
+func autoConvert_v1alpha1_PortSpec_To_infra_PortSpec(in *PortSpec, out *infra.PortSpec, s conversion.Scope) error {
+	if err := Convert_v1alpha1_PartitionPortID_To_id_PartitionPortID(&in.PartitionPortID, &out.PartitionPortID, s); err != nil {
+		return err
+	}
+	if err := asv1alpha1.Convert_v1alpha1_UserDefinedLabels_To_common_UserDefinedLabels(&in.UserDefinedLabels, &out.UserDefinedLabels, s); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Convert_v1alpha1_PortSpec_To_infra_PortSpec is an autogenerated conversion function.
+func Convert_v1alpha1_PortSpec_To_infra_PortSpec(in *PortSpec, out *infra.PortSpec, s conversion.Scope) error {
+	return autoConvert_v1alpha1_PortSpec_To_infra_PortSpec(in, out, s)
+}
+
+func autoConvert_infra_PortSpec_To_v1alpha1_PortSpec(in *infra.PortSpec, out *PortSpec, s conversion.Scope) error {
+	if err := Convert_id_PartitionPortID_To_v1alpha1_PartitionPortID(&in.PartitionPortID, &out.PartitionPortID, s); err != nil {
+		return err
+	}
+	if err := asv1alpha1.Convert_common_UserDefinedLabels_To_v1alpha1_UserDefinedLabels(&in.UserDefinedLabels, &out.UserDefinedLabels, s); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Convert_infra_PortSpec_To_v1alpha1_PortSpec is an autogenerated conversion function.
+func Convert_infra_PortSpec_To_v1alpha1_PortSpec(in *infra.PortSpec, out *PortSpec, s conversion.Scope) error {
+	return autoConvert_infra_PortSpec_To_v1alpha1_PortSpec(in, out, s)
+}
+
+func autoConvert_v1alpha1_PortStatus_To_infra_PortStatus(in *PortStatus, out *infra.PortStatus, s conversion.Scope) error {
+	if err := asv1alpha1.Convert_v1alpha1_ConditionedStatus_To_condition_ConditionedStatus(&in.ConditionedStatus, &out.ConditionedStatus, s); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Convert_v1alpha1_PortStatus_To_infra_PortStatus is an autogenerated conversion function.
+func Convert_v1alpha1_PortStatus_To_infra_PortStatus(in *PortStatus, out *infra.PortStatus, s conversion.Scope) error {
+	return autoConvert_v1alpha1_PortStatus_To_infra_PortStatus(in, out, s)
+}
+
+func autoConvert_infra_PortStatus_To_v1alpha1_PortStatus(in *infra.PortStatus, out *PortStatus, s conversion.Scope) error {
+	if err := asv1alpha1.Convert_condition_ConditionedStatus_To_v1alpha1_ConditionedStatus(&in.ConditionedStatus, &out.ConditionedStatus, s); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Convert_infra_PortStatus_To_v1alpha1_PortStatus is an autogenerated conversion function.
+func Convert_infra_PortStatus_To_v1alpha1_PortStatus(in *infra.PortStatus, out *PortStatus, s conversion.Scope) error {
+	return autoConvert_infra_PortStatus_To_v1alpha1_PortStatus(in, out, s)
 }
 
 func autoConvert_v1alpha1_Rack_To_infra_Rack(in *Rack, out *infra.Rack, s conversion.Scope) error {

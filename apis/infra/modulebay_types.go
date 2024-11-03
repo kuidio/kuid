@@ -45,6 +45,7 @@ type ModuleBayStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:skipversion
 
 // A ModuleBay serves as a modular slot or enclosure within a Node, designed to accommodate additional modules.
 // ModuleBays provide a flexible and scalable approach to extending the capabilities of Nodes,
@@ -59,6 +60,8 @@ type ModuleBay struct {
 
 // ModuleBayList contains a list of ModuleBays
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:skipversion
+
 type ModuleBayList struct {
 	metav1.TypeMeta `json:",inline" yaml:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`

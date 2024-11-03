@@ -45,6 +45,7 @@ type ModuleStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:skipversion
 
 // A module refers to a hardware component or expansion module that can be installed within a ModuleBay of a Node.
 // Modules provide additional functionality and capabilities to the infrastructure environment,
@@ -59,6 +60,8 @@ type Module struct {
 
 // ModuleList contains a list of Modules
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:skipversion
+
 type ModuleList struct {
 	metav1.TypeMeta `json:",inline" yaml:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`

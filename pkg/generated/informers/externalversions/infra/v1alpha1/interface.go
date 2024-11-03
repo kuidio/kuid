@@ -23,6 +23,8 @@ import (
 
 // Interface provides access to all the informers in this group version.
 type Interface interface {
+	// Adaptors returns a AdaptorInformer.
+	Adaptors() AdaptorInformer
 	// Clusters returns a ClusterInformer.
 	Clusters() ClusterInformer
 	// Endpoints returns a EndpointInformer.
@@ -45,6 +47,8 @@ type Interface interface {
 	NodeSets() NodeSetInformer
 	// Partitions returns a PartitionInformer.
 	Partitions() PartitionInformer
+	// Ports returns a PortInformer.
+	Ports() PortInformer
 	// Racks returns a RackInformer.
 	Racks() RackInformer
 	// Regions returns a RegionInformer.
@@ -62,6 +66,11 @@ type version struct {
 // New returns a new Interface.
 func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakListOptions internalinterfaces.TweakListOptionsFunc) Interface {
 	return &version{factory: f, namespace: namespace, tweakListOptions: tweakListOptions}
+}
+
+// Adaptors returns a AdaptorInformer.
+func (v *version) Adaptors() AdaptorInformer {
+	return &adaptorInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // Clusters returns a ClusterInformer.
@@ -117,6 +126,11 @@ func (v *version) NodeSets() NodeSetInformer {
 // Partitions returns a PartitionInformer.
 func (v *version) Partitions() PartitionInformer {
 	return &partitionInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
+// Ports returns a PortInformer.
+func (v *version) Ports() PortInformer {
+	return &portInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // Racks returns a RackInformer.

@@ -25,32 +25,17 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// LinkSpec defines the desired state of Link
-type LinkSpec struct {
-	// Internal indicated if the link is internal to the topology
-	Internal *bool `json:"internal,omitempty" protobuf:"bytes,1,opt,name=internal"`
-	// Endpoints define the 2 endpoint identifiers of the link
-	// Can only have 2 endpoints
-	Endpoints []*idv1alpha1.PartitionEndpointID `json:"endpoints" yaml:"endpoints" protobuf:"bytes,2,opt,name=endpoints"`
+// PortSpec defines the desired state of Port
+type PortSpec struct {
+	// PartitionPortID the Port identity this resource belongs to
+	idv1alpha1.PartitionPortID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=partitionPortID"`
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
 	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,3,opt,name=userDefinedLabels"`
-	// BFD defines the BFD specific parameters on the link
-	// +optional
-	//BFD *BFDLinkParameters `json:"bfd,omitempty" yaml:"bfd,omitempty" protobuf:"bytes,3,opt,name=bfd"`
-	// OSPF defines the OSPF specific parameters on the link
-	// +optional
-	//OSPF *OSPFLinkParameters `json:"ospf,omitempty" yaml:"ospf,omitempty" protobuf:"bytes,4,opt,name=ospf"`
-	// ISIS defines the ISIS specific parameters on the link
-	// +optional
-	//ISIS *ISISLinkParameters `json:"isis,omitempty" yaml:"isis,omitempty" protobuf:"bytes,5,opt,name=isis"`
-	// BGP defines the BGP specific parameters on the link
-	// +optional
-	//BGP *BGPLinkParameters `json:"bgp,omitempty" yaml:"bgp,omitempty" protobuf:"bytes,6,opt,name=bgp"`
 }
 
-// LinkStatus defines the observed state of Link
-type LinkStatus struct {
+// PortStatus defines the observed state of Port
+type PortStatus struct {
 	// ConditionedStatus provides the status of the IPClain using conditions
 	// - a ready condition indicates the overall status of the resource
 	condv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=conditionedStatus"`
@@ -62,26 +47,28 @@ type LinkStatus struct {
 // +kubebuilder:storageversion
 // +kubebuilder:subresource:status
 // +kubebuilder:resource:categories={kuid}
-// A link represents a physical/logical connection that enables communication and data transfer
-// between 2 endpoints of a node.
+// An Port represents a communication interface or connection point within a Node,
+// facilitating network communication and data transfer between different components
+// or systems within the environment. `Ports` serve as gateways for transmitting and
+// receiving data, enabling seamless communication between Nodes.
 // +k8s:openapi-gen=true
-type Link struct {
+type Port struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
 
-	Spec   LinkSpec   `json:"spec,omitempty" yaml:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
-	Status LinkStatus `json:"status,omitempty" yaml:"status,omitempty" protobuf:"bytes,3,opt,name=status"`
+	Spec   PortSpec   `json:"spec,omitempty" yaml:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
+	Status PortStatus `json:"status,omitempty" yaml:"status,omitempty" protobuf:"bytes,3,opt,name=status"`
 }
 
-// LinkList contains a list of Links
+// PortList contains a list of Ports
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-type LinkList struct {
+type PortList struct {
 	metav1.TypeMeta `json:",inline" yaml:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
-	Items           []Link `json:"items" yaml:"items" protobuf:"bytes,2,rep,name=items"`
+	Items           []Port `json:"items" yaml:"items" protobuf:"bytes,2,rep,name=items"`
 }
 
 var (
-	LinkKind     = reflect.TypeOf(Link{}).Name()
-	LinkKindList = reflect.TypeOf(LinkList{}).Name()
+	PortKind     = reflect.TypeOf(Port{}).Name()
+	PortKindList = reflect.TypeOf(PortList{}).Name()
 )

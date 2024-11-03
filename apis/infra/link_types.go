@@ -27,6 +27,8 @@ import (
 
 // LinkSpec defines the desired state of Link
 type LinkSpec struct {
+	// +kubebuilder:storageversion
+
 	// Endpoints define the 2 endpoint identifiers of the link
 	// Can only have 2 endpoints
 	Endpoints []*id.PartitionEndpointID `json:"endpoints" yaml:"endpoints" protobuf:"bytes,1,opt,name=endpoints"`
@@ -56,7 +58,7 @@ type LinkStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:skipversion
 // A link represents a physical/logical connection that enables communication and data transfer
 // between 2 endpoints of a node.
 type Link struct {
@@ -67,8 +69,9 @@ type Link struct {
 	Status LinkStatus `json:"status,omitempty" yaml:"status,omitempty" protobuf:"bytes,3,opt,name=status"`
 }
 
-// LinkList contains a list of Links
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:skipversion
+// LinkList contains a list of Links
 type LinkList struct {
 	metav1.TypeMeta `json:",inline" yaml:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`

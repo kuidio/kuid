@@ -58,7 +58,7 @@ type EndpointSetStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:skipversion
 // A EndpointSet represents a set of endpoints that belong together within a nodeGroup.
 // E.g. it can be used to model a logical Link Aggregation group within
 // a node or it can be used to represent a logical multi-homing construction
@@ -71,8 +71,9 @@ type EndpointSet struct {
 	Status EndpointSetStatus `json:"status,omitempty" yaml:"status,omitempty" protobuf:"bytes,3,opt,name=status"`
 }
 
-// EndpointSetList contains a list of EndpointSets
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:skipversion
+// EndpointSetList contains a list of EndpointSets
 type EndpointSetList struct {
 	metav1.TypeMeta `json:",inline" yaml:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`

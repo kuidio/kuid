@@ -40,7 +40,7 @@ type RegionStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:skipversion
 // A Region represent a geography in which multiple infrastructure resources are grouped
 // A Region might represent a continent, country, city, campus, or other area depending on your environment.
 type Region struct {
@@ -53,6 +53,7 @@ type Region struct {
 
 // RegionList contains a list of Regions
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:skipversion
 type RegionList struct {
 	metav1.TypeMeta `json:",inline" yaml:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`

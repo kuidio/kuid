@@ -4,24 +4,26 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.14.0
-  name: racks.infra.kuid.dev
+  name: ports.infra.kuid.dev
 spec:
   group: infra.kuid.dev
   names:
     categories:
     - kuid
-    kind: Rack
-    listKind: RackList
-    plural: racks
-    singular: rack
+    kind: Port
+    listKind: PortList
+    plural: ports
+    singular: port
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
         description: |-
-          A rack represents a physical equipment rack within your environment. Each rack is designed to accommodate
-          the installation of devices and equipment.
+          An Port represents a communication interface or connection point within a Node,
+          facilitating network communication and data transfer between different components
+          or systems within the environment. `Ports` serve as gateways for transmitting and
+          receiving data, enabling seamless communication between Nodes.
         properties:
           apiVersion:
             description: |-
@@ -41,45 +43,44 @@ spec:
           metadata:
             type: object
           spec:
-            description: RackSpec defines the desired state of Rack
+            description: PortSpec defines the desired state of Port
             properties:
-              height:
-                description: The height of the rack, measured in units.
-                type: string
               labels:
                 additionalProperties:
                   type: string
                 description: Labels as user defined labels
                 type: object
-              location:
-                description: |-
-                  Location defines the location information where this resource is located
-                  in lon/lat coordinates
-                properties:
-                  latitude:
-                    type: string
-                  longitude:
-                    type: string
-                required:
-                - latitude
-                - longitude
-                type: object
+              module:
+                description: Module defines the module reference id
+                type: integer
+              moduleBay:
+                description: ModuleBay defines the moduleBay reference id
+                type: integer
+              node:
+                description: Node defines the name of the node
+                type: string
+              partition:
+                description: Partition defines the partition this resource belongs
+                  to
+                type: string
+              port:
+                description: Port defines the id of the port
+                type: integer
               region:
                 description: Region defines the region of the resource
                 type: string
               site:
                 description: Site defines the site of the resource
                 type: string
-              width:
-                description: The canonical distance between the two vertical rails
-                  on a face. In inch
-                type: string
             required:
+            - node
+            - partition
+            - port
             - region
             - site
             type: object
           status:
-            description: RackStatus defines the observed state of Rack
+            description: PortStatus defines the observed state of Port
             properties:
               conditions:
                 description: Conditions of the resource.

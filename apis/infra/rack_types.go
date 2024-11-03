@@ -50,7 +50,7 @@ type RackStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:skipversion
 // A rack represents a physical equipment rack within your environment. Each rack is designed to accommodate
 // the installation of devices and equipment.
 type Rack struct {
@@ -63,6 +63,7 @@ type Rack struct {
 
 // RackList contains a list of Racks
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:skipversion
 type RackList struct {
 	metav1.TypeMeta `json:",inline" yaml:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`

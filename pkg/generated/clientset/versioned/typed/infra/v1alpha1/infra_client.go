@@ -27,6 +27,7 @@ import (
 
 type InfraV1alpha1Interface interface {
 	RESTClient() rest.Interface
+	AdaptorsGetter
 	ClustersGetter
 	EndpointsGetter
 	EndpointSetsGetter
@@ -38,6 +39,7 @@ type InfraV1alpha1Interface interface {
 	NodeItemsGetter
 	NodeSetsGetter
 	PartitionsGetter
+	PortsGetter
 	RacksGetter
 	RegionsGetter
 	SitesGetter
@@ -46,6 +48,10 @@ type InfraV1alpha1Interface interface {
 // InfraV1alpha1Client is used to interact with features provided by the infra.kuid.dev group.
 type InfraV1alpha1Client struct {
 	restClient rest.Interface
+}
+
+func (c *InfraV1alpha1Client) Adaptors(namespace string) AdaptorInterface {
+	return newAdaptors(c, namespace)
 }
 
 func (c *InfraV1alpha1Client) Clusters(namespace string) ClusterInterface {
@@ -90,6 +96,10 @@ func (c *InfraV1alpha1Client) NodeSets(namespace string) NodeSetInterface {
 
 func (c *InfraV1alpha1Client) Partitions(namespace string) PartitionInterface {
 	return newPartitions(c, namespace)
+}
+
+func (c *InfraV1alpha1Client) Ports(namespace string) PortInterface {
+	return newPorts(c, namespace)
 }
 
 func (c *InfraV1alpha1Client) Racks(namespace string) RackInterface {
