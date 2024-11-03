@@ -38,8 +38,8 @@ type PartitionNodeID struct {
 	Node string `json:"node" yaml:"node" protobuf:"bytes,3,opt,name=node"`
 }
 
-type PortID struct {
-	NodeID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeID"`
+type PartitionPortID struct {
+	PartitionNodeID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeID"`
 	// ModuleBay defines the moduleBay reference id
 	ModuleBay *int `json:"moduleBay,omitempty" yaml:"moduleBay,omitempty" protobuf:"bytes,2,opt,name=moduleBay"`
 	// Module defines the module reference id
@@ -48,14 +48,8 @@ type PortID struct {
 	Port int `json:"port" yaml:"port" protobuf:"bytes,4,opt,name=port"`
 }
 
-type AdaptorID struct {
-	NodeID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeID"`
-	// ModuleBay defines the moduleBay reference id
-	ModuleBay *int `json:"moduleBay,omitempty" yaml:"moduleBay,omitempty" protobuf:"bytes,2,opt,name=moduleBay"`
-	// Module defines the module reference id
-	Module *int `json:"module,omitempty" yaml:"module,omitempty" protobuf:"bytes,3,opt,name=module"`
-	// Port defines the id of the port
-	Port int `json:"port" yaml:"port" protobuf:"bytes,4,opt,name=port"`
+type PartitionAdaptorID struct {
+	PartitionPortID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeID"`
 	// Adaptor defines the name of the adaptor
 	Adaptor string `json:"adaptor" yaml:"adaptor" protobuf:"bytes,5,opt,name=adaptor"`
 }

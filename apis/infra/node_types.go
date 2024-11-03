@@ -67,7 +67,7 @@ type NodeStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:skipversion
 // A Node represents a fundamental unit that implements compute, storage, and/or networking within your environment.
 // Nodes can embody physical, virtual, or containerized entities, offering versatility in deployment options to suit
 // diverse infrastructure requirements.
@@ -85,6 +85,7 @@ type Node struct {
 
 // NodeList contains a list of Nodes
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:skipversion
 type NodeList struct {
 	metav1.TypeMeta `json:",inline" yaml:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`

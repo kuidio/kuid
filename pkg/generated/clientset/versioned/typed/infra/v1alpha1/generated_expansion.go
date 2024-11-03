@@ -17,6 +17,8 @@ limitations under the License.
 
 package v1alpha1
 
+type AdaptorExpansion interface{}
+
 type ClusterExpansion interface{}
 
 type EndpointExpansion interface{}
@@ -38,6 +40,8 @@ type NodeItemExpansion interface{}
 type NodeSetExpansion interface{}
 
 type PartitionExpansion interface{}
+
+type PortExpansion interface{}
 
 type RackExpansion interface{}
 

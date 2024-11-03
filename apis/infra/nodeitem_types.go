@@ -43,7 +43,7 @@ type NodeItemStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:skipversion
 // A NodeItem represents a specific hardware component or accessory associated with a Node.
 // NodeItems represent a wide range of hardware elements, e.g Fan(s), PowerUnit(s), CPU(s),
 // and other peripheral devices essential for the operation of the Node.

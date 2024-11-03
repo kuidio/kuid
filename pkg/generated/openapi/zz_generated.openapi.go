@@ -95,16 +95,20 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndexStatus":       schema_apis_backend_vlan_v1alpha1_VLANIndexStatus(ref),
 		"github.com/kuidio/kuid/apis/common/v1alpha1.ClaimLabels":                 schema_kuid_apis_common_v1alpha1_ClaimLabels(ref),
 		"github.com/kuidio/kuid/apis/common/v1alpha1.UserDefinedLabels":           schema_kuid_apis_common_v1alpha1_UserDefinedLabels(ref),
-		"github.com/kuidio/kuid/apis/id/v1alpha1.AdaptorID":                       schema_kuid_apis_id_v1alpha1_AdaptorID(ref),
 		"github.com/kuidio/kuid/apis/id/v1alpha1.ClusterID":                       schema_kuid_apis_id_v1alpha1_ClusterID(ref),
 		"github.com/kuidio/kuid/apis/id/v1alpha1.EndpointID":                      schema_kuid_apis_id_v1alpha1_EndpointID(ref),
 		"github.com/kuidio/kuid/apis/id/v1alpha1.NodeID":                          schema_kuid_apis_id_v1alpha1_NodeID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionAdaptorID":              schema_kuid_apis_id_v1alpha1_PartitionAdaptorID(ref),
 		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionAttachmentID":           schema_kuid_apis_id_v1alpha1_PartitionAttachmentID(ref),
 		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionClusterID":              schema_kuid_apis_id_v1alpha1_PartitionClusterID(ref),
 		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionEndpointID":             schema_kuid_apis_id_v1alpha1_PartitionEndpointID(ref),
 		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionNodeID":                 schema_kuid_apis_id_v1alpha1_PartitionNodeID(ref),
-		"github.com/kuidio/kuid/apis/id/v1alpha1.PortID":                          schema_kuid_apis_id_v1alpha1_PortID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionPortID":                 schema_kuid_apis_id_v1alpha1_PartitionPortID(ref),
 		"github.com/kuidio/kuid/apis/id/v1alpha1.SiteID":                          schema_kuid_apis_id_v1alpha1_SiteID(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.Adaptor":                      schema_kuid_apis_infra_v1alpha1_Adaptor(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.AdaptorList":                  schema_kuid_apis_infra_v1alpha1_AdaptorList(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.AdaptorSpec":                  schema_kuid_apis_infra_v1alpha1_AdaptorSpec(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.AdaptorStatus":                schema_kuid_apis_infra_v1alpha1_AdaptorStatus(ref),
 		"github.com/kuidio/kuid/apis/infra/v1alpha1.Cluster":                      schema_kuid_apis_infra_v1alpha1_Cluster(ref),
 		"github.com/kuidio/kuid/apis/infra/v1alpha1.ClusterList":                  schema_kuid_apis_infra_v1alpha1_ClusterList(ref),
 		"github.com/kuidio/kuid/apis/infra/v1alpha1.ClusterSpec":                  schema_kuid_apis_infra_v1alpha1_ClusterSpec(ref),
@@ -150,6 +154,10 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/kuidio/kuid/apis/infra/v1alpha1.PartitionList":                schema_kuid_apis_infra_v1alpha1_PartitionList(ref),
 		"github.com/kuidio/kuid/apis/infra/v1alpha1.PartitionSpec":                schema_kuid_apis_infra_v1alpha1_PartitionSpec(ref),
 		"github.com/kuidio/kuid/apis/infra/v1alpha1.PartitionStatus":              schema_kuid_apis_infra_v1alpha1_PartitionStatus(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.Port":                         schema_kuid_apis_infra_v1alpha1_Port(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.PortList":                     schema_kuid_apis_infra_v1alpha1_PortList(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.PortSpec":                     schema_kuid_apis_infra_v1alpha1_PortSpec(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.PortStatus":                   schema_kuid_apis_infra_v1alpha1_PortStatus(ref),
 		"github.com/kuidio/kuid/apis/infra/v1alpha1.Rack":                         schema_kuid_apis_infra_v1alpha1_Rack(ref),
 		"github.com/kuidio/kuid/apis/infra/v1alpha1.RackList":                     schema_kuid_apis_infra_v1alpha1_RackList(ref),
 		"github.com/kuidio/kuid/apis/infra/v1alpha1.RackSpec":                     schema_kuid_apis_infra_v1alpha1_RackSpec(ref),
@@ -3461,73 +3469,6 @@ func schema_kuid_apis_common_v1alpha1_UserDefinedLabels(ref common.ReferenceCall
 	}
 }
 
-func schema_kuid_apis_id_v1alpha1_AdaptorID(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Type: []string{"object"},
-				Properties: map[string]spec.Schema{
-					"region": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Region defines the region of the resource",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"site": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Site defines the site of the resource",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"node": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Node defines the name of the node",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"moduleBay": {
-						SchemaProps: spec.SchemaProps{
-							Description: "ModuleBay defines the moduleBay reference id",
-							Type:        []string{"integer"},
-							Format:      "int32",
-						},
-					},
-					"module": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Module defines the module reference id",
-							Type:        []string{"integer"},
-							Format:      "int32",
-						},
-					},
-					"port": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Port defines the id of the port",
-							Default:     0,
-							Type:        []string{"integer"},
-							Format:      "int32",
-						},
-					},
-					"adaptor": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Adaptor defines the name of the adaptor",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-				},
-				Required: []string{"region", "site", "node", "port", "adaptor"},
-			},
-		},
-	}
-}
-
 func schema_kuid_apis_id_v1alpha1_ClusterID(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -3672,6 +3613,81 @@ func schema_kuid_apis_id_v1alpha1_NodeID(ref common.ReferenceCallback) common.Op
 					},
 				},
 				Required: []string{"region", "site", "node"},
+			},
+		},
+	}
+}
+
+func schema_kuid_apis_id_v1alpha1_PartitionAdaptorID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"partition": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Partition defines the partition this resource belongs to",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"node": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Node defines the name of the node",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"moduleBay": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ModuleBay defines the moduleBay reference id",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"module": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Module defines the module reference id",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"port": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Port defines the id of the port",
+							Default:     0,
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"adaptor": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Adaptor defines the name of the adaptor",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"partition", "region", "site", "node", "port", "adaptor"},
 			},
 		},
 	}
@@ -3922,12 +3938,20 @@ func schema_kuid_apis_id_v1alpha1_PartitionNodeID(ref common.ReferenceCallback) 
 	}
 }
 
-func schema_kuid_apis_id_v1alpha1_PortID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kuid_apis_id_v1alpha1_PartitionPortID(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
 				Type: []string{"object"},
 				Properties: map[string]spec.Schema{
+					"partition": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Partition defines the partition this resource belongs to",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
 					"region": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Region defines the region of the resource",
@@ -3975,7 +3999,7 @@ func schema_kuid_apis_id_v1alpha1_PortID(ref common.ReferenceCallback) common.Op
 						},
 					},
 				},
-				Required: []string{"region", "site", "node", "port"},
+				Required: []string{"partition", "region", "site", "node", "port"},
 			},
 		},
 	}
@@ -4007,6 +4031,223 @@ func schema_kuid_apis_id_v1alpha1_SiteID(ref common.ReferenceCallback) common.Op
 				Required: []string{"region", "site"},
 			},
 		},
+	}
+}
+
+func schema_kuid_apis_infra_v1alpha1_Adaptor(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "An Adaptor represents a communication interface or connection point within a Node, facilitating network communication and data transfer between different components or systems within the environment. `Adaptors` serve as gateways for transmitting and receiving data, enabling seamless communication between Nodes.",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
+						},
+					},
+					"spec": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/infra/v1alpha1.AdaptorSpec"),
+						},
+					},
+					"status": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/infra/v1alpha1.AdaptorStatus"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/infra/v1alpha1.AdaptorSpec", "github.com/kuidio/kuid/apis/infra/v1alpha1.AdaptorStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_kuid_apis_infra_v1alpha1_AdaptorList(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "AdaptorList contains a list of Adaptors",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"),
+						},
+					},
+					"items": {
+						SchemaProps: spec.SchemaProps{
+							Type: []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/infra/v1alpha1.Adaptor"),
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"items"},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/infra/v1alpha1.Adaptor", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
+	}
+}
+
+func schema_kuid_apis_infra_v1alpha1_AdaptorSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "AdaptorSpec defines the desired state of Adaptor",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"partition": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Partition defines the partition this resource belongs to",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"node": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Node defines the name of the node",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"moduleBay": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ModuleBay defines the moduleBay reference id",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"module": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Module defines the module reference id",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"port": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Port defines the id of the port",
+							Default:     0,
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"adaptor": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Adaptor defines the name of the adaptor",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"labels": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Labels as user defined labels",
+							Type:        []string{"object"},
+							AdditionalProperties: &spec.SchemaOrBool{
+								Allows: true,
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"partition", "region", "site", "node", "port", "adaptor"},
+			},
+		},
+	}
+}
+
+func schema_kuid_apis_infra_v1alpha1_AdaptorStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "AdaptorStatus defines the observed state of Adaptor",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"conditions": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Conditions of the resource.",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kform-dev/choreo/apis/condition/v1alpha1.Condition"),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kform-dev/choreo/apis/condition/v1alpha1.Condition"},
 	}
 }
 
@@ -4936,6 +5177,13 @@ func schema_kuid_apis_infra_v1alpha1_LinkSpec(ref common.ReferenceCallback) comm
 				Description: "LinkSpec defines the desired state of Link",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
+					"internal": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Internal indicated if the link is internal to the topology",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
 					"endpoints": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Endpoints define the 2 endpoint identifiers of the link Can only have 2 endpoints",
@@ -6170,6 +6418,215 @@ func schema_kuid_apis_infra_v1alpha1_PartitionStatus(ref common.ReferenceCallbac
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
 				Description: "PartitionStatus defines the observed state of Partition",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"conditions": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Conditions of the resource.",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kform-dev/choreo/apis/condition/v1alpha1.Condition"),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kform-dev/choreo/apis/condition/v1alpha1.Condition"},
+	}
+}
+
+func schema_kuid_apis_infra_v1alpha1_Port(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "An Port represents a communication interface or connection point within a Node, facilitating network communication and data transfer between different components or systems within the environment. `Ports` serve as gateways for transmitting and receiving data, enabling seamless communication between Nodes.",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
+						},
+					},
+					"spec": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/infra/v1alpha1.PortSpec"),
+						},
+					},
+					"status": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kuidio/kuid/apis/infra/v1alpha1.PortStatus"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/infra/v1alpha1.PortSpec", "github.com/kuidio/kuid/apis/infra/v1alpha1.PortStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_kuid_apis_infra_v1alpha1_PortList(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "PortList contains a list of Ports",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"),
+						},
+					},
+					"items": {
+						SchemaProps: spec.SchemaProps{
+							Type: []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/infra/v1alpha1.Port"),
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"items"},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/infra/v1alpha1.Port", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
+	}
+}
+
+func schema_kuid_apis_infra_v1alpha1_PortSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "PortSpec defines the desired state of Port",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"partition": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Partition defines the partition this resource belongs to",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"node": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Node defines the name of the node",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"moduleBay": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ModuleBay defines the moduleBay reference id",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"module": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Module defines the module reference id",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"port": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Port defines the id of the port",
+							Default:     0,
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"labels": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Labels as user defined labels",
+							Type:        []string{"object"},
+							AdditionalProperties: &spec.SchemaOrBool{
+								Allows: true,
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"partition", "region", "site", "node", "port"},
+			},
+		},
+	}
+}
+
+func schema_kuid_apis_infra_v1alpha1_PortStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "PortStatus defines the observed state of Port",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"conditions": {

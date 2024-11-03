@@ -17,6 +17,14 @@ limitations under the License.
 
 package v1alpha1
 
+// AdaptorListerExpansion allows custom methods to be added to
+// AdaptorLister.
+type AdaptorListerExpansion interface{}
+
+// AdaptorNamespaceListerExpansion allows custom methods to be added to
+// AdaptorNamespaceLister.
+type AdaptorNamespaceListerExpansion interface{}
+
 // ClusterListerExpansion allows custom methods to be added to
 // ClusterLister.
 type ClusterListerExpansion interface{}
@@ -104,6 +112,14 @@ type PartitionListerExpansion interface{}
 // PartitionNamespaceListerExpansion allows custom methods to be added to
 // PartitionNamespaceLister.
 type PartitionNamespaceListerExpansion interface{}
+
+// PortListerExpansion allows custom methods to be added to
+// PortLister.
+type PortListerExpansion interface{}
+
+// PortNamespaceListerExpansion allows custom methods to be added to
+// PortNamespaceLister.
+type PortNamespaceListerExpansion interface{}
 
 // RackListerExpansion allows custom methods to be added to
 // RackLister.

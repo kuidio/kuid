@@ -51,6 +51,7 @@ type ClusterStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:skipversion
 // A Cluster represents a kubernetes cluster and is typically used as a nodeGroup identifier.
 type Cluster struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`
@@ -62,6 +63,7 @@ type Cluster struct {
 
 // ClusterList contains a list of Clusters
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:skipversion
 type ClusterList struct {
 	metav1.TypeMeta `json:",inline" yaml:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`

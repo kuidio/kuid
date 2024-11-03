@@ -50,7 +50,7 @@ type LinkSetStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
+// +kubebuilder:skipversion
 // A linkSet represents a set of links that belong together within a node group or accross nodeGroups.
 // E.g. it can be used to model a logical Link Aggregation group between 2 nodes or
 // it can be used to represent a logical multi-homing construction between a set of nodes
@@ -63,8 +63,9 @@ type LinkSet struct {
 	Status LinkSetStatus `json:"status,omitempty" yaml:"status,omitempty" protobuf:"bytes,3,opt,name=status"`
 }
 
-// LinkSetList contains a list of LinkSets
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:skipversion
+// LinkSetList contains a list of LinkSets
 type LinkSetList struct {
 	metav1.TypeMeta `json:",inline" yaml:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`

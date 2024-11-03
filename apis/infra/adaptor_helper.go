@@ -14,9 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// +k8s:deepcopy-gen=package,register
-// +groupName=infra.kuid.dev
-// +kubebuilder:skipversion
+package infra
 
-// Package infra is the internal version of the API.
-package infra // import "github.com/kuidio/kuid/apis/infra"
+import (
+	"github.com/kform-dev/choreo/apis/condition"
+)
+
+// GetCondition returns the condition based on the condition kind
+func (r *Adaptor) GetCondition(t condition.ConditionType) condition.Condition {
+	return r.Status.GetCondition(t)
+}
+
+// SetConditions sets the conditions on the resource. it allows for 0, 1 or more conditions
+// to be set at once
+func (r *Adaptor) SetConditions(c ...condition.Condition) {
+	r.Status.SetConditions(c...)
+}
