@@ -56,7 +56,7 @@ type AdaptorID struct {
 	Module *int `json:"module,omitempty" yaml:"module,omitempty" protobuf:"bytes,3,opt,name=module"`
 	// Port defines the id of the port
 	Port int `json:"port" yaml:"port" protobuf:"bytes,4,opt,name=port"`
-	// Adaptor defines the name of the adaptor
+	//Adaptor defines the adaptor used in the port, like an sfp, qsfp
 	Adaptor string `json:"adaptor" yaml:"adaptor" protobuf:"bytes,5,opt,name=adaptor"`
 }
 
