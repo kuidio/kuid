@@ -32,6 +32,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/selection"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/sets"
@@ -340,6 +341,10 @@ func (r *VLANClaim) GetClaimResponse() string {
 		return *r.Status.Range
 	}
 	return ""
+}
+
+func (r *VLANClaim) GetChoreoAPIVersion() string {
+	return schema.GroupVersion{Group: GroupName, Version: "vlan"}.String()
 }
 
 func (r *VLANClaim) GetClaimSet(typ string) (sets.Set[tree.ID], error) {

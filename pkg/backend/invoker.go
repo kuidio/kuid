@@ -40,11 +40,11 @@ func (r *claimInvoker) InvokeCreate(ctx context.Context, obj runtime.Object, rec
 	return obj, nil
 }
 
-func (r *claimInvoker) InvokeUpdate(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
+func (r *claimInvoker) InvokeUpdate(ctx context.Context, obj, old runtime.Object, recursion bool) (runtime.Object, runtime.Object, error) {
 	if err := r.be.Claim(ctx, obj, recursion); err != nil {
-		return obj, err
+		return obj, old, err
 	}
-	return obj, nil
+	return obj, old, nil
 }
 
 func (r *claimInvoker) InvokeDelete(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
@@ -71,11 +71,11 @@ func (r *indexPreparator) InvokeCreate(ctx context.Context, obj runtime.Object, 
 	return obj, nil
 }
 
-func (r *indexPreparator) InvokeUpdate(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
+func (r *indexPreparator) InvokeUpdate(ctx context.Context, obj, old runtime.Object, recursion bool) (runtime.Object, runtime.Object, error) {
 	if err := r.be.CreateIndex(ctx, obj); err != nil {
-		return obj, err
+		return obj, old, err
 	}
-	return obj, nil
+	return obj, old, nil
 }
 
 func (r *indexPreparator) InvokeDelete(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {

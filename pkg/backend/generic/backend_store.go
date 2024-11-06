@@ -69,7 +69,6 @@ func (r *be) saveAll(ctx context.Context, k store.Key) error {
 		return err
 	}
 
-	// debug end
 	for _, newEntry := range newEntries {
 		newEntry := newEntry
 		found := false
@@ -100,6 +99,7 @@ func (r *be) saveAll(ctx context.Context, k store.Key) error {
 	}
 
 	for _, curEntry := range curEntries {
+		fmt.Println("backend generic delete entry", curEntry)
 		if err := r.bestorage.DeleteEntry(ctx, curEntry); err != nil {
 			log.Error("saveAll delete failed", "name", curEntry.GetName(), "error", err.Error())
 			return err
@@ -161,88 +161,11 @@ func (r *be) deleteEntries(ctx context.Context, k store.Key) error {
 func (r *be) listEntries(ctx context.Context, k store.Key) ([]backend.EntryObject, error) {
 	//log := log.FromContext(ctx).With("key", k.String())
 	return r.bestorage.ListEntries(ctx, k)
-
-	//		selector, err := selector.ExprSelectorAsSelector(
-	//			&selectorv1alpha1.ExpressionSelector{
-	//				Match: map[string]string{
-	//					"spec.index": k.Name,
-	//				},
-	//			},
-	//		)
-	//	if err != nil {
-	//		return nil, err
-	//	}
-	/*
-		list, err := r.entryStorage.List(ctx, &internalversion.ListOptions{})
-		if err != nil {
-			return nil, err
-		}
-
-		items, err := meta.ExtractList(list)
-		if err != nil {
-			return nil, err
-		}
-
-		entryList := make([]backend.EntryObject, 0)
-		var errm error
-		for _, obj := range items {
-			entryObj, ok := obj.(backend.EntryObject)
-			if !ok {
-				log.Error("obj is not an EntryObject", "obj", reflect.TypeOf(obj).Name())
-				errm = errors.Join(errm, err)
-				continue
-			}
-			if entryObj.GetIndex() == k.Name {
-				entryList = append(entryList, entryObj)
-			}
-		}
-		return entryList, errm
-	*/
 }
 
 func (r *be) listClaims(ctx context.Context, k store.Key) (map[string]backend.ClaimObject, error) {
 	//log := log.FromContext(ctx).With("key", k.String())
-	/*
-		selector, err := selector.ExprSelectorAsSelector(
-			&selectorv1alpha1.ExpressionSelector{
-				Match: map[string]string{
-					"spec.index": k.Name,
-				},
-			},
-		)
-		if err != nil {
-			return nil, err
-		}
-	*/
 	return r.bestorage.ListClaims(ctx, k)
-
-	/*
-		list, err := r.claimStorage.List(ctx, &internalversion.ListOptions{})
-		if err != nil {
-			return nil, err
-		}
-
-		items, err := meta.ExtractList(list)
-		if err != nil {
-			return nil, err
-		}
-
-		claimMap := make(map[string]backend.ClaimObject)
-		var errm error
-		for _, obj := range items {
-			claimObj, ok := obj.(backend.ClaimObject)
-			if !ok {
-				log.Error("obj is not an ClaimObject", "obj", reflect.TypeOf(obj).Name())
-				errm = errors.Join(errm, err)
-				continue
-			}
-			if claimObj.GetIndex() == k.Name {
-				claimMap[claimObj.GetNamespacedName().String()] = claimObj
-			}
-
-		}
-		return claimMap, errm
-	*/
 }
 
 func (r *be) restoreMinMaxRanges(ctx context.Context, cacheInstanceCtx *CacheInstanceContext, entries []backend.EntryObject, index backend.IndexObject) error {

@@ -141,11 +141,11 @@ func (r *strategy) ValidateUpdate(ctx context.Context, obj, old runtime.Object) 
 	return r.obj.ValidateUpdate(ctx, obj, old)
 }
 
-func (r *strategy) InvokeUpdate(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
+func (r *strategy) InvokeUpdate(ctx context.Context, obj, old runtime.Object, recursion bool) (runtime.Object, runtime.Object, error) {
 	if r.opts.BackendInvoker == nil {
-		return obj, nil
+		return obj, old, nil
 	}
-	return r.opts.BackendInvoker.InvokeUpdate(ctx, obj, recursion)
+	return r.opts.BackendInvoker.InvokeUpdate(ctx, obj, old, recursion)
 }
 
 func (r *strategy) Update(ctx context.Context, key types.NamespacedName, obj, old runtime.Object, dryrun bool) (runtime.Object, error) {

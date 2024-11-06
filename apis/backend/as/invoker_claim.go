@@ -62,6 +62,14 @@ func claimConvertFromInternal(obj runtime.Object) (runtime.Unstructured, error) 
 	return &unstructured.Unstructured{Object: uobj}, nil
 }
 
+func (r *claiminvoker) convert(obj runtime.Object) (runtime.Unstructured, error) {
+	o, err := claimConvertToInternal(obj)
+	if err != nil {
+		return nil, err
+	}
+	return claimConvertFromInternal(o)
+}
+
 func (r *claiminvoker) InvokeCreate(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
 	claim, err := claimConvertToInternal(obj)
 	if err != nil {
@@ -77,12 +85,33 @@ func (r *claiminvoker) InvokeCreate(ctx context.Context, obj runtime.Object, rec
 	return newClaim, nil
 }
 
-func (r *claiminvoker) InvokeUpdate(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
+func (r *claiminvoker) InvokeUpdate(ctx context.Context, obj, old runtime.Object, recursion bool) (runtime.Object, runtime.Object, error) {
+	claim, err := claimConvertToInternal(obj)
+	if err != nil {
+		return obj, old, err
+	}
+	if err := r.be.Claim(ctx, claim, recursion); err != nil {
+		return obj, old, err
+	}
+	newClaim, err := claimConvertFromInternal(claim)
+	if err != nil {
+		return obj, old, err
+	}
+
+	oldu, err := r.convert(old)
+	if err != nil {
+		return obj, old, err
+	}
+
+	return newClaim, oldu, nil
+}
+
+func (r *claiminvoker) InvokeDelete(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
 	claim, err := claimConvertToInternal(obj)
 	if err != nil {
 		return obj, err
 	}
-	if err := r.be.Claim(ctx, claim, recursion); err != nil {
+	if err := r.be.Release(ctx, claim, recursion); err != nil {
 		return obj, err
 	}
 	newClaim, err := claimConvertFromInternal(claim)
@@ -92,17 +121,3 @@ func (r *claiminvoker) InvokeUpdate(ctx context.Context, obj runtime.Object, rec
 	return newClaim, nil
 }
 
-func (r *claiminvoker) InvokeDelete(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error) {
-	claim, err := claimConvertToInternal(obj)
-	if err != nil {
-		return obj, err
-	}
-	if err := r.be.Release(ctx, claim, recursion); err != nil {
-		return obj,err
-	}
-	newClaim, err := claimConvertFromInternal(claim)
-	if err != nil {
-		return obj, err
-	}
-	return newClaim, nil
-}

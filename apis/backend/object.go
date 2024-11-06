@@ -63,6 +63,7 @@ type ClaimObject interface {
 	GetClaimResponse() string
 	GetClaimSet(typ string) (sets.Set[tree.ID], error)
 	IsOwner(labels labels.Set) bool
+	GetChoreoAPIVersion() string // a trick to translate the apiversion as per crd
 }
 
 type EntryObject interface {
@@ -70,6 +71,7 @@ type EntryObject interface {
 	GetIndex() string
 	GetClaimType() ClaimType
 	GetSpecID() string
+	GetChoreoAPIVersion() string // a trick to translate the apiversion as per crd
 }
 
 type Object interface {

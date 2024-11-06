@@ -53,6 +53,6 @@ type DryRunner interface {
 
 type BackendInvoker interface {
 	InvokeCreate(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error)
-	InvokeUpdate(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error)
+	InvokeUpdate(ctx context.Context, obj, old runtime.Object, recursion bool) (runtime.Object, runtime.Object, error)
 	InvokeDelete(ctx context.Context, obj runtime.Object, recursion bool) (runtime.Object, error)
 }
