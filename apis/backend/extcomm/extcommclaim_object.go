@@ -33,6 +33,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/selection"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/sets"
@@ -368,6 +369,10 @@ func (r *EXTCOMMClaim) GetClaimSet(typ string) (sets.Set[tree.ID], error) {
 		newClaimSet.Insert(rangeID)
 	}
 	return newClaimSet, nil
+}
+
+func (r *EXTCOMMClaim) GetChoreoAPIVersion() string {
+	return schema.GroupVersion{Group: GroupName, Version: "extcomm"}.String()
 }
 
 func EXTCOMMClaimFromUnstructured(ru runtime.Unstructured) (backend.ClaimObject, error) {

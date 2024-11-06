@@ -26,6 +26,7 @@ import (
 	"github.com/kuidio/kuid/apis/backend"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
@@ -61,6 +62,10 @@ func (r *VLANEntry) ValidateSyntax(s string) field.ErrorList {
 func (r *VLANEntry) GetIndex() string                { return r.Spec.Index }
 func (r *VLANEntry) GetClaimType() backend.ClaimType { return r.Spec.ClaimType }
 func (r *VLANEntry) GetSpecID() string               { return r.Spec.ID }
+
+func (r *VLANEntry) GetChoreoAPIVersion() string {
+	return schema.GroupVersion{Group: GroupName, Version: "vlan"}.String()
+}
 
 func VLANEntryFromRuntime(ru runtime.Object) (backend.EntryObject, error) {
 	entry, ok := ru.(*VLANEntry)

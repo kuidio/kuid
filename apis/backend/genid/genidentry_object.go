@@ -26,6 +26,7 @@ import (
 	"github.com/kuidio/kuid/apis/backend"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
@@ -61,6 +62,10 @@ func (r *GENIDEntry) ValidateSyntax(s string) field.ErrorList {
 func (r *GENIDEntry) GetIndex() string                { return r.Spec.Index }
 func (r *GENIDEntry) GetClaimType() backend.ClaimType { return r.Spec.ClaimType }
 func (r *GENIDEntry) GetSpecID() string               { return r.Spec.ID }
+
+func (r *GENIDEntry) GetChoreoAPIVersion() string {
+	return schema.GroupVersion{Group: GroupName, Version: "genid"}.String()
+}
 
 func GENIDEntryFromRuntime(ru runtime.Object) (backend.EntryObject, error) {
 	entry, ok := ru.(*GENIDEntry)

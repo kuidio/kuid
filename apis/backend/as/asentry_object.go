@@ -26,6 +26,7 @@ import (
 	"github.com/kuidio/kuid/apis/backend"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
@@ -62,10 +63,14 @@ func (r *ASEntry) GetIndex() string                { return r.Spec.Index }
 func (r *ASEntry) GetClaimType() backend.ClaimType { return r.Spec.ClaimType }
 func (r *ASEntry) GetSpecID() string               { return r.Spec.ID }
 
+func (r *ASEntry) GetChoreoAPIVersion() string {
+	return schema.GroupVersion{Group: GroupName, Version: "as"}.String()
+}
+
 func ASEntryFromRuntime(ru runtime.Object) (backend.EntryObject, error) {
 	entry, ok := ru.(*ASEntry)
 	if !ok {
-		return nil, errors.New("runtime object not ASIndex")
+		return nil, errors.New("runtime object not ASEntry")
 	}
 	return entry, nil
 }
