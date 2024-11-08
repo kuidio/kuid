@@ -151,6 +151,7 @@ func GetIPEntry(ctx context.Context, k store.Key, rangeName string, prefix netip
 			Namespace: ns,
 			OwnerReferences: []metav1.OwnerReference{
 				{
+					// this is a bit of a hack for choreo to ensure we point to the proper external reference
 					APIVersion: schema.GroupVersion{Group: SchemeGroupVersion.Group, Version: "v1alpha1"}.Identifier(),
 					Kind:       labels[backend.KuidOwnerKindKey],
 					Name:       labels[backend.KuidClaimNameKey],

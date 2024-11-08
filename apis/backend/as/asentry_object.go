@@ -114,6 +114,7 @@ func GetASEntry(k store.Key, vrange, id string, labels map[string]string) backen
 			Namespace: ns,
 			OwnerReferences: []metav1.OwnerReference{
 				{
+					// this is a bit of a hack for choreo to ensure we point to the proper external reference
 					APIVersion: schema.GroupVersion{Group: SchemeGroupVersion.Group, Version: "v1alpha1"}.Identifier(),
 					Kind:       labels[backend.KuidOwnerKindKey],
 					Name:       labels[backend.KuidClaimNameKey],
