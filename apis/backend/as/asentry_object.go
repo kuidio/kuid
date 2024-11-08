@@ -114,7 +114,7 @@ func GetASEntry(k store.Key, vrange, id string, labels map[string]string) backen
 			Namespace: ns,
 			OwnerReferences: []metav1.OwnerReference{
 				{
-					APIVersion: SchemeGroupVersion.Identifier(),
+					APIVersion: schema.GroupVersion{Group: SchemeGroupVersion.Group, Version: "v1alpha1"}.Identifier(),
 					Kind:       labels[backend.KuidOwnerKindKey],
 					Name:       labels[backend.KuidClaimNameKey],
 					UID:        types.UID(labels[backend.KuidClaimUIDKey]),

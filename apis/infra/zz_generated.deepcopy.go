@@ -21,6 +21,7 @@ limitations under the License.
 package infra
 
 import (
+	v1alpha1 "github.com/kubenet-dev/apis/apis/network/core/v1alpha1"
 	id "github.com/kuidio/kuid/apis/id"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
@@ -732,6 +733,26 @@ func (in *LinkSpec) DeepCopyInto(out *LinkSpec) {
 		}
 	}
 	in.UserDefinedLabels.DeepCopyInto(&out.UserDefinedLabels)
+	if in.BFD != nil {
+		in, out := &in.BFD, &out.BFD
+		*out = new(v1alpha1.BFDLinkParameters)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.OSPF != nil {
+		in, out := &in.OSPF, &out.OSPF
+		*out = new(v1alpha1.OSPFLinkParameters)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.ISIS != nil {
+		in, out := &in.ISIS, &out.ISIS
+		*out = new(v1alpha1.ISISLinkParameters)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.BGP != nil {
+		in, out := &in.BGP, &out.BGP
+		*out = new(v1alpha1.BGPLinkParameters)
+		(*in).DeepCopyInto(*out)
+	}
 	return
 }
 

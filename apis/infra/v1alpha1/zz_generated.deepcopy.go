@@ -21,6 +21,7 @@ limitations under the License.
 package v1alpha1
 
 import (
+	corev1alpha1 "github.com/kubenet-dev/apis/apis/network/core/v1alpha1"
 	idv1alpha1 "github.com/kuidio/kuid/apis/id/v1alpha1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
@@ -641,6 +642,26 @@ func (in *LinkSpec) DeepCopyInto(out *LinkSpec) {
 		}
 	}
 	in.UserDefinedLabels.DeepCopyInto(&out.UserDefinedLabels)
+	if in.BFD != nil {
+		in, out := &in.BFD, &out.BFD
+		*out = new(corev1alpha1.BFDLinkParameters)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.OSPF != nil {
+		in, out := &in.OSPF, &out.OSPF
+		*out = new(corev1alpha1.OSPFLinkParameters)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.ISIS != nil {
+		in, out := &in.ISIS, &out.ISIS
+		*out = new(corev1alpha1.ISISLinkParameters)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.BGP != nil {
+		in, out := &in.BGP, &out.BGP
+		*out = new(corev1alpha1.BGPLinkParameters)
+		(*in).DeepCopyInto(*out)
+	}
 	return
 }
 

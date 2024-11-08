@@ -23,6 +23,7 @@ import (
 	"github.com/kuidio/kuid/apis/id"
 	"github.com/kuidio/kuid/apis/common"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	corenetworkv1alpha1 "github.com/kubenet-dev/apis/apis/network/core/v1alpha1"
 )
 
 // LinkSpec defines the desired state of Link
@@ -37,16 +38,16 @@ type LinkSpec struct {
 	common.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,2,opt,name=userDefinedLabels"`
 	// BFD defines the BFD specific parameters on the link
 	// +optional
-	//BFD *BFDLinkParameters `json:"bfd,omitempty" yaml:"bfd,omitempty" protobuf:"bytes,3,opt,name=bfd"`
+	BFD *corenetworkv1alpha1.BFDLinkParameters `json:"bfd,omitempty" yaml:"bfd,omitempty" protobuf:"bytes,3,opt,name=bfd"`
 	// OSPF defines the OSPF specific parameters on the link
 	// +optional
-	//OSPF *OSPFLinkParameters `json:"ospf,omitempty" yaml:"ospf,omitempty" protobuf:"bytes,4,opt,name=ospf"`
+	OSPF *corenetworkv1alpha1.OSPFLinkParameters `json:"ospf,omitempty" yaml:"ospf,omitempty" protobuf:"bytes,4,opt,name=ospf"`
 	// ISIS defines the ISIS specific parameters on the link
 	// +optional
-	//ISIS *ISISLinkParameters `json:"isis,omitempty" yaml:"isis,omitempty" protobuf:"bytes,5,opt,name=isis"`
+	ISIS *corenetworkv1alpha1.ISISLinkParameters `json:"isis,omitempty" yaml:"isis,omitempty" protobuf:"bytes,5,opt,name=isis"`
 	// BGP defines the BGP specific parameters on the link
 	// +optional
-	//BGP *BGPLinkParameters `json:"bgp,omitempty" yaml:"bgp,omitempty" protobuf:"bytes,6,opt,name=bgp"`
+	BGP *corenetworkv1alpha1.BGPLinkParameters `json:"bgp,omitempty" yaml:"bgp,omitempty" protobuf:"bytes,6,opt,name=bgp"`
 }
 
 // LinkStatus defines the observed state of Link

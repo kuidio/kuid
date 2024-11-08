@@ -1433,6 +1433,7 @@ func Convert_infra_LinkSetList_To_v1alpha1_LinkSetList(in *infra.LinkSetList, ou
 	return autoConvert_infra_LinkSetList_To_v1alpha1_LinkSetList(in, out, s)
 }
 
+
 func autoConvert_v1alpha1_LinkSetStatus_To_infra_LinkSetStatus(in *LinkSetStatus, out *infra.LinkSetStatus, s conversion.Scope) error {
 	if err := asv1alpha1.Convert_v1alpha1_ConditionedStatus_To_condition_ConditionedStatus(&in.ConditionedStatus, &out.ConditionedStatus, s); err != nil {
 		return err

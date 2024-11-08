@@ -5213,12 +5213,36 @@ func schema_kuid_apis_infra_v1alpha1_LinkSpec(ref common.ReferenceCallback) comm
 							},
 						},
 					},
+					"bfd": {
+						SchemaProps: spec.SchemaProps{
+							Description: "BFD defines the BFD specific parameters on the link",
+							Ref:         ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.BFDLinkParameters"),
+						},
+					},
+					"ospf": {
+						SchemaProps: spec.SchemaProps{
+							Description: "OSPF defines the OSPF specific parameters on the link",
+							Ref:         ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.OSPFLinkParameters"),
+						},
+					},
+					"isis": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ISIS defines the ISIS specific parameters on the link",
+							Ref:         ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.ISISLinkParameters"),
+						},
+					},
+					"bgp": {
+						SchemaProps: spec.SchemaProps{
+							Description: "BGP defines the BGP specific parameters on the link",
+							Ref:         ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.BGPLinkParameters"),
+						},
+					},
 				},
 				Required: []string{"endpoints"},
 			},
 		},
 		Dependencies: []string{
-			"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionEndpointID"},
+			"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.BFDLinkParameters", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.BGPLinkParameters", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.ISISLinkParameters", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.OSPFLinkParameters", "github.com/kuidio/kuid/apis/id/v1alpha1.PartitionEndpointID"},
 	}
 }
 
