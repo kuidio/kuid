@@ -38,6 +38,19 @@ type PartitionNodeID struct {
 	Node string `json:"node" yaml:"node" protobuf:"bytes,3,opt,name=node"`
 }
 
+type PartitionProviderNodeID struct {
+	// Partition defines the partition this resource belongs to
+	Partition string `json:"partition" yaml:"partition" protobuf:"bytes,1,opt,name=partition"`
+	// SiteID define the siteid of the node
+	SiteID `json:",inline" yaml:",inline" protobuf:"bytes,2,opt,name=siteID"`
+	// Node defines the name of the node
+	Node string `json:"node" yaml:"node" protobuf:"bytes,3,opt,name=node"`
+	// Provider defines the provider implementing this resource.
+	Provider string `json:"provider" yaml:"provider" protobuf:"bytes,4,opt,name=provider"`
+	// PlatformType define the type of platform implementing the nodespec
+	PlatformType string `json:"platformType" yaml:"platformType" protobuf:"bytes,5,opt,name=platformType"`
+}
+
 type PartitionPortID struct {
 	PartitionNodeID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeID"`
 	// ModuleBay defines the moduleBay reference id
@@ -47,6 +60,8 @@ type PartitionPortID struct {
 	// Port defines the id of the port
 	Port int `json:"port" yaml:"port" protobuf:"bytes,4,opt,name=port"`
 }
+
+
 
 type PartitionAdaptorID struct {
 	PartitionPortID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeID"`
@@ -73,6 +88,22 @@ type PartitionEndpointID struct {
 	Partition string `json:"partition" yaml:"partition" protobuf:"bytes,1,opt,name=partition"`
 
 	NodeID `json:",inline" yaml:",inline" protobuf:"bytes,2,opt,name=nodeID"`
+	// ModuleBay defines the moduleBay reference id
+	ModuleBay *int `json:"moduleBay,omitempty" yaml:"moduleBay,omitempty" protobuf:"bytes,3,opt,name=moduleBay"`
+	// Module defines the module reference id
+	Module *int `json:"module,omitempty" yaml:"module,omitempty" protobuf:"bytes,4,opt,name=module"`
+	// Port defines the id of the port
+	Port int `json:"port" yaml:"port" protobuf:"bytes,5,opt,name=port"`
+	// Adaptor defines the name of the adaptor
+	Adaptor *string `json:"adaptor,omitempty" yaml:"adaptor,omitempty" protobuf:"bytes,6,opt,name=adaptor"`
+	// Endpoint defines the name of the endpoint
+	Endpoint int `json:"endpoint" yaml:"endpoint" protobuf:"bytes,7,opt,name=endpoint"`
+	// Name is used to refer to internal names of the node
+	Name *string `json:"name,omitempty" yaml:"name,omitempty" protobuf:"bytes,8,opt,name=name"`
+}
+
+type PartitionProviderEndpointID struct {
+	PartitionProviderNodeID `json:",inline" yaml:",inline" protobuf:"bytes,2,opt,name=nodeID"`
 	// ModuleBay defines the moduleBay reference id
 	ModuleBay *int `json:"moduleBay,omitempty" yaml:"moduleBay,omitempty" protobuf:"bytes,3,opt,name=moduleBay"`
 	// Module defines the module reference id
