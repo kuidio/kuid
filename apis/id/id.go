@@ -84,22 +84,19 @@ type EndpointID struct {
 }
 
 type PartitionEndpointID struct {
-	// Partition defines the partition this resource belongs to
-	Partition string `json:"partition" yaml:"partition" protobuf:"bytes,1,opt,name=partition"`
-
-	NodeID `json:",inline" yaml:",inline" protobuf:"bytes,2,opt,name=nodeID"`
+	PartitionNodeID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeID"`
 	// ModuleBay defines the moduleBay reference id
-	ModuleBay *int `json:"moduleBay,omitempty" yaml:"moduleBay,omitempty" protobuf:"bytes,3,opt,name=moduleBay"`
+	ModuleBay *int `json:"moduleBay,omitempty" yaml:"moduleBay,omitempty" protobuf:"bytes,2,opt,name=moduleBay"`
 	// Module defines the module reference id
-	Module *int `json:"module,omitempty" yaml:"module,omitempty" protobuf:"bytes,4,opt,name=module"`
+	Module *int `json:"module,omitempty" yaml:"module,omitempty" protobuf:"bytes,3,opt,name=module"`
 	// Port defines the id of the port
-	Port int `json:"port" yaml:"port" protobuf:"bytes,5,opt,name=port"`
+	Port int `json:"port" yaml:"port" protobuf:"bytes,4,opt,name=port"`
 	// Adaptor defines the name of the adaptor
-	Adaptor *string `json:"adaptor,omitempty" yaml:"adaptor,omitempty" protobuf:"bytes,6,opt,name=adaptor"`
+	Adaptor *string `json:"adaptor,omitempty" yaml:"adaptor,omitempty" protobuf:"bytes,5,opt,name=adaptor"`
 	// Endpoint defines the name of the endpoint
-	Endpoint int `json:"endpoint" yaml:"endpoint" protobuf:"bytes,7,opt,name=endpoint"`
+	Endpoint int `json:"endpoint" yaml:"endpoint" protobuf:"bytes,6,opt,name=endpoint"`
 	// Name is used to refer to internal names of the node
-	Name *string `json:"name,omitempty" yaml:"name,omitempty" protobuf:"bytes,8,opt,name=name"`
+	Name *string `json:"name,omitempty" yaml:"name,omitempty" protobuf:"bytes,7,opt,name=name"`
 }
 
 type PartitionProviderEndpointID struct {

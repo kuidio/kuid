@@ -213,7 +213,7 @@ func Convert_v1alpha1_PartitionEndpointID_To_id_PartitionEndpointID(in *idv1alph
 
 func autoConvert_v1alpha1_PartitionEndpointID_To_id_PartitionEndpointID(in *idv1alpha1.PartitionEndpointID, out *id.PartitionEndpointID, s conversion.Scope) error {
 	out.Partition = in.Partition
-	if err := Convert_v1alpha1_NodeID_To_id_NodeID(&in.NodeID, &out.NodeID, s); err != nil {
+	if err := Convert_v1alpha1_PartitionNodeID_To_id_PartitionNodeID(&in.PartitionNodeID, &out.PartitionNodeID, s); err != nil {
 		return err
 	}
 	out.ModuleBay = (*int)(unsafe.Pointer(in.ModuleBay))
@@ -232,7 +232,7 @@ func Convert_id_PartitionEndpointID_To_v1alpha1_PartitionEndpointID(in *id.Parti
 
 func autoConvert_id_PartitionEndpointID_To_v1alpha1_PartitionEndpointID(in *id.PartitionEndpointID, out *idv1alpha1.PartitionEndpointID, s conversion.Scope) error {
 	out.Partition = in.Partition
-	if err := Convert_id_NodeID_To_v1alpha1_NodeID(&in.NodeID, &out.NodeID, s); err != nil {
+	if err := Convert_id_PartitionNodeID_To_v1alpha1_PartitionNodeID(&in.PartitionNodeID, &out.PartitionNodeID, s); err != nil {
 		return err
 	}
 	out.ModuleBay = (*int)(unsafe.Pointer(in.ModuleBay))
