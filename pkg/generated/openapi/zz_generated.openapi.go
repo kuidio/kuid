@@ -104,6 +104,8 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionEndpointID":             schema_kuid_apis_id_v1alpha1_PartitionEndpointID(ref),
 		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionNodeID":                 schema_kuid_apis_id_v1alpha1_PartitionNodeID(ref),
 		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionPortID":                 schema_kuid_apis_id_v1alpha1_PartitionPortID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionProviderEndpointID":     schema_kuid_apis_id_v1alpha1_PartitionProviderEndpointID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionProviderNodeID":         schema_kuid_apis_id_v1alpha1_PartitionProviderNodeID(ref),
 		"github.com/kuidio/kuid/apis/id/v1alpha1.SiteID":                          schema_kuid_apis_id_v1alpha1_SiteID(ref),
 		"github.com/kuidio/kuid/apis/infra/v1alpha1.Adaptor":                      schema_kuid_apis_infra_v1alpha1_Adaptor(ref),
 		"github.com/kuidio/kuid/apis/infra/v1alpha1.AdaptorList":                  schema_kuid_apis_infra_v1alpha1_AdaptorList(ref),
@@ -4000,6 +4002,172 @@ func schema_kuid_apis_id_v1alpha1_PartitionPortID(ref common.ReferenceCallback) 
 					},
 				},
 				Required: []string{"partition", "region", "site", "node", "port"},
+			},
+		},
+	}
+}
+
+func schema_kuid_apis_id_v1alpha1_PartitionProviderEndpointID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"partition": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Partition defines the partition this resource belongs to",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"node": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Node defines the name of the node",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"provider": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Provider defines the provider implementing this resource.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"platformType": {
+						SchemaProps: spec.SchemaProps{
+							Description: "PlatformType define the type of platform implementing the nodespec",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"moduleBay": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ModuleBay defines the moduleBay reference id",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"module": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Module defines the module reference id",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"port": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Port defines the id of the port",
+							Default:     0,
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"adaptor": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Adaptor defines the name of the adaptor",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"endpoint": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Endpoint defines the name of the endpoint",
+							Default:     0,
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name is used to refer to internal names of the node",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"partition", "region", "site", "node", "provider", "platformType", "port", "endpoint"},
+			},
+		},
+	}
+}
+
+func schema_kuid_apis_id_v1alpha1_PartitionProviderNodeID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"partition": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Partition defines the partition this resource belongs to",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"region": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Region defines the region of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"site": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Site defines the site of the resource",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"node": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Node defines the name of the node",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"provider": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Provider defines the provider implementing this resource.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"platformType": {
+						SchemaProps: spec.SchemaProps{
+							Description: "PlatformType define the type of platform implementing the nodespec",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"partition", "region", "site", "node", "provider", "platformType"},
 			},
 		},
 	}
