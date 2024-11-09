@@ -28,24 +28,26 @@ import (
 // NodeSpec defines the desired state of Node
 type NodeSpec struct {
 	// NodeGroupNodeID identifies the nodeGroup identity this resource belongs to
-	idv1alpha1.PartitionNodeID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeID"`
+	idv1alpha1.PartitionNodeID `json:",inline" protobuf:"bytes,1,opt,name=nodeID"`
 	// Rack defines the rack in which the node is deployed
 	// +optional
-	Rack *string `json:"rack,omitempty" yaml:"rack,omitempty" protobuf:"bytes,2,opt,name=rack"`
+	Rack *string `json:"rack,omitempty" protobuf:"bytes,2,opt,name=rack"`
 	// relative position in the rack
 	// +optional
-	Position *string `json:"position,omitempty" yaml:"position,omitempty" protobuf:"bytes,3,opt,name=position"`
+	Position *string `json:"position,omitempty" protobuf:"bytes,3,opt,name=position"`
 	// Location defines the location information where this resource is located
 	// in lon/lat coordinates
 	// +optional
-	Location *Location `json:"location,omitempty" yaml:"location,omitempty" protobuf:"bytes,4,opt,name=location"`
+	Location *Location `json:"location,omitempty" protobuf:"bytes,4,opt,name=location"`
 	// Provider defines the provider implementing this resource.
-	Provider string `json:"provider" yaml:"provider" protobuf:"bytes,5,opt,name=provider"`
+	Provider string `json:"provider" protobuf:"bytes,5,opt,name=provider"`
 	// PlatformType define the type of platform implementing the nodespec
-	PlatformType string `json:"platformType" yaml:"platformType" protobuf:"bytes,6,opt,name=platformType"`
+	PlatformType string `json:"platformType" protobuf:"bytes,6,opt,name=platformType"`
+	// Version define the SW version of the node
+	Version *string  `json:"version,omitempty"  protobuf:"bytes,7,opt,name=version"`
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
-	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,7,opt,name=userDefinedLabels"`
+	commonv1alpha1.UserDefinedLabels `json:",inline"  protobuf:"bytes,8,opt,name=userDefinedLabels"`
 
 	// TBD
 	// Serial number

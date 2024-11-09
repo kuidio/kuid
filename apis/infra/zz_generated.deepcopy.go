@@ -1343,6 +1343,11 @@ func (in *NodeSpec) DeepCopyInto(out *NodeSpec) {
 		*out = new(Location)
 		**out = **in
 	}
+	if in.Version != nil {
+		in, out := &in.Version, &out.Version
+		*out = new(string)
+		**out = **in
+	}
 	in.UserDefinedLabels.DeepCopyInto(&out.UserDefinedLabels)
 	return
 }
