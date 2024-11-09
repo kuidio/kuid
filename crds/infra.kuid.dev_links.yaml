@@ -43,6 +43,48 @@ spec:
           spec:
             description: LinkSpec defines the desired state of Link
             properties:
+              bfd:
+                description: BFD defines the BFD specific parameters on the link
+                properties:
+                  enabled:
+                    description: Disabled defines if bfd is disabled or not
+                    type: boolean
+                  minEchoRx:
+                    description: MinEchoRx defines the echo function timer, in msec.
+                    format: int32
+                    type: integer
+                  minRx:
+                    description: MinTx defines the required minimal interval for receiving
+                      BFD packets, in msec.
+                    format: int32
+                    type: integer
+                  minTx:
+                    description: MinTx defines the desired minimal interval for sending
+                      BFD packets, in msec.
+                    format: int32
+                    type: integer
+                  multiplier:
+                    description: Multiplier defines the number of missed packets before
+                      the session is considered down
+                    format: int32
+                    type: integer
+                  ttl:
+                    description: TTL defines the time to live on the outgoing BFD
+                      packet
+                    format: int32
+                    maximum: 255
+                    minimum: 2
+                    type: integer
+                type: object
+              bgp:
+                description: BGP defines the BGP specific parameters on the link
+                properties:
+                  bfd:
+                    default: true
+                    description: BFD defines if BFD is enabled for the EGP on this
+                      interface
+                    type: boolean
+                type: object
               endpoints:
                 description: |-
                   Endpoints define the 2 endpoint identifiers of the link
@@ -93,10 +135,64 @@ spec:
               internal:
                 description: Internal indicated if the link is internal to the topology
                 type: boolean
+              isis:
+                description: ISIS defines the ISIS specific parameters on the link
+                properties:
+                  area:
+                    description: Defines the ISIS level the link is assocaited with
+                    type: string
+                  bfd:
+                    default: true
+                    description: BFD defines if BFD is enabled for the IGP on this
+                      interface
+                    type: boolean
+                  metric:
+                    description: Metric defines the interface metric associated with
+                      the native routing topology
+                    format: int32
+                    type: integer
+                  networkType:
+                    default: pointToPoint
+                    description: Type defines the type of network
+                    enum:
+                    - pointToPoint
+                    - broadcast
+                    type: string
+                  passive:
+                    description: Passive defines if this interface is passive
+                    type: boolean
+                type: object
               labels:
                 additionalProperties:
                   type: string
                 description: Labels as user defined labels
+                type: object
+              ospf:
+                description: OSPF defines the OSPF specific parameters on the link
+                properties:
+                  area:
+                    description: Defines the OSPF area the link is assocaited with
+                    type: string
+                  bfd:
+                    default: true
+                    description: BFD defines if BFD is enabled for the IGP on this
+                      interface
+                    type: boolean
+                  metric:
+                    description: Metric defines the interface metric associated with
+                      the native routing topology
+                    format: int32
+                    type: integer
+                  networkType:
+                    default: pointToPoint
+                    description: Type defines the type of network
+                    enum:
+                    - pointToPoint
+                    - broadcast
+                    type: string
+                  passive:
+                    description: Passive defines if this interface is passive
+                    type: boolean
                 type: object
             required:
             - endpoints

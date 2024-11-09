@@ -92,6 +92,9 @@ spec:
               site:
                 description: Site defines the site of the resource
                 type: string
+              version:
+                description: Version define the SW version of the node
+                type: string
             required:
             - node
             - partition
