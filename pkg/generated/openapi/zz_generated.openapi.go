@@ -6420,6 +6420,13 @@ func schema_kuid_apis_infra_v1alpha1_NodeSpec(ref common.ReferenceCallback) comm
 							Format:      "",
 						},
 					},
+					"version": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Version define the SW version of the node",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
 					"labels": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Labels as user defined labels",

@@ -1485,7 +1485,7 @@ func Convert_infra_LinkStatus_To_v1alpha1_LinkStatus(in *infra.LinkStatus, out *
 	return autoConvert_infra_LinkStatus_To_v1alpha1_LinkStatus(in, out, s)
 }
 
-func autoConvert_v1alpha1_Location_To_infra_Location(in *Location, out *infra.Location, s conversion.Scope) error {
+func autoConvert_v1alpha1_Location_To_infra_Location(in *Location, out *infra.Location, _ conversion.Scope) error {
 	out.Latitude = in.Latitude
 	out.Longitude = in.Longitude
 	return nil
@@ -1496,7 +1496,7 @@ func Convert_v1alpha1_Location_To_infra_Location(in *Location, out *infra.Locati
 	return autoConvert_v1alpha1_Location_To_infra_Location(in, out, s)
 }
 
-func autoConvert_infra_Location_To_v1alpha1_Location(in *infra.Location, out *Location, s conversion.Scope) error {
+func autoConvert_infra_Location_To_v1alpha1_Location(in *infra.Location, out *Location, _ conversion.Scope) error {
 	out.Latitude = in.Latitude
 	out.Longitude = in.Longitude
 	return nil
@@ -2108,6 +2108,7 @@ func autoConvert_v1alpha1_NodeSpec_To_infra_NodeSpec(in *NodeSpec, out *infra.No
 	out.Location = (*infra.Location)(unsafe.Pointer(in.Location))
 	out.Provider = in.Provider
 	out.PlatformType = in.PlatformType
+	out.Version = (*string)(unsafe.Pointer(in.Version))
 	if err := asv1alpha1.Convert_v1alpha1_UserDefinedLabels_To_common_UserDefinedLabels(&in.UserDefinedLabels, &out.UserDefinedLabels, s); err != nil {
 		return err
 	}
@@ -2128,6 +2129,7 @@ func autoConvert_infra_NodeSpec_To_v1alpha1_NodeSpec(in *infra.NodeSpec, out *No
 	out.Location = (*Location)(unsafe.Pointer(in.Location))
 	out.Provider = in.Provider
 	out.PlatformType = in.PlatformType
+	out.Version = (*string)(unsafe.Pointer(in.Version))
 	if err := asv1alpha1.Convert_common_UserDefinedLabels_To_v1alpha1_UserDefinedLabels(&in.UserDefinedLabels, &out.UserDefinedLabels, s); err != nil {
 		return err
 	}
