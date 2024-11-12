@@ -26,3 +26,7 @@ For more information consult to [https://kuidio.github.io/docs/](https://kuidio.
 ## License and governance
 
 Code in the KUID repositories licensed with [Apache License 2.0](LICENSE.md). At the moment the project is governed by the benevolent dictatorship of @henderiw @steiler @karimra and @hansthienpondt . On the long run we plan to move to a meritocracy based governance model.
+
+## Badges
+
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/kuidio/kuid/badge)](https://scorecard.dev/viewer/?uri=github.com/kuidio/kuid)
