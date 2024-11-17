@@ -1,4 +1,4 @@
-![KUID logo](assets/logos/KUID-logo-100x123.png)
+![KUID logo](https://kuidio.github.io/docs/assets/logos/KUID-logo-100x123.png)
 
 # Kuid (Kubernetes Identities)
 
@@ -22,6 +22,7 @@ For more information consult to [https://kuidio.github.io/docs/](https://kuidio.
 * join [our discord server](https://discord.gg/fH35bmcTU9)
 * raise [an issue](https://github.com/kuidio/kuid/issues)
 * create a [pull request](https://github.com/kuidio/kuid/pulls)
+* [how to contribute](CONTRIBUTING.md)
 
 ## License and governance
 
