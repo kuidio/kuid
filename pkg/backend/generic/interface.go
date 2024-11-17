@@ -37,7 +37,34 @@ type BackendStorage interface {
 	CreateEntry(ctx context.Context, obj backend.EntryObject) error
 	UpdateEntry(ctx context.Context, obj, old backend.EntryObject) error
 	DeleteEntry(ctx context.Context, obj backend.EntryObject) error
-	ListClaims(ctx context.Context, k store.Key) (map[string]backend.ClaimObject, error)
+	ListClaims(ctx context.Context, k store.Key, opts ...ListOption) (map[string]backend.ClaimObject, error)
+	CreateClaim(ctx context.Context, obj backend.ClaimObject) error
+	UpdateClaim(ctx context.Context, obj, old backend.ClaimObject) error
+	DeleteClaim(ctx context.Context, obj backend.ClaimObject) error
+}
+
+type ListOption interface {
+	// ApplyToGet applies this configuration to the given get options.
+	ApplyToList(*ListOptions)
+}
+
+var _ ListOption = &ListOptions{}
+
+type ListOptions struct {
+	OwnerKind string
+}
+
+func (o *ListOptions) ApplyToList(lo *ListOptions) {
+	lo.OwnerKind = o.OwnerKind
+}
+
+// ApplyOptions applies the given get options on these options,
+// and then returns itself (for convenient chaining).
+func (o *ListOptions) ApplyOptions(opts []ListOption) *ListOptions {
+	for _, opt := range opts {
+		opt.ApplyToList(o)
+	}
+	return o
 }
 
 func NewKuidBackendstorage(entryStorage, claimStorage *registry.Store) BackendStorage {
@@ -108,9 +135,12 @@ func (r *kuidbe) DeleteEntry(ctx context.Context, obj backend.EntryObject) error
 	return nil
 }
 
-func (r *kuidbe) ListClaims(ctx context.Context, k store.Key) (map[string]backend.ClaimObject, error) {
-	log := log.FromContext(ctx).With("key", k.String())
+func (r *kuidbe) ListClaims(ctx context.Context, k store.Key, opts ...ListOption) (map[string]backend.ClaimObject, error) {
+	o := &ListOptions{}
+	o.ApplyOptions(opts)
 
+	log := log.FromContext(ctx).With("key", k.String())
+	log.Debug("list claims from storage")
 	list, err := r.claimStorage.List(ctx, &internalversion.ListOptions{})
 	if err != nil {
 		return nil, err
@@ -130,10 +160,55 @@ func (r *kuidbe) ListClaims(ctx context.Context, k store.Key) (map[string]backen
 			errm = errors.Join(errm, err)
 			continue
 		}
-		if claimObj.GetIndex() == k.Name {
-			claimMap[claimObj.GetNamespacedName().String()] = claimObj
+		if o.OwnerKind != "" {
+			for _, ownerref := range claimObj.GetOwnerReferences() {
+				if ownerref.Kind == o.OwnerKind {
+					claimMap[claimObj.GetNamespacedName().String()] = claimObj
+				}
+			}
+		} else {
+			if claimObj.GetIndex() == k.Name {
+				claimMap[claimObj.GetNamespacedName().String()] = claimObj
+			}
 		}
-
 	}
 	return claimMap, errm
+}
+
+func (r *kuidbe) CreateClaim(ctx context.Context, obj backend.ClaimObject) error {
+	log := log.FromContext(ctx)
+	ctx = genericapirequest.WithNamespace(ctx, obj.GetNamespace())
+	if _, err := r.claimStorage.Create(ctx, obj, nil, &metav1.CreateOptions{
+		FieldManager: "backend",
+		DryRun:       []string{"recursion"},
+	}); err != nil {
+		log.Error("create claim failed", "name", obj.GetName(), "error", err.Error())
+		return err
+	}
+	return nil
+}
+
+func (r *kuidbe) UpdateClaim(ctx context.Context, obj, old backend.ClaimObject) error {
+	log := log.FromContext(ctx)
+	defaultObjInfo := rest.DefaultUpdatedObjectInfo(old, ClaimTransformer)
+	if _, _, err := r.claimStorage.Update(ctx, old.GetName(), defaultObjInfo, nil, nil, false, &metav1.UpdateOptions{
+		FieldManager: "backend",
+		DryRun:       []string{"recursion"},
+	}); err != nil {
+		log.Error("update claim failed", "name", obj.GetName(), "error", err.Error())
+		return err
+	}
+	return nil
+}
+
+func (r *kuidbe) DeleteClaim(ctx context.Context, obj backend.ClaimObject) error {
+	log := log.FromContext(ctx)
+	ctx = genericapirequest.WithNamespace(ctx, obj.GetNamespace())
+	if _, _, err := r.claimStorage.Delete(ctx, obj.GetName(), nil, &metav1.DeleteOptions{
+		DryRun: []string{"recursion"},
+	}); err != nil {
+		log.Error("cannot delete claim", "error", err)
+		return err
+	}
+	return nil
 }

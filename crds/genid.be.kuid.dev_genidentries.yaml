@@ -50,6 +50,10 @@ spec:
               index:
                 description: Index defines the index for the resource
                 type: string
+              indexEntry:
+                description: IndexEntry identifies if the entry is originated from
+                  an IP Index
+                type: boolean
               labels:
                 additionalProperties:
                   type: string
@@ -103,6 +107,7 @@ spec:
                 x-kubernetes-map-type: atomic
             required:
             - index
+            - indexEntry
             type: object
           status:
             description: GENIDEntryStatus defines the observed state of GENIDEntry

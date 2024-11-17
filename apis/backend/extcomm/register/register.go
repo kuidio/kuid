@@ -52,6 +52,7 @@ func init() {
 
 func NewBackend() bebackend.Backend {
 	return genericbackend.New(
+		extcomm.EXTCOMMIndexKind,
 		extcomm.EXTCOMMClaimKind,
 		extcomm.EXTCOMMIndexFromRuntime,
 		extcomm.EXTCOMMClaimFromRuntime,

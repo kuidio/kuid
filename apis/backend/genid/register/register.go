@@ -52,6 +52,7 @@ func init() {
 
 func NewBackend() bebackend.Backend {
 	return genericbackend.New(
+		genid.GENIDIndexKind,
 		genid.GENIDClaimKind,
 		genid.GENIDIndexFromRuntime,
 		genid.GENIDClaimFromRuntime,

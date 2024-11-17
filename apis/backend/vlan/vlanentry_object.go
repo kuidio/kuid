@@ -60,6 +60,7 @@ func (r *VLANEntry) ValidateSyntax(s string) field.ErrorList {
 }
 
 func (r *VLANEntry) GetIndex() string                { return r.Spec.Index }
+func (r *VLANEntry) IsIndexEntry() bool              { return r.Spec.IndexEntry }
 func (r *VLANEntry) GetClaimType() backend.ClaimType { return r.Spec.ClaimType }
 func (r *VLANEntry) GetSpecID() string               { return r.Spec.ID }
 
@@ -116,9 +117,9 @@ func GetVLANEntry(k store.Key, vrange, id string, labels map[string]string) back
 				{
 					// this is a bit of a hack for choreo to ensure we point to the proper external reference
 					APIVersion: schema.GroupVersion{Group: SchemeGroupVersion.Group, Version: "v1alpha1"}.Identifier(),
-					Kind: labels[backend.KuidOwnerKindKey],
-					Name: labels[backend.KuidClaimNameKey],
-					UID:  types.UID(labels[backend.KuidClaimUIDKey]),
+					Kind:       labels[backend.KuidOwnerKindKey],
+					Name:       labels[backend.KuidClaimNameKey],
+					UID:        types.UID(labels[backend.KuidClaimUIDKey]),
 				},
 			},
 		},

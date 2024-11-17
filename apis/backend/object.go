@@ -38,6 +38,7 @@ type IndexObject interface {
 	GetMaxID() *uint64
 	GetMinClaim() ClaimObject
 	GetMaxClaim() ClaimObject
+	GetClaims() []ClaimObject
 	GetMax() uint64
 }
 
@@ -72,6 +73,7 @@ type EntryObject interface {
 	GetClaimType() ClaimType
 	GetSpecID() string
 	GetChoreoAPIVersion() string // a trick to translate the apiversion as per crd
+	IsIndexEntry() bool
 }
 
 type Object interface {

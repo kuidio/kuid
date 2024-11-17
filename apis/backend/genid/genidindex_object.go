@@ -120,6 +120,17 @@ func (r *GENIDIndex) GetMaxClaimNSN() types.NamespacedName {
 	}
 }
 
+func (r *GENIDIndex) GetClaims() []backend.ClaimObject {
+	claims := []backend.ClaimObject{}
+	if r.GetMinID() != nil && *r.GetMinID() != 0 {
+		claims = append(claims, r.GetMinClaim())
+	}
+	if r.GetMaxID() != nil && *r.GetMaxID() != r.GetMax() {
+		claims = append(claims, r.GetMaxClaim())
+	}
+	return claims
+}
+
 func (r *GENIDIndex) GetMinClaim() backend.ClaimObject {
 	return BuildGENIDClaim(
 		metav1.ObjectMeta{

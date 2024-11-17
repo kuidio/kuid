@@ -52,6 +52,7 @@ func init() {
 
 func NewBackend() bebackend.Backend {
 	return genericbackend.New(
+		vlan.VLANIndexKind,
 		vlan.VLANClaimKind,
 		vlan.VLANIndexFromRuntime,
 		vlan.VLANClaimFromRuntime,

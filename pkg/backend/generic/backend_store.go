@@ -2,6 +2,7 @@ package generic
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"reflect"
 
@@ -9,10 +10,11 @@ import (
 	"github.com/henderiw/logger/log"
 	"github.com/henderiw/store"
 	"github.com/kuidio/kuid/apis/backend"
+	"github.com/kuidio/kuid/apis/backend/ipam"
 	bebackend "github.com/kuidio/kuid/pkg/backend"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/apimachinery/pkg/util/sets"
+	genericapirequest "k8s.io/apiserver/pkg/endpoints/request"
 )
 
 func (r *be) restore(ctx context.Context, index backend.IndexObject) error {
@@ -36,17 +38,19 @@ func (r *be) restore(ctx context.Context, index backend.IndexObject) error {
 		return nil
 	}
 
-	if err := r.restoreMinMaxRanges(ctx, cacheInstanceCtx, curEntries, index); err != nil {
+	//if err := r.restoreMinMaxRanges(ctx, cacheInstanceCtx, curEntries, index); err != nil {
+	//	return err
+	//}
+	if err := r.restoreClaims(ctx, cacheInstanceCtx, curEntries, r.indexKind, backend.ClaimType_Range, claimmap); err != nil {
 		return err
 	}
-
-	if err := r.restoreClaims(ctx, cacheInstanceCtx, curEntries, backend.ClaimType_Range, claimmap); err != nil {
+	if err := r.restoreClaims(ctx, cacheInstanceCtx, curEntries, r.claimKind, backend.ClaimType_Range, claimmap); err != nil {
 		return err
 	}
-	if err := r.restoreClaims(ctx, cacheInstanceCtx, curEntries, backend.ClaimType_StaticID, claimmap); err != nil {
+	if err := r.restoreClaims(ctx, cacheInstanceCtx, curEntries, r.claimKind, backend.ClaimType_StaticID, claimmap); err != nil {
 		return err
 	}
-	if err := r.restoreClaims(ctx, cacheInstanceCtx, curEntries, backend.ClaimType_DynamicID, claimmap); err != nil {
+	if err := r.restoreClaims(ctx, cacheInstanceCtx, curEntries, r.claimKind, backend.ClaimType_DynamicID, claimmap); err != nil {
 		return err
 	}
 
@@ -168,7 +172,9 @@ func (r *be) listClaims(ctx context.Context, k store.Key) (map[string]backend.Cl
 	return r.bestorage.ListClaims(ctx, k)
 }
 
+/*
 func (r *be) restoreMinMaxRanges(ctx context.Context, cacheInstanceCtx *CacheInstanceContext, entries []backend.EntryObject, index backend.IndexObject) error {
+	fmt.Println("restoreMinMaxRanges index", index)
 	storedEntries := sets.New[string]()
 	for i := len(entries) - 1; i >= 0; i-- {
 		entry := entries[i]
@@ -185,12 +191,14 @@ func (r *be) restoreMinMaxRanges(ctx context.Context, cacheInstanceCtx *CacheIns
 
 	if index.GetMinID() != nil && *index.GetMinID() != 0 {
 		claim := index.GetMinClaim()
+		fmt.Println("restoreMinMaxRanges minclaim", claim)
 		if err := r.restoreClaim(ctx, cacheInstanceCtx, claim); err != nil {
 			return err
 		}
 	}
 	if index.GetMaxID() != nil && *index.GetMaxID() != index.GetMax() {
 		claim := index.GetMaxClaim()
+		fmt.Println("restoreMinMaxRanges maxclaim", claim)
 		if err := r.restoreClaim(ctx, cacheInstanceCtx, claim); err != nil {
 			return err
 		}
@@ -205,22 +213,35 @@ func (r *be) restoreMinMaxRanges(ctx context.Context, cacheInstanceCtx *CacheIns
 			if err := r.bestorage.CreateEntry(ctx, entry); err != nil {
 				return err
 			}
-			/*
-				ctx = genericapirequest.WithNamespace(ctx, entry.GetNamespace())
-				if _, err := r.entryStorage.Create(ctx, entry, nil, &metav1.CreateOptions{
-					FieldManager: "backend",
-				}); err != nil {
-					return err
-				}
-			*/
 		}
 	}
 	return nil
 }
+*/
 
-func (r *be) restoreClaims(ctx context.Context, cacheInstanceCtx *CacheInstanceContext, entries []backend.EntryObject, claimType backend.ClaimType, claimmap map[string]backend.ClaimObject) error {
+func (r *be) restoreClaims(ctx context.Context, cacheInstanceCtx *CacheInstanceContext, entries []backend.EntryObject, kind string, claimType backend.ClaimType, claimmap map[string]backend.ClaimObject) error {
+	log := log.FromContext(ctx)
 	for i := len(entries) - 1; i >= 0; i-- {
 		entry := entries[i]
+		if (kind == ipam.IPIndexKind && entry.IsIndexEntry() && claimType == entry.GetClaimType()) ||
+			(kind != ipam.IPIndexKind && !entry.IsIndexEntry() && claimType == entry.GetClaimType()) {
+			claimName := ""
+			if len(entry.GetOwnerReferences()) > 0 {
+				claimName = entry.GetOwnerReferences()[0].Name
+			}
+			nsn := types.NamespacedName{Namespace: entry.GetNamespace(), Name: claimName}
+			claim, ok := claimmap[nsn.String()]
+			if ok {
+				log.Debug("restore claim", "kind", kind, "claimType", claimType, "claim", claim)
+				if err := r.restoreClaim(ctx, cacheInstanceCtx, claim); err != nil {
+					return err
+				}
+				// remove the entry since it is processed
+				entries = append(entries[:i], entries[i+1:]...)
+				delete(claimmap, nsn.String()) // delete the entry to optimize
+			}
+		}
+
 		for _, ownerref := range entry.GetOwnerReferences() {
 			if ownerref.Kind == r.claimKind {
 				if claimType == entry.GetClaimType() {
@@ -262,6 +283,52 @@ func (r *be) restoreClaim(ctx context.Context, cacheInstanceCtx *CacheInstanceCo
 	return nil
 }
 
+func (r *be) updateIndexClaims(ctx context.Context, index backend.IndexObject) error {
+	log := log.FromContext(ctx)
+	log.Debug("updateIPIndexClaims", "key", index.GetKey().String())
+	key := index.GetKey()
+
+	newClaims := index.GetClaims()
+
+	existingClaims, err := r.listIndexClaims(ctx, key)
+	if err != nil {
+		return err
+	}
+
+	var errm error
+	for _, newClaim := range newClaims {
+		ctx = genericapirequest.WithNamespace(ctx, newClaim.GetNamespace())
+		oldClaim, exists := existingClaims[newClaim.GetNamespacedName().String()]
+		if !exists {
+			if err := r.bestorage.CreateClaim(ctx, newClaim); err != nil {
+				log.Error("updateIndexClaims create failed", "name", newClaim.GetName(), "error", err.Error())
+				errm = errors.Join(errm, err)
+				continue
+			}
+			continue
+		}
+		if err := r.bestorage.UpdateClaim(ctx, newClaim, oldClaim); err != nil {
+			log.Error("updateIndexClaims create failed", "name", newClaim.GetName(), "error", err.Error())
+			errm = errors.Join(errm, err)
+			continue
+		}
+		delete(existingClaims, newClaim.GetNamespacedName().String())
+	}
+
+	for _, claim := range existingClaims {
+		log.Debug("updateIndexClaims: delete existing claims", "claim", claim.GetName())
+		if err := r.bestorage.DeleteClaim(ctx, claim); err != nil {
+			log.Error("updateIndexClaims delete failed", "name", claim.GetName(), "error", err.Error())
+			errm = errors.Join(errm, err)
+			continue
+		}
+	}
+	if errm != nil {
+		return errm
+	}
+	return r.saveAll(ctx, key)
+}
+
 func EntryTransformer(_ context.Context, newObj runtime.Object, oldObj runtime.Object) (runtime.Object, error) {
 	// Type assertion to specific object types, assuming we are working with a type that has Spec and Status fields
 	new, ok := newObj.(backend.EntryObject)
@@ -294,4 +361,10 @@ func ClaimTransformer(_ context.Context, newObj runtime.Object, oldObj runtime.O
 	new.SetUID(old.GetUID())
 
 	return new, nil
+}
+
+func (r *be) listIndexClaims(ctx context.Context, k store.Key) (map[string]backend.ClaimObject, error) {
+	return r.bestorage.ListClaims(ctx, k, &ListOptions{
+		OwnerKind: ipam.IPIndexKind,
+	})
 }
