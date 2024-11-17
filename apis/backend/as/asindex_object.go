@@ -95,6 +95,17 @@ func (r *ASIndex) GetMaxClaimNSN() types.NamespacedName {
 	}
 }
 
+func (r *ASIndex) GetClaims() []backend.ClaimObject {
+	claims := []backend.ClaimObject{}
+	if r.GetMinID() != nil && *r.GetMinID() != 0 {
+		claims = append(claims, r.GetMinClaim())
+	}
+	if r.GetMaxID() != nil && *r.GetMaxID() != r.GetMax() {
+		claims = append(claims, r.GetMaxClaim())
+	}
+	return claims
+}
+
 func (r *ASIndex) GetMinClaim() backend.ClaimObject {
 	return BuildASClaim(
 		metav1.ObjectMeta{

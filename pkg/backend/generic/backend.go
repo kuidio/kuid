@@ -15,6 +15,7 @@ import (
 )
 
 func New(
+	indexKind string,
 	claimKind string,
 	indexObjectFn func(runtime.Object) (backend.IndexObject, error),
 	claimObjectFn func(runtime.Object) (backend.ClaimObject, error),
@@ -26,6 +27,7 @@ func New(
 
 	return &be{
 		cache:            cache,
+		indexKind:        indexKind,
 		claimKind:        claimKind,
 		indexObjectFn:    indexObjectFn,
 		claimObjectFn:    claimObjectFn,
@@ -37,6 +39,7 @@ func New(
 type be struct {
 	cache            bebackend.Cache[*CacheInstanceContext]
 	m                sync.RWMutex
+	indexKind        string
 	claimKind        string
 	indexObjectFn    func(runtime.Object) (backend.IndexObject, error)
 	claimObjectFn    func(runtime.Object) (backend.ClaimObject, error)
@@ -62,42 +65,8 @@ func (r *be) AddStorageInterfaces(bes any) error {
 		return fmt.Errorf("AddStorageInterfaces did not supply a generic BackendStorage interface, got: %s", reflect.TypeOf(bes).Name())
 	}
 	r.bestorage = bestorage
-	/*
-		entrystore, ok := entryStorage.(*registry.Store)
-		if !ok {
-			return errors.New("entry store is not a *registry.Store")
-		}
-		r.entryStorage = entrystore
-		claimstore, ok := claimStorage.(*registry.Store)
-		if !ok {
-			return errors.New("claim store is not a *registry.Store")
-		}
-		r.claimStorage = claimstore
-	*/
 	return nil
 }
-
-/*
-func (r *be) AddStorage(entryStorage, claimStorage rest.Storage) error {
-	entrystore, ok := entryStorage.(*registry.Store)
-	if !ok {
-		return fmt.Errorf("entry store is not a *registry.Store, got: %v", reflect.TypeOf(claimStorage).Name())
-	}
-	r.entryStorage = entrystore
-	claimstore, ok := claimStorage.(*registry.Store)
-	if !ok {
-		return fmt.Errorf("claim store is not a *registry.Store, got: %v", reflect.TypeOf(claimStorage).Name())
-	}
-	r.claimStorage = claimstore
-	return nil
-}
-*/
-
-/*
-func (r *be) GetClaimStorage() *registry.Store {
-	return r.claimStorage
-}
-*/
 
 // CreateIndex creates a backend index
 func (r *be) CreateIndex(ctx context.Context, obj runtime.Object) error {
@@ -124,6 +93,7 @@ func (r *be) CreateIndex(ctx context.Context, obj runtime.Object) error {
 	if !r.cache.IsInitialized(ctx, key) {
 		if err := r.restore(ctx, index); err != nil {
 			log.Error("cannot restore index", "error", err.Error())
+			index.SetConditions(condition.Failed(err.Error()))
 			return err
 		}
 		log.Debug("restored")
@@ -132,8 +102,8 @@ func (r *be) CreateIndex(ctx context.Context, obj runtime.Object) error {
 
 		return r.cache.SetInitialized(ctx, key)
 	}
-	log.Debug("finished")
-	return nil
+	log.Debug("update IPIndex claims", "object", obj)
+	return r.updateIndexClaims(ctx, index)
 }
 
 // DeleteIndex deletes a backend index

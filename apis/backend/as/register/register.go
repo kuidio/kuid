@@ -23,6 +23,7 @@ import (
 	"github.com/henderiw/apiserver-builder/pkg/builder"
 	"github.com/henderiw/apiserver-builder/pkg/builder/resource"
 	"github.com/henderiw/apiserver-builder/pkg/builder/rest"
+	"github.com/henderiw/apiserver-store/pkg/generic/registry"
 	"github.com/kuidio/kuid/apis/backend/as"
 	asbev1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
 	bebackend "github.com/kuidio/kuid/pkg/backend"
@@ -33,7 +34,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apiserver/pkg/registry/generic"
-	"github.com/henderiw/apiserver-store/pkg/generic/registry"
 )
 
 func init() {
@@ -52,6 +52,7 @@ func init() {
 
 func NewBackend() bebackend.Backend {
 	return genericbackend.New(
+		as.ASIndexKind,
 		as.ASClaimKind,
 		as.ASIndexFromRuntime,
 		as.ASClaimFromRuntime,

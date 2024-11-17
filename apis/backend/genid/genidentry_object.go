@@ -60,6 +60,7 @@ func (r *GENIDEntry) ValidateSyntax(s string) field.ErrorList {
 }
 
 func (r *GENIDEntry) GetIndex() string                { return r.Spec.Index }
+func (r *GENIDEntry) IsIndexEntry() bool              { return r.Spec.IndexEntry }
 func (r *GENIDEntry) GetClaimType() backend.ClaimType { return r.Spec.ClaimType }
 func (r *GENIDEntry) GetSpecID() string               { return r.Spec.ID }
 

@@ -29,15 +29,17 @@ import (
 type EXTCOMMEntrySpec struct {
 	// EXTCOMMIndex defines the EXTCOMM index for the EXTCOMM Claim
 	Index string `json:"index" yaml:"index" protobuf:"bytes,1,opt,name=index"`
+	// IndexEntry identifies if the entry is originated from an IP Index
+	IndexEntry bool `json:"indexEntry" yaml:"indexEntry" protobuf:"bytes,2,opt,name=indexEntry"`
 	// ClaimType defines the claimType of the EXTCOMM Entry
-	ClaimType backend.ClaimType `json:"claimType,omitempty" yaml:"claimType,omitempty" protobuf:"bytes,2,opt,name=claimType"`
+	ClaimType backend.ClaimType `json:"claimType,omitempty" yaml:"claimType,omitempty" protobuf:"bytes,3,opt,name=claimType"`
 	// ID defines the id of the EXTCOMM entry in the tree
-	ID string `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,3,opt,name=id"`
+	ID string `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,4,opt,name=id"`
 	// ClaimLabels define the user defined labels and selector labels used
 	// in resource claim
-	common.ClaimLabels `json:",inline" yaml:",inline" protobuf:"bytes,4,opt,name=claimLabels"`
+	common.ClaimLabels `json:",inline" yaml:",inline" protobuf:"bytes,5,opt,name=claimLabels"`
 	// Claim defines the name of the claim that is the origin of this  entry
-	Claim string `json:"claim" yaml:"claim" protobuf:"bytes,5,opt,name=claim"`
+	Claim string `json:"claim" yaml:"claim" protobuf:"bytes,6,opt,name=claim"`
 }
 
 // EXTCOMMEntryStatus defines the observed state of EXTCOMMEntry

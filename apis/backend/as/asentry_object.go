@@ -60,6 +60,7 @@ func (r *ASEntry) ValidateSyntax(s string) field.ErrorList {
 }
 
 func (r *ASEntry) GetIndex() string                { return r.Spec.Index }
+func (r *ASEntry) IsIndexEntry() bool              { return r.Spec.IndexEntry }
 func (r *ASEntry) GetClaimType() backend.ClaimType { return r.Spec.ClaimType }
 func (r *ASEntry) GetSpecID() string               { return r.Spec.ID }
 

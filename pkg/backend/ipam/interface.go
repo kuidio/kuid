@@ -163,7 +163,7 @@ func (r *kuidbe) ListClaims(ctx context.Context, k store.Key, opts ...ListOption
 			continue
 		}
 		if o.OwnerKind != "" {
-			for _, ownerref := range claimObj.OwnerReferences {
+			for _, ownerref := range claimObj.GetOwnerReferences() {
 				if ownerref.Kind == o.OwnerKind {
 					claimMap[claimObj.GetNamespacedName().String()] = claimObj
 				}
