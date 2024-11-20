@@ -54,6 +54,7 @@ type ClaimObject interface {
 	GetStaticID() *uint64
 	GetStaticTreeID(t string) tree.ID
 	GetClaimID(t string, id uint64) tree.ID
+	GetStatusClaimID() tree.ID
 	GetRange() *string
 	GetRangeID(t string) (tree.Range, error)
 	GetTable(t string, to, from uint64) table.Table
@@ -62,7 +63,7 @@ type ClaimObject interface {
 	GetStatusID() *uint64
 	GetClaimRequest() string
 	GetClaimResponse() string
-	GetClaimSet(typ string) (sets.Set[tree.ID], error)
+	GetClaimSet(typ string) (map[string]tree.ID, sets.Set[string], error)
 	IsOwner(labels labels.Set) bool
 	GetChoreoAPIVersion() string // a trick to translate the apiversion as per crd
 }

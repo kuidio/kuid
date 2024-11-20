@@ -100,7 +100,9 @@ func (r *be) CreateIndex(ctx context.Context, obj runtime.Object) error {
 		index.SetConditions(condition.Ready())
 		obj = index
 
-		return r.cache.SetInitialized(ctx, key)
+		if err := r.cache.SetInitialized(ctx, key); err != nil {
+			return err
+		}
 	}
 	log.Debug("update IPIndex claims", "object", obj)
 	return r.updateIndexClaims(ctx, index)
@@ -132,8 +134,10 @@ func (r *be) DeleteIndex(ctx context.Context, obj runtime.Object) error {
 }
 
 func (r *be) Claim(ctx context.Context, obj runtime.Object, recursion bool) error {
-	r.m.Lock()
-	defer r.m.Unlock()
+	if !recursion {
+		r.m.Lock()
+		defer r.m.Unlock()
+	}
 	claim, err := r.claimObjectFn(obj)
 	if err != nil {
 		return err
@@ -170,8 +174,10 @@ func (r *be) Claim(ctx context.Context, obj runtime.Object, recursion bool) erro
 }
 
 func (r *be) Release(ctx context.Context, obj runtime.Object, recursion bool) error {
-	r.m.Lock()
-	defer r.m.Unlock()
+	if !recursion {
+		r.m.Lock()
+		defer r.m.Unlock()
+	}
 	claim, err := r.claimObjectFn(obj)
 	if err != nil {
 		return err

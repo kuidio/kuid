@@ -102,7 +102,7 @@ func reclaimIDFromExisitingEntries(existingEntries map[string]tree.Entries, id u
 func claimIDFromExisitingEntries(existingEntries map[string]tree.Entries) (*uint64, string) {
 	for treeName, existingEntries := range existingEntries {
 		for _, existingEntry := range existingEntries {
-			return ptr.To[uint64](existingEntry.ID().ID()), treeName
+			return ptr.To(existingEntry.ID().ID()), treeName
 		}
 	}
 	return nil, ""
@@ -140,21 +140,23 @@ func isReserved(parentName, index string) bool {
 	*/
 }
 
-func (r *applicator) getExistingCLaimSet(ctx context.Context, claim backend.ClaimObject) (sets.Set[tree.ID], error) {
-	oldClaimIDSet := sets.New[tree.ID]()
+func (r *applicator) getExistingCLaimSet(ctx context.Context, claim backend.ClaimObject) (map[string]tree.ID, sets.Set[string], error) {
+	oldClaimIDSet := sets.New[string]()
+	oldClaimMap := map[string]tree.ID{}
 
 	existingEntries, err := r.getEntriesByOwner(ctx, claim)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	// delete the entries from the claimSet that overlap
 	for treeName, existingEntries := range existingEntries {
 		if treeName != "" {
-			return nil, fmt.Errorf("cannot have a range in non root tree: %s", treeName)
+			return nil, nil, fmt.Errorf("cannot have a range in non root tree: %s", treeName)
 		}
 		for _, existingEntry := range existingEntries {
-			oldClaimIDSet.Insert(existingEntry.ID())
+			oldClaimIDSet.Insert(existingEntry.ID().String())
+			oldClaimMap[existingEntry.ID().String()] = existingEntry.ID()
 		}
 	}
-	return oldClaimIDSet, nil
+	return oldClaimMap, oldClaimIDSet, nil
 }

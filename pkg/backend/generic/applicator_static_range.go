@@ -57,12 +57,12 @@ func (r *rangeApplicator) Validate(ctx context.Context, claim backend.ClaimObjec
 
 // validateChange checks if the range changed; change is only reported when the range existed
 func (r *rangeApplicator) validateChange(ctx context.Context, claim backend.ClaimObject) (bool, error) {
-	newClaimSet, err := claim.GetClaimSet(r.cacheInstanceCtx.Type())
+	_, newClaimSet, err := claim.GetClaimSet(r.cacheInstanceCtx.Type())
 	if err != nil {
 		return false, err
 	}
 
-	oldClaimSet, err := r.getExistingCLaimSet(ctx, claim)
+	_, oldClaimSet, err := r.getExistingCLaimSet(ctx, claim)
 	if err != nil {
 		return false, err
 	}
@@ -106,12 +106,12 @@ func (r *rangeApplicator) Apply(ctx context.Context, claim backend.ClaimObject) 
 	if err != nil {
 		return err
 	}
-	newClaimSet, err := claim.GetClaimSet(r.cacheInstanceCtx.Type())
+	newClaimMap, newClaimSet, err := claim.GetClaimSet(r.cacheInstanceCtx.Type())
 	if err != nil {
 		return err
 	}
 
-	oldClaimSet, err := r.getExistingCLaimSet(ctx, claim)
+	oldClaimMap, oldClaimSet, err := r.getExistingCLaimSet(ctx, claim)
 	if err != nil {
 		return err
 	}
@@ -120,18 +120,18 @@ func (r *rangeApplicator) Apply(ctx context.Context, claim backend.ClaimObject) 
 	existingEntries := newClaimSet.Intersection(oldClaimSet)
 	deletedEntries := oldClaimSet.Difference(newClaimSet)
 
-	for id := range deletedEntries {
-		if err := r.cacheInstanceCtx.tree.ReleaseID(id); err != nil {
+	for idstr := range deletedEntries {
+		if err := r.cacheInstanceCtx.tree.ReleaseID(oldClaimMap[idstr]); err != nil {
 			return err
 		}
 	}
-	for id := range newEntries {
-		if err := r.cacheInstanceCtx.tree.ClaimID(id, claim.GetClaimLabels()); err != nil {
+	for idstr := range newEntries {
+		if err := r.cacheInstanceCtx.tree.ClaimID(newClaimMap[idstr], claim.GetClaimLabels()); err != nil {
 			return err
 		}
 	}
-	for id := range existingEntries {
-		if err := r.cacheInstanceCtx.tree.Update(id, claim.GetClaimLabels()); err != nil {
+	for idstr := range existingEntries {
+		if err := r.cacheInstanceCtx.tree.Update(newClaimMap[idstr], claim.GetClaimLabels()); err != nil {
 			return err
 		}
 	}

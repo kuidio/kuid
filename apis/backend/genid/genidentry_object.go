@@ -109,6 +109,8 @@ func GetGENIDEntry(k store.Key, vrange, id string, labels map[string]string) bac
 		name = fmt.Sprintf("%s.%s", vrange, id)
 	}
 
+	fmt.Println("GetGENIDEntry kind", labels[backend.KuidOwnerKindKey])
+
 	return BuildGENIDEntry(
 		metav1.ObjectMeta{
 			Name:      name,

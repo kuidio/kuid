@@ -26,6 +26,7 @@ import (
 	"github.com/kuidio/kuid/apis/backend"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/utils/ptr"
 )
@@ -113,8 +114,8 @@ func (r *VLANIndex) GetMinClaim() backend.ClaimObject {
 			Name:      r.GetMinClaimNSN().Name,
 			OwnerReferences: []metav1.OwnerReference{
 				{
-					APIVersion: r.APIVersion,
-					Kind:       r.Kind,
+					APIVersion: schema.GroupVersion{Group: SchemeGroupVersion.Group, Version: "v1alpha1"}.Identifier(),
+					Kind:       VLANIndexKind,
 					Name:       r.Name,
 					UID:        r.UID,
 				},
@@ -135,7 +136,7 @@ func (r *VLANIndex) GetMaxClaim() backend.ClaimObject {
 			Name:      r.GetMaxClaimNSN().Name,
 			OwnerReferences: []metav1.OwnerReference{
 				{
-					APIVersion: r.APIVersion,
+					APIVersion: schema.GroupVersion{Group: SchemeGroupVersion.Group, Version: "v1alpha1"}.Identifier(),
 					Kind:       r.Kind,
 					Name:       r.Name,
 					UID:        r.UID,
