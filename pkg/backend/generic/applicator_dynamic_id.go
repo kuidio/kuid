@@ -113,41 +113,68 @@ func (r *dynamicApplicator) Apply(ctx context.Context, claim backend.ClaimObject
 	}
 
 	if parentTreeName == "" {
+		// root tree apply
 		if claimID != nil {
 			if err := r.cacheInstanceCtx.tree.Update(claim.GetClaimID(r.cacheInstanceCtx.Type(), *claimID), claim.GetClaimLabels()); err != nil {
 				return err
 			}
-		} else {
-			e, err := r.cacheInstanceCtx.tree.ClaimFree(claim.GetClaimLabels())
-			if err != nil {
-				return err
-			}
-			claimID = ptr.To[uint64](e.ID().ID())
+			claim.SetStatusID(claimID)
+			claim.SetConditions(condition.Ready())
+			return nil
 		}
-	} else {
-		k := store.ToKey(parentTreeName)
-		table, err := r.cacheInstanceCtx.ranges.Get(k)
+		if claim.GetStatusID() != nil {
+			// TODO check if free ?
+			if err := r.cacheInstanceCtx.tree.ClaimID(claim.GetStatusClaimID(), claim.GetClaimLabels()); err != nil {
+				return fmt.Errorf("reclaim status id claim failed, no claim ID found err: %s", err)
+			}
+			claim.SetStatusID(claim.GetStatusID())
+			claim.SetConditions(condition.Ready())
+			return nil
+
+		}
+		e, err := r.cacheInstanceCtx.tree.ClaimFree(claim.GetClaimLabels())
 		if err != nil {
-			return fmt.Errorf("selectAddress range does not have corresponding range table: err: %s", err.Error())
+			return fmt.Errorf("claimed failed, no claim ID found err: %s", err)
 		}
-		if claimID != nil {
-			if err := table.Update(*claimID, claim.GetClaimLabels()); err != nil {
-				return err
+		claimID = ptr.To[uint64](e.ID().ID())
+		claim.SetStatusID(claimID)
+		claim.SetConditions(condition.Ready())
+		return nil
+	}
+	// table - range entry apply
+	k := store.ToKey(parentTreeName)
+	table, err := r.cacheInstanceCtx.ranges.Get(k)
+	if err != nil {
+		return fmt.Errorf("selectAddress range does not have corresponding range table: err: %s", err.Error())
+	}
+	if claimID != nil {
+		if err := table.Update(*claimID, claim.GetClaimLabels()); err != nil {
+			return err
+		}
+		claim.SetStatusID(claimID)
+		claim.SetConditions(condition.Ready())
+		return nil
+	}
+	// try reclaim existing id
+	if claim.GetStatusID() != nil {
+		if table.IsFree(*claim.GetStatusID()) {
+			if err := table.Claim(*claim.GetStatusID(), claim.GetClaimLabels()); err != nil {
+				return fmt.Errorf("claimed failed, no claim ID found err: %s", err)
 			}
-		} else {
-			e, err := table.ClaimFree(claim.GetClaimLabels())
-			if err != nil {
-				return err
-			}
-			claimID = ptr.To[uint64](e.ID().ID())
+			claim.SetStatusID(claim.GetStatusID())
+			claim.SetConditions(condition.Ready())
+			return nil
 		}
 	}
-	if claimID == nil {
-		return fmt.Errorf("claimed failed, no claim ID found")
+	e, err := table.ClaimFree(claim.GetClaimLabels())
+	if err != nil {
+		return fmt.Errorf("claimed failed, no claim ID found err: %s", err)
 	}
+	claimID = ptr.To[uint64](e.ID().ID())
 	claim.SetStatusID(claimID)
 	claim.SetConditions(condition.Ready())
 	return nil
+
 }
 
 func (r *dynamicApplicator) Delete(ctx context.Context, claim backend.ClaimObject) error {

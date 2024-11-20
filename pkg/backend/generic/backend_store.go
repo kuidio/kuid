@@ -10,7 +10,6 @@ import (
 	"github.com/henderiw/logger/log"
 	"github.com/henderiw/store"
 	"github.com/kuidio/kuid/apis/backend"
-	"github.com/kuidio/kuid/apis/backend/ipam"
 	bebackend "github.com/kuidio/kuid/pkg/backend"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
@@ -63,49 +62,46 @@ func (r *be) saveAll(ctx context.Context, k store.Key) error {
 	log := log.FromContext(ctx)
 	log.Debug("SaveAll")
 
-	newEntries, err := r.getEntriesFromCache(ctx, k)
+	cacheEntries, err := r.getEntriesFromCache(ctx, k)
 	if err != nil {
 		return err
 	}
 
-	curEntries, err := r.listEntries(ctx, k)
+
+	apiEntries, err := r.listEntries(ctx, k)
 	if err != nil {
 		return err
 	}
 
-	for _, newEntry := range newEntries {
-		newEntry := newEntry
+	for _, cacheEntry := range cacheEntries {
 		found := false
 		var oldEntry backend.EntryObject
-		for idx, curEntry := range curEntries {
-			idx := idx
-			curEntry := curEntry
-			if curEntry.GetNamespacedName() == newEntry.GetNamespacedName() {
+		for idx, apiEntry := range apiEntries {
+			if apiEntry.GetNamespacedName() == cacheEntry.GetNamespacedName() {
 				// delete the current entry
-				curEntries = append(curEntries[:idx], curEntries[idx+1:]...)
+				apiEntries = append(apiEntries[:idx], apiEntries[idx+1:]...)
 				found = true
-				oldEntry = curEntry
+				oldEntry = apiEntry
 				break
 			}
 		}
 
 		if !found {
-			if err := r.bestorage.CreateEntry(ctx, newEntry); err != nil {
-				log.Error("saveAll create failed", "name", newEntry.GetName(), "error", err.Error())
+			if err := r.bestorage.CreateEntry(ctx, cacheEntry); err != nil {
+				log.Error("saveAll create failed", "name", cacheEntry.GetName(), "error", err.Error())
 				return err
 			}
 			continue
 		}
-		if err := r.bestorage.UpdateEntry(ctx, newEntry, oldEntry); err != nil {
-			log.Error("saveAll update failed", "name", newEntry.GetName(), "error", err.Error())
+		if err := r.bestorage.UpdateEntry(ctx, cacheEntry, oldEntry); err != nil {
+			log.Error("saveAll update failed", "name", cacheEntry.GetName(), "error", err.Error())
 			return err
 		}
 	}
 
-	for _, curEntry := range curEntries {
-		fmt.Println("backend generic delete entry", curEntry)
-		if err := r.bestorage.DeleteEntry(ctx, curEntry); err != nil {
-			log.Error("saveAll delete failed", "name", curEntry.GetName(), "error", err.Error())
+	for _, apiEntry := range apiEntries {
+		if err := r.bestorage.DeleteEntry(ctx, apiEntry); err != nil {
+			log.Error("saveAll delete failed", "name", apiEntry.GetName(), "error", err.Error())
 			return err
 		}
 	}
@@ -129,13 +125,11 @@ func (r *be) getEntriesFromCache(ctx context.Context, k store.Key) ([]backend.En
 	entries := make([]backend.EntryObject, 0, cacheInstanceCtx.Size())
 	// add the main rib entry
 	for _, entry := range cacheInstanceCtx.tree.GetAll() {
-		entry := entry
 		entries = append(entries, r.entryFromCacheFn(k, "", entry.ID().String(), entry.Labels()))
 	}
 	// add all the range entries
 	cacheInstanceCtx.ranges.List(func(key store.Key, t table.Table) {
 		for _, entry := range t.GetAll() {
-			entry := entry
 			entries = append(entries, r.entryFromCacheFn(k, key.Name, entry.ID().String(), entry.Labels()))
 		}
 	})
@@ -172,59 +166,12 @@ func (r *be) listClaims(ctx context.Context, k store.Key) (map[string]backend.Cl
 	return r.bestorage.ListClaims(ctx, k)
 }
 
-/*
-func (r *be) restoreMinMaxRanges(ctx context.Context, cacheInstanceCtx *CacheInstanceContext, entries []backend.EntryObject, index backend.IndexObject) error {
-	fmt.Println("restoreMinMaxRanges index", index)
-	storedEntries := sets.New[string]()
-	for i := len(entries) - 1; i >= 0; i-- {
-		entry := entries[i]
-		for _, ownerref := range entry.GetOwnerReferences() {
-			if ownerref.APIVersion == index.GetObjectKind().GroupVersionKind().GroupVersion().Identifier() &&
-				ownerref.Kind == index.GetObjectKind().GroupVersionKind().Kind &&
-				ownerref.Name == index.GetName() &&
-				ownerref.UID == index.GetUID() {
-				entries = append(entries[:i], entries[i+1:]...)
-				storedEntries.Insert(entry.GetSpecID())
-			}
-		}
-	}
-
-	if index.GetMinID() != nil && *index.GetMinID() != 0 {
-		claim := index.GetMinClaim()
-		fmt.Println("restoreMinMaxRanges minclaim", claim)
-		if err := r.restoreClaim(ctx, cacheInstanceCtx, claim); err != nil {
-			return err
-		}
-	}
-	if index.GetMaxID() != nil && *index.GetMaxID() != index.GetMax() {
-		claim := index.GetMaxClaim()
-		fmt.Println("restoreMinMaxRanges maxclaim", claim)
-		if err := r.restoreClaim(ctx, cacheInstanceCtx, claim); err != nil {
-			return err
-		}
-	}
-	// At init when there is no entries initialized this allows to store the entries in the database
-	if storedEntries.Len() == 0 {
-		entries, err := r.getEntriesFromCache(ctx, index.GetKey())
-		if err != nil {
-			return err
-		}
-		for _, entry := range entries {
-			if err := r.bestorage.CreateEntry(ctx, entry); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
-*/
-
 func (r *be) restoreClaims(ctx context.Context, cacheInstanceCtx *CacheInstanceContext, entries []backend.EntryObject, kind string, claimType backend.ClaimType, claimmap map[string]backend.ClaimObject) error {
 	log := log.FromContext(ctx)
 	for i := len(entries) - 1; i >= 0; i-- {
 		entry := entries[i]
-		if (kind == ipam.IPIndexKind && entry.IsIndexEntry() && claimType == entry.GetClaimType()) ||
-			(kind != ipam.IPIndexKind && !entry.IsIndexEntry() && claimType == entry.GetClaimType()) {
+		if (kind == r.indexKind && entry.IsIndexEntry() && claimType == entry.GetClaimType()) ||
+			(kind != r.indexKind && !entry.IsIndexEntry() && claimType == entry.GetClaimType()) {
 			claimName := ""
 			if len(entry.GetOwnerReferences()) > 0 {
 				claimName = entry.GetOwnerReferences()[0].Name
@@ -268,6 +215,7 @@ func (r *be) restoreClaim(ctx context.Context, cacheInstanceCtx *CacheInstanceCo
 	if err != nil {
 		return err
 	}
+	
 	// validate is needed, mainly for addresses since the parent route determines
 	// e.g. the fact the address belongs to a range or not
 	errList := claim.ValidateSyntax(cacheInstanceCtx.Type())
@@ -365,6 +313,6 @@ func ClaimTransformer(_ context.Context, newObj runtime.Object, oldObj runtime.O
 
 func (r *be) listIndexClaims(ctx context.Context, k store.Key) (map[string]backend.ClaimObject, error) {
 	return r.bestorage.ListClaims(ctx, k, &ListOptions{
-		OwnerKind: ipam.IPIndexKind,
+		OwnerKind: r.indexKind,
 	})
 }

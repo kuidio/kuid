@@ -41,6 +41,6 @@ func GetClaimTypeFromString(s string) ClaimType {
 }
 
 const (
-	IndexReservedMinName = "rangeReservedMin"
-	IndexReservedMaxName = "rangeReservedMax"
+	IndexReservedMinName = "rangereservedmin"
+	IndexReservedMaxName = "rangereservedmax"
 )

@@ -165,8 +165,7 @@ func (r *GENIDClaim) GetIndex() string { return r.Spec.Index }
 func (r *GENIDClaim) GetSelector() *metav1.LabelSelector { return r.Spec.Selector }
 
 func (r *GENIDClaim) IsOwner(labels labels.Set) bool {
-	ownerLabels := r.getOnwerLabels()
-	for k, v := range ownerLabels {
+	for k, v := range r.getOwnerLabels() {
 		if val, ok := labels[k]; !ok || val != v {
 			return false
 		}
@@ -174,29 +173,16 @@ func (r *GENIDClaim) IsOwner(labels labels.Set) bool {
 	return true
 }
 
-func (r *GENIDClaim) getOnwerLabels() map[string]string {
-	claimName := r.Name
-	claimKind := r.Kind
-	claimUID := r.UID
-	for _, owner := range r.GetOwnerReferences() {
-		if owner.APIVersion == SchemeGroupVersion.Identifier() &&
-			owner.Kind == GENIDIndexKind {
-			claimName = owner.Name
-			claimKind = owner.Kind
-			claimUID = owner.UID
-		}
-	}
-
+func (r *GENIDClaim) getOwnerLabels() map[string]string {
 	return map[string]string{
-		backend.KuidClaimNameKey: claimName,
-		backend.KuidClaimUIDKey:  string(claimUID),
-		backend.KuidOwnerKindKey: claimKind,
+		backend.KuidClaimNameKey: r.Name,
+		backend.KuidClaimUIDKey:  string(r.UID),
 	}
 }
 
 // GetOwnerSelector selects the route bVLANed on the name of the claim
 func (r *GENIDClaim) GetOwnerSelector() (labels.Selector, error) {
-	l := r.getOnwerLabels()
+	l := r.getOwnerLabels()
 
 	fullselector := labels.NewSelector()
 	for k, v := range l {
@@ -214,25 +200,13 @@ func (r *GENIDClaim) GetLabelSelector() (labels.Selector, error) { return r.Spec
 func (r *GENIDClaim) GetClaimLabels() labels.Set {
 	labels := r.Spec.GetUserDefinedLabels()
 
-	// for claims originated from the index we need to use the ownerreferences, since these claims
-	// are never stored in the apiserver, the ip entries need to reference the index instead
-	claimName := r.Name
-	claimKind := GENIDClaimKind
-	claimUID := r.UID
-	for _, owner := range r.GetOwnerReferences() {
-		if owner.APIVersion == SchemeGroupVersion.Identifier() &&
-			owner.Kind == GENIDIndexKind {
-			claimName = owner.Name
-			claimKind = owner.Kind
-			claimUID = owner.UID
-		}
-	}
 	// system defined labels
 	labels[backend.KuidClaimTypeKey] = string(r.GetClaimType())
-	labels[backend.KuidClaimNameKey] = claimName
-	labels[backend.KuidClaimUIDKey] = string(claimUID)
-	labels[backend.KuidOwnerKindKey] = claimKind
+	labels[backend.KuidClaimNameKey] = r.Name
+	labels[backend.KuidClaimUIDKey] = string(r.UID)
+	labels[backend.KuidOwnerKindKey] = r.Kind
 	return labels
+
 }
 
 func (r *GENIDClaim) ValidateOwner(labels labels.Set) error {
@@ -286,6 +260,13 @@ func (r *GENIDClaim) GetStaticTreeID(t string) tree.ID {
 
 func (r *GENIDClaim) GetClaimID(t string, id uint64) tree.ID {
 	return id16.NewID(uint16(id), id16.IDBitSize)
+}
+
+func (r *GENIDClaim) GetStatusClaimID() tree.ID {
+	if r.Status.ID == nil {
+		return nil
+	}
+	return id16.NewID(uint16(*r.Status.ID), id16.IDBitSize) 
 }
 
 func (r *GENIDClaim) GetRange() *string {
@@ -344,17 +325,19 @@ func (r *GENIDClaim) GetClaimResponse() string {
 	return ""
 }
 
-func (r *GENIDClaim) GetClaimSet(typ string) (sets.Set[tree.ID], error) {
+func (r *GENIDClaim) GetClaimSet(typ string) (map[string]tree.ID, sets.Set[string], error) {
 	arange, err := r.GetRangeID(typ)
 	if err != nil {
-		return nil, fmt.Errorf("cannot get range from claim: %v", err)
+		return nil, nil, fmt.Errorf("cannot get range from claim: %v", err)
 	}
 	// claim set represents the new entries
-	newClaimSet := sets.New[tree.ID]()
+	newClaimSet := sets.New[string]()
+	newClaimMap := map[string]tree.ID{}
 	for _, rangeID := range arange.IDs() {
-		newClaimSet.Insert(rangeID)
+		newClaimSet.Insert(rangeID.String())
+		newClaimMap[rangeID.String()] = rangeID
 	}
-	return newClaimSet, nil
+	return newClaimMap, newClaimSet, nil
 }
 
 func (r *GENIDClaim) GetChoreoAPIVersion() string {
