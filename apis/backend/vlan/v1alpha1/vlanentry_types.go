@@ -29,10 +29,12 @@ import (
 type VLANEntrySpec struct {
 	// Index defines the index for the resource
 	Index string `json:"index" yaml:"index" protobuf:"bytes,1,opt,name=index"`
+	// IndexEntry identifies if the entry is originated from an IP Index
+	IndexEntry bool `json:"indexEntry" yaml:"indexEntry" protobuf:"bytes,2,opt,name=indexEntry"`
 	// ClaimType defines the claimType of the resource
-	ClaimType backend.ClaimType `json:"claimType,omitempty" yaml:"claimType,omitempty" protobuf:"bytes,2,opt,name=claimType"`
+	ClaimType backend.ClaimType `json:"claimType,omitempty" yaml:"claimType,omitempty" protobuf:"bytes,3,opt,name=claimType"`
 	// ID defines the id of the resource in the tree
-	ID string `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,3,opt,name=id"`
+	ID string `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,4,opt,name=id"`
 	// ClaimLabels define the user defined labels and selector labels used
 	// in resource claim
 	commonv1alpha1.ClaimLabels `json:",inline" yaml:",inline" protobuf:"bytes,5,opt,name=claimLabels"`

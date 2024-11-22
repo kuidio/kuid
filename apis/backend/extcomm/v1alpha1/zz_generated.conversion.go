@@ -370,6 +370,7 @@ func Convert_extcomm_EXTCOMMEntryList_To_v1alpha1_EXTCOMMEntryList(in *extcomm.E
 
 func autoConvert_v1alpha1_EXTCOMMEntrySpec_To_extcomm_EXTCOMMEntrySpec(in *EXTCOMMEntrySpec, out *extcomm.EXTCOMMEntrySpec, s conversion.Scope) error {
 	out.Index = in.Index
+	out.IndexEntry = in.IndexEntry
 	out.ClaimType = backend.ClaimType(in.ClaimType)
 	out.ID = in.ID
 	if err := asv1alpha1.Convert_v1alpha1_ClaimLabels_To_common_ClaimLabels(&in.ClaimLabels, &out.ClaimLabels, s); err != nil {
@@ -386,6 +387,7 @@ func Convert_v1alpha1_EXTCOMMEntrySpec_To_extcomm_EXTCOMMEntrySpec(in *EXTCOMMEn
 
 func autoConvert_extcomm_EXTCOMMEntrySpec_To_v1alpha1_EXTCOMMEntrySpec(in *extcomm.EXTCOMMEntrySpec, out *EXTCOMMEntrySpec, s conversion.Scope) error {
 	out.Index = in.Index
+	out.IndexEntry = in.IndexEntry
 	out.ClaimType = backend.ClaimType(in.ClaimType)
 	out.ID = in.ID
 	if err := asv1alpha1.Convert_common_ClaimLabels_To_v1alpha1_ClaimLabels(&in.ClaimLabels, &out.ClaimLabels, s); err != nil {

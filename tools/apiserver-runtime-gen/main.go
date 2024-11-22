@@ -147,6 +147,7 @@ func doGen() error {
 			"k8s.io/apimachinery/pkg/version",
 			"github.com/kform-dev/choreo/apis/condition",
 			"github.com/kform-dev/choreo/apis/condition/v1alpha1",
+			"github.com/kubenet-dev/apis/apis/network/core/v1alpha1",
 		}
 		cmdArgs = append(cmdArgs, typeVersions...)
 		err := run(getCmdSimple("bin/openapi-gen", cmdArgs...))
