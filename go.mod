@@ -6,8 +6,6 @@ toolchain go1.23.2
 
 replace k8s.io/gengo/v2 => k8s.io/gengo/v2 v2.0.0-20240228010128-51d4e06bde70
 
-replace github.com/henderiw/idxtable => /Users/henderiw/code/idxtable
-
 require (
 	github.com/dgraph-io/badger/v4 v4.3.0
 	github.com/google/go-cmp v0.6.0
@@ -140,6 +138,7 @@ require (
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/kms v0.31.1 // indirect
 	sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.30.3 // indirect
+	sigs.k8s.io/apiserver-runtime v1.1.1 // indirect
 	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
