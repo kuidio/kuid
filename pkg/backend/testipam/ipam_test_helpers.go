@@ -50,9 +50,10 @@ const (
 	dynamicAddress = ipam.IPClaimType_DynamicAddress
 )
 
-var aggregate = ptr.To(ipam.IPPrefixType_Aggregate)
+// var aggregate = ptr.To(ipam.IPPrefixType_Aggregate)
 var network = ptr.To(ipam.IPPrefixType_Network)
-var pool = ptr.To(ipam.IPPrefixType_Pool)
+
+//var pool = ptr.To(ipam.IPPrefixType_Pool)
 
 //var other = ptr.To(ipam.IPPrefixType_Other)
 
@@ -129,8 +130,13 @@ func (r testprefix) getStaticPrefixIPClaim(index string) (*ipam.IPClaim, error) 
 	if err != nil {
 		return nil, err
 	}
+	name := r.name
+	if r.name == "" {
+		name = pi.GetSubnetName()
+	}
+
 	ipClaim := ipam.BuildIPClaim(
-		metav1.ObjectMeta{Namespace: namespace, Name: pi.GetSubnetName()},
+		metav1.ObjectMeta{Namespace: namespace, Name: name},
 		&ipam.IPClaimSpec{
 			Index:      index,
 			PrefixType: r.prefixType,
@@ -294,7 +300,7 @@ func prefixTestRun(name string, tc prefixTest) error {
 			claim, err = p.getDynamicAddressIPClaim(tc.index)
 		}
 		if err != nil {
-			return fmt.Errorf("wrong prefix type, err: %v", err)
+			return fmt.Errorf("prefix %s wrong prefix type, err: %v", p.name, err)
 		}
 
 		ctx = genericapirequest.WithNamespace(ctx, claim.GetNamespace())
@@ -315,61 +321,61 @@ func prefixTestRun(name string, tc prefixTest) error {
 		}
 		if p.expectedError {
 			if err == nil {
-				return fmt.Errorf("expected error. got nil")
+				return fmt.Errorf("prefix %s expected error. got nil", p.name)
 			}
 			continue
 		}
 		if err != nil {
-			return fmt.Errorf("unexpected error, got: %v", err)
+			return fmt.Errorf("prefix %s unexpected error, got: %v", p.name, err)
 		}
 		ipClaim, ok := newClaim.(*ipam.IPClaim)
 		if !ok {
-			return fmt.Errorf("expecting ipClaim, got: %v", reflect.TypeOf(newClaim).Name())
+			return fmt.Errorf("prefix %s expecting ipClaim, got: %v", p.name, reflect.TypeOf(newClaim).Name())
 		}
 
 		switch p.claimType {
 		case staticPrefix, dynamicPrefix:
 			if ipClaim.Status.Prefix == nil {
-				return fmt.Errorf("expecting prefix status got nil")
+				return fmt.Errorf("prefix %s expecting prefix status got nil", p.name)
 			} else {
 				expectedIP := p.ip
 				if p.expectedIP != "" {
 					expectedIP = p.expectedIP
 				}
 				if *ipClaim.Status.Prefix != expectedIP {
-					return fmt.Errorf("expecting prefix got %s, want %s", *ipClaim.Status.Prefix, expectedIP)
+					return fmt.Errorf("prefix %s expecting prefix got %s, want %s", p.name, *ipClaim.Status.Prefix, expectedIP)
 				}
 			}
 		case staticAddress, dynamicAddress:
 			if ipClaim.Status.Address == nil {
-				return fmt.Errorf("expecting address status got nil")
+				return fmt.Errorf("prefix %s expecting address status got nil", p.name)
 			} else {
 				expectedIP := p.ip
 				if p.expectedIP != "" {
 					expectedIP = p.expectedIP
 				}
 				if *ipClaim.Status.Address != expectedIP {
-					return fmt.Errorf("expecting address got %s, want %s", *ipClaim.Status.Address, expectedIP)
+					return fmt.Errorf("prefix %s expecting address got %s, want %s", p.name, *ipClaim.Status.Address, expectedIP)
 				}
 			}
 			if ipClaim.Status.DefaultGateway == nil {
 				if p.expectedDG != "" {
-					return fmt.Errorf("expecting defaultGateway %s got nil", p.expectedDG)
+					return fmt.Errorf("prefix %s expecting defaultGateway %s got nil", p.name, p.expectedDG)
 				}
 			} else {
 				if p.expectedDG == "" {
-					return fmt.Errorf("unexpected defaultGateway got %s", *ipClaim.Status.DefaultGateway)
+					return fmt.Errorf("prefix %s unexpected defaultGateway got %s", p.name, *ipClaim.Status.DefaultGateway)
 				}
 				if *ipClaim.Status.DefaultGateway != p.expectedDG {
-					return fmt.Errorf("expecting defaultGateway got %s, want %s", *ipClaim.Status.DefaultGateway, p.expectedDG)
+					return fmt.Errorf("prefix %s expecting defaultGateway got %s, want %s", p.name, *ipClaim.Status.DefaultGateway, p.expectedDG)
 				}
 			}
 		case staticRange:
 			if ipClaim.Status.Range == nil {
-				return fmt.Errorf("expecting range status got nil")
+				return fmt.Errorf("prefix %s expecting range status got nil", p.name)
 			} else {
 				if *ipClaim.Status.Range != p.ip {
-					return fmt.Errorf("expecting prefix got %s, want %s", *ipClaim.Status.Range, p.ip)
+					return fmt.Errorf("prefix %s expecting prefix got %s, want %s", p.name, *ipClaim.Status.Range, p.ip)
 				}
 			}
 		}

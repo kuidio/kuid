@@ -144,7 +144,7 @@ func (r *IPClaim) GetIPPrefixType() IPPrefixType {
 		return IPPrefixType_Other
 	}
 	switch *r.Spec.PrefixType {
-	case IPPrefixType_Aggregate, IPPrefixType_Network, IPPrefixType_Pool:
+	case IPPrefixType_Network:
 		return *r.Spec.PrefixType
 	default:
 		return IPPrefixType_Invalid

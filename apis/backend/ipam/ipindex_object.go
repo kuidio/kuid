@@ -96,7 +96,7 @@ func (r *IPIndex) GetClaim(prefix Prefix) (*IPClaim, error) {
 			OwnerReferences: []metav1.OwnerReference{
 				{
 					APIVersion: schema.GroupVersion{Group: SchemeGroupVersion.Group, Version: "v1alpha1"}.Identifier(),
-					Kind:       r.Kind,
+					Kind:       IPIndexKind,
 					Name:       r.Name,
 					UID:        r.UID,
 				},
