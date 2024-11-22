@@ -23,7 +23,6 @@ import (
 	"github.com/hansthienpondt/nipam/pkg/table"
 	"github.com/henderiw/iputil"
 	"github.com/henderiw/logger/log"
-	"github.com/kuidio/kuid/apis/backend"
 	"github.com/kuidio/kuid/apis/backend/ipam"
 	"go4.org/netipx"
 )
@@ -111,13 +110,8 @@ func (r *staticRangeApplicator) validateParents(ctx context.Context, claim *ipam
 	return nil
 }
 
-func (r *staticRangeApplicator) validateParent(_ context.Context, route table.Route, _ *ipam.IPClaim) error {
-	routeLabels := route.Labels()
-	parentPrefixType := routeLabels[backend.KuidIPAMIPPrefixTypeKey]
-
-	if parentPrefixType == string(ipam.IPPrefixType_Aggregate) {
-		//return fmt.Errorf("a range is not possible with a parent of type %s", parentPrefixType)
-	}
+func (r *staticRangeApplicator) validateParent(_ context.Context, _ table.Route, _ *ipam.IPClaim) error {
+	// a range can be allocated on any parent
 	return nil
 }
 

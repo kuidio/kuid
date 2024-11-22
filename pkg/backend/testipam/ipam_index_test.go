@@ -18,7 +18,7 @@ func TestIPAMIndexNormal(t *testing.T) {
 		"CreateDelete": {
 			index: "a",
 			indexPrefixes: []ipam.Prefix{
-				{Prefix: "172.0.0.0/8", PrefixType: aggregate},
+				{Prefix: "172.0.0.0/8"},
 			},
 		},
 	}

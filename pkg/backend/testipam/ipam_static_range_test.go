@@ -11,10 +11,10 @@ func TestIPAMStaticRange(t *testing.T) {
 		"Normal": {
 			index: "a",
 			indexPrefixes: []ipam.Prefix{
-				{Prefix: "10.0.0.0/8", PrefixType: aggregate},
+				{Prefix: "10.0.0.0/8"},
 			},
 			prefixes: []testprefix{
-				{claimType: staticPrefix, ip: "10.0.0.0/24", prefixType: aggregate, expectedError: false},
+				{claimType: staticPrefix, ip: "10.0.0.0/24", expectedError: false},
 				{claimType: staticRange, name: "range1", ip: "10.0.0.10-10.0.0.100", expectedError: false},
 				{claimType: staticAddress, ip: "10.0.0.10/32", expectedError: false},
 				{claimType: staticAddress, ip: "10.0.0.11/32", expectedError: false},

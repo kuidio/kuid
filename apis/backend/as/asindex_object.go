@@ -115,7 +115,7 @@ func (r *ASIndex) GetMinClaim() backend.ClaimObject {
 			OwnerReferences: []metav1.OwnerReference{
 				{
 					APIVersion: schema.GroupVersion{Group: SchemeGroupVersion.Group, Version: "v1alpha1"}.Identifier(),
-					Kind:       r.Kind,
+					Kind:       ASIndexKind,
 					Name:       r.Name,
 					UID:        r.UID,
 				},

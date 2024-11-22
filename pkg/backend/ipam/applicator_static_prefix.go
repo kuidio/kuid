@@ -113,17 +113,18 @@ func (r *staticPrefixApplicator) validateParent(_ context.Context, route table.R
 	parentClaimSummaryType := routeLabels[backend.KuidIPAMClaimSummaryTypeKey]
 	parentClaimPrefixType := routeLabels[backend.KuidIPAMIPPrefixTypeKey]
 	switch prefixType {
-	case ipam.IPPrefixType_Aggregate:
-		// aggregates can be aggregated by aggregates
+	case ipam.IPPrefixType_Other:
+		if parentClaimPrefixType == string(ipam.IPPrefixType_Network) {
+			return fmt.Errorf("parent %s/%s nesting %s/%s is not possible", route.Prefix().String(), *claim.Spec.Prefix, parentClaimPrefixType, prefixType)
+		}
 		return nil
-	case ipam.IPPrefixType_Network, ipam.IPPrefixType_Pool:
+	case ipam.IPPrefixType_Network:
 		// we only allow range and addresses -> these dont have a claimType
 		if parentClaimSummaryType == string(ipam.IPClaimSummaryType_Address) ||
 			parentClaimSummaryType == string(ipam.IPClaimSummaryType_Range) {
 			return fmt.Errorf("parent %s not allowed in claim of type %s", parentClaimSummaryType, prefixType)
 		}
-		if parentClaimPrefixType == string(ipam.IPPrefixType_Network) ||
-			parentClaimPrefixType == string(ipam.IPPrefixType_Pool) {
+		if parentClaimPrefixType == string(ipam.IPPrefixType_Network) {
 			return fmt.Errorf("parent %s/%s nesting %s/%s is not possible", route.Prefix().String(), *claim.Spec.Prefix, parentClaimPrefixType, prefixType)
 		}
 	default:
@@ -133,7 +134,7 @@ func (r *staticPrefixApplicator) validateParent(_ context.Context, route table.R
 }
 
 func (r *staticPrefixApplicator) validateChildren(_ context.Context, claim *ipam.IPClaim) error {
-	// network, aggregate, pool
+	// network, other
 	prefixType := claim.GetIPPrefixType()
 	pi, err := iputil.New(*claim.Spec.Prefix)
 	if err != nil {
@@ -148,10 +149,11 @@ func (r *staticPrefixApplicator) validateChildren(_ context.Context, claim *ipam
 	for _, childRoute := range childRoutes {
 		routeLabels := childRoute.Labels()
 		childClaimSummaryType := routeLabels[backend.KuidIPAMClaimSummaryTypeKey]
-		childPrefixType := routeLabels[backend.KuidIPAMIPPrefixTypeKey]
+		//childPrefixType := routeLabels[backend.KuidIPAMIPPrefixTypeKey]
 		switch prefixType {
-		case ipam.IPPrefixType_Aggregate: // the claim is of type aggregate
-			// we only allow prefixes -> validate aggregate type
+		case ipam.IPPrefixType_Other: // the claim is of type aggregate
+			// TODO insertion of prefixes
+			/*
 			if childClaimSummaryType == string(ipam.IPClaimSummaryType_Address) ||
 				childClaimSummaryType == string(ipam.IPClaimSummaryType_Range) {
 				return fmt.Errorf("child with addressing %s not allowed in claim of type %s", childClaimSummaryType, prefixType)
@@ -159,7 +161,8 @@ func (r *staticPrefixApplicator) validateChildren(_ context.Context, claim *ipam
 			if childPrefixType == string(ipam.IPPrefixType_Aggregate) {
 				return fmt.Errorf("nesting %s is not possible", childPrefixType)
 			}
-		case ipam.IPPrefixType_Network, ipam.IPPrefixType_Pool:
+				*/
+		case ipam.IPPrefixType_Network:
 			// we only allow range and addresses -> these dont have a claimType
 			if childClaimSummaryType == string(ipam.IPClaimSummaryType_Prefix) {
 				return fmt.Errorf("child with addressing %s not allowed in claim of type %s", childClaimSummaryType, prefixType)

@@ -16,103 +16,65 @@ func TestIPAMStaticPrefix(t *testing.T) {
 				},
 			},
 		*/
-		"AggregateNoParents": {
+		"NoParents": {
 			index: "a",
 			indexPrefixes: []ipam.Prefix{
-				{Prefix: "172.0.0.0/8", PrefixType: aggregate},
+				{Prefix: "172.0.0.0/8"},
 			},
 			prefixes: []testprefix{
-				{claimType: staticPrefix, ip: "10.0.0.0/8", prefixType: aggregate, expectedError: true},
-				{claimType: staticPrefix, ip: "2000::/48", prefixType: aggregate, expectedError: true},
+				{claimType: staticPrefix, ip: "10.0.0.0/8", expectedError: true},
+				{claimType: staticPrefix, ip: "2000::/48", expectedError: true},
 			},
 		},
-		"AggregateNoParentIPv6": {
+		"NoParentIPv6": {
 			index: "a",
 			indexPrefixes: []ipam.Prefix{
-				{Prefix: "172.0.0.0/8", PrefixType: aggregate},
+				{Prefix: "172.0.0.0/8"},
 			},
 			prefixes: []testprefix{
-				{claimType: staticPrefix, ip: "172.0.0.0/16", prefixType: aggregate, expectedError: false},
-				{claimType: staticPrefix, ip: "2000::/48", prefixType: aggregate, expectedError: true},
+				{claimType: staticPrefix, ip: "172.0.0.0/16", expectedError: false},
+				{claimType: staticPrefix, ip: "2000::/48", expectedError: true},
 			},
 		},
-		"AggregateNormalIPv6": {
+		"ParentIPv6": {
 			index: "a",
 			indexPrefixes: []ipam.Prefix{
-				{Prefix: "2000::/32", PrefixType: aggregate},
+				{Prefix: "2000::/32"},
 			},
 			prefixes: []testprefix{
-				{claimType: staticPrefix, ip: "2000::/48", prefixType: aggregate, expectedError: false},
+				{claimType: staticPrefix, ip: "2000::/48", expectedError: false},
 			},
 		},
-		"Normal2Pool": {
+		"Nesting": {
 			index: "a",
 			indexPrefixes: []ipam.Prefix{
-				{Prefix: "172.0.0.0/8", PrefixType: aggregate},
+				{Prefix: "172.0.0.0/8"},
 			},
 			prefixes: []testprefix{
-				{claimType: staticPrefix, ip: "172.0.0.0/16", prefixType: aggregate, expectedError: false},
-				{claimType: staticPrefix, ip: "172.0.0.0/24", prefixType: aggregate, expectedError: false},
-				{claimType: staticPrefix, ip: "172.0.0.0/27", prefixType: pool, expectedError: false},
+				{claimType: staticPrefix, ip: "172.0.0.0/16", expectedError: false},
+				{claimType: staticPrefix, ip: "172.0.0.0/24", expectedError: false},
+				{claimType: staticPrefix, ip: "172.0.0.0/27", expectedError: false},
 			},
 		},
 		"NestingNetwork": {
 			index: "a",
 			indexPrefixes: []ipam.Prefix{
-				{Prefix: "172.0.0.0/8", PrefixType: aggregate},
+				{Prefix: "172.0.0.0/8"},
 			},
 			prefixes: []testprefix{
-				{claimType: staticPrefix, ip: "172.0.0.0/16", prefixType: aggregate, expectedError: false},
+				{claimType: staticPrefix, ip: "172.0.0.0/16", expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/24", prefixType: network, expectedError: false},
 				{claimType: staticPrefix, ip: "172.0.0.0/27", prefixType: network, expectedError: true},
 			},
 		},
-		"Network2Pool": {
+		"Other2Network": {
 			index: "a",
 			indexPrefixes: []ipam.Prefix{
-				{Prefix: "172.0.0.0/8", PrefixType: aggregate},
-			},
-			prefixes: []testprefix{
-				{claimType: staticPrefix, ip: "172.0.0.0/24", prefixType: pool, expectedError: false},
-				{claimType: staticPrefix, ip: "172.0.0.0/27", prefixType: network, expectedError: true},
-			},
-		},
-		"Pool2Network": {
-			index: "a",
-			indexPrefixes: []ipam.Prefix{
-				{Prefix: "172.0.0.0/8", PrefixType: aggregate},
+				{Prefix: "172.0.0.0/8"},
 			},
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/24", prefixType: network, expectedError: false},
-				{claimType: staticPrefix, ip: "172.0.0.0/27", prefixType: pool, expectedError: true},
-			},
-		},
-		"Pool2Pool": {
-			index: "a",
-			indexPrefixes: []ipam.Prefix{
-				{Prefix: "172.0.0.0/8", PrefixType: aggregate},
-			},
-			prefixes: []testprefix{
-				{claimType: staticPrefix, ip: "172.0.0.0/24", prefixType: pool, expectedError: false},
-				{claimType: staticPrefix, ip: "172.0.0.0/27", prefixType: pool, expectedError: true},
-			},
-		},
-		"Pool2Aggregate": {
-			index: "a",
-			indexPrefixes: []ipam.Prefix{
-				{Prefix: "172.0.0.0/8", PrefixType: aggregate},
-			},
-			prefixes: []testprefix{
-				{claimType: staticPrefix, ip: "172.0.0.0/24", prefixType: pool, expectedError: false},
-			},
-		},
-		"Network2Aggregate": {
-			index: "a",
-			indexPrefixes: []ipam.Prefix{
-				{Prefix: "172.0.0.0/8", PrefixType: aggregate},
-			},
-			prefixes: []testprefix{
-				{claimType: staticPrefix, ip: "172.0.0.0/24", prefixType: network, expectedError: false},
+				{claimType: staticPrefix, ip: "172.0.0.0/27", expectedError: true},
 			},
 		},
 	}

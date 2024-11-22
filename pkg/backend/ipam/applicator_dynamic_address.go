@@ -196,32 +196,31 @@ func (r *dynamicAddressApplicator) selectAddress(_ context.Context, claim *ipam.
 			return iputil.NewPrefixInfo(netip.PrefixFrom(addr, int(pi.GetAddressPrefixLength()))), nil
 
 		case ipam.IPClaimSummaryType_Prefix:
-			if parentIPPrefixType != nil && (*parentIPPrefixType == ipam.IPPrefixType_Network || *parentIPPrefixType == ipam.IPPrefixType_Pool) {
-				parentpi := iputil.NewPrefixInfo(parentRoute.Prefix())
-				if claim.Status.Address != nil {
-					statuspi, err := iputil.New(*claim.Status.Address)
-					if err != nil {
-						return nil, err
-					}
-					// check if the route is free in the rib
-					prefixLength := pi.GetAddressPrefixLength()
-					if _, ok := r.cacheInstanceCtx.rib.Get(netip.PrefixFrom(statuspi.Addr(), prefixLength.Int())); !ok {
-						return statuspi, nil
-					}
-				}
 
-				// gather the prefixLength - use address based prefixLength /32 or /128 to validate the rib
-				// for netowork allocations use the parent prefixLength
+			parentpi := iputil.NewPrefixInfo(parentRoute.Prefix())
+			if claim.Status.Address != nil {
+				statuspi, err := iputil.New(*claim.Status.Address)
+				if err != nil {
+					return nil, err
+				}
+				// check if the route is free in the rib
 				prefixLength := pi.GetAddressPrefixLength()
-				if isParentRouteSelectable(parentRoute, uint8(prefixLength)) {
-					p := r.cacheInstanceCtx.rib.GetAvailablePrefixByBitLen(pi.GetIPPrefix(), uint8(prefixLength.Int()))
-					if p.IsValid() {
-						// success, parentClaimType was already checked for non nil
-						if *parentIPPrefixType == ipam.IPPrefixType_Network {
-							return iputil.NewPrefixInfo(netip.PrefixFrom(p.Addr(), int(parentpi.GetPrefixLength()))), nil
-						} else {
-							return iputil.NewPrefixInfo(p), nil
-						}
+				if _, ok := r.cacheInstanceCtx.rib.Get(netip.PrefixFrom(statuspi.Addr(), prefixLength.Int())); !ok {
+					return statuspi, nil
+				}
+			}
+
+			// gather the prefixLength - use address based prefixLength /32 or /128 to validate the rib
+			// for netowork allocations use the parent prefixLength
+			prefixLength := pi.GetAddressPrefixLength()
+			if isParentRouteSelectable(parentRoute, uint8(prefixLength)) {
+				p := r.cacheInstanceCtx.rib.GetAvailablePrefixByBitLen(pi.GetIPPrefix(), uint8(prefixLength.Int()))
+				if p.IsValid() {
+					// success, parentClaimType was already checked for non nil
+					if *parentIPPrefixType == ipam.IPPrefixType_Network {
+						return iputil.NewPrefixInfo(netip.PrefixFrom(p.Addr(), int(parentpi.GetPrefixLength()))), nil
+					} else {
+						return iputil.NewPrefixInfo(p), nil
 					}
 				}
 			}
