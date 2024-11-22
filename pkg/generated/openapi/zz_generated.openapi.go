@@ -29,204 +29,236 @@ import (
 
 func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenAPIDefinition {
 	return map[string]common.OpenAPIDefinition{
-		"github.com/kform-dev/choreo/apis/condition.Condition":                    schema_kform_dev_choreo_apis_condition_Condition(ref),
-		"github.com/kform-dev/choreo/apis/condition/v1alpha1.Condition":           schema_choreo_apis_condition_v1alpha1_Condition(ref),
-		"github.com/kform-dev/choreo/apis/condition/v1alpha1.ConditionedStatus":   schema_choreo_apis_condition_v1alpha1_ConditionedStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaim":                 schema_apis_backend_as_v1alpha1_ASClaim(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaimList":             schema_apis_backend_as_v1alpha1_ASClaimList(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaimSpec":             schema_apis_backend_as_v1alpha1_ASClaimSpec(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaimStatus":           schema_apis_backend_as_v1alpha1_ASClaimStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntry":                 schema_apis_backend_as_v1alpha1_ASEntry(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntryList":             schema_apis_backend_as_v1alpha1_ASEntryList(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntrySpec":             schema_apis_backend_as_v1alpha1_ASEntrySpec(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntryStatus":           schema_apis_backend_as_v1alpha1_ASEntryStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndex":                 schema_apis_backend_as_v1alpha1_ASIndex(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexList":             schema_apis_backend_as_v1alpha1_ASIndexList(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexSpec":             schema_apis_backend_as_v1alpha1_ASIndexSpec(ref),
-		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexStatus":           schema_apis_backend_as_v1alpha1_ASIndexStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMClaim":       schema_apis_backend_extcomm_v1alpha1_EXTCOMMClaim(ref),
-		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMClaimList":   schema_apis_backend_extcomm_v1alpha1_EXTCOMMClaimList(ref),
-		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMClaimSpec":   schema_apis_backend_extcomm_v1alpha1_EXTCOMMClaimSpec(ref),
-		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMClaimStatus": schema_apis_backend_extcomm_v1alpha1_EXTCOMMClaimStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMEntry":       schema_apis_backend_extcomm_v1alpha1_EXTCOMMEntry(ref),
-		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMEntryList":   schema_apis_backend_extcomm_v1alpha1_EXTCOMMEntryList(ref),
-		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMEntrySpec":   schema_apis_backend_extcomm_v1alpha1_EXTCOMMEntrySpec(ref),
-		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMEntryStatus": schema_apis_backend_extcomm_v1alpha1_EXTCOMMEntryStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMIndex":       schema_apis_backend_extcomm_v1alpha1_EXTCOMMIndex(ref),
-		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMIndexList":   schema_apis_backend_extcomm_v1alpha1_EXTCOMMIndexList(ref),
-		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMIndexSpec":   schema_apis_backend_extcomm_v1alpha1_EXTCOMMIndexSpec(ref),
-		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMIndexStatus": schema_apis_backend_extcomm_v1alpha1_EXTCOMMIndexStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDClaim":           schema_apis_backend_genid_v1alpha1_GENIDClaim(ref),
-		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDClaimList":       schema_apis_backend_genid_v1alpha1_GENIDClaimList(ref),
-		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDClaimSpec":       schema_apis_backend_genid_v1alpha1_GENIDClaimSpec(ref),
-		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDClaimStatus":     schema_apis_backend_genid_v1alpha1_GENIDClaimStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDEntry":           schema_apis_backend_genid_v1alpha1_GENIDEntry(ref),
-		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDEntryList":       schema_apis_backend_genid_v1alpha1_GENIDEntryList(ref),
-		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDEntrySpec":       schema_apis_backend_genid_v1alpha1_GENIDEntrySpec(ref),
-		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDEntryStatus":     schema_apis_backend_genid_v1alpha1_GENIDEntryStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDIndex":           schema_apis_backend_genid_v1alpha1_GENIDIndex(ref),
-		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDIndexList":       schema_apis_backend_genid_v1alpha1_GENIDIndexList(ref),
-		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDIndexSpec":       schema_apis_backend_genid_v1alpha1_GENIDIndexSpec(ref),
-		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDIndexStatus":     schema_apis_backend_genid_v1alpha1_GENIDIndexStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaim":               schema_apis_backend_ipam_v1alpha1_IPClaim(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaimList":           schema_apis_backend_ipam_v1alpha1_IPClaimList(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaimSpec":           schema_apis_backend_ipam_v1alpha1_IPClaimSpec(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaimStatus":         schema_apis_backend_ipam_v1alpha1_IPClaimStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntry":               schema_apis_backend_ipam_v1alpha1_IPEntry(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntryList":           schema_apis_backend_ipam_v1alpha1_IPEntryList(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntrySpec":           schema_apis_backend_ipam_v1alpha1_IPEntrySpec(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntryStatus":         schema_apis_backend_ipam_v1alpha1_IPEntryStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndex":               schema_apis_backend_ipam_v1alpha1_IPIndex(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndexList":           schema_apis_backend_ipam_v1alpha1_IPIndexList(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndexSpec":           schema_apis_backend_ipam_v1alpha1_IPIndexSpec(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndexStatus":         schema_apis_backend_ipam_v1alpha1_IPIndexStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.Prefix":                schema_apis_backend_ipam_v1alpha1_Prefix(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANClaim":             schema_apis_backend_vlan_v1alpha1_VLANClaim(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANClaimList":         schema_apis_backend_vlan_v1alpha1_VLANClaimList(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANClaimSpec":         schema_apis_backend_vlan_v1alpha1_VLANClaimSpec(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANClaimStatus":       schema_apis_backend_vlan_v1alpha1_VLANClaimStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANEntry":             schema_apis_backend_vlan_v1alpha1_VLANEntry(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANEntryList":         schema_apis_backend_vlan_v1alpha1_VLANEntryList(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANEntrySpec":         schema_apis_backend_vlan_v1alpha1_VLANEntrySpec(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANEntryStatus":       schema_apis_backend_vlan_v1alpha1_VLANEntryStatus(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndex":             schema_apis_backend_vlan_v1alpha1_VLANIndex(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndexList":         schema_apis_backend_vlan_v1alpha1_VLANIndexList(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndexSpec":         schema_apis_backend_vlan_v1alpha1_VLANIndexSpec(ref),
-		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndexStatus":       schema_apis_backend_vlan_v1alpha1_VLANIndexStatus(ref),
-		"github.com/kuidio/kuid/apis/common/v1alpha1.ClaimLabels":                 schema_kuid_apis_common_v1alpha1_ClaimLabels(ref),
-		"github.com/kuidio/kuid/apis/common/v1alpha1.UserDefinedLabels":           schema_kuid_apis_common_v1alpha1_UserDefinedLabels(ref),
-		"github.com/kuidio/kuid/apis/id/v1alpha1.ClusterID":                       schema_kuid_apis_id_v1alpha1_ClusterID(ref),
-		"github.com/kuidio/kuid/apis/id/v1alpha1.EndpointID":                      schema_kuid_apis_id_v1alpha1_EndpointID(ref),
-		"github.com/kuidio/kuid/apis/id/v1alpha1.NodeID":                          schema_kuid_apis_id_v1alpha1_NodeID(ref),
-		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionAdaptorID":              schema_kuid_apis_id_v1alpha1_PartitionAdaptorID(ref),
-		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionAttachmentID":           schema_kuid_apis_id_v1alpha1_PartitionAttachmentID(ref),
-		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionClusterID":              schema_kuid_apis_id_v1alpha1_PartitionClusterID(ref),
-		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionEndpointID":             schema_kuid_apis_id_v1alpha1_PartitionEndpointID(ref),
-		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionNodeID":                 schema_kuid_apis_id_v1alpha1_PartitionNodeID(ref),
-		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionPortID":                 schema_kuid_apis_id_v1alpha1_PartitionPortID(ref),
-		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionProviderEndpointID":     schema_kuid_apis_id_v1alpha1_PartitionProviderEndpointID(ref),
-		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionProviderNodeID":         schema_kuid_apis_id_v1alpha1_PartitionProviderNodeID(ref),
-		"github.com/kuidio/kuid/apis/id/v1alpha1.SiteID":                          schema_kuid_apis_id_v1alpha1_SiteID(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.Adaptor":                      schema_kuid_apis_infra_v1alpha1_Adaptor(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.AdaptorList":                  schema_kuid_apis_infra_v1alpha1_AdaptorList(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.AdaptorSpec":                  schema_kuid_apis_infra_v1alpha1_AdaptorSpec(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.AdaptorStatus":                schema_kuid_apis_infra_v1alpha1_AdaptorStatus(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.Cluster":                      schema_kuid_apis_infra_v1alpha1_Cluster(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.ClusterList":                  schema_kuid_apis_infra_v1alpha1_ClusterList(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.ClusterSpec":                  schema_kuid_apis_infra_v1alpha1_ClusterSpec(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.ClusterStatus":                schema_kuid_apis_infra_v1alpha1_ClusterStatus(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.Endpoint":                     schema_kuid_apis_infra_v1alpha1_Endpoint(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.EndpointList":                 schema_kuid_apis_infra_v1alpha1_EndpointList(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.EndpointSet":                  schema_kuid_apis_infra_v1alpha1_EndpointSet(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.EndpointSetList":              schema_kuid_apis_infra_v1alpha1_EndpointSetList(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.EndpointSetSpec":              schema_kuid_apis_infra_v1alpha1_EndpointSetSpec(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.EndpointSetStatus":            schema_kuid_apis_infra_v1alpha1_EndpointSetStatus(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.EndpointSpec":                 schema_kuid_apis_infra_v1alpha1_EndpointSpec(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.EndpointStatus":               schema_kuid_apis_infra_v1alpha1_EndpointStatus(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.Link":                         schema_kuid_apis_infra_v1alpha1_Link(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.LinkList":                     schema_kuid_apis_infra_v1alpha1_LinkList(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.LinkSet":                      schema_kuid_apis_infra_v1alpha1_LinkSet(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.LinkSetList":                  schema_kuid_apis_infra_v1alpha1_LinkSetList(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.LinkSetSpec":                  schema_kuid_apis_infra_v1alpha1_LinkSetSpec(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.LinkSetStatus":                schema_kuid_apis_infra_v1alpha1_LinkSetStatus(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.LinkSpec":                     schema_kuid_apis_infra_v1alpha1_LinkSpec(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.LinkStatus":                   schema_kuid_apis_infra_v1alpha1_LinkStatus(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.Location":                     schema_kuid_apis_infra_v1alpha1_Location(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.Module":                       schema_kuid_apis_infra_v1alpha1_Module(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.ModuleBay":                    schema_kuid_apis_infra_v1alpha1_ModuleBay(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.ModuleBayList":                schema_kuid_apis_infra_v1alpha1_ModuleBayList(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.ModuleBaySpec":                schema_kuid_apis_infra_v1alpha1_ModuleBaySpec(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.ModuleBayStatus":              schema_kuid_apis_infra_v1alpha1_ModuleBayStatus(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.ModuleList":                   schema_kuid_apis_infra_v1alpha1_ModuleList(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.ModuleSpec":                   schema_kuid_apis_infra_v1alpha1_ModuleSpec(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.ModuleStatus":                 schema_kuid_apis_infra_v1alpha1_ModuleStatus(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.Node":                         schema_kuid_apis_infra_v1alpha1_Node(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeItem":                     schema_kuid_apis_infra_v1alpha1_NodeItem(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeItemList":                 schema_kuid_apis_infra_v1alpha1_NodeItemList(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeItemSpec":                 schema_kuid_apis_infra_v1alpha1_NodeItemSpec(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeItemStatus":               schema_kuid_apis_infra_v1alpha1_NodeItemStatus(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeList":                     schema_kuid_apis_infra_v1alpha1_NodeList(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeSet":                      schema_kuid_apis_infra_v1alpha1_NodeSet(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeSetList":                  schema_kuid_apis_infra_v1alpha1_NodeSetList(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeSetSpec":                  schema_kuid_apis_infra_v1alpha1_NodeSetSpec(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeSetStatus":                schema_kuid_apis_infra_v1alpha1_NodeSetStatus(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeSpec":                     schema_kuid_apis_infra_v1alpha1_NodeSpec(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeStatus":                   schema_kuid_apis_infra_v1alpha1_NodeStatus(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.Partition":                    schema_kuid_apis_infra_v1alpha1_Partition(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.PartitionList":                schema_kuid_apis_infra_v1alpha1_PartitionList(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.PartitionSpec":                schema_kuid_apis_infra_v1alpha1_PartitionSpec(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.PartitionStatus":              schema_kuid_apis_infra_v1alpha1_PartitionStatus(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.Port":                         schema_kuid_apis_infra_v1alpha1_Port(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.PortList":                     schema_kuid_apis_infra_v1alpha1_PortList(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.PortSpec":                     schema_kuid_apis_infra_v1alpha1_PortSpec(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.PortStatus":                   schema_kuid_apis_infra_v1alpha1_PortStatus(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.Rack":                         schema_kuid_apis_infra_v1alpha1_Rack(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.RackList":                     schema_kuid_apis_infra_v1alpha1_RackList(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.RackSpec":                     schema_kuid_apis_infra_v1alpha1_RackSpec(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.RackStatus":                   schema_kuid_apis_infra_v1alpha1_RackStatus(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.Region":                       schema_kuid_apis_infra_v1alpha1_Region(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.RegionList":                   schema_kuid_apis_infra_v1alpha1_RegionList(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.RegionSpec":                   schema_kuid_apis_infra_v1alpha1_RegionSpec(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.RegionStatus":                 schema_kuid_apis_infra_v1alpha1_RegionStatus(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.Site":                         schema_kuid_apis_infra_v1alpha1_Site(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.SiteList":                     schema_kuid_apis_infra_v1alpha1_SiteList(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.SiteSpec":                     schema_kuid_apis_infra_v1alpha1_SiteSpec(ref),
-		"github.com/kuidio/kuid/apis/infra/v1alpha1.SiteStatus":                   schema_kuid_apis_infra_v1alpha1_SiteStatus(ref),
-		"k8s.io/apimachinery/pkg/api/resource.Quantity":                           schema_apimachinery_pkg_api_resource_Quantity(ref),
-		"k8s.io/apimachinery/pkg/api/resource.int64Amount":                        schema_apimachinery_pkg_api_resource_int64Amount(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIGroup":                           schema_pkg_apis_meta_v1_APIGroup(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIGroupList":                       schema_pkg_apis_meta_v1_APIGroupList(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIResource":                        schema_pkg_apis_meta_v1_APIResource(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIResourceList":                    schema_pkg_apis_meta_v1_APIResourceList(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.APIVersions":                        schema_pkg_apis_meta_v1_APIVersions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ApplyOptions":                       schema_pkg_apis_meta_v1_ApplyOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Condition":                          schema_pkg_apis_meta_v1_Condition(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.CreateOptions":                      schema_pkg_apis_meta_v1_CreateOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.DeleteOptions":                      schema_pkg_apis_meta_v1_DeleteOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Duration":                           schema_pkg_apis_meta_v1_Duration(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.FieldSelectorRequirement":           schema_pkg_apis_meta_v1_FieldSelectorRequirement(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.FieldsV1":                           schema_pkg_apis_meta_v1_FieldsV1(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GetOptions":                         schema_pkg_apis_meta_v1_GetOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupKind":                          schema_pkg_apis_meta_v1_GroupKind(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupResource":                      schema_pkg_apis_meta_v1_GroupResource(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersion":                       schema_pkg_apis_meta_v1_GroupVersion(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionForDiscovery":           schema_pkg_apis_meta_v1_GroupVersionForDiscovery(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionKind":                   schema_pkg_apis_meta_v1_GroupVersionKind(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionResource":               schema_pkg_apis_meta_v1_GroupVersionResource(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.InternalEvent":                      schema_pkg_apis_meta_v1_InternalEvent(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector":                      schema_pkg_apis_meta_v1_LabelSelector(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelectorRequirement":           schema_pkg_apis_meta_v1_LabelSelectorRequirement(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.List":                               schema_pkg_apis_meta_v1_List(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta":                           schema_pkg_apis_meta_v1_ListMeta(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ListOptions":                        schema_pkg_apis_meta_v1_ListOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ManagedFieldsEntry":                 schema_pkg_apis_meta_v1_ManagedFieldsEntry(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.MicroTime":                          schema_pkg_apis_meta_v1_MicroTime(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta":                         schema_pkg_apis_meta_v1_ObjectMeta(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.OwnerReference":                     schema_pkg_apis_meta_v1_OwnerReference(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.PartialObjectMetadata":              schema_pkg_apis_meta_v1_PartialObjectMetadata(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.PartialObjectMetadataList":          schema_pkg_apis_meta_v1_PartialObjectMetadataList(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Patch":                              schema_pkg_apis_meta_v1_Patch(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.PatchOptions":                       schema_pkg_apis_meta_v1_PatchOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Preconditions":                      schema_pkg_apis_meta_v1_Preconditions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.RootPaths":                          schema_pkg_apis_meta_v1_RootPaths(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.ServerAddressByClientCIDR":          schema_pkg_apis_meta_v1_ServerAddressByClientCIDR(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Status":                             schema_pkg_apis_meta_v1_Status(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.StatusCause":                        schema_pkg_apis_meta_v1_StatusCause(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.StatusDetails":                      schema_pkg_apis_meta_v1_StatusDetails(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Table":                              schema_pkg_apis_meta_v1_Table(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TableColumnDefinition":              schema_pkg_apis_meta_v1_TableColumnDefinition(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TableOptions":                       schema_pkg_apis_meta_v1_TableOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TableRow":                           schema_pkg_apis_meta_v1_TableRow(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TableRowCondition":                  schema_pkg_apis_meta_v1_TableRowCondition(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Time":                               schema_pkg_apis_meta_v1_Time(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.Timestamp":                          schema_pkg_apis_meta_v1_Timestamp(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.TypeMeta":                           schema_pkg_apis_meta_v1_TypeMeta(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.UpdateOptions":                      schema_pkg_apis_meta_v1_UpdateOptions(ref),
-		"k8s.io/apimachinery/pkg/apis/meta/v1.WatchEvent":                         schema_pkg_apis_meta_v1_WatchEvent(ref),
-		"k8s.io/apimachinery/pkg/runtime.RawExtension":                            schema_k8sio_apimachinery_pkg_runtime_RawExtension(ref),
-		"k8s.io/apimachinery/pkg/runtime.TypeMeta":                                schema_k8sio_apimachinery_pkg_runtime_TypeMeta(ref),
-		"k8s.io/apimachinery/pkg/runtime.Unknown":                                 schema_k8sio_apimachinery_pkg_runtime_Unknown(ref),
-		"k8s.io/apimachinery/pkg/version.Info":                                    schema_k8sio_apimachinery_pkg_version_Info(ref),
+		"github.com/kform-dev/choreo/apis/condition.Condition":                                              schema_kform_dev_choreo_apis_condition_Condition(ref),
+		"github.com/kform-dev/choreo/apis/condition/v1alpha1.Condition":                                     schema_choreo_apis_condition_v1alpha1_Condition(ref),
+		"github.com/kform-dev/choreo/apis/condition/v1alpha1.ConditionedStatus":                             schema_choreo_apis_condition_v1alpha1_ConditionedStatus(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.BFDLinkParameters":                          schema_apis_network_core_v1alpha1_BFDLinkParameters(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.BGPLinkParameters":                          schema_apis_network_core_v1alpha1_BGPLinkParameters(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.IGPLinkParameters":                          schema_apis_network_core_v1alpha1_IGPLinkParameters(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.ISISLinkParameters":                         schema_apis_network_core_v1alpha1_ISISLinkParameters(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesign":                              schema_apis_network_core_v1alpha1_NetworkDesign(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulation":                 schema_apis_network_core_v1alpha1_NetworkDesignEncapsulation(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationMPLS":             schema_apis_network_core_v1alpha1_NetworkDesignEncapsulationMPLS(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationMPLSLDP":          schema_apis_network_core_v1alpha1_NetworkDesignEncapsulationMPLSLDP(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationMPLSRSVP":         schema_apis_network_core_v1alpha1_NetworkDesignEncapsulationMPLSRSVP(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationMPLSSR":           schema_apis_network_core_v1alpha1_NetworkDesignEncapsulationMPLSSR(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationMPLSSRv6MicroSID": schema_apis_network_core_v1alpha1_NetworkDesignEncapsulationMPLSSRv6MicroSID(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationSRv6":             schema_apis_network_core_v1alpha1_NetworkDesignEncapsulationSRv6(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationVXLAN":            schema_apis_network_core_v1alpha1_NetworkDesignEncapsulationVXLAN(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignInterfaceParameters":           schema_apis_network_core_v1alpha1_NetworkDesignInterfaceParameters(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignInterfaces":                    schema_apis_network_core_v1alpha1_NetworkDesignInterfaces(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignInterfacesLoopback":            schema_apis_network_core_v1alpha1_NetworkDesignInterfacesLoopback(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignInterfacesUnderlay":            schema_apis_network_core_v1alpha1_NetworkDesignInterfacesUnderlay(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignList":                          schema_apis_network_core_v1alpha1_NetworkDesignList(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocols":                     schema_apis_network_core_v1alpha1_NetworkDesignProtocols(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsBGPEVPN":              schema_apis_network_core_v1alpha1_NetworkDesignProtocolsBGPEVPN(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsBGPLabeledUnicastv4":  schema_apis_network_core_v1alpha1_NetworkDesignProtocolsBGPLabeledUnicastv4(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsBGPLabeledUnicastv6":  schema_apis_network_core_v1alpha1_NetworkDesignProtocolsBGPLabeledUnicastv6(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsBGPRouteTarget":       schema_apis_network_core_v1alpha1_NetworkDesignProtocolsBGPRouteTarget(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsBGPVPNv4":             schema_apis_network_core_v1alpha1_NetworkDesignProtocolsBGPVPNv4(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsBGPVPNv6":             schema_apis_network_core_v1alpha1_NetworkDesignProtocolsBGPVPNv6(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsEBGP":                 schema_apis_network_core_v1alpha1_NetworkDesignProtocolsEBGP(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsIBGP":                 schema_apis_network_core_v1alpha1_NetworkDesignProtocolsIBGP(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsISIS":                 schema_apis_network_core_v1alpha1_NetworkDesignProtocolsISIS(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsOSPF":                 schema_apis_network_core_v1alpha1_NetworkDesignProtocolsOSPF(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignSpec":                          schema_apis_network_core_v1alpha1_NetworkDesignSpec(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignStatus":                        schema_apis_network_core_v1alpha1_NetworkDesignStatus(ref),
+		"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.OSPFLinkParameters":                         schema_apis_network_core_v1alpha1_OSPFLinkParameters(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaim":                                           schema_apis_backend_as_v1alpha1_ASClaim(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaimList":                                       schema_apis_backend_as_v1alpha1_ASClaimList(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaimSpec":                                       schema_apis_backend_as_v1alpha1_ASClaimSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASClaimStatus":                                     schema_apis_backend_as_v1alpha1_ASClaimStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntry":                                           schema_apis_backend_as_v1alpha1_ASEntry(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntryList":                                       schema_apis_backend_as_v1alpha1_ASEntryList(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntrySpec":                                       schema_apis_backend_as_v1alpha1_ASEntrySpec(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntryStatus":                                     schema_apis_backend_as_v1alpha1_ASEntryStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndex":                                           schema_apis_backend_as_v1alpha1_ASIndex(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexList":                                       schema_apis_backend_as_v1alpha1_ASIndexList(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexSpec":                                       schema_apis_backend_as_v1alpha1_ASIndexSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexStatus":                                     schema_apis_backend_as_v1alpha1_ASIndexStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMClaim":                                 schema_apis_backend_extcomm_v1alpha1_EXTCOMMClaim(ref),
+		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMClaimList":                             schema_apis_backend_extcomm_v1alpha1_EXTCOMMClaimList(ref),
+		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMClaimSpec":                             schema_apis_backend_extcomm_v1alpha1_EXTCOMMClaimSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMClaimStatus":                           schema_apis_backend_extcomm_v1alpha1_EXTCOMMClaimStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMEntry":                                 schema_apis_backend_extcomm_v1alpha1_EXTCOMMEntry(ref),
+		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMEntryList":                             schema_apis_backend_extcomm_v1alpha1_EXTCOMMEntryList(ref),
+		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMEntrySpec":                             schema_apis_backend_extcomm_v1alpha1_EXTCOMMEntrySpec(ref),
+		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMEntryStatus":                           schema_apis_backend_extcomm_v1alpha1_EXTCOMMEntryStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMIndex":                                 schema_apis_backend_extcomm_v1alpha1_EXTCOMMIndex(ref),
+		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMIndexList":                             schema_apis_backend_extcomm_v1alpha1_EXTCOMMIndexList(ref),
+		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMIndexSpec":                             schema_apis_backend_extcomm_v1alpha1_EXTCOMMIndexSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMIndexStatus":                           schema_apis_backend_extcomm_v1alpha1_EXTCOMMIndexStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDClaim":                                     schema_apis_backend_genid_v1alpha1_GENIDClaim(ref),
+		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDClaimList":                                 schema_apis_backend_genid_v1alpha1_GENIDClaimList(ref),
+		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDClaimSpec":                                 schema_apis_backend_genid_v1alpha1_GENIDClaimSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDClaimStatus":                               schema_apis_backend_genid_v1alpha1_GENIDClaimStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDEntry":                                     schema_apis_backend_genid_v1alpha1_GENIDEntry(ref),
+		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDEntryList":                                 schema_apis_backend_genid_v1alpha1_GENIDEntryList(ref),
+		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDEntrySpec":                                 schema_apis_backend_genid_v1alpha1_GENIDEntrySpec(ref),
+		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDEntryStatus":                               schema_apis_backend_genid_v1alpha1_GENIDEntryStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDIndex":                                     schema_apis_backend_genid_v1alpha1_GENIDIndex(ref),
+		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDIndexList":                                 schema_apis_backend_genid_v1alpha1_GENIDIndexList(ref),
+		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDIndexSpec":                                 schema_apis_backend_genid_v1alpha1_GENIDIndexSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDIndexStatus":                               schema_apis_backend_genid_v1alpha1_GENIDIndexStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaim":                                         schema_apis_backend_ipam_v1alpha1_IPClaim(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaimList":                                     schema_apis_backend_ipam_v1alpha1_IPClaimList(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaimSpec":                                     schema_apis_backend_ipam_v1alpha1_IPClaimSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPClaimStatus":                                   schema_apis_backend_ipam_v1alpha1_IPClaimStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntry":                                         schema_apis_backend_ipam_v1alpha1_IPEntry(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntryList":                                     schema_apis_backend_ipam_v1alpha1_IPEntryList(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntrySpec":                                     schema_apis_backend_ipam_v1alpha1_IPEntrySpec(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPEntryStatus":                                   schema_apis_backend_ipam_v1alpha1_IPEntryStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndex":                                         schema_apis_backend_ipam_v1alpha1_IPIndex(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndexList":                                     schema_apis_backend_ipam_v1alpha1_IPIndexList(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndexSpec":                                     schema_apis_backend_ipam_v1alpha1_IPIndexSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.IPIndexStatus":                                   schema_apis_backend_ipam_v1alpha1_IPIndexStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.Prefix":                                          schema_apis_backend_ipam_v1alpha1_Prefix(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANClaim":                                       schema_apis_backend_vlan_v1alpha1_VLANClaim(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANClaimList":                                   schema_apis_backend_vlan_v1alpha1_VLANClaimList(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANClaimSpec":                                   schema_apis_backend_vlan_v1alpha1_VLANClaimSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANClaimStatus":                                 schema_apis_backend_vlan_v1alpha1_VLANClaimStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANEntry":                                       schema_apis_backend_vlan_v1alpha1_VLANEntry(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANEntryList":                                   schema_apis_backend_vlan_v1alpha1_VLANEntryList(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANEntrySpec":                                   schema_apis_backend_vlan_v1alpha1_VLANEntrySpec(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANEntryStatus":                                 schema_apis_backend_vlan_v1alpha1_VLANEntryStatus(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndex":                                       schema_apis_backend_vlan_v1alpha1_VLANIndex(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndexList":                                   schema_apis_backend_vlan_v1alpha1_VLANIndexList(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndexSpec":                                   schema_apis_backend_vlan_v1alpha1_VLANIndexSpec(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndexStatus":                                 schema_apis_backend_vlan_v1alpha1_VLANIndexStatus(ref),
+		"github.com/kuidio/kuid/apis/common/v1alpha1.ClaimLabels":                                           schema_kuid_apis_common_v1alpha1_ClaimLabels(ref),
+		"github.com/kuidio/kuid/apis/common/v1alpha1.UserDefinedLabels":                                     schema_kuid_apis_common_v1alpha1_UserDefinedLabels(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.ClusterID":                                                 schema_kuid_apis_id_v1alpha1_ClusterID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.EndpointID":                                                schema_kuid_apis_id_v1alpha1_EndpointID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.NodeID":                                                    schema_kuid_apis_id_v1alpha1_NodeID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionAdaptorID":                                        schema_kuid_apis_id_v1alpha1_PartitionAdaptorID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionAttachmentID":                                     schema_kuid_apis_id_v1alpha1_PartitionAttachmentID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionClusterID":                                        schema_kuid_apis_id_v1alpha1_PartitionClusterID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionEndpointID":                                       schema_kuid_apis_id_v1alpha1_PartitionEndpointID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionNodeID":                                           schema_kuid_apis_id_v1alpha1_PartitionNodeID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionPortID":                                           schema_kuid_apis_id_v1alpha1_PartitionPortID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionProviderEndpointID":                               schema_kuid_apis_id_v1alpha1_PartitionProviderEndpointID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.PartitionProviderNodeID":                                   schema_kuid_apis_id_v1alpha1_PartitionProviderNodeID(ref),
+		"github.com/kuidio/kuid/apis/id/v1alpha1.SiteID":                                                    schema_kuid_apis_id_v1alpha1_SiteID(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.Adaptor":                                                schema_kuid_apis_infra_v1alpha1_Adaptor(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.AdaptorList":                                            schema_kuid_apis_infra_v1alpha1_AdaptorList(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.AdaptorSpec":                                            schema_kuid_apis_infra_v1alpha1_AdaptorSpec(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.AdaptorStatus":                                          schema_kuid_apis_infra_v1alpha1_AdaptorStatus(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.Cluster":                                                schema_kuid_apis_infra_v1alpha1_Cluster(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.ClusterList":                                            schema_kuid_apis_infra_v1alpha1_ClusterList(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.ClusterSpec":                                            schema_kuid_apis_infra_v1alpha1_ClusterSpec(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.ClusterStatus":                                          schema_kuid_apis_infra_v1alpha1_ClusterStatus(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.Endpoint":                                               schema_kuid_apis_infra_v1alpha1_Endpoint(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.EndpointList":                                           schema_kuid_apis_infra_v1alpha1_EndpointList(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.EndpointSet":                                            schema_kuid_apis_infra_v1alpha1_EndpointSet(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.EndpointSetList":                                        schema_kuid_apis_infra_v1alpha1_EndpointSetList(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.EndpointSetSpec":                                        schema_kuid_apis_infra_v1alpha1_EndpointSetSpec(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.EndpointSetStatus":                                      schema_kuid_apis_infra_v1alpha1_EndpointSetStatus(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.EndpointSpec":                                           schema_kuid_apis_infra_v1alpha1_EndpointSpec(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.EndpointStatus":                                         schema_kuid_apis_infra_v1alpha1_EndpointStatus(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.Link":                                                   schema_kuid_apis_infra_v1alpha1_Link(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.LinkList":                                               schema_kuid_apis_infra_v1alpha1_LinkList(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.LinkSet":                                                schema_kuid_apis_infra_v1alpha1_LinkSet(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.LinkSetList":                                            schema_kuid_apis_infra_v1alpha1_LinkSetList(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.LinkSetSpec":                                            schema_kuid_apis_infra_v1alpha1_LinkSetSpec(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.LinkSetStatus":                                          schema_kuid_apis_infra_v1alpha1_LinkSetStatus(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.LinkSpec":                                               schema_kuid_apis_infra_v1alpha1_LinkSpec(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.LinkStatus":                                             schema_kuid_apis_infra_v1alpha1_LinkStatus(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.Location":                                               schema_kuid_apis_infra_v1alpha1_Location(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.Module":                                                 schema_kuid_apis_infra_v1alpha1_Module(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.ModuleBay":                                              schema_kuid_apis_infra_v1alpha1_ModuleBay(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.ModuleBayList":                                          schema_kuid_apis_infra_v1alpha1_ModuleBayList(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.ModuleBaySpec":                                          schema_kuid_apis_infra_v1alpha1_ModuleBaySpec(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.ModuleBayStatus":                                        schema_kuid_apis_infra_v1alpha1_ModuleBayStatus(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.ModuleList":                                             schema_kuid_apis_infra_v1alpha1_ModuleList(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.ModuleSpec":                                             schema_kuid_apis_infra_v1alpha1_ModuleSpec(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.ModuleStatus":                                           schema_kuid_apis_infra_v1alpha1_ModuleStatus(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.Node":                                                   schema_kuid_apis_infra_v1alpha1_Node(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeItem":                                               schema_kuid_apis_infra_v1alpha1_NodeItem(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeItemList":                                           schema_kuid_apis_infra_v1alpha1_NodeItemList(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeItemSpec":                                           schema_kuid_apis_infra_v1alpha1_NodeItemSpec(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeItemStatus":                                         schema_kuid_apis_infra_v1alpha1_NodeItemStatus(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeList":                                               schema_kuid_apis_infra_v1alpha1_NodeList(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeSet":                                                schema_kuid_apis_infra_v1alpha1_NodeSet(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeSetList":                                            schema_kuid_apis_infra_v1alpha1_NodeSetList(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeSetSpec":                                            schema_kuid_apis_infra_v1alpha1_NodeSetSpec(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeSetStatus":                                          schema_kuid_apis_infra_v1alpha1_NodeSetStatus(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeSpec":                                               schema_kuid_apis_infra_v1alpha1_NodeSpec(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.NodeStatus":                                             schema_kuid_apis_infra_v1alpha1_NodeStatus(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.Partition":                                              schema_kuid_apis_infra_v1alpha1_Partition(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.PartitionList":                                          schema_kuid_apis_infra_v1alpha1_PartitionList(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.PartitionSpec":                                          schema_kuid_apis_infra_v1alpha1_PartitionSpec(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.PartitionStatus":                                        schema_kuid_apis_infra_v1alpha1_PartitionStatus(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.Port":                                                   schema_kuid_apis_infra_v1alpha1_Port(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.PortList":                                               schema_kuid_apis_infra_v1alpha1_PortList(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.PortSpec":                                               schema_kuid_apis_infra_v1alpha1_PortSpec(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.PortStatus":                                             schema_kuid_apis_infra_v1alpha1_PortStatus(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.Rack":                                                   schema_kuid_apis_infra_v1alpha1_Rack(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.RackList":                                               schema_kuid_apis_infra_v1alpha1_RackList(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.RackSpec":                                               schema_kuid_apis_infra_v1alpha1_RackSpec(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.RackStatus":                                             schema_kuid_apis_infra_v1alpha1_RackStatus(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.Region":                                                 schema_kuid_apis_infra_v1alpha1_Region(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.RegionList":                                             schema_kuid_apis_infra_v1alpha1_RegionList(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.RegionSpec":                                             schema_kuid_apis_infra_v1alpha1_RegionSpec(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.RegionStatus":                                           schema_kuid_apis_infra_v1alpha1_RegionStatus(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.Site":                                                   schema_kuid_apis_infra_v1alpha1_Site(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.SiteList":                                               schema_kuid_apis_infra_v1alpha1_SiteList(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.SiteSpec":                                               schema_kuid_apis_infra_v1alpha1_SiteSpec(ref),
+		"github.com/kuidio/kuid/apis/infra/v1alpha1.SiteStatus":                                             schema_kuid_apis_infra_v1alpha1_SiteStatus(ref),
+		"k8s.io/apimachinery/pkg/api/resource.Quantity":                                                     schema_apimachinery_pkg_api_resource_Quantity(ref),
+		"k8s.io/apimachinery/pkg/api/resource.int64Amount":                                                  schema_apimachinery_pkg_api_resource_int64Amount(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIGroup":                                                     schema_pkg_apis_meta_v1_APIGroup(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIGroupList":                                                 schema_pkg_apis_meta_v1_APIGroupList(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIResource":                                                  schema_pkg_apis_meta_v1_APIResource(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIResourceList":                                              schema_pkg_apis_meta_v1_APIResourceList(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.APIVersions":                                                  schema_pkg_apis_meta_v1_APIVersions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ApplyOptions":                                                 schema_pkg_apis_meta_v1_ApplyOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Condition":                                                    schema_pkg_apis_meta_v1_Condition(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.CreateOptions":                                                schema_pkg_apis_meta_v1_CreateOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.DeleteOptions":                                                schema_pkg_apis_meta_v1_DeleteOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Duration":                                                     schema_pkg_apis_meta_v1_Duration(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.FieldSelectorRequirement":                                     schema_pkg_apis_meta_v1_FieldSelectorRequirement(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.FieldsV1":                                                     schema_pkg_apis_meta_v1_FieldsV1(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GetOptions":                                                   schema_pkg_apis_meta_v1_GetOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupKind":                                                    schema_pkg_apis_meta_v1_GroupKind(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupResource":                                                schema_pkg_apis_meta_v1_GroupResource(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersion":                                                 schema_pkg_apis_meta_v1_GroupVersion(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionForDiscovery":                                     schema_pkg_apis_meta_v1_GroupVersionForDiscovery(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionKind":                                             schema_pkg_apis_meta_v1_GroupVersionKind(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.GroupVersionResource":                                         schema_pkg_apis_meta_v1_GroupVersionResource(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.InternalEvent":                                                schema_pkg_apis_meta_v1_InternalEvent(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector":                                                schema_pkg_apis_meta_v1_LabelSelector(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelectorRequirement":                                     schema_pkg_apis_meta_v1_LabelSelectorRequirement(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.List":                                                         schema_pkg_apis_meta_v1_List(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta":                                                     schema_pkg_apis_meta_v1_ListMeta(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ListOptions":                                                  schema_pkg_apis_meta_v1_ListOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ManagedFieldsEntry":                                           schema_pkg_apis_meta_v1_ManagedFieldsEntry(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.MicroTime":                                                    schema_pkg_apis_meta_v1_MicroTime(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta":                                                   schema_pkg_apis_meta_v1_ObjectMeta(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.OwnerReference":                                               schema_pkg_apis_meta_v1_OwnerReference(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.PartialObjectMetadata":                                        schema_pkg_apis_meta_v1_PartialObjectMetadata(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.PartialObjectMetadataList":                                    schema_pkg_apis_meta_v1_PartialObjectMetadataList(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Patch":                                                        schema_pkg_apis_meta_v1_Patch(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.PatchOptions":                                                 schema_pkg_apis_meta_v1_PatchOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Preconditions":                                                schema_pkg_apis_meta_v1_Preconditions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.RootPaths":                                                    schema_pkg_apis_meta_v1_RootPaths(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.ServerAddressByClientCIDR":                                    schema_pkg_apis_meta_v1_ServerAddressByClientCIDR(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Status":                                                       schema_pkg_apis_meta_v1_Status(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.StatusCause":                                                  schema_pkg_apis_meta_v1_StatusCause(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.StatusDetails":                                                schema_pkg_apis_meta_v1_StatusDetails(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Table":                                                        schema_pkg_apis_meta_v1_Table(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TableColumnDefinition":                                        schema_pkg_apis_meta_v1_TableColumnDefinition(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TableOptions":                                                 schema_pkg_apis_meta_v1_TableOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TableRow":                                                     schema_pkg_apis_meta_v1_TableRow(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TableRowCondition":                                            schema_pkg_apis_meta_v1_TableRowCondition(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Time":                                                         schema_pkg_apis_meta_v1_Time(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.Timestamp":                                                    schema_pkg_apis_meta_v1_Timestamp(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.TypeMeta":                                                     schema_pkg_apis_meta_v1_TypeMeta(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.UpdateOptions":                                                schema_pkg_apis_meta_v1_UpdateOptions(ref),
+		"k8s.io/apimachinery/pkg/apis/meta/v1.WatchEvent":                                                   schema_pkg_apis_meta_v1_WatchEvent(ref),
+		"k8s.io/apimachinery/pkg/runtime.RawExtension":                                                      schema_k8sio_apimachinery_pkg_runtime_RawExtension(ref),
+		"k8s.io/apimachinery/pkg/runtime.TypeMeta":                                                          schema_k8sio_apimachinery_pkg_runtime_TypeMeta(ref),
+		"k8s.io/apimachinery/pkg/runtime.Unknown":                                                           schema_k8sio_apimachinery_pkg_runtime_Unknown(ref),
+		"k8s.io/apimachinery/pkg/version.Info":                                                              schema_k8sio_apimachinery_pkg_version_Info(ref),
 	}
 }
 
@@ -376,6 +408,933 @@ func schema_choreo_apis_condition_v1alpha1_ConditionedStatus(ref common.Referenc
 		},
 		Dependencies: []string{
 			"github.com/kform-dev/choreo/apis/condition/v1alpha1.Condition"},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_BFDLinkParameters(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"enabled": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Disabled defines if bfd is disabled or not",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"minTx": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MinTx defines the desired minimal interval for sending BFD packets, in msec.",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"minRx": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MinTx defines the required minimal interval for receiving BFD packets, in msec.",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"minEchoRx": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MinEchoRx defines the echo function timer, in msec.",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"multiplier": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Multiplier defines the number of missed packets before the session is considered down",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"ttl": {
+						SchemaProps: spec.SchemaProps{
+							Description: "TTL defines the time to live on the outgoing BFD packet",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_BGPLinkParameters(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"bfd": {
+						SchemaProps: spec.SchemaProps{
+							Description: "BFD defines if BFD is enabled for the EGP on this interface",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_IGPLinkParameters(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"networkType": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Type defines the type of network",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"passive": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Passive defines if this interface is passive",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"bfd": {
+						SchemaProps: spec.SchemaProps{
+							Description: "BFD defines if BFD is enabled for the IGP on this interface",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"metric": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Metric defines the interface metric associated with the native routing topology",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_ISISLinkParameters(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"networkType": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Type defines the type of network",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"passive": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Passive defines if this interface is passive",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"bfd": {
+						SchemaProps: spec.SchemaProps{
+							Description: "BFD defines if BFD is enabled for the IGP on this interface",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"metric": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Metric defines the interface metric associated with the native routing topology",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"area": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Defines the ISIS level the link is assocaited with",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesign(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "NetworkDesign is the NetworkDesign for the NetworkDesign API",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
+						},
+					},
+					"spec": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignSpec"),
+						},
+					},
+					"status": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignStatus"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignSpec", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignEncapsulation(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"vxlan": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationVXLAN"),
+						},
+					},
+					"mpls": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationMPLS"),
+						},
+					},
+					"srv6": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationSRv6"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationMPLS", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationSRv6", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationVXLAN"},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignEncapsulationMPLS(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"ldp": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationMPLSLDP"),
+						},
+					},
+					"sr": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationMPLSSR"),
+						},
+					},
+					"rsvp": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationMPLSRSVP"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationMPLSLDP", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationMPLSRSVP", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationMPLSSR"},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignEncapsulationMPLSLDP(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+			},
+		},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignEncapsulationMPLSRSVP(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+			},
+		},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignEncapsulationMPLSSR(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+			},
+		},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignEncapsulationMPLSSRv6MicroSID(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+			},
+		},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignEncapsulationSRv6(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"ldp": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationMPLSSRv6MicroSID"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulationMPLSSRv6MicroSID"},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignEncapsulationVXLAN(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+			},
+		},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignInterfaceParameters(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"prefixes": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Prefixes defines the prefixes belonging to this network config prefixLength would be indicated by a label",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.Prefix"),
+									},
+								},
+							},
+						},
+					},
+					"addressing": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Addressing defines the addressing used in this network",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.Prefix"},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignInterfaces(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"loopback": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignInterfacesLoopback"),
+						},
+					},
+					"underlay": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignInterfacesUnderlay"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignInterfacesLoopback", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignInterfacesUnderlay"},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignInterfacesLoopback(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"prefixes": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Prefixes defines the prefixes belonging to this network config prefixLength would be indicated by a label",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.Prefix"),
+									},
+								},
+							},
+						},
+					},
+					"addressing": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Addressing defines the addressing used in this network",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.Prefix"},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignInterfacesUnderlay(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"prefixes": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Prefixes defines the prefixes belonging to this network config prefixLength would be indicated by a label",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.Prefix"),
+									},
+								},
+							},
+						},
+					},
+					"addressing": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Addressing defines the addressing used in this network",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"vlanTagging": {
+						SchemaProps: spec.SchemaProps{
+							Description: "VLANTagging defines if VLAN tagging should be used or not",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"bfd": {
+						SchemaProps: spec.SchemaProps{
+							Description: "BFD defines the bfd parameters on the interface",
+							Ref:         ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.BFDLinkParameters"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.BFDLinkParameters", "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1.Prefix"},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignList(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "NetworkDesignClabList contains a list of NetworkDesignClabs",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"),
+						},
+					},
+					"items": {
+						SchemaProps: spec.SchemaProps{
+							Type: []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesign"),
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"items"},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesign", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignProtocols(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"ospf": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsOSPF"),
+						},
+					},
+					"isis": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsISIS"),
+						},
+					},
+					"ibgp": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsIBGP"),
+						},
+					},
+					"ebgp": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsEBGP"),
+						},
+					},
+					"bgpEVPN": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsBGPEVPN"),
+						},
+					},
+					"bgpVPNv4": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsBGPVPNv4"),
+						},
+					},
+					"bgpVPNv6": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsBGPVPNv6"),
+						},
+					},
+					"bgpRouteTarget": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsBGPRouteTarget"),
+						},
+					},
+					"bgpLabeledUnicastv4": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsBGPLabeledUnicastv4"),
+						},
+					},
+					"bgpLabeledUnicastv6": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsBGPLabeledUnicastv6"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsBGPEVPN", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsBGPLabeledUnicastv4", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsBGPLabeledUnicastv6", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsBGPRouteTarget", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsBGPVPNv4", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsBGPVPNv6", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsEBGP", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsIBGP", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsISIS", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocolsOSPF"},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignProtocolsBGPEVPN(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+			},
+		},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignProtocolsBGPLabeledUnicastv4(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+			},
+		},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignProtocolsBGPLabeledUnicastv6(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+			},
+		},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignProtocolsBGPRouteTarget(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+			},
+		},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignProtocolsBGPVPNv4(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+			},
+		},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignProtocolsBGPVPNv6(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+			},
+		},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignProtocolsEBGP(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"asPool": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+					"bfd": {
+						SchemaProps: spec.SchemaProps{
+							Description: "BFD defines if BFD is enabled globally on EBGP",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignProtocolsIBGP(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"as": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"integer"},
+							Format: "int64",
+						},
+					},
+					"localAS": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"boolean"},
+							Format: "",
+						},
+					},
+					"routeReflectors": {
+						SchemaProps: spec.SchemaProps{
+							Type: []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignProtocolsISIS(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"instance": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Instance defines the name of the ISIS instance",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"level": {
+						SchemaProps: spec.SchemaProps{
+							Description: "LevelCapability defines the level capability of the ISIS in the topology",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"areas": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Areas defines the ISIS areas",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+					"maxECMPPaths": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MaxECMPPaths defines the maximum ecmp paths used in OSPF",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"bfd": {
+						SchemaProps: spec.SchemaProps{
+							Description: "BFD defines if BFD is enabled globally on ISIS",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"areas"},
+			},
+		},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignProtocolsOSPF(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"instance": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Instance defines the name of the OSPF instance",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"version": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Version defines the Version used for ospf",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"area": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Area defines the default area used if not further refined on the interface.",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"maxECMPPaths": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MaxECMPPaths defines the maximum ecmp paths used in OSPF",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"bfd": {
+						SchemaProps: spec.SchemaProps{
+							Description: "BFD defines if BFD is enabled globally on OSPF",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"version", "area"},
+			},
+		},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "NetworkDesignSpec defines the desired state of NetworkDesign",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"interfaces": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Interfaces define the interface parameters of the network design",
+							Ref:         ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignInterfaces"),
+						},
+					},
+					"protocols": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Protocols define the network wide protocol parameters",
+							Ref:         ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocols"),
+						},
+					},
+					"encapsulation": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Encapsultation define the encapsulation parameters",
+							Ref:         ref("github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulation"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignEncapsulation", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignInterfaces", "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkDesignProtocols"},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_NetworkDesignStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "NetworkDesignStatus defines the observed state of NetworkDesign",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"conditions": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Conditions of the resource.",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kform-dev/choreo/apis/condition/v1alpha1.Condition"),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/kform-dev/choreo/apis/condition/v1alpha1.Condition"},
+	}
+}
+
+func schema_apis_network_core_v1alpha1_OSPFLinkParameters(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"networkType": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Type defines the type of network",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"passive": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Passive defines if this interface is passive",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"bfd": {
+						SchemaProps: spec.SchemaProps{
+							Description: "BFD defines if BFD is enabled for the IGP on this interface",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"metric": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Metric defines the interface metric associated with the native routing topology",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"area": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Defines the OSPF area the link is assocaited with",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+			},
+		},
 	}
 }
 
@@ -696,6 +1655,14 @@ func schema_apis_backend_as_v1alpha1_ASEntrySpec(ref common.ReferenceCallback) c
 							Format:      "",
 						},
 					},
+					"indexEntry": {
+						SchemaProps: spec.SchemaProps{
+							Description: "IndexEntry identifies if the entry is originated from an IP Index",
+							Default:     false,
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
 					"claimType": {
 						SchemaProps: spec.SchemaProps{
 							Description: "ClaimType defines the claimType of the resource",
@@ -733,7 +1700,7 @@ func schema_apis_backend_as_v1alpha1_ASEntrySpec(ref common.ReferenceCallback) c
 						},
 					},
 				},
-				Required: []string{"index"},
+				Required: []string{"index", "indexEntry"},
 			},
 		},
 		Dependencies: []string{
@@ -1269,6 +2236,14 @@ func schema_apis_backend_extcomm_v1alpha1_EXTCOMMEntrySpec(ref common.ReferenceC
 							Format:      "",
 						},
 					},
+					"indexEntry": {
+						SchemaProps: spec.SchemaProps{
+							Description: "IndexEntry identifies if the entry is originated from an IP Index",
+							Default:     false,
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
 					"claimType": {
 						SchemaProps: spec.SchemaProps{
 							Description: "ClaimType defines the claimType of the EXTCOMM Entry",
@@ -1314,7 +2289,7 @@ func schema_apis_backend_extcomm_v1alpha1_EXTCOMMEntrySpec(ref common.ReferenceC
 						},
 					},
 				},
-				Required: []string{"index", "claim"},
+				Required: []string{"index", "indexEntry", "claim"},
 			},
 		},
 		Dependencies: []string{
@@ -1881,6 +2856,14 @@ func schema_apis_backend_genid_v1alpha1_GENIDEntrySpec(ref common.ReferenceCallb
 							Format:      "",
 						},
 					},
+					"indexEntry": {
+						SchemaProps: spec.SchemaProps{
+							Description: "IndexEntry identifies if the entry is originated from an IP Index",
+							Default:     false,
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
 					"claimType": {
 						SchemaProps: spec.SchemaProps{
 							Description: "ClaimType defines the claimType of the resource",
@@ -1918,7 +2901,7 @@ func schema_apis_backend_genid_v1alpha1_GENIDEntrySpec(ref common.ReferenceCallb
 						},
 					},
 				},
-				Required: []string{"index"},
+				Required: []string{"index", "indexEntry"},
 			},
 		},
 		Dependencies: []string{
@@ -3150,6 +4133,14 @@ func schema_apis_backend_vlan_v1alpha1_VLANEntrySpec(ref common.ReferenceCallbac
 							Format:      "",
 						},
 					},
+					"indexEntry": {
+						SchemaProps: spec.SchemaProps{
+							Description: "IndexEntry identifies if the entry is originated from an IP Index",
+							Default:     false,
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
 					"claimType": {
 						SchemaProps: spec.SchemaProps{
 							Description: "ClaimType defines the claimType of the resource",
@@ -3187,7 +4178,7 @@ func schema_apis_backend_vlan_v1alpha1_VLANEntrySpec(ref common.ReferenceCallbac
 						},
 					},
 				},
-				Required: []string{"index"},
+				Required: []string{"index", "indexEntry"},
 			},
 		},
 		Dependencies: []string{

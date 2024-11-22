@@ -370,6 +370,7 @@ func Convert_genid_GENIDEntryList_To_v1alpha1_GENIDEntryList(in *genid.GENIDEntr
 
 func autoConvert_v1alpha1_GENIDEntrySpec_To_genid_GENIDEntrySpec(in *GENIDEntrySpec, out *genid.GENIDEntrySpec, s conversion.Scope) error {
 	out.Index = in.Index
+	out.IndexEntry = in.IndexEntry
 	out.ClaimType = backend.ClaimType(in.ClaimType)
 	out.ID = in.ID
 	if err := asv1alpha1.Convert_v1alpha1_ClaimLabels_To_common_ClaimLabels(&in.ClaimLabels, &out.ClaimLabels, s); err != nil {
@@ -385,6 +386,7 @@ func Convert_v1alpha1_GENIDEntrySpec_To_genid_GENIDEntrySpec(in *GENIDEntrySpec,
 
 func autoConvert_genid_GENIDEntrySpec_To_v1alpha1_GENIDEntrySpec(in *genid.GENIDEntrySpec, out *GENIDEntrySpec, s conversion.Scope) error {
 	out.Index = in.Index
+	out.IndexEntry = in.IndexEntry
 	out.ClaimType = backend.ClaimType(in.ClaimType)
 	out.ID = in.ID
 	if err := asv1alpha1.Convert_common_ClaimLabels_To_v1alpha1_ClaimLabels(&in.ClaimLabels, &out.ClaimLabels, s); err != nil {

@@ -370,6 +370,7 @@ func Convert_vlan_VLANEntryList_To_v1alpha1_VLANEntryList(in *vlan.VLANEntryList
 
 func autoConvert_v1alpha1_VLANEntrySpec_To_vlan_VLANEntrySpec(in *VLANEntrySpec, out *vlan.VLANEntrySpec, s conversion.Scope) error {
 	out.Index = in.Index
+	out.IndexEntry = in.IndexEntry
 	out.ClaimType = backend.ClaimType(in.ClaimType)
 	out.ID = in.ID
 	if err := asv1alpha1.Convert_v1alpha1_ClaimLabels_To_common_ClaimLabels(&in.ClaimLabels, &out.ClaimLabels, s); err != nil {
@@ -385,6 +386,7 @@ func Convert_v1alpha1_VLANEntrySpec_To_vlan_VLANEntrySpec(in *VLANEntrySpec, out
 
 func autoConvert_vlan_VLANEntrySpec_To_v1alpha1_VLANEntrySpec(in *vlan.VLANEntrySpec, out *VLANEntrySpec, s conversion.Scope) error {
 	out.Index = in.Index
+	out.IndexEntry = in.IndexEntry
 	out.ClaimType = backend.ClaimType(in.ClaimType)
 	out.ID = in.ID
 	if err := asv1alpha1.Convert_common_ClaimLabels_To_v1alpha1_ClaimLabels(&in.ClaimLabels, &out.ClaimLabels, s); err != nil {

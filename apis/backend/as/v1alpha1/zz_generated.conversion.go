@@ -413,6 +413,7 @@ func Convert_as_ASEntryList_To_v1alpha1_ASEntryList(in *as.ASEntryList, out *ASE
 
 func autoConvert_v1alpha1_ASEntrySpec_To_as_ASEntrySpec(in *ASEntrySpec, out *as.ASEntrySpec, s conversion.Scope) error {
 	out.Index = in.Index
+	out.IndexEntry = in.IndexEntry
 	out.ClaimType = backend.ClaimType(in.ClaimType)
 	out.ID = in.ID
 	if err := Convert_v1alpha1_ClaimLabels_To_common_ClaimLabels(&in.ClaimLabels, &out.ClaimLabels, s); err != nil {
@@ -428,6 +429,7 @@ func Convert_v1alpha1_ASEntrySpec_To_as_ASEntrySpec(in *ASEntrySpec, out *as.ASE
 
 func autoConvert_as_ASEntrySpec_To_v1alpha1_ASEntrySpec(in *as.ASEntrySpec, out *ASEntrySpec, s conversion.Scope) error {
 	out.Index = in.Index
+	out.IndexEntry = in.IndexEntry
 	out.ClaimType = backend.ClaimType(in.ClaimType)
 	out.ID = in.ID
 	if err := Convert_common_ClaimLabels_To_v1alpha1_ClaimLabels(&in.ClaimLabels, &out.ClaimLabels, s); err != nil {

@@ -6,7 +6,7 @@ toolchain go1.23.2
 
 replace k8s.io/gengo/v2 => k8s.io/gengo/v2 v2.0.0-20240228010128-51d4e06bde70
 
-replace github.com/henderiw/idxtable => /Users/henderiw/code/idxtable
+//replace github.com/henderiw/idxtable => /Users/henderiw/code/idxtable
 
 require (
 	github.com/dgraph-io/badger/v4 v4.3.0
