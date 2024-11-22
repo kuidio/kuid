@@ -226,6 +226,10 @@ spec:
                 description: EXTCOMMIndex defines the EXTCOMM index for the EXTCOMM
                   Claim
                 type: string
+              indexEntry:
+                description: IndexEntry identifies if the entry is originated from
+                  an IP Index
+                type: boolean
               labels:
                 additionalProperties:
                   type: string
@@ -280,6 +284,7 @@ spec:
             required:
             - claim
             - index
+            - indexEntry
             type: object
           status:
             description: EXTCOMMEntryStatus defines the observed state of EXTCOMMEntry
