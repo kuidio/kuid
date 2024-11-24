@@ -1,0 +1,6 @@
+apiVersion: ipam.be.kuid.dev/v1alpha1
+kind: IPIndex
+metadata:
+  name: vpc2
+  namespace: default
+spec:

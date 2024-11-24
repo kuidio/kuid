@@ -99,7 +99,6 @@ func (r *applicator) apply(ctx context.Context, claim *ipam.IPClaim, pis []*iput
 	// for network prefixes the routes can get expanded
 	newRoutes := table.Routes{}
 	for _, pi := range pis {
-		pi := pi
 		newRoutes = append(newRoutes, getRoutesFromClaim(ctx, claim, pi, networkParent, parentLabels)...)
 
 	}
@@ -116,7 +115,7 @@ func (r *applicator) apply(ctx context.Context, claim *ipam.IPClaim, pis []*iput
 				curRoute = existingRoute
 			}
 		}
-		log.Debug("apply route", "newRoute", newRoute.Prefix().String(), "exists", exists, "existsingRoutes", getExistingRoutes(existingRoutes[""]))
+		log.Debug("apply route", "newRoute", newRoute.Prefix().String(), "exists", exists, "existsingRoutes", getExistingRoutes(existingRoutes[""]), "networkParent", networkParent)
 		if exists {
 			// update
 			if err := r.updateRib(ctx, newRoute, curRoute); err != nil {
@@ -220,19 +219,24 @@ func getRoutesFromClaim(_ context.Context, claim *ipam.IPClaim, pi *iputil.Prefi
 	for k, v := range parentLabels {
 		labels[k] = v
 	}
-	// for ipclaims originated from the ipindex (aggregate prefixes) the uid, claimName, kind
+	// for ipclaims originated from the ipindex we set the ipindexclaim to true in the ipEntry
 	ipIndexClaim := "false"
 	for _, ownerref := range claim.GetOwnerReferences() {
 		if ownerref.Kind == ipam.IPIndexKind {
 			ipIndexClaim = "true"
 		}
 	}
+	// for addresses the prefixType is determined by the parent, since you dont specify
+	// the prefix Type when defining the address
+	labels[backend.KuidIPAMIPPrefixTypeKey] = string(claim.GetIPPrefixType())
+	if networkParent {
+		labels[backend.KuidIPAMIPPrefixTypeKey] = string(ipam.IPPrefixType_Network)
+	}
 
 	// system defined labels
 	ipClaimType, _ := claim.GetIPClaimType()
 	labels[backend.KuidIPAMClaimSummaryTypeKey] = string(claim.GetIPClaimSummaryType())
 	labels[backend.KuidClaimTypeKey] = string(ipClaimType)
-	labels[backend.KuidIPAMIPPrefixTypeKey] = string(claim.GetIPPrefixType())
 	labels[backend.KuidOwnerKindKey] = ipam.IPClaimKind
 	labels[backend.KuidClaimNameKey] = claim.Name
 	labels[backend.KuidClaimUIDKey] = string(claim.UID)

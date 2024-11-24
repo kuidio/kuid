@@ -74,7 +74,7 @@ type IPPrefixType string
 
 const (
 	IPPrefixType_Invalid IPPrefixType = "invalid"
-	IPPrefixType_Other   IPPrefixType = "other"
+	IPPrefixType_Regular IPPrefixType = "regular"
 	IPPrefixType_Network IPPrefixType = "network"
 )
 
@@ -82,8 +82,8 @@ func GetIPPrefixTypeFromString(s string) *IPPrefixType {
 	switch s {
 	case string(IPPrefixType_Network):
 		return ptr.To[IPPrefixType](IPPrefixType_Network)
-	case string(IPPrefixType_Other):
-		return ptr.To[IPPrefixType](IPPrefixType_Other)
+	case string(IPPrefixType_Regular):
+		return ptr.To[IPPrefixType](IPPrefixType_Regular)
 	default:
 		return nil
 	}

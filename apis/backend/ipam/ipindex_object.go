@@ -56,15 +56,6 @@ func (r *IPIndex) SetConditions(c ...condition.Condition) {
 func (r *IPIndex) ValidateSyntax(s string) field.ErrorList {
 	var allErrs field.ErrorList
 
-	if len(r.Spec.Prefixes) == 0 {
-		allErrs = append(allErrs, field.Invalid(
-			field.NewPath("spec.prefixes"),
-			r,
-			fmt.Errorf("a ipindex needs a prefix").Error(),
-		))
-
-	}
-
 	return allErrs
 }
 

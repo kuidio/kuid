@@ -44,14 +44,13 @@ func (r *staticAddressApplicator) Validate(ctx context.Context, claim *ipam.IPCl
 	if claim.Spec.Address == nil {
 		return fmt.Errorf("cannot claim a static ip address without an address")
 	}
-	exists, err := r.validateExists(ctx, claim)
+	// Even if the route exists we could trust the previous insertion, but for addresses
+	// the parents prefixType needs to be determined to see if this is a network
+	// or regular prefixType. Hence we continue with the parent/child check
+	var err error
+	r.exists, err = r.validateExists(ctx, claim)
 	if err != nil {
 		return err
-	}
-	if exists {
-		// we can return since we trust the previous insertion in the tree
-		r.exists = exists
-		return nil
 	}
 
 	if err := r.validateParents(ctx, claim); err != nil {
@@ -65,7 +64,8 @@ func (r *staticAddressApplicator) Validate(ctx context.Context, claim *ipam.IPCl
 
 }
 
-func (r *staticAddressApplicator) validateExists(_ context.Context, claim *ipam.IPClaim) (bool, error) {
+func (r *staticAddressApplicator) validateExists(ctx context.Context, claim *ipam.IPClaim) (bool, error) {
+	log := log.FromContext(ctx)
 	pi, err := iputil.New(*claim.Spec.Address)
 	if err != nil {
 		return false, err
@@ -88,6 +88,7 @@ func (r *staticAddressApplicator) validateExists(_ context.Context, claim *ipam.
 			if err := claim.ValidateOwner(routeLabels); err != nil {
 				return false, err
 			}
+			log.Debug("validateExists", "exists", true, "routeLabels", routeLabels)
 			return true, nil
 		}
 	}
@@ -188,7 +189,7 @@ func (r *staticAddressApplicator) Apply(ctx context.Context, claim *ipam.IPClaim
 			return err
 		}
 	} else {
-		if err := r.apply(ctx, claim, []*iputil.Prefix{pi}, false, r.parentLabels); err != nil {
+		if err := r.apply(ctx, claim, []*iputil.Prefix{pi}, r.parentNetwork, r.parentLabels); err != nil {
 			return err
 		}
 	}

@@ -141,10 +141,10 @@ func (r *IPClaim) GetIPClaimSummaryType() IPClaimSummaryType {
 
 func (r *IPClaim) GetIPPrefixType() IPPrefixType {
 	if r.Spec.PrefixType == nil {
-		return IPPrefixType_Other
+		return IPPrefixType_Regular
 	}
 	switch *r.Spec.PrefixType {
-	case IPPrefixType_Network:
+	case IPPrefixType_Network, IPPrefixType_Regular:
 		return *r.Spec.PrefixType
 	default:
 		return IPPrefixType_Invalid
