@@ -44,11 +44,11 @@ func (r *staticRangeSyntaxValidator) Validate(claim *IPClaim) field.ErrorList {
 		))
 	}
 	ipPrefixType := claim.GetIPPrefixType()
-	if ipPrefixType != IPPrefixType_Other {
+	if ipPrefixType != IPPrefixType_Regular {
 		allErrs = append(allErrs, field.Invalid(
 			field.NewPath("spec.type"),
 			claim,
-			fmt.Errorf("%s invalid claim, expecting %s, got %s", r.name, string(IPPrefixType_Other), string(ipPrefixType)).Error(),
+			fmt.Errorf("%s invalid claim, expecting %s, got %s", r.name, string(IPPrefixType_Regular), string(ipPrefixType)).Error(),
 		))
 	}
 	if claim.Spec.DefaultGateway != nil {

@@ -6,7 +6,7 @@ spec:
   index: vpc1
   selector:
     matchLabels:
-      inv.kuid.dev/pool: pool1
+      be.kuid.dev/claim-name: vpc1.172.0.0.0-16
   labels:
     dns.kuid.dev/endpoint-name: claim1
     

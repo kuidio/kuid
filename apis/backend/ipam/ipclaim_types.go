@@ -32,7 +32,7 @@ type IPClaimSpec struct {
 	// PrefixType network indicates a special type of prefix for which network and broadcast addresses
 	// are claimed in the ipam, used for physical, virtual nics devices
 	// If no prefixes type is defined the internally this is defaulted to other
-	// +kubebuilder:validation:Enum=`network`;`other`;
+	// +kubebuilder:validation:Enum=`network`;`regular`;
 	// +optional
 	PrefixType *IPPrefixType `json:"prefixType,omitempty" yaml:"prefixType,omitempty" protobuf:"bytes,2,opt,name=prefixType"`
 	// Prefix defines the prefix for the IP claim
