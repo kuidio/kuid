@@ -179,7 +179,6 @@ func (r *IPEntry) TableConvertor() func(gr schema.GroupResource) rest.TableConve
 				}
 				return []interface{}{
 					entry.Name,
-					//entry.GetCondition(condition.ConditionTypeReady).Status,
 					entry.Spec.Index,
 					entry.Spec.ClaimType,
 					string(entry.GetIPPrefixType()),
@@ -189,8 +188,7 @@ func (r *IPEntry) TableConvertor() func(gr schema.GroupResource) rest.TableConve
 			},
 			[]metav1.TableColumnDefinition{
 				{Name: "Name", Type: "string"},
-				//{Name: "Ready", Type: "string"},
-				{Name: "NetworkInstance", Type: "string"},
+				{Name: "Index", Type: "string"},
 				{Name: "ClaimType", Type: "string"},
 				{Name: "PrefixType", Type: "string"},
 				{Name: "Prefix", Type: "string"},
