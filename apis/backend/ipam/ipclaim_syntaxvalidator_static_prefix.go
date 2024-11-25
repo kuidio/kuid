@@ -62,7 +62,7 @@ func (r *staticPrefixSyntaxValidator) Validate(claim *IPClaim) field.ErrorList {
 	ipPrefixType := claim.GetIPPrefixType()
 	if ipPrefixType == IPPrefixType_Invalid {
 		allErrs = append(allErrs, field.Invalid(
-			field.NewPath("spec.type"),
+			field.NewPath("spec.prefixType"),
 			claim,
 			fmt.Errorf("%s, invalid claim type, got %s", r.name, string(ipPrefixType)).Error(),
 		))
@@ -80,7 +80,7 @@ func (r *staticPrefixSyntaxValidator) Validate(claim *IPClaim) field.ErrorList {
 	if claim.Spec.DefaultGateway != nil {
 		if ipPrefixType != IPPrefixType_Network {
 			allErrs = append(allErrs, field.Invalid(
-				field.NewPath("spec.type"),
+				field.NewPath("spec.prefixType"),
 				claim,
 				fmt.Errorf("%s cannot have a defaultGateway on a prefix which is not a network type", r.name).Error(),
 			))
