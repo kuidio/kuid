@@ -32,7 +32,7 @@ func (r *dynamicAddressSyntaxValidator) Validate(claim *IPClaim) field.ErrorList
 	ipPrefixType := claim.GetIPPrefixType()
 	if ipPrefixType == IPPrefixType_Invalid {
 		allErrs = append(allErrs, field.Invalid(
-			field.NewPath("spec.type"),
+			field.NewPath("spec.prefixType"),
 			claim,
 			fmt.Errorf("%s, invalid claim type, got %s", r.name, string(ipPrefixType)).Error(),
 		))
