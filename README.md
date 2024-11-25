@@ -31,3 +31,10 @@ Code in the KUID repositories licensed with [Apache License 2.0](LICENSE.md). At
 ## Badges
 
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/kuidio/kuid/badge)](https://scorecard.dev/viewer/?uri=github.com/kuidio/kuid)
+
+
+
+/Users/henderiw/go/bin/go-to-protobuf --go-header-file hack/boilerplate.go.txt --packages ./apis/common/v1alpha1 --apimachinery-packages -k8s.io/apimachinery/pkg/api/resource,-k8s.io/apimachinery/pkg/runtime/schema,-k8s.io/apimachinery/pkg/runtime,-k8s.io/apimachinery/pkg/apis/meta/v1
+
+
+/Users/henderiw/go/bin/go-to-protobuf --go-header-file hack/boilerplate.go.txt --packages ./apis/config/v1alpha1 --apimachinery-packages -k8s.io/apimachinery/pkg/api/resource,-k8s.io/apimachinery/pkg/runtime/schema,-k8s.io/apimachinery/pkg/runtime,-k8s.io/apimachinery/pkg/apis/meta/v1

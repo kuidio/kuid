@@ -45,7 +45,7 @@ type Prefix struct {
 	PrefixType *IPPrefixType `json:"prefixType,omitempty" yaml:"prefixType,omitempty" protobuf:"bytes,2,opt,name=prefixType"`
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
-	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,2,opt,name=userDefinedLabels"`
+	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,3,opt,name=userDefinedLabels"`
 }
 
 // IPIndexStatus defines the observed state of IPIndex

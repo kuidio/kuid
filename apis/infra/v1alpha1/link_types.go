@@ -38,16 +38,16 @@ type LinkSpec struct {
 	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,3,opt,name=userDefinedLabels"`
 	// BFD defines the BFD specific parameters on the link
 	// +optional
-	BFD *corenetworkv1alpha1.BFDLinkParameters `json:"bfd,omitempty" yaml:"bfd,omitempty" protobuf:"bytes,3,opt,name=bfd"`
+	BFD *corenetworkv1alpha1.BFDLinkParameters `json:"bfd,omitempty" yaml:"bfd,omitempty" protobuf:"bytes,4,opt,name=bfd"`
 	// OSPF defines the OSPF specific parameters on the link
 	// +optional
-	OSPF *corenetworkv1alpha1.OSPFLinkParameters `json:"ospf,omitempty" yaml:"ospf,omitempty" protobuf:"bytes,4,opt,name=ospf"`
+	OSPF *corenetworkv1alpha1.OSPFLinkParameters `json:"ospf,omitempty" yaml:"ospf,omitempty" protobuf:"bytes,5,opt,name=ospf"`
 	// ISIS defines the ISIS specific parameters on the link
 	// +optional
-	ISIS *corenetworkv1alpha1.ISISLinkParameters `json:"isis,omitempty" yaml:"isis,omitempty" protobuf:"bytes,5,opt,name=isis"`
+	ISIS *corenetworkv1alpha1.ISISLinkParameters `json:"isis,omitempty" yaml:"isis,omitempty" protobuf:"bytes,6,opt,name=isis"`
 	// BGP defines the BGP specific parameters on the link
 	// +optional
-	BGP *corenetworkv1alpha1.BGPLinkParameters `json:"bgp,omitempty" yaml:"bgp,omitempty" protobuf:"bytes,6,opt,name=bgp"`
+	BGP *corenetworkv1alpha1.BGPLinkParameters `json:"bgp,omitempty" yaml:"bgp,omitempty" protobuf:"bytes,7,opt,name=bgp"`
 }
 
 // LinkStatus defines the observed state of Link

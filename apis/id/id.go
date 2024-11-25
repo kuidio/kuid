@@ -142,7 +142,7 @@ type PartitionAttachmentID struct {
 	// Node defines the name of the nodeset
 	NodeSet *string `json:"nodeset,omitempty" yaml:"nodeset,omitempty" protobuf:"bytes,5,opt,name=nodeset"`
 	// Interface defines the name of the interface
-	Interface string `json:"interface" yaml:"interface" protobuf:"bytes,1,opt,name=interface"`
+	Interface string `json:"interface" yaml:"interface" protobuf:"bytes,6,opt,name=interface"`
 }
 
 /*
