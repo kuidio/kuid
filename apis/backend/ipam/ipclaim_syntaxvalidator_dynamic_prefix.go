@@ -63,37 +63,3 @@ func (r *dynamicPrefixSyntaxValidator) Validate(claim *IPClaim) field.ErrorList 
 
 	return allErrs
 }
-
-/*
-func (r *dynamicClaimSyntaxValidator) ValidateSyntax(_ context.Context, claim *ipambev1alpha1.IPClaim) field.ErrorList {
-	var allErrs field.ErrorList
-	// dynamic entries with aggregate prefix kind not supported
-	if claim.Spec.Kind == ipambev1alpha1.PrefixKindAggregate {
-		allErrs = append(allErrs, field.Invalid(
-			field.NewPath(""),
-			claim,
-			fmt.Sprintf("a dynamic prefix claim is not supported for: %s", claim.Spec.Kind),
-		))
-		return allErrs
-	}
-	// a dynamic prefix claim has to set the prefixLength
-	if claim.Spec.CreatePrefix != nil && claim.Spec.PrefixLength == nil {
-		allErrs = append(allErrs, field.Invalid(
-			field.NewPath("spec.prefixLength"),
-			claim,
-			"a dynamic prefix claim has to specify the prefixLength",
-		))
-		return allErrs
-	}
-	if claim.Spec.PrefixLength != nil && claim.Spec.CreatePrefix == nil {
-		allErrs = append(allErrs, field.Invalid(
-			field.NewPath("spec.createPrefix"),
-			claim,
-			"a dynamic prefix with prefixLength set has to also set a createPrefix",
-		))
-		return allErrs
-	}
-	// TODO Pool
-	return allErrs
-}
-*/

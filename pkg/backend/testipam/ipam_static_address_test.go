@@ -17,7 +17,7 @@ func TestIPAMStaticAddress(t *testing.T) {
 				{claimType: staticAddress, ip: "172.0.0.0/32", expectedError: true},
 			},
 		},
-		"Address_AggregateParent": {
+		"Address_PrefixParent": {
 			index: "a",
 			indexPrefixes: []ipam.Prefix{
 				{Prefix: "172.0.0.0/8"},
@@ -56,7 +56,7 @@ func TestIPAMStaticAddress(t *testing.T) {
 				{claimType: staticAddress, ip: "172.0.0.0/32", expectedError: false},
 			},
 		},
-		"PrefixAddress_AggregateParent": {
+		"PrefixAddress_PrefixParent": {
 			index: "a",
 			indexPrefixes: []ipam.Prefix{
 				{Prefix: "172.0.0.0/8"},
@@ -65,18 +65,6 @@ func TestIPAMStaticAddress(t *testing.T) {
 				{claimType: staticAddress, ip: "172.0.0.1/24", expectedError: true},
 			},
 		},
-		/*
-			"PrefixAddress_NetworkParent_OwnerClash": { // since netwotk prefixes get expanded the address is clashing
-				index: "a",
-				indexPrefixes: []ipam.Prefix{
-					{Prefix: "172.0.0.0/8", PrefixType: ptr.To(ipam.IPPrefixType_Aggregate)},
-				},
-				prefixes: []testprefix{
-					{claimType: staticPrefix, ip: "172.0.0.0/24", prefixType: network, expectedError: false},
-					{claimType: staticAddress, ip: "172.0.0.0/32", expectedError: true},
-				},
-			},
-		*/
 		"PrefixAddress_NetworkParent": {
 			index: "a",
 			indexPrefixes: []ipam.Prefix{

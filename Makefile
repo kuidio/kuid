@@ -57,7 +57,6 @@ codegen:
 
 genclients:
 	go run ./tools/apiserver-runtime-gen \
-		-g deepcopy-gen \
 		-g client-gen \
 		-g informer-gen \
 		-g lister-gen \

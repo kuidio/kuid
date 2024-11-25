@@ -40,7 +40,7 @@ import (
 )
 
 func init() {
-	reconcilers.Register(ipambev1alpha1.Group, ipambev1alpha1.IPClaimKind, &reconciler{})
+	reconcilers.Register(ipam.GroupName, ipambev1alpha1.IPClaimKind, &reconciler{})
 }
 
 const (

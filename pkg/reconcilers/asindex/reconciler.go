@@ -16,20 +16,18 @@ limitations under the License.
 
 package asindex
 
-/*
-
 import (
 	"context"
 	"fmt"
 	"reflect"
 
 	"github.com/henderiw/logger/log"
+	condv1alpha1 "github.com/kform-dev/choreo/apis/condition/v1alpha1"
+	"github.com/kuidio/kuid/apis/backend/as"
 	asbev1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
-	conditionv1alpha1 "github.com/kform-dev/choreo/apis/condition/v1alpha1"
 	"github.com/kuidio/kuid/pkg/backend"
 	"github.com/kuidio/kuid/pkg/reconcilers"
 	"github.com/kuidio/kuid/pkg/reconcilers/ctrlconfig"
-	"github.com/kuidio/kuid/pkg/reconcilers/eventhandler"
 	"github.com/kuidio/kuid/pkg/reconcilers/resource"
 	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
@@ -41,13 +39,12 @@ import (
 )
 
 func init() {
-	reconcilers.Register("asindex", &reconciler{})
+	reconcilers.Register(as.GroupName, asbev1alpha1.ASIndexKind, &reconciler{})
 }
 
 const (
-	crName         = "asindex"
-	controllerName = "ASIndexController"
-	finalizer      = "asindex.as.res.kuid.dev/finalizer"
+	reconcilerName = "ASIndexController"
+	finalizer      = "asindex.as.be.kuid.dev/finalizer"
 	// errors
 	errGetCr        = "cannot get cr"
 	errUpdateStatus = "cannot update status"
@@ -55,25 +52,19 @@ const (
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *reconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manager, c interface{}) (map[schema.GroupVersionKind]chan event.GenericEvent, error) {
-
 	cfg, ok := c.(*ctrlconfig.ControllerConfig)
 	if !ok {
 		return nil, fmt.Errorf("cannot initialize, expecting controllerConfig, got: %s", reflect.TypeOf(c).Name())
 	}
 
 	r.Client = mgr.GetClient()
-	r.finalizer = resource.NewAPIFinalizer(mgr.GetClient(), finalizer)
-	r.recorder = mgr.GetEventRecorderFor(controllerName)
-	r.be = cfg.ASBackend
+	r.finalizer = resource.NewAPIFinalizer(mgr.GetClient(), finalizer, reconcilerName)
+	r.recorder = mgr.GetEventRecorderFor(reconcilerName)
+	r.be = cfg.Backends[asbev1alpha1.SchemeGroupVersion.Group]
 
 	return nil, ctrl.NewControllerManagedBy(mgr).
-		Named(controllerName).
+		Named(reconcilerName).
 		For(&asbev1alpha1.ASIndex{}).
-		Watches(&asbev1alpha1.ASIndex{},
-			&eventhandler.ASEntryEventHandler{
-				Client:  mgr.GetClient(),
-				ObjList: &asbev1alpha1.ASIndexList{},
-			}).
 		Complete(r)
 }
 
@@ -85,12 +76,12 @@ type reconciler struct {
 }
 
 func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	ctx = ctrlconfig.InitContext(ctx, controllerName, req.NamespacedName)
+	ctx = ctrlconfig.InitContext(ctx, reconcilerName, req.NamespacedName)
 	log := log.FromContext(ctx)
 	log.Info("reconcile")
 
-	cr := &asbev1alpha1.ASIndex{}
-	if err := r.Get(ctx, req.NamespacedName, cr); err != nil {
+	index := &asbev1alpha1.ASIndex{}
+	if err := r.Get(ctx, req.NamespacedName, index); err != nil {
 		// if the resource no longer exists the reconcile loop is done
 		if resource.IgnoreNotFound(err) != nil {
 			log.Error(errGetCr, "error", err)
@@ -98,109 +89,90 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		}
 		return ctrl.Result{}, nil
 	}
-	cr = cr.DeepCopy()
+	indexOrig := index.DeepCopy()
+	log.Debug("reconcile", "status orig", index.Status)
 
-	if !cr.GetDeletionTimestamp().IsZero() {
-		if err := r.deleteIndex(ctx, cr); err != nil {
-			return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+	if !index.GetDeletionTimestamp().IsZero() {
+		// Prefixes are not to be deleted as the sync delete index takes care and garbage collector 
+		// takes care of this
+		intIndex := &as.ASIndex{}
+		if err := asbev1alpha1.Convert_v1alpha1_ASIndex_To_as_ASIndex(index, intIndex, nil); err != nil {
+			return ctrl.Result{Requeue: true},
+				errors.Wrap(r.handleError(ctx, indexOrig, "cannot convert index before delete", err), errUpdateStatus)
+		}
+		if err := r.be.DeleteIndex(ctx, intIndex); err != nil {
+			if resource.IgnoreNotFound(err) != nil {
+				return ctrl.Result{Requeue: true},
+					errors.Wrap(r.handleError(ctx, indexOrig, "cannot delete index", err), errUpdateStatus)
+			}
+		}
+		if err := asbev1alpha1.Convert_as_ASIndex_To_v1alpha1_ASIndex(intIndex, index, nil); err != nil {
+			return ctrl.Result{Requeue: true},
+				errors.Wrap(r.handleError(ctx, indexOrig, "cannot convert index after delete", err), errUpdateStatus)
 		}
 
-		if err := r.finalizer.RemoveFinalizer(ctx, cr); err != nil {
-			r.handleError(ctx, cr, "cannot remove finalizer", err)
-			return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+		// We use owner reference so the k8s garbage collector takes care of the cleanup
+		if err := r.finalizer.RemoveFinalizer(ctx, index); err != nil {
+			return ctrl.Result{Requeue: true},
+				errors.Wrap(r.handleError(ctx, indexOrig, "cannot remove finalizer", err), errUpdateStatus)
 		}
-		log.Debug("Successfully deleted resource")
 		return ctrl.Result{}, nil
 	}
 
-	if err := r.finalizer.AddFinalizer(ctx, cr); err != nil {
-		r.handleError(ctx, cr, "cannot add finalizer", err)
-		return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+	if err := r.finalizer.AddFinalizer(ctx, index); err != nil {
+		return ctrl.Result{Requeue: true},
+			errors.Wrap(r.handleError(ctx, indexOrig, "cannot add finalizer", err), errUpdateStatus)
 	}
 
-	if r.hasMinMaxRangeChanged(cr) {
-		// delete index
-		if err := r.deleteIndex(ctx, cr); err != nil {
-			return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
-		}
+	// create ip index
+	intIndex := &as.ASIndex{}
+	if err := asbev1alpha1.Convert_v1alpha1_ASIndex_To_as_ASIndex(index, intIndex, nil); err != nil {
+		return ctrl.Result{Requeue: true},
+			errors.Wrap(r.handleError(ctx, indexOrig, "cannot convert index before create", err), errUpdateStatus)
 	}
-	// create index
-	if err := r.applyIndex(ctx, cr); err != nil {
-		return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+	if err := r.be.CreateIndex(ctx, intIndex); err != nil {
+		return ctrl.Result{Requeue: true},
+			errors.Wrap(r.handleError(ctx, indexOrig, "cannot apply index", err), errUpdateStatus)
+	}
+	if err := asbev1alpha1.Convert_as_ASIndex_To_v1alpha1_ASIndex(intIndex, index, nil); err != nil {
+		return ctrl.Result{Requeue: true},
+			errors.Wrap(r.handleError(ctx, indexOrig, "cannot convert index after create", err), errUpdateStatus)
 	}
 
-	if err := r.applyMinMaxRange(ctx, cr); err != nil {
-		return ctrl.Result{Requeue: true}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
-	}
+	// updating the index is taken care of by the createIndex code
 
-	cr.SetConditions(conditionv1alpha1.Ready())
-	cr.Status.MinID = cr.Spec.MinID
-	cr.Status.MaxID = cr.Spec.MaxID
-	r.recorder.Eventf(cr, corev1.EventTypeNormal, crName, "ready")
-	return ctrl.Result{}, errors.Wrap(r.Update(ctx, cr), errUpdateStatus)
+	return ctrl.Result{}, errors.Wrap(r.handleSuccess(ctx, indexOrig), errUpdateStatus)
 }
 
-func (r *reconciler) handleError(ctx context.Context, cr *asbev1alpha1.ASIndex, msg string, err error) {
+func (r *reconciler) handleSuccess(ctx context.Context, index *asbev1alpha1.ASIndex) error {
+	// take a snapshot of the current object
+	patch := client.MergeFrom(index.DeepCopy())
+	// update status
+	index.SetConditions(condv1alpha1.Ready())
+	r.recorder.Eventf(index, corev1.EventTypeNormal, asbev1alpha1.ASIndexKind, "ready")
+
+	return r.Client.Status().Patch(ctx, index, patch, &client.SubResourcePatchOptions{
+		PatchOptions: client.PatchOptions{
+			FieldManager: "backend",
+		},
+	})
+}
+
+func (r *reconciler) handleError(ctx context.Context, index *asbev1alpha1.ASIndex, msg string, err error) error {
 	log := log.FromContext(ctx)
-	if err == nil {
-		cr.SetConditions(conditionv1alpha1.Failed(msg))
-		log.Error(msg)
-		r.recorder.Eventf(cr, corev1.EventTypeWarning, crName, msg)
-	} else {
-		cr.SetConditions(conditionv1alpha1.Failed(err.Error()))
-		log.Error(msg, "error", err)
-		r.recorder.Eventf(cr, corev1.EventTypeWarning, crName, fmt.Sprintf("%s, err: %s", msg, err.Error()))
-	}
-}
+	// take a snapshot of the current object
+	patch := client.MergeFrom(index.DeepCopy())
 
-func (r *reconciler) deleteIndex(ctx context.Context, cr *asbev1alpha1.ASIndex) error {
-	if err := r.be.DeleteIndex(ctx, cr); err != nil {
-		r.handleError(ctx, cr, "cannot delete index", err)
-		return err
+	if err != nil {
+		msg = fmt.Sprintf("%s err %s", msg, err.Error())
 	}
-	return nil
-}
+	index.SetConditions(condv1alpha1.Failed(msg))
+	log.Error(msg)
+	r.recorder.Eventf(index, corev1.EventTypeWarning, asbev1alpha1.ASIndexKind, msg)
 
-func (r *reconciler) applyIndex(ctx context.Context, cr *asbev1alpha1.ASIndex) error {
-	if err := r.be.CreateIndex(ctx, cr); err != nil {
-		r.handleError(ctx, cr, "cannot create index", err)
-		return err
-	}
-	return nil
+	return r.Client.Status().Patch(ctx, index, patch, &client.SubResourcePatchOptions{
+		PatchOptions: client.PatchOptions{
+			FieldManager: "backend",
+		},
+	})
 }
-
-func (r *reconciler) hasMinMaxRangeChanged(cr *asbev1alpha1.ASIndex) bool {
-	return changed(cr.Status.MinID, cr.Spec.MinID) || changed(cr.Status.MaxID, cr.Spec.MaxID)
-}
-
-func changed(status, spec *uint32) bool {
-	if status != nil {
-		if spec == nil {
-			return true
-		} else {
-			if *status != *spec {
-				return true
-			}
-		}
-	}
-	return false
-}
-
-func (r *reconciler) applyMinMaxRange(ctx context.Context, cr *asbev1alpha1.ASIndex) error {
-	if cr.Spec.MinID != nil && *cr.Spec.MinID != asbev1alpha1.ASID_Min {
-		claim := cr.GetMinClaim()
-		if err := r.be.Claim(ctx, claim); err != nil {
-			r.handleError(ctx, cr, "cannot claim min reserved range", err)
-			return err
-		}
-	}
-	if cr.Spec.MaxID != nil && *cr.Spec.MaxID != asbev1alpha1.ASID_Max {
-		claim := cr.GetMaxClaim()
-		if err := r.be.Claim(ctx, claim); err != nil {
-			r.handleError(ctx, cr, "cannot claim max reserved range", err)
-			return err
-		}
-	}
-	return nil
-}
-*/

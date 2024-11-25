@@ -26,21 +26,19 @@ import (
 
 // IPIndexSpec defines the desired state of IPIndex
 type IPIndexSpec struct {
-	// Prefixes define the aggregate prefixes for the network instance
-	// A Network instance needs at least 1 prefix to be defined to become operational
-	Prefixes []Prefix `json:"prefixes" yaml:"prefixes" protobuf:"bytes,1,opt,name=prefixes"`
+	// Prefixes define the prefixes for the index
+	// +optional
+	Prefixes []Prefix `json:"prefixes,omitempty" protobuf:"bytes,1,rep,name=prefixes"`
 }
 
 type Prefix struct {
 	// Prefix defines the ip cidr in prefix notation.
 	// +kubebuilder:validation:Pattern=`(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/(([0-9])|([1-2][0-9])|(3[0-2]))|((:|[0-9a-fA-F]{0,4}):)([0-9a-fA-F]{0,4}:){0,5}((([0-9a-fA-F]{0,4}:)?(:|[0-9a-fA-F]{0,4}))|(((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])))(/(([0-9])|([0-9]{2})|(1[0-1][0-9])|(12[0-8])))`
 	Prefix string `json:"prefix" yaml:"prefix" protobuf:"bytes,1,opt,name=prefix"`
-	// PrefixType defines the prefixtype of IPIndex;
-	// - network kind is used for physical, virtual nics on a device
-	// - pool kind is used for allocating dedicated IP addresses
-	// - aggregate kind is used for claiming an aggregate prefix; only used for networkInstance prefixes
-	// +kubebuilder:validation:Enum=network;aggregate;pool;
-	// +kubebuilder:default:=aggregate
+	// PrefixType network indicates a special type of prefix for which network and broadcast addresses
+	// are claimed in the ipam, used for physical, virtual nics devices
+	// If no prefixes type is defined the internally this is defaulted to other
+	// +kubebuilder:validation:Enum=`network`;`regular`;
 	// +optional
 	PrefixType *IPPrefixType `json:"prefixType,omitempty" yaml:"prefixType,omitempty" protobuf:"bytes,2,opt,name=prefixType"`
 	// UserDefinedLabels define metadata to the resource.

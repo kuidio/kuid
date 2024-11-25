@@ -3240,7 +3240,7 @@ func schema_apis_backend_ipam_v1alpha1_IPClaimSpec(ref common.ReferenceCallback)
 					},
 					"prefixType": {
 						SchemaProps: spec.SchemaProps{
-							Description: "PrefixType defines the prefixtype of IPEntry; for address and range claims this is not relevant - network kind is used for physical, virtual nics on a device - pool kind is used for allocating dedicated IP addresses - aggregate kind is used for claiming an aggregate prefix; only used for networkInstance prefixes",
+							Description: "PrefixType network indicates a special type of prefix for which network and broadcast addresses are claimed in the ipam, used for physical, virtual nics devices If no prefixes type is defined the internally this is defaulted to other",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -3517,7 +3517,7 @@ func schema_apis_backend_ipam_v1alpha1_IPEntrySpec(ref common.ReferenceCallback)
 					},
 					"prefixType": {
 						SchemaProps: spec.SchemaProps{
-							Description: "PrefixType defines the prefixtype of IPEntry; for address and range claims this is not relevant - network kind is used for physical, virtual nics on a device - pool kind is used for allocating dedicated IP addresses - aggregate kind is used for claiming an aggregate prefix; only used for networkInstance prefixes",
+							Description: "PrefixType network indicates a special type of prefix for which network and broadcast addresses are claimed in the ipam, used for physical, virtual nics devices If no prefixes type is defined the internally this is defaulted to other",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -3708,7 +3708,7 @@ func schema_apis_backend_ipam_v1alpha1_IPIndexSpec(ref common.ReferenceCallback)
 				Properties: map[string]spec.Schema{
 					"prefixes": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Prefixes define the aggregate prefixes for the network instance A Network instance needs at least 1 prefix to be defined to become operational",
+							Description: "Prefixes define the prefixes for the index",
 							Type:        []string{"array"},
 							Items: &spec.SchemaOrArray{
 								Schema: &spec.Schema{
@@ -3721,7 +3721,6 @@ func schema_apis_backend_ipam_v1alpha1_IPIndexSpec(ref common.ReferenceCallback)
 						},
 					},
 				},
-				Required: []string{"prefixes"},
 			},
 		},
 		Dependencies: []string{
@@ -3788,7 +3787,7 @@ func schema_apis_backend_ipam_v1alpha1_Prefix(ref common.ReferenceCallback) comm
 					},
 					"prefixType": {
 						SchemaProps: spec.SchemaProps{
-							Description: "PrefixType defines the prefixtype of IPIndex; - network kind is used for physical, virtual nics on a device - pool kind is used for allocating dedicated IP addresses - aggregate kind is used for claiming an aggregate prefix; only used for networkInstance prefixes",
+							Description: "PrefixType network indicates a special type of prefix for which network and broadcast addresses are claimed in the ipam, used for physical, virtual nics devices If no prefixes type is defined the internally this is defaulted to other",
 							Type:        []string{"string"},
 							Format:      "",
 						},

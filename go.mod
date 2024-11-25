@@ -18,7 +18,7 @@ require (
 	github.com/henderiw/logger v0.0.0-20230911123436-8655829b1abe
 	github.com/henderiw/store v0.0.2-0.20241020093537-5a92d3e14a02
 	github.com/kform-dev/choreo v0.0.14-0.20241022144122-dcc4abf0f562
-	github.com/kubenet-dev/apis v0.0.0-20241108171407-c6afc0028129
+	github.com/kubenet-dev/apis v0.0.0-20241125090920-214523829415
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.9.0
@@ -28,7 +28,7 @@ require (
 	golang.org/x/mod v0.22.0
 	golang.org/x/sync v0.9.0
 	k8s.io/api v0.31.1
-	k8s.io/apimachinery v0.32.0-alpha.1
+	k8s.io/apimachinery v0.31.1
 	k8s.io/apiserver v0.31.1
 	k8s.io/client-go v0.31.1
 	k8s.io/code-generator v0.31.1

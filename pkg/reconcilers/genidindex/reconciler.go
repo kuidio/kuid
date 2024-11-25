@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package ipindex
+package genidindex
 
 import (
 	"context"
@@ -23,8 +23,8 @@ import (
 
 	"github.com/henderiw/logger/log"
 	condv1alpha1 "github.com/kform-dev/choreo/apis/condition/v1alpha1"
-	"github.com/kuidio/kuid/apis/backend/ipam"
-	ipambev1alpha1 "github.com/kuidio/kuid/apis/backend/ipam/v1alpha1"
+	"github.com/kuidio/kuid/apis/backend/genid"
+	genidbev1alpha1 "github.com/kuidio/kuid/apis/backend/genid/v1alpha1"
 	"github.com/kuidio/kuid/pkg/backend"
 	"github.com/kuidio/kuid/pkg/reconcilers"
 	"github.com/kuidio/kuid/pkg/reconcilers/ctrlconfig"
@@ -39,12 +39,12 @@ import (
 )
 
 func init() {
-	reconcilers.Register(ipam.GroupName, ipambev1alpha1.IPIndexKind, &reconciler{})
+	reconcilers.Register(genid.GroupName, genidbev1alpha1.GENIDIndexKind, &reconciler{})
 }
 
 const (
-	reconcilerName = "IPIndexController"
-	finalizer      = "ipindex.ipam.be.kuid.dev/finalizer"
+	reconcilerName = "GENIDIndexController"
+	finalizer      = "genidindex.genid.be.kuid.dev/finalizer"
 	// errors
 	errGetCr        = "cannot get cr"
 	errUpdateStatus = "cannot update status"
@@ -60,16 +60,11 @@ func (r *reconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manager, c i
 	r.Client = mgr.GetClient()
 	r.finalizer = resource.NewAPIFinalizer(mgr.GetClient(), finalizer, reconcilerName)
 	r.recorder = mgr.GetEventRecorderFor(reconcilerName)
-	r.be = cfg.Backends[ipambev1alpha1.SchemeGroupVersion.Group]
+	r.be = cfg.Backends[genidbev1alpha1.SchemeGroupVersion.Group]
 
 	return nil, ctrl.NewControllerManagedBy(mgr).
 		Named(reconcilerName).
-		For(&ipambev1alpha1.IPIndex{}).
-		//Watches(&ipambev1alpha1.IPEntry{},
-		//	&eventhandler.IPEntryEventHandler{
-		//		Client:  mgr.GetClient(),
-		//		ObjList: &ipambev1alpha1.IPIndexList{},
-		//	}).
+		For(&genidbev1alpha1.GENIDIndex{}).
 		Complete(r)
 }
 
@@ -85,8 +80,8 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 	log := log.FromContext(ctx)
 	log.Info("reconcile")
 
-	ipIndex := &ipambev1alpha1.IPIndex{}
-	if err := r.Get(ctx, req.NamespacedName, ipIndex); err != nil {
+	index := &genidbev1alpha1.GENIDIndex{}
+	if err := r.Get(ctx, req.NamespacedName, index); err != nil {
 		// if the resource no longer exists the reconcile loop is done
 		if resource.IgnoreNotFound(err) != nil {
 			log.Error(errGetCr, "error", err)
@@ -94,88 +89,88 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		}
 		return ctrl.Result{}, nil
 	}
-	ipIndexOrig := ipIndex.DeepCopy()
-	log.Debug("reconcile", "status orig", ipIndexOrig.Status)
+	indexOrig := index.DeepCopy()
+	log.Debug("reconcile", "status orig", index.Status)
 
-	if !ipIndex.GetDeletionTimestamp().IsZero() {
+	if !index.GetDeletionTimestamp().IsZero() {
 		// Prefixes are not to be deleted as the sync delete index takes care and garbage collector 
 		// takes care of this
-		intIPIndex := &ipam.IPIndex{}
-		if err := ipambev1alpha1.Convert_v1alpha1_IPIndex_To_ipam_IPIndex(ipIndex, intIPIndex, nil); err != nil {
+		intIndex := &genid.GENIDIndex{}
+		if err := genidbev1alpha1.Convert_v1alpha1_GENIDIndex_To_genid_GENIDIndex(index, intIndex, nil); err != nil {
 			return ctrl.Result{Requeue: true},
-				errors.Wrap(r.handleError(ctx, ipIndexOrig, "cannot convert ipIndex before delete", err), errUpdateStatus)
+				errors.Wrap(r.handleError(ctx, indexOrig, "cannot convert index before delete", err), errUpdateStatus)
 		}
-		if err := r.be.DeleteIndex(ctx, intIPIndex); err != nil {
+		if err := r.be.DeleteIndex(ctx, intIndex); err != nil {
 			if resource.IgnoreNotFound(err) != nil {
 				return ctrl.Result{Requeue: true},
-					errors.Wrap(r.handleError(ctx, ipIndexOrig, "cannot delete index", err), errUpdateStatus)
+					errors.Wrap(r.handleError(ctx, indexOrig, "cannot delete index", err), errUpdateStatus)
 			}
 		}
-		if err := ipambev1alpha1.Convert_ipam_IPIndex_To_v1alpha1_IPIndex(intIPIndex, ipIndex, nil); err != nil {
+		if err := genidbev1alpha1.Convert_genid_GENIDIndex_To_v1alpha1_GENIDIndex(intIndex, index, nil); err != nil {
 			return ctrl.Result{Requeue: true},
-				errors.Wrap(r.handleError(ctx, ipIndexOrig, "cannot convert ipIndex after delete", err), errUpdateStatus)
+				errors.Wrap(r.handleError(ctx, indexOrig, "cannot convert index after delete", err), errUpdateStatus)
 		}
 
 		// We use owner reference so the k8s garbage collector takes care of the cleanup
-		if err := r.finalizer.RemoveFinalizer(ctx, ipIndex); err != nil {
+		if err := r.finalizer.RemoveFinalizer(ctx, index); err != nil {
 			return ctrl.Result{Requeue: true},
-				errors.Wrap(r.handleError(ctx, ipIndexOrig, "cannot remove finalizer", err), errUpdateStatus)
+				errors.Wrap(r.handleError(ctx, indexOrig, "cannot remove finalizer", err), errUpdateStatus)
 		}
 		return ctrl.Result{}, nil
 	}
 
-	if err := r.finalizer.AddFinalizer(ctx, ipIndex); err != nil {
+	if err := r.finalizer.AddFinalizer(ctx, index); err != nil {
 		return ctrl.Result{Requeue: true},
-			errors.Wrap(r.handleError(ctx, ipIndexOrig, "cannot add finalizer", err), errUpdateStatus)
+			errors.Wrap(r.handleError(ctx, indexOrig, "cannot add finalizer", err), errUpdateStatus)
 	}
 
 	// create ip index
-	intIPIndex := &ipam.IPIndex{}
-	if err := ipambev1alpha1.Convert_v1alpha1_IPIndex_To_ipam_IPIndex(ipIndex, intIPIndex, nil); err != nil {
+	intIndex := &genid.GENIDIndex{}
+	if err := genidbev1alpha1.Convert_v1alpha1_GENIDIndex_To_genid_GENIDIndex(index, intIndex, nil); err != nil {
 		return ctrl.Result{Requeue: true},
-			errors.Wrap(r.handleError(ctx, ipIndexOrig, "cannot convert ipIndex before create", err), errUpdateStatus)
+			errors.Wrap(r.handleError(ctx, indexOrig, "cannot convert index before create", err), errUpdateStatus)
 	}
-	if err := r.be.CreateIndex(ctx, intIPIndex); err != nil {
+	if err := r.be.CreateIndex(ctx, intIndex); err != nil {
 		return ctrl.Result{Requeue: true},
-			errors.Wrap(r.handleError(ctx, ipIndexOrig, "cannot apply index", err), errUpdateStatus)
+			errors.Wrap(r.handleError(ctx, indexOrig, "cannot apply index", err), errUpdateStatus)
 	}
-	if err := ipambev1alpha1.Convert_ipam_IPIndex_To_v1alpha1_IPIndex(intIPIndex, ipIndex, nil); err != nil {
+	if err := genidbev1alpha1.Convert_genid_GENIDIndex_To_v1alpha1_GENIDIndex(intIndex, index, nil); err != nil {
 		return ctrl.Result{Requeue: true},
-			errors.Wrap(r.handleError(ctx, ipIndexOrig, "cannot convert ipIndex after create", err), errUpdateStatus)
+			errors.Wrap(r.handleError(ctx, indexOrig, "cannot convert index after create", err), errUpdateStatus)
 	}
 
 	// updating the index is taken care of by the createIndex code
 
-	return ctrl.Result{}, errors.Wrap(r.handleSuccess(ctx, ipIndexOrig), errUpdateStatus)
+	return ctrl.Result{}, errors.Wrap(r.handleSuccess(ctx, indexOrig), errUpdateStatus)
 }
 
-func (r *reconciler) handleSuccess(ctx context.Context, ipIndex *ipambev1alpha1.IPIndex) error {
+func (r *reconciler) handleSuccess(ctx context.Context, index *genidbev1alpha1.GENIDIndex) error {
 	// take a snapshot of the current object
-	patch := client.MergeFrom(ipIndex.DeepCopy())
+	patch := client.MergeFrom(index.DeepCopy())
 	// update status
-	ipIndex.SetConditions(condv1alpha1.Ready())
-	r.recorder.Eventf(ipIndex, corev1.EventTypeNormal, ipambev1alpha1.IPIndexKind, "ready")
+	index.SetConditions(condv1alpha1.Ready())
+	r.recorder.Eventf(index, corev1.EventTypeNormal, genidbev1alpha1.GENIDIndexKind, "ready")
 
-	return r.Client.Status().Patch(ctx, ipIndex, patch, &client.SubResourcePatchOptions{
+	return r.Client.Status().Patch(ctx, index, patch, &client.SubResourcePatchOptions{
 		PatchOptions: client.PatchOptions{
 			FieldManager: "backend",
 		},
 	})
 }
 
-func (r *reconciler) handleError(ctx context.Context, ipIndex *ipambev1alpha1.IPIndex, msg string, err error) error {
+func (r *reconciler) handleError(ctx context.Context, index *genidbev1alpha1.GENIDIndex, msg string, err error) error {
 	log := log.FromContext(ctx)
 	// take a snapshot of the current object
-	patch := client.MergeFrom(ipIndex.DeepCopy())
+	patch := client.MergeFrom(index.DeepCopy())
 
 	if err != nil {
 		msg = fmt.Sprintf("%s err %s", msg, err.Error())
 	}
-	ipIndex.SetConditions(condv1alpha1.Failed(msg))
+	index.SetConditions(condv1alpha1.Failed(msg))
 	log.Error(msg)
-	r.recorder.Eventf(ipIndex, corev1.EventTypeWarning, ipambev1alpha1.IPIndexKind, msg)
+	r.recorder.Eventf(index, corev1.EventTypeWarning, genidbev1alpha1.GENIDIndexKind, msg)
 
-	return r.Client.Status().Patch(ctx, ipIndex, patch, &client.SubResourcePatchOptions{
+	return r.Client.Status().Patch(ctx, index, patch, &client.SubResourcePatchOptions{
 		PatchOptions: client.PatchOptions{
 			FieldManager: "backend",
 		},

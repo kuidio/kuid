@@ -31,11 +31,10 @@ type IPEntrySpec struct {
 	Index string `json:"index" yaml:"index" protobuf:"bytes,1,opt,name=index"`
 	// IndexEntry identifies if the entry is originated from an IP Index
 	IndexEntry bool `json:"indexEntry" yaml:"indexEntry" protobuf:"bytes,2,opt,name=indexEntry"`
-	// PrefixType defines the prefixtype of IPEntry; for address and range claims this is not relevant
-	// - network kind is used for physical, virtual nics on a device
-	// - pool kind is used for allocating dedicated IP addresses
-	// - aggregate kind is used for claiming an aggregate prefix; only used for networkInstance prefixes
-	// +kubebuilder:validation:Enum=`network`;`aggregate`;`pool`;
+	// PrefixType network indicates a special type of prefix for which network and broadcast addresses
+	// are claimed in the ipam, used for physical, virtual nics devices
+	// If no prefixes type is defined the internally this is defaulted to other
+	// +kubebuilder:validation:Enum=`network`;`regular`;
 	// +optional
 	PrefixType *IPPrefixType `json:"prefixType,omitempty" yaml:"prefixType,omitempty" protobuf:"bytes,3,opt,name=prefixType"`
 	// ClaimType defines the claimType of the IP Entry

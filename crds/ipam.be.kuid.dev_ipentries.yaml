@@ -78,14 +78,12 @@ spec:
                 type: string
               prefixType:
                 description: |-
-                  PrefixType defines the prefixtype of IPEntry; for address and range claims this is not relevant
-                  - network kind is used for physical, virtual nics on a device
-                  - pool kind is used for allocating dedicated IP addresses
-                  - aggregate kind is used for claiming an aggregate prefix; only used for networkInstance prefixes
+                  PrefixType network indicates a special type of prefix for which network and broadcast addresses
+                  are claimed in the ipam, used for physical, virtual nics devices
+                  If no prefixes type is defined the internally this is defaulted to other
                 enum:
                 - network
-                - aggregate
-                - pool
+                - regular
                 type: string
             required:
             - index
@@ -226,14 +224,12 @@ spec:
                 type: string
               prefixType:
                 description: |-
-                  PrefixType defines the prefixtype of IPEntry; for address and range claims this is not relevant
-                  - network kind is used for physical, virtual nics on a device
-                  - pool kind is used for allocating dedicated IP addresses
-                  - aggregate kind is used for claiming an aggregate prefix; only used for networkInstance prefixes
+                  PrefixType network indicates a special type of prefix for which network and broadcast addresses
+                  are claimed in the ipam, used for physical, virtual nics devices
+                  If no prefixes type is defined the internally this is defaulted to other
                 enum:
                 - network
-                - aggregate
-                - pool
+                - regular
                 type: string
             required:
             - index

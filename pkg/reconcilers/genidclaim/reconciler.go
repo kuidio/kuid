@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package asclaim
+package genidclaim
 
 import (
 	"context"
@@ -24,8 +24,8 @@ import (
 
 	"github.com/henderiw/logger/log"
 	condv1alpha1 "github.com/kform-dev/choreo/apis/condition/v1alpha1"
-	"github.com/kuidio/kuid/apis/backend/as"
-	asbev1alpha1 "github.com/kuidio/kuid/apis/backend/as/v1alpha1"
+	"github.com/kuidio/kuid/apis/backend/genid"
+	genidbev1alpha1 "github.com/kuidio/kuid/apis/backend/genid/v1alpha1"
 	"github.com/kuidio/kuid/pkg/backend"
 	"github.com/kuidio/kuid/pkg/reconcilers"
 	"github.com/kuidio/kuid/pkg/reconcilers/ctrlconfig"
@@ -40,12 +40,12 @@ import (
 )
 
 func init() {
-	reconcilers.Register(as.GroupName, asbev1alpha1.ASClaimKind, &reconciler{})
+	reconcilers.Register(genid.GroupName, genidbev1alpha1.GENIDClaimKind, &reconciler{})
 }
 
 const (
-	reconcilerName = "ASClaimController"
-	finalizer      = "asclaim.as.be.kuid.dev/finalizer"
+	reconcilerName = "GENIDClaimController"
+	finalizer      = "genidclaim.genid.be.kuid.dev/finalizer"
 	// errors
 	errGetCr        = "cannot get cr"
 	errUpdateStatus = "cannot update status"
@@ -61,11 +61,11 @@ func (r *reconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manager, c i
 	r.Client = mgr.GetClient()
 	r.finalizer = resource.NewAPIFinalizer(mgr.GetClient(), finalizer, reconcilerName)
 	r.recorder = mgr.GetEventRecorderFor(reconcilerName)
-	r.be = cfg.Backends[asbev1alpha1.SchemeGroupVersion.Group]
+	r.be = cfg.Backends[genidbev1alpha1.SchemeGroupVersion.Group]
 
 	return nil, ctrl.NewControllerManagedBy(mgr).
 		Named(reconcilerName).
-		For(&asbev1alpha1.ASClaim{}).
+		For(&genidbev1alpha1.GENIDClaim{}).
 		Complete(r)
 }
 
@@ -81,7 +81,7 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 	log := log.FromContext(ctx)
 	log.Info("reconcile")
 
-	claim := &asbev1alpha1.ASClaim{}
+	claim := &genidbev1alpha1.GENIDClaim{}
 	if err := r.Get(ctx, req.NamespacedName, claim); err != nil {
 		// if the resource no longer exists the reconcile loop is done
 		if resource.IgnoreNotFound(err) != nil {
@@ -94,8 +94,8 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 	log.Debug("reconcile", "status orig", claimOrig.Status)
 
 	if !claim.GetDeletionTimestamp().IsZero() {
-		intClaim := &as.ASClaim{}
-		if err := asbev1alpha1.Convert_v1alpha1_ASClaim_To_as_ASClaim(claim, intClaim, nil); err != nil {
+		intClaim := &genid.GENIDClaim{}
+		if err := genidbev1alpha1.Convert_v1alpha1_GENIDClaim_To_genid_GENIDClaim(claim, intClaim, nil); err != nil {
 			return ctrl.Result{Requeue: true},
 				errors.Wrap(r.handleError(ctx, claimOrig, "cannot convert claim before delete claim", err), errUpdateStatus)
 		}
@@ -106,7 +106,7 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 					errors.Wrap(r.handleError(ctx, claimOrig, "cannot delete claim", err), errUpdateStatus)
 			}
 		}
-		if err := asbev1alpha1.Convert_as_ASClaim_To_v1alpha1_ASClaim(intClaim, claim, nil); err != nil {
+		if err := genidbev1alpha1.Convert_genid_GENIDClaim_To_v1alpha1_GENIDClaim(intClaim, claim, nil); err != nil {
 			return ctrl.Result{Requeue: true},
 				errors.Wrap(r.handleError(ctx, claimOrig, "cannot convert claim after delete claim", err), errUpdateStatus)
 		}
@@ -123,8 +123,8 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 			errors.Wrap(r.handleError(ctx, claimOrig, "cannot add finalizer", err), errUpdateStatus)
 	}
 
-	intClaim := &as.ASClaim{}
-	if err := asbev1alpha1.Convert_v1alpha1_ASClaim_To_as_ASClaim(claim, intClaim, nil); err != nil {
+	intClaim := &genid.GENIDClaim{}
+	if err := genidbev1alpha1.Convert_v1alpha1_GENIDClaim_To_genid_GENIDClaim(claim, intClaim, nil); err != nil {
 		return ctrl.Result{Requeue: true},
 			errors.Wrap(r.handleError(ctx, claimOrig, "cannot convert claim before claim", err), errUpdateStatus)
 	}
@@ -132,7 +132,7 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		return ctrl.Result{Requeue: true},
 			errors.Wrap(r.handleError(ctx, claimOrig, "cannot claim", err), errUpdateStatus)
 	}
-	if err := asbev1alpha1.Convert_as_ASClaim_To_v1alpha1_ASClaim(intClaim, claim, nil); err != nil {
+	if err := genidbev1alpha1.Convert_genid_GENIDClaim_To_v1alpha1_GENIDClaim(intClaim, claim, nil); err != nil {
 		return ctrl.Result{Requeue: true},
 			errors.Wrap(r.handleError(ctx, claimOrig, "cannot convert claim after claim", err), errUpdateStatus)
 	}
@@ -140,14 +140,14 @@ func (r *reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 	return ctrl.Result{}, errors.Wrap(r.handleSuccess(ctx, claimOrig), errUpdateStatus)
 }
 
-func (r *reconciler) handleSuccess(ctx context.Context, claim *asbev1alpha1.ASClaim) error {
+func (r *reconciler) handleSuccess(ctx context.Context, claim *genidbev1alpha1.GENIDClaim) error {
 	log := log.FromContext(ctx)
 	log.Debug("handleSuccess", "key", claim.GetNamespacedName(), "status old", claim.DeepCopy().Status)
 	// take a snapshot of the current object
 	patch := client.MergeFrom(claim.DeepCopy())
 	// update status
 	claim.SetConditions(condv1alpha1.Ready())
-	r.recorder.Eventf(claim, corev1.EventTypeNormal, asbev1alpha1.ASClaimKind, "ready")
+	r.recorder.Eventf(claim, corev1.EventTypeNormal, genidbev1alpha1.GENIDClaimKind, "ready")
 
 	
 	log.Debug("handleSuccess", "key", claim.GetNamespacedName(), "status new", claim.Status)
@@ -159,7 +159,7 @@ func (r *reconciler) handleSuccess(ctx context.Context, claim *asbev1alpha1.ASCl
 	})
 }
 
-func (r *reconciler) handleError(ctx context.Context, claim *asbev1alpha1.ASClaim, msg string, err error) error {
+func (r *reconciler) handleError(ctx context.Context, claim *genidbev1alpha1.GENIDClaim, msg string, err error) error {
 	log := log.FromContext(ctx)
 	// take a snapshot of the current object
 	patch := client.MergeFrom(claim.DeepCopy())
@@ -169,7 +169,7 @@ func (r *reconciler) handleError(ctx context.Context, claim *asbev1alpha1.ASClai
 	}
 	claim.SetConditions(condv1alpha1.Failed(msg))
 	log.Error(msg)
-	r.recorder.Eventf(claim, corev1.EventTypeWarning, asbev1alpha1.ASClaimKind, msg)
+	r.recorder.Eventf(claim, corev1.EventTypeWarning, genidbev1alpha1.GENIDClaimKind, msg)
 
 	return r.Client.Status().Patch(ctx, claim, patch, &client.SubResourcePatchOptions{
 		PatchOptions: client.PatchOptions{
