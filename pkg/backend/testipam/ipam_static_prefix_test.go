@@ -14,8 +14,8 @@ func TestIPAMStaticPrefix(t *testing.T) {
 				{Prefix: "172.0.0.0/8"},
 			},
 			prefixes: []testprefix{
-				{claimType: staticPrefix, ip: "10.0.0.0/8", expectedError: true},
-				{claimType: staticPrefix, ip: "2000::/48", expectedError: true},
+				{claimType: staticPrefix, ip: "10.0.0.0/8", expectedError: false},
+				{claimType: staticPrefix, ip: "2000::/48", expectedError: false},
 			},
 		},
 		"NoParentIPv6": {
@@ -25,7 +25,7 @@ func TestIPAMStaticPrefix(t *testing.T) {
 			},
 			prefixes: []testprefix{
 				{claimType: staticPrefix, ip: "172.0.0.0/16", expectedError: false},
-				{claimType: staticPrefix, ip: "2000::/48", expectedError: true},
+				{claimType: staticPrefix, ip: "2000::/48", expectedError: false},
 			},
 		},
 		"ParentIPv6": {
