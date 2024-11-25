@@ -67,6 +67,11 @@ genclients:
 		#-g go-to-protobuf \
 		--module $(REPO) \
 
+genclients2:
+	go run ./tools/apiserver-runtime-gen \
+		-g go-to-protobuf \
+		--module $(REPO) \
+
 .PHONY: generate
 generate: controller-gen 
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./apis/..."

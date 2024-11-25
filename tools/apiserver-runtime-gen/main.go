@@ -99,6 +99,7 @@ func doGen() error {
 	// clientgen
 	clientgenVersions := []string{}
 	informerListergenVersions := []string{}
+	protobufVersions := []string{}
 	typeVersions := []string{}
 	for _, version := range versions {
 		if !strings.Contains(version, "common") && !strings.Contains(version, "id") {
@@ -107,6 +108,7 @@ func doGen() error {
 			// dont expand the versions with modules
 			informerListergenVersions = append(informerListergenVersions, fmt.Sprintf("./%s", path.Join(version, "...")))
 		}
+		protobufVersions = append(protobufVersions, path.Join(module, version))
 		typeVersions = append(typeVersions, path.Join(module, version))
 	}
 
@@ -220,7 +222,7 @@ func doGen() error {
 	if gen["go-to-protobuf"] {
 		err := run(getCmd(
 			"go-to-protobuf",
-			"--packages", strings.Join(typeVersions, ","),
+			"--packages", strings.Join(protobufVersions, ","),
 			"--apimachinery-packages", "-k8s.io/apimachinery/pkg/api/resource,-k8s.io/apimachinery/pkg/runtime/schema,-k8s.io/apimachinery/pkg/runtime,-k8s.io/apimachinery/pkg/apis/meta/v1",
 			//"--proto-import", "./vendor",
 		))
