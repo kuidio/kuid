@@ -131,7 +131,7 @@ func (r *staticAddressApplicator) validateParent(_ context.Context, route table.
 	r.parentLabels = getUserDefinedLabels(routeLabels)
 
 	if pi.IsAddressPrefix() {
-		// 32 or /128 -> cannot be claimed in a network or aggregate
+		// 32 or /128 -> cannot be claimed in a network
 		if parentIPPrefixType != nil &&
 			(*parentIPPrefixType == ipam.IPPrefixType_Network) {
 			return fmt.Errorf("a /32 or /128 address is not possible with a parent of type %s", *parentIPPrefixType)

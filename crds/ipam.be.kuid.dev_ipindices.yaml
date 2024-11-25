@@ -42,9 +42,7 @@ spec:
             description: IPIndexSpec defines the desired state of IPIndex
             properties:
               prefixes:
-                description: |-
-                  Prefixes define the aggregate prefixes for the network instance
-                  A Network instance needs at least 1 prefix to be defined to become operational
+                description: Prefixes define the prefixes for the index
                 items:
                   properties:
                     labels:
@@ -57,23 +55,18 @@ spec:
                       pattern: (([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/(([0-9])|([1-2][0-9])|(3[0-2]))|((:|[0-9a-fA-F]{0,4}):)([0-9a-fA-F]{0,4}:){0,5}((([0-9a-fA-F]{0,4}:)?(:|[0-9a-fA-F]{0,4}))|(((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])))(/(([0-9])|([0-9]{2})|(1[0-1][0-9])|(12[0-8])))
                       type: string
                     prefixType:
-                      default: aggregate
                       description: |-
-                        PrefixType defines the prefixtype of IPIndex;
-                        - network kind is used for physical, virtual nics on a device
-                        - pool kind is used for allocating dedicated IP addresses
-                        - aggregate kind is used for claiming an aggregate prefix; only used for networkInstance prefixes
+                        PrefixType network indicates a special type of prefix for which network and broadcast addresses
+                        are claimed in the ipam, used for physical, virtual nics devices
+                        If no prefixes type is defined the internally this is defaulted to other
                       enum:
                       - network
-                      - aggregate
-                      - pool
+                      - regular
                       type: string
                   required:
                   - prefix
                   type: object
                 type: array
-            required:
-            - prefixes
             type: object
           status:
             description: IPIndexStatus defines the observed state of IPIndex
@@ -156,16 +149,13 @@ spec:
                       pattern: (([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/(([0-9])|([1-2][0-9])|(3[0-2]))|((:|[0-9a-fA-F]{0,4}):)([0-9a-fA-F]{0,4}:){0,5}((([0-9a-fA-F]{0,4}:)?(:|[0-9a-fA-F]{0,4}))|(((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])))(/(([0-9])|([0-9]{2})|(1[0-1][0-9])|(12[0-8])))
                       type: string
                     prefixType:
-                      default: aggregate
                       description: |-
-                        PrefixType defines the prefixtype of IPIndex;
-                        - network kind is used for physical, virtual nics on a device
-                        - pool kind is used for allocating dedicated IP addresses
-                        - aggregate kind is used for claiming an aggregate prefix; only used for networkInstance prefixes
+                        PrefixType network indicates a special type of prefix for which network and broadcast addresses
+                        are claimed in the ipam, used for physical, virtual nics devices
+                        If no prefixes type is defined the internally this is defaulted to other
                       enum:
                       - network
-                      - aggregate
-                      - pool
+                      - regular
                       type: string
                   required:
                   - prefix
@@ -203,9 +193,7 @@ spec:
             description: IPIndexSpec defines the desired state of IPIndex
             properties:
               prefixes:
-                description: |-
-                  Prefixes define the aggregate prefixes for the network instance
-                  A Network instance needs at least 1 prefix to be defined to become operational
+                description: Prefixes define the prefixes for the index
                 items:
                   properties:
                     labels:
@@ -218,23 +206,18 @@ spec:
                       pattern: (([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/(([0-9])|([1-2][0-9])|(3[0-2]))|((:|[0-9a-fA-F]{0,4}):)([0-9a-fA-F]{0,4}:){0,5}((([0-9a-fA-F]{0,4}:)?(:|[0-9a-fA-F]{0,4}))|(((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])))(/(([0-9])|([0-9]{2})|(1[0-1][0-9])|(12[0-8])))
                       type: string
                     prefixType:
-                      default: aggregate
                       description: |-
-                        PrefixType defines the prefixtype of IPIndex;
-                        - network kind is used for physical, virtual nics on a device
-                        - pool kind is used for allocating dedicated IP addresses
-                        - aggregate kind is used for claiming an aggregate prefix; only used for networkInstance prefixes
+                        PrefixType network indicates a special type of prefix for which network and broadcast addresses
+                        are claimed in the ipam, used for physical, virtual nics devices
+                        If no prefixes type is defined the internally this is defaulted to other
                       enum:
                       - network
-                      - aggregate
-                      - pool
+                      - regular
                       type: string
                   required:
                   - prefix
                   type: object
                 type: array
-            required:
-            - prefixes
             type: object
           status:
             description: IPIndexStatus defines the observed state of IPIndex
@@ -317,16 +300,13 @@ spec:
                       pattern: (([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/(([0-9])|([1-2][0-9])|(3[0-2]))|((:|[0-9a-fA-F]{0,4}):)([0-9a-fA-F]{0,4}:){0,5}((([0-9a-fA-F]{0,4}:)?(:|[0-9a-fA-F]{0,4}))|(((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])))(/(([0-9])|([0-9]{2})|(1[0-1][0-9])|(12[0-8])))
                       type: string
                     prefixType:
-                      default: aggregate
                       description: |-
-                        PrefixType defines the prefixtype of IPIndex;
-                        - network kind is used for physical, virtual nics on a device
-                        - pool kind is used for allocating dedicated IP addresses
-                        - aggregate kind is used for claiming an aggregate prefix; only used for networkInstance prefixes
+                        PrefixType network indicates a special type of prefix for which network and broadcast addresses
+                        are claimed in the ipam, used for physical, virtual nics devices
+                        If no prefixes type is defined the internally this is defaulted to other
                       enum:
                       - network
-                      - aggregate
-                      - pool
+                      - regular
                       type: string
                   required:
                   - prefix

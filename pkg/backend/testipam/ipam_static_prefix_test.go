@@ -8,14 +8,6 @@ import (
 
 func TestIPAMStaticPrefix(t *testing.T) {
 	tests := map[string]prefixTest{
-		/*
-			"NotReady": {
-				index: "",
-				prefixes: []testprefix{
-					{claimType: staticPrefix, ip: "172.0.0.0/8", prefixType: aggregate, expectedError: true}, // rib not ready
-				},
-			},
-		*/
 		"NoParents": {
 			index: "a",
 			indexPrefixes: []ipam.Prefix{

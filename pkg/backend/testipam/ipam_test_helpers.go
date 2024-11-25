@@ -50,12 +50,7 @@ const (
 	dynamicAddress = ipam.IPClaimType_DynamicAddress
 )
 
-// var aggregate = ptr.To(ipam.IPPrefixType_Aggregate)
 var network = ptr.To(ipam.IPPrefixType_Network)
-
-//var pool = ptr.To(ipam.IPPrefixType_Pool)
-
-//var other = ptr.To(ipam.IPPrefixType_Other)
 
 func apiServer() *builder.Server {
 	return builder.NewAPIServer().

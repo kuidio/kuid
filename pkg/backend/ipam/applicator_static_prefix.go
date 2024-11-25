@@ -91,11 +91,10 @@ func (r *staticPrefixApplicator) validateParents(ctx context.Context, claim *ipa
 
 	parentRoutes := r.cacheInstanceCtx.rib.Parents(pi.GetIPSubnet())
 	if len(parentRoutes) == 0 {
-		// a parent route is always required unless you are an aggregate route owned
-		// by an IP Index
-		if !claim.IsOwnedByIPIndex() {
-			return fmt.Errorf("no parent found, only possible for routes owned by IPIndex")
-		}
+		// a parent route is always required unless you are a route from an IPIndex
+		//if !claim.IsOwnedByIPIndex() {
+		//	return fmt.Errorf("no parent found, only possible for routes owned by IPIndex")
+		//}
 		return nil
 	}
 	parentRoute := findMostSpecificParent(parentRoutes)
@@ -151,17 +150,8 @@ func (r *staticPrefixApplicator) validateChildren(_ context.Context, claim *ipam
 		childClaimSummaryType := routeLabels[backend.KuidIPAMClaimSummaryTypeKey]
 		//childPrefixType := routeLabels[backend.KuidIPAMIPPrefixTypeKey]
 		switch prefixType {
-		case ipam.IPPrefixType_Regular: // the claim is of type aggregate
+		case ipam.IPPrefixType_Regular:
 			// TODO insertion of prefixes
-			/*
-			if childClaimSummaryType == string(ipam.IPClaimSummaryType_Address) ||
-				childClaimSummaryType == string(ipam.IPClaimSummaryType_Range) {
-				return fmt.Errorf("child with addressing %s not allowed in claim of type %s", childClaimSummaryType, prefixType)
-			}
-			if childPrefixType == string(ipam.IPPrefixType_Aggregate) {
-				return fmt.Errorf("nesting %s is not possible", childPrefixType)
-			}
-				*/
 		case ipam.IPPrefixType_Network:
 			// we only allow range and addresses -> these dont have a claimType
 			if childClaimSummaryType == string(ipam.IPClaimSummaryType_Prefix) {

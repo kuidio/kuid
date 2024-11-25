@@ -73,21 +73,17 @@ func GetIPClaimSummaryTypeFromString(s string) IPClaimSummaryType {
 type IPPrefixType string
 
 const (
-	IPPrefixType_Invalid   IPPrefixType = "invalid"
-	IPPrefixType_Other     IPPrefixType = "other"
-	IPPrefixType_Pool      IPPrefixType = "pool"
-	IPPrefixType_Network   IPPrefixType = "network"
-	IPPrefixType_Aggregate IPPrefixType = "aggregate"
+	IPPrefixType_Invalid IPPrefixType = "invalid"
+	IPPrefixType_Regular IPPrefixType = "regular"
+	IPPrefixType_Network IPPrefixType = "network"
 )
 
 func GetIPPrefixTypeFromString(s string) *IPPrefixType {
 	switch s {
-	case string(IPPrefixType_Pool):
-		return ptr.To[IPPrefixType](IPPrefixType_Pool)
 	case string(IPPrefixType_Network):
 		return ptr.To[IPPrefixType](IPPrefixType_Network)
-	case string(IPPrefixType_Aggregate):
-		return ptr.To[IPPrefixType](IPPrefixType_Aggregate)
+	case string(IPPrefixType_Regular):
+		return ptr.To[IPPrefixType](IPPrefixType_Regular)
 	default:
 		return nil
 	}
