@@ -1,9 +1,0 @@
-apiVersion: ipam.be.kuid.dev/v1alpha1
-kind: IPIndex
-metadata:
-  name: vpc3
-  namespace: default
-spec:
-  prefixes:
-    - prefix: 10.0.0.0/8
-      prefixType: network
