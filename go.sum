@@ -149,6 +149,8 @@ github.com/henderiw/apiserver-builder v0.0.4-0.20241027084658-10d7f9d97252 h1:+I
 github.com/henderiw/apiserver-builder v0.0.4-0.20241027084658-10d7f9d97252/go.mod h1:LfJu1JURnxHwnFa8CVb2XPw50TwdU1xQvuUNxpaSOlE=
 github.com/henderiw/apiserver-store v0.0.3-0.20241106073231-cbded10a8cee h1:Xp1+2fZb7GhS+2HCLlNfWh8oFdFc61ogM5rlCeILiCY=
 github.com/henderiw/apiserver-store v0.0.3-0.20241106073231-cbded10a8cee/go.mod h1:VVkUptd3MTyREmpo+C/t6l+mJAwo3A1UWvHi0QSH0yE=
+github.com/henderiw/apiserver-store v0.0.3-0.20241125153507-9408ac40ee00 h1:4HKu7IOs6W7ZusQ+p9kEA+R1MpwET5ja4N/4ep0hSFI=
+github.com/henderiw/apiserver-store v0.0.3-0.20241125153507-9408ac40ee00/go.mod h1:IQkosLrk7P3M71cMaIrC9BXpMmoKBqblRbJpp+kguE4=
 github.com/henderiw/idxtable v0.0.0-20241126090137-4f6e57a5aec4 h1:c+CfHRWAHKwE+xwnnmveF5Pa7vetcD3tpqcuT4DacjQ=
 github.com/henderiw/idxtable v0.0.0-20241126090137-4f6e57a5aec4/go.mod h1:EPdUFZyKA2IORzohdu67+xBbfDmkHEDUaMN0BBsk8eY=
 github.com/henderiw/iputil v0.0.0-20231218081610-37f78ad9c81c h1:nFnCNyRV1Ej/zqV/gn8UnFESkoPUXhwpUCZyhSYGSYA=
