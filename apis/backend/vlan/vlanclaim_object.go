@@ -23,9 +23,9 @@ import (
 	"strings"
 
 	"github.com/henderiw/idxtable/pkg/table"
-	"github.com/henderiw/idxtable/pkg/table/table32"
+	"github.com/henderiw/idxtable/pkg/table/table16"
 	"github.com/henderiw/idxtable/pkg/tree"
-	"github.com/henderiw/idxtable/pkg/tree/id32"
+	"github.com/henderiw/idxtable/pkg/tree/id16"
 	"github.com/henderiw/store"
 	"github.com/kform-dev/choreo/apis/condition"
 	"github.com/kuidio/kuid/apis/backend"
@@ -253,18 +253,18 @@ func (r *VLANClaim) GetStaticTreeID(t string) tree.ID {
 	if r.Spec.ID == nil {
 		return nil
 	}
-	return id32.NewID(*r.Spec.ID, id32.IDBitSize)
+	return id16.NewID(uint16(*r.Spec.ID), id16.IDBitSize)
 }
 
 func (r *VLANClaim) GetClaimID(t string, id uint64) tree.ID {
-	return id32.NewID(uint32(id), id32.IDBitSize)
+	return id16.NewID(uint16(id), id16.IDBitSize)
 }
 
-func (r *VLANClaim) GetStatusClaimID() tree.ID {
+func (r *VLANClaim) GetStatusClaimID(typ string) tree.ID {
 	if r.Status.ID == nil {
 		return nil
 	}
-	return id32.NewID(uint32(*r.Status.ID), id32.IDBitSize) 
+	return id16.NewID(uint16(*r.Status.ID), id16.IDBitSize) 
 }
 
 func (r *VLANClaim) GetRange() *string {
@@ -275,11 +275,11 @@ func (r *VLANClaim) GetRangeID(t string) (tree.Range, error) {
 	if r.Spec.Range == nil {
 		return nil, fmt.Errorf("cannot provide a range without an id")
 	}
-	return id32.ParseRange(*r.Spec.Range)
+	return id16.ParseRange(*r.Spec.Range)
 }
 
 func (r *VLANClaim) GetTable(t string, to, from uint64) table.Table {
-	return table32.New(uint32(to), uint32(from))
+	return table16.New(uint16(to), uint16(from))
 }
 
 func (r *VLANClaim) SetStatusRange(s *string) {

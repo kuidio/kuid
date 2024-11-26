@@ -57,10 +57,30 @@ func (r *staticApplicator) Apply(ctx context.Context, claim backend.ClaimObject)
 	if parentTreeName == "" {
 		// a claim in the main tree
 		if claimID != nil {
+
+			r.cacheInstanceCtx.tree.PrintNodes()
+			r.cacheInstanceCtx.tree.PrintValues()
+
+			fmt.Println("staticApplicator update", "type", r.cacheInstanceCtx.Type(), "id", claim.GetClaimID(r.cacheInstanceCtx.Type(), *claimID))
 			if err := r.cacheInstanceCtx.tree.Update(claim.GetClaimID(r.cacheInstanceCtx.Type(), *claimID), claim.GetClaimLabels()); err != nil {
 				return err
 			}
 		} else {
+			r.cacheInstanceCtx.tree.PrintNodes()
+			r.cacheInstanceCtx.tree.PrintValues()
+
+			fmt.Println("staticApplicator claim", "type", r.cacheInstanceCtx.Type(), claim.GetStaticTreeID(r.cacheInstanceCtx.Type()), claim.GetClaimLabels())
+
+			statusID := "nil"
+			if claim.GetStatusID() != nil {
+				statusID = fmt.Sprintf("%d", *claim.GetStatusID())
+			}
+			staticID := "nil"
+			if claim.GetStaticID() != nil {
+				staticID = fmt.Sprintf("%d", *claim.GetStaticID())
+			}
+
+			fmt.Println("staticApplicator claim", "status", statusID, "id", staticID)
 			if err := r.cacheInstanceCtx.tree.ClaimID(claim.GetStaticTreeID(r.cacheInstanceCtx.Type()), claim.GetClaimLabels()); err != nil {
 				return err
 			}

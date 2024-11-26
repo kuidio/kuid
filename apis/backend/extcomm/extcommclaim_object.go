@@ -24,9 +24,12 @@ import (
 
 	"github.com/henderiw/idxtable/pkg/table"
 	"github.com/henderiw/idxtable/pkg/table/table16"
+	"github.com/henderiw/idxtable/pkg/table/table32"
+	"github.com/henderiw/idxtable/pkg/table/table64"
 	"github.com/henderiw/idxtable/pkg/tree"
 	"github.com/henderiw/idxtable/pkg/tree/id16"
 	"github.com/henderiw/idxtable/pkg/tree/id32"
+	"github.com/henderiw/idxtable/pkg/tree/id64"
 	"github.com/henderiw/store"
 	"github.com/kform-dev/choreo/apis/condition"
 	"github.com/kuidio/kuid/apis/backend"
@@ -264,37 +267,68 @@ func (r *EXTCOMMClaim) GetStaticID() *uint64 {
 	}
 	return ptr.To[uint64](uint64(*r.Spec.ID))
 }
-func (r *EXTCOMMClaim) GetStaticTreeID(t string) tree.ID {
+func (r *EXTCOMMClaim) GetStaticTreeID(typ string) tree.ID {
 	if r.Spec.ID == nil {
 		return nil
 	}
-	return id16.NewID(uint16(*r.Spec.ID), id16.IDBitSize)
+	return getTreeID(typ, *r.Spec.ID)
 }
 
-func (r *EXTCOMMClaim) GetClaimID(t string, id uint64) tree.ID {
-	return id16.NewID(uint16(id), id16.IDBitSize)
+func (r *EXTCOMMClaim) GetClaimID(typ string, id uint64) tree.ID {
+	return getTreeID(typ, *r.Status.ID)
 }
 
-func (r *EXTCOMMClaim) GetStatusClaimID() tree.ID {
+func (r *EXTCOMMClaim) GetStatusClaimID(typ string) tree.ID {
 	if r.Status.ID == nil {
 		return nil
 	}
-	return id16.NewID(uint16(*r.Status.ID), id16.IDBitSize) 
+	return getTreeID(typ, *r.Status.ID)
+}
+
+func getTreeID(typ string, id uint64) tree.ID {
+	switch GetEXTCOMMType(typ) {
+	case ExtendedCommunityType_IPv4Address, ExtendedCommunityType_4byteAS:
+		return id16.NewID(uint16(id), id16.IDBitSize)
+	case ExtendedCommunityType_2byteAS:
+		return id32.NewID(uint32(id), id32.IDBitSize)
+	case ExtendedCommunityType_Opaque:
+		return id64.NewID(uint64(id), id64.IDBitSize)
+	default:
+		return nil
+	}
 }
 
 func (r *EXTCOMMClaim) GetRange() *string {
 	return r.Spec.Range
 }
 
-func (r *EXTCOMMClaim) GetRangeID(t string) (tree.Range, error) {
+func (r *EXTCOMMClaim) GetRangeID(typ string) (tree.Range, error) {
 	if r.Spec.Range == nil {
 		return nil, fmt.Errorf("cannot provide a range without an id")
 	}
-	return id32.ParseRange(*r.Spec.Range)
+	switch GetEXTCOMMType(typ) {
+	case ExtendedCommunityType_IPv4Address, ExtendedCommunityType_4byteAS:
+		return id16.ParseRange(*r.Spec.Range)
+	case ExtendedCommunityType_2byteAS:
+		return id32.ParseRange(*r.Spec.Range)
+	case ExtendedCommunityType_Opaque:
+		return id64.ParseRange(*r.Spec.Range)
+	default:
+		return nil, fmt.Errorf("cannot provide a range for invalid type %s", typ)
+	}
 }
 
-func (r *EXTCOMMClaim) GetTable(t string, to, from uint64) table.Table {
-	return table16.New(uint16(to), uint16(from))
+func (r *EXTCOMMClaim) GetTable(typ string, to, from uint64) table.Table {
+	switch GetEXTCOMMType(typ) {
+	case ExtendedCommunityType_IPv4Address, ExtendedCommunityType_4byteAS:
+		return table16.New(uint16(to), uint16(from))
+	case ExtendedCommunityType_2byteAS:
+		return table32.New(uint32(to), uint32(from))
+	case ExtendedCommunityType_Opaque:
+		return table64.New(uint64(to), uint64(from))
+	default:
+		return nil
+	}
 }
 
 func (r *EXTCOMMClaim) SetStatusRange(s *string) {

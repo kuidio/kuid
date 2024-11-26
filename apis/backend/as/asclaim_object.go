@@ -260,7 +260,7 @@ func (r *ASClaim) GetClaimID(t string, id uint64) tree.ID {
 	return id32.NewID(uint32(id), id32.IDBitSize)
 }
 
-func (r *ASClaim) GetStatusClaimID() tree.ID {
+func (r *ASClaim) GetStatusClaimID(_ string) tree.ID {
 	if r.Status.ID == nil {
 		return nil
 	}
@@ -271,14 +271,14 @@ func (r *ASClaim) GetRange() *string {
 	return r.Spec.Range
 }
 
-func (r *ASClaim) GetRangeID(t string) (tree.Range, error) {
+func (r *ASClaim) GetRangeID(_ string) (tree.Range, error) {
 	if r.Spec.Range == nil {
 		return nil, fmt.Errorf("cannot provide a range without an id")
 	}
 	return id32.ParseRange(*r.Spec.Range)
 }
 
-func (r *ASClaim) GetTable(t string, to, from uint64) table.Table {
+func (r *ASClaim) GetTable(_ string, to, from uint64) table.Table {
 	return table32.New(uint32(to), uint32(from))
 }
 

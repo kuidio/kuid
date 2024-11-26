@@ -45,7 +45,7 @@ func (r *ASIndex) GetNamespacedName() types.NamespacedName {
 }
 
 func (r *ASIndex) GetTree() gtree.GTree {
-	tree, err := tree32.New(32)
+	tree, err := tree32.New(fmt.Sprintf("asindex.%s", r.Name), 32)
 	if err != nil {
 		panic(err)
 	}

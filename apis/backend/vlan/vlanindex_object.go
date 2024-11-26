@@ -21,7 +21,7 @@ import (
 	"fmt"
 
 	"github.com/henderiw/idxtable/pkg/tree/gtree"
-	"github.com/henderiw/idxtable/pkg/tree/tree32"
+	"github.com/henderiw/idxtable/pkg/tree/tree16"
 	"github.com/henderiw/store"
 	"github.com/kuidio/kuid/apis/backend"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -45,7 +45,8 @@ func (r *VLANIndex) GetNamespacedName() types.NamespacedName {
 }
 
 func (r *VLANIndex) GetTree() gtree.GTree {
-	tree, err := tree32.New(32)
+	//tree, err := tree32.New(32)
+	tree, err := tree16.New(fmt.Sprintf("vlanidindex.%s", r.Name), 12)
 	if err != nil {
 		panic(err)
 	}

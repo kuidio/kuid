@@ -124,7 +124,7 @@ func (r *dynamicApplicator) Apply(ctx context.Context, claim backend.ClaimObject
 		}
 		if claim.GetStatusID() != nil {
 			// TODO check if free ?
-			if err := r.cacheInstanceCtx.tree.ClaimID(claim.GetStatusClaimID(), claim.GetClaimLabels()); err != nil {
+			if err := r.cacheInstanceCtx.tree.ClaimID(claim.GetStatusClaimID(r.cacheInstanceCtx.Type()), claim.GetClaimLabels()); err != nil {
 				return fmt.Errorf("reclaim status id claim failed, no claim ID found err: %s", err)
 			}
 			claim.SetStatusID(claim.GetStatusID())
