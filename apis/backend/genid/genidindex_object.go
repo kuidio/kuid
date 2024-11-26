@@ -49,25 +49,25 @@ func (r *GENIDIndex) GetNamespacedName() types.NamespacedName {
 func (r *GENIDIndex) GetTree() gtree.GTree {
 	switch GetGenIDType(r.Spec.Type) {
 	case GENIDType_16bit:
-		tree, err := tree16.New(16)
+		tree, err := tree16.New(fmt.Sprintf("genidindex.%s", r.Name), 16)
 		if err != nil {
 			return nil
 		}
 		return tree
 	case GENIDType_32bit:
-		tree, err := tree32.New(32)
+		tree, err := tree32.New(fmt.Sprintf("genidindex.%s", r.Name), 32)
 		if err != nil {
 			return nil
 		}
 		return tree
 	case GENIDType_48bit:
-		tree, err := tree64.New(48)
+		tree, err := tree64.New(fmt.Sprintf("genidindex.%s", r.Name), 48)
 		if err != nil {
 			return nil
 		}
 		return tree
 	case GENIDType_64bit:
-		tree, err := tree64.New(64)
+		tree, err := tree64.New(fmt.Sprintf("genidindex.%s", r.Name), 64)
 		if err != nil {
 			return nil
 		}

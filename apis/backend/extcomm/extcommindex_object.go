@@ -49,19 +49,19 @@ func (r *EXTCOMMIndex) GetNamespacedName() types.NamespacedName {
 func (r *EXTCOMMIndex) GetTree() gtree.GTree {
 	switch GetEXTCOMMType(r.Spec.Type) {
 	case ExtendedCommunityType_IPv4Address, ExtendedCommunityType_4byteAS:
-		tree, err := tree16.New(16)
+		tree, err := tree16.New(fmt.Sprintf("extcommindex.%s", r.Name), 16)
 		if err != nil {
 			return nil
 		}
 		return tree
 	case ExtendedCommunityType_2byteAS:
-		tree, err := tree32.New(32)
+		tree, err := tree32.New(fmt.Sprintf("extcommindex.%s", r.Name), 32)
 		if err != nil {
 			return nil
 		}
 		return tree
 	case ExtendedCommunityType_Opaque:
-		tree, err := tree64.New(48)
+		tree, err := tree64.New(fmt.Sprintf("extcommindex.%s", r.Name), 48)
 		if err != nil {
 			return nil
 		}

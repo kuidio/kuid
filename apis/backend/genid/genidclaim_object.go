@@ -24,9 +24,12 @@ import (
 
 	"github.com/henderiw/idxtable/pkg/table"
 	"github.com/henderiw/idxtable/pkg/table/table16"
+	"github.com/henderiw/idxtable/pkg/table/table32"
+	"github.com/henderiw/idxtable/pkg/table/table64"
 	"github.com/henderiw/idxtable/pkg/tree"
 	"github.com/henderiw/idxtable/pkg/tree/id16"
 	"github.com/henderiw/idxtable/pkg/tree/id32"
+	"github.com/henderiw/idxtable/pkg/tree/id64"
 	"github.com/henderiw/store"
 	"github.com/kform-dev/choreo/apis/condition"
 	"github.com/kuidio/kuid/apis/backend"
@@ -251,37 +254,75 @@ func (r *GENIDClaim) GetStaticID() *uint64 {
 	}
 	return ptr.To[uint64](uint64(*r.Spec.ID))
 }
-func (r *GENIDClaim) GetStaticTreeID(t string) tree.ID {
+func (r *GENIDClaim) GetStaticTreeID(typ string) tree.ID {
 	if r.Spec.ID == nil {
 		return nil
 	}
-	return id16.NewID(uint16(*r.Spec.ID), id16.IDBitSize)
+	return getTreeID(typ, *r.Spec.ID)
 }
 
-func (r *GENIDClaim) GetClaimID(t string, id uint64) tree.ID {
-	return id16.NewID(uint16(id), id16.IDBitSize)
+func (r *GENIDClaim) GetClaimID(typ string, id uint64) tree.ID {
+	return getTreeID(typ, id)
 }
 
-func (r *GENIDClaim) GetStatusClaimID() tree.ID {
+func (r *GENIDClaim) GetStatusClaimID(typ string) tree.ID {
 	if r.Status.ID == nil {
 		return nil
 	}
-	return id16.NewID(uint16(*r.Status.ID), id16.IDBitSize) 
+	return getTreeID(typ, *r.Status.ID)
+	
+}
+
+func getTreeID(typ string, id uint64) tree.ID {
+	switch GetGenIDType(typ) {
+	case GENIDType_16bit:
+		return id16.NewID(uint16(id), id16.IDBitSize)
+	case GENIDType_32bit:
+		return id32.NewID(uint32(id), id32.IDBitSize)
+	case GENIDType_48bit:
+		return id64.NewID(uint64(id), id64.IDBitSize)
+	case GENIDType_64bit:
+		return id64.NewID(uint64(id), id64.IDBitSize)
+	default:
+		return nil
+	}
 }
 
 func (r *GENIDClaim) GetRange() *string {
 	return r.Spec.Range
 }
 
-func (r *GENIDClaim) GetRangeID(t string) (tree.Range, error) {
+func (r *GENIDClaim) GetRangeID(typ string) (tree.Range, error) {
 	if r.Spec.Range == nil {
 		return nil, fmt.Errorf("cannot provide a range without an id")
 	}
-	return id32.ParseRange(*r.Spec.Range)
+	switch GetGenIDType(typ) {
+	case GENIDType_16bit:
+		return id16.ParseRange(*r.Spec.Range)
+	case GENIDType_32bit:
+		return id32.ParseRange(*r.Spec.Range)
+	case GENIDType_48bit:
+		return id64.ParseRange(*r.Spec.Range)
+	case GENIDType_64bit:
+		return id64.ParseRange(*r.Spec.Range)
+	default:
+		return nil, fmt.Errorf("cannot provide a range for an invalid type %s", typ)
+	}
 }
 
-func (r *GENIDClaim) GetTable(t string, to, from uint64) table.Table {
-	return table16.New(uint16(to), uint16(from))
+func (r *GENIDClaim) GetTable(typ string, to, from uint64) table.Table {
+	switch GetGenIDType(typ) {
+	case GENIDType_16bit:
+		return table16.New(uint16(to), uint16(from))
+	case GENIDType_32bit:
+		return table32.New(uint32(to), uint32(from))
+	case GENIDType_48bit:
+		return table64.New(uint64(to), uint64(from))
+	case GENIDType_64bit:
+		return table64.New(uint64(to), uint64(from))
+	default:
+		return nil
+	}
 }
 
 func (r *GENIDClaim) SetStatusRange(s *string) {

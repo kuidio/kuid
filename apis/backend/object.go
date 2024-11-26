@@ -52,12 +52,12 @@ type ClaimObject interface {
 	ValidateOwner(labels labels.Set) error
 	GetClaimType() ClaimType
 	GetStaticID() *uint64
-	GetStaticTreeID(t string) tree.ID
-	GetClaimID(t string, id uint64) tree.ID
-	GetStatusClaimID() tree.ID
+	GetStaticTreeID(typ string) tree.ID
+	GetClaimID(typ string, id uint64) tree.ID
+	GetStatusClaimID(typ string) tree.ID
 	GetRange() *string
-	GetRangeID(t string) (tree.Range, error)
-	GetTable(t string, to, from uint64) table.Table
+	GetRangeID(typ string) (tree.Range, error)
+	GetTable(typ string, to, from uint64) table.Table
 	SetStatusRange(*string)
 	SetStatusID(*uint64)
 	GetStatusID() *uint64

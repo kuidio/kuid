@@ -12,8 +12,8 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/hansthienpondt/nipam v0.0.5
 	github.com/henderiw/apiserver-builder v0.0.4-0.20241027084658-10d7f9d97252
-	github.com/henderiw/apiserver-store v0.0.3-0.20241123163714-2d8a6285d509
-	github.com/henderiw/idxtable v0.0.0-20241021085446-f8d804551342
+	github.com/henderiw/apiserver-store v0.0.3-0.20241106073231-cbded10a8cee
+	github.com/henderiw/idxtable v0.0.0-20241126072607-eb2091dd57b5
 	github.com/henderiw/iputil v0.0.0-20231218081610-37f78ad9c81c
 	github.com/henderiw/logger v0.0.0-20230911123436-8655829b1abe
 	github.com/henderiw/store v0.0.2-0.20241020093537-5a92d3e14a02
