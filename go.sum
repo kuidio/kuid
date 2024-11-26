@@ -149,8 +149,8 @@ github.com/henderiw/apiserver-builder v0.0.4-0.20241027084658-10d7f9d97252 h1:+I
 github.com/henderiw/apiserver-builder v0.0.4-0.20241027084658-10d7f9d97252/go.mod h1:LfJu1JURnxHwnFa8CVb2XPw50TwdU1xQvuUNxpaSOlE=
 github.com/henderiw/apiserver-store v0.0.3-0.20241106073231-cbded10a8cee h1:Xp1+2fZb7GhS+2HCLlNfWh8oFdFc61ogM5rlCeILiCY=
 github.com/henderiw/apiserver-store v0.0.3-0.20241106073231-cbded10a8cee/go.mod h1:VVkUptd3MTyREmpo+C/t6l+mJAwo3A1UWvHi0QSH0yE=
-github.com/henderiw/idxtable v0.0.0-20241126072607-eb2091dd57b5 h1:MAeY2LJyj04Vag2CcInupEucsjUXu80A/bF719rvof4=
-github.com/henderiw/idxtable v0.0.0-20241126072607-eb2091dd57b5/go.mod h1:EPdUFZyKA2IORzohdu67+xBbfDmkHEDUaMN0BBsk8eY=
+github.com/henderiw/idxtable v0.0.0-20241126090137-4f6e57a5aec4 h1:c+CfHRWAHKwE+xwnnmveF5Pa7vetcD3tpqcuT4DacjQ=
+github.com/henderiw/idxtable v0.0.0-20241126090137-4f6e57a5aec4/go.mod h1:EPdUFZyKA2IORzohdu67+xBbfDmkHEDUaMN0BBsk8eY=
 github.com/henderiw/iputil v0.0.0-20231218081610-37f78ad9c81c h1:nFnCNyRV1Ej/zqV/gn8UnFESkoPUXhwpUCZyhSYGSYA=
 github.com/henderiw/iputil v0.0.0-20231218081610-37f78ad9c81c/go.mod h1:PrPJdVAwtl5tL323wykHZ5L/b7tfJJsjhegza/wq4fQ=
 github.com/henderiw/logger v0.0.0-20230911123436-8655829b1abe h1:+R53KH7fW+pmqlfSYVTCGPn8pj6gqBGcQ0nq7L1h8+g=
@@ -480,7 +480,5 @@ sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3 h1:/Rv+M11QRah1itp8VhT6HoVx1
 sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3/go.mod h1:18nIHnGi6636UCz6m8i4DhaJ65T6EruyzmoQqI2BVDo=
 sigs.k8s.io/structured-merge-diff/v4 v4.4.1 h1:150L+0vs/8DA78h1u02ooW1/fFq/Lwr+sGiqlzvrtq4=
 sigs.k8s.io/structured-merge-diff/v4 v4.4.1/go.mod h1:N8hJocpFajUSSeSJ9bOZ77VzejKZaXsTtZo4/u7Io08=
-sigs.k8s.io/structured-merge-diff/v4 v4.4.3 h1:sCP7Vv3xx/CWIuTPVN38lUPx0uw0lcLfzaiDa8Ja01A=
-sigs.k8s.io/structured-merge-diff/v4 v4.4.3/go.mod h1:N8f93tFZh9U6vpxwRArLiikrE5/2tiu1w1AGfACIGE4=
 sigs.k8s.io/yaml v1.4.0 h1:Mk1wCc2gy/F0THH0TAp1QYyJNzRm2KCLy3o5ASXVI5E=
 sigs.k8s.io/yaml v1.4.0/go.mod h1:Ejl7/uTz7PSA4eKMyQCUTnhZYNmLIl+5c2lQPGR2BPY=
