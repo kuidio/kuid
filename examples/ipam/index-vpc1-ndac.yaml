@@ -1,0 +1,8 @@
+apiVersion: ipam.be.kuid.dev/v1alpha1
+kind: IPIndex
+metadata:
+  name: vpc1-ndac
+  namespace: default
+spec:
+  prefixes:
+  - prefix: 10.0.0.0/8
