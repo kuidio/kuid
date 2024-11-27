@@ -83,7 +83,7 @@ crds: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomRes
 .PHONY: artifacts
 artifacts: kform
 	mkdir -p artifacts/out
-	$(KFORM) apply artifacts -o artifacts/out/artifacts.yaml
+	$(KFORM) apply artifacts -i artifacts/in/configmap-input-vars.yaml -o artifacts/out/artifacts.yaml
 
 .PHONY:
 fix:
