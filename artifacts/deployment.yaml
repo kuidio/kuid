@@ -24,7 +24,7 @@ spec:
       serviceAccountName: kuid-server
       containers:
       - name: kuid-server
-        image: europe-docker.pkg.dev/srlinux/eu.gcr.io/kuid-server:latest
+        image: input.context[0].data.kuidServerImage
         imagePullPolicy: Always
         command:
         - /app/kuid-server

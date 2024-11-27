@@ -613,11 +613,29 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: kuid-server
+  name: kuid-server-metrics
+  namespace: kuid-system
+spec:
+  ports:
+  - name: metrics
+    port: 8443
+    protocol: TCP
+    targetPort: 8443
+  selector:
+    app.kubernetes.io/name: kuid-server
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: kuid-server
   name: kuid-server
   namespace: kuid-system
 spec:
   ports:
-  - port: 6443
+  - name: apiserver
+    port: 6443
     protocol: TCP
     targetPort: 6443
   selector:
