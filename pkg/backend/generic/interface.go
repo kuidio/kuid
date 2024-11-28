@@ -160,6 +160,9 @@ func (r *kuidbe) ListClaims(ctx context.Context, k store.Key, opts ...ListOption
 			errm = errors.Join(errm, err)
 			continue
 		}
+		if claimObj.GetIndex() != k.Name {
+			continue
+		}
 		if o.OwnerKind != "" {
 			for _, ownerref := range claimObj.GetOwnerReferences() {
 				if ownerref.Kind == o.OwnerKind {
@@ -167,9 +170,7 @@ func (r *kuidbe) ListClaims(ctx context.Context, k store.Key, opts ...ListOption
 				}
 			}
 		} else {
-			if claimObj.GetIndex() == k.Name {
-				claimMap[claimObj.GetNamespacedName().String()] = claimObj
-			}
+			claimMap[claimObj.GetNamespacedName().String()] = claimObj
 		}
 	}
 	return claimMap, errm

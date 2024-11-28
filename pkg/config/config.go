@@ -27,7 +27,8 @@ import (
 )
 
 var (
-	configDir = "/config"
+	configDir      = "/config"
+	configFilePath = "/etc/kuid/config.json"
 )
 
 type StorageType string
@@ -38,32 +39,35 @@ const (
 	StorageType_Git      StorageType = "git"
 	StorageType_Badgerdb StorageType = "badgerdb"
 	StorageType_Etcd     StorageType = "etcd"
+	StorageType_PostGres StorageType = "postgres"
 )
 
 type KuidGroupConfig struct {
-	Group   string `json:"Group"`
-	Enabled bool   `json:"Enabled"`
-	Sync    bool   `json:"Mode"` // Sync or Async -> only possible with
+	Group   string `json:"group"`
+	Enabled bool   `json:"enabled"`
+	Sync    bool   `json:"sync"` // Sync or Async -> only possible with
 }
 
 type KuidConfig struct {
-	Storage StorageType        `json:"Storage"`
+	Storage StorageType        `json:"storage"`
 	Groups  []*KuidGroupConfig `json:"groups"`
 }
 
 func GetKuidConfig() (*KuidConfig, error) {
-	if val, found := os.LookupEnv("KUID_CONFIG"); found {
-		cfg := &KuidConfig{}
-		if err := json.Unmarshal([]byte(val), cfg); err != nil {
-			return nil, err
-		}
-
-		// need to add some validation
-		// sync with etcd is not possible
-
-		return cfg, nil
+	if !isFile(configFilePath) {
+		return getDefaultConfig(), nil
 	}
-	return getDefaultConfig(), nil
+	b, err := os.ReadFile(configFilePath)
+	if err != nil {
+		return nil, err
+	}
+	cfg := &KuidConfig{}
+	if err := json.Unmarshal([]byte(b), cfg); err != nil {
+		return nil, err
+	}
+	// TODO need to add some validation
+	// sync with etcd is not possible
+	return cfg, nil
 }
 
 func getDefaultConfig() *KuidConfig {
@@ -103,4 +107,15 @@ func GetRegistryOptions(ctx context.Context, typ StorageType) (*options.Options,
 			Type:   options.StorageType_Memory,
 		}, nil
 	}
+}
+
+func isFile(path string) bool {
+	info, err := os.Stat(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return false // File does not exist
+		}
+		return false
+	}
+	return info.Mode().IsRegular() // Returns true if it is a regular file
 }

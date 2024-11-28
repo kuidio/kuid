@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kuid-config
+  namespace: kuid-system
+data:
+  config.json: |
+    {
+      "storage": "badgerdb",
+      "groups": [
+        {
+          "group": "infra.kuid.dev",
+          "enabled": true,
+          "sync": true
+        },
+        {
+          "group": "as.be.kuid.dev",
+          "enabled": true,
+          "sync": true
+        },
+        {
+          "group": "extcomm.be.kuid.dev",
+          "enabled": true,
+          "sync": true
+        },
+        {
+          "group": "genid.be.kuid.dev",
+          "enabled": true,
+          "sync": true
+        },
+        {
+          "group": "ipam.be.kuid.dev",
+          "enabled": true,
+          "sync": true
+        },
+        {
+          "group": "vlan.be.kuid.dev",
+          "enabled": true,
+          "sync": true
+        }
+      ]
+    }

@@ -30,11 +30,6 @@ async versus sync:
 ## open
 
 - FieldSelector would be nice when listing the items to be able to check if they belong to the index
-- Update? How to handle
-- Conversion function for CRD(s) - how does this work ???? -> this will determine if we can keep choreo aligned or not
-
-Choreo -> we need a conversion function conversion function
-
 
 TODO:
 - align the rest interface from choreo with the rest interface of 
