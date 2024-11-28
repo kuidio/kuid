@@ -167,30 +167,6 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: status.hostIP
-        - name: ENABLE_ASINDEX
-          value: "true"
-        - name: ENABLE_ASCLAIM
-          value: "true"
-        - name: ENABLE_VLANINDEX
-          value: "true"
-        - name: ENABLE_VLANCLAIM
-          value: "true"
-        - name: ENABLE_VXLANINDEX
-          value: "true"
-        - name: ENABLE_VXLANCLAIM
-          value: "true"
-        - name: ENABLE_IPINDEX
-          value: "true"
-        - name: ENABLE_IPCLAIM
-          value: "true"
-        - name: ENABLE_EXTCOMMINDEX
-          value: "true"
-        - name: ENABLE_EXTCOMMCLAIM
-          value: "true"
-        - name: ENABLE_GENIDINDEX
-          value: "true"
-        - name: ENABLE_GENIDCLAIM
-          value: "true"
         image: europe-docker.pkg.dev/srlinux/eu.gcr.io/kuid-server:latest
         imagePullPolicy: Always
         name: kuid-server
@@ -200,6 +176,9 @@ spec:
           readOnly: true
         - mountPath: /config
           name: config-store
+        - mountPath: /etc/kuid
+          name: config-volume
+          readOnly: true
       securityContext:
         fsGroup: 10000
         runAsGroup: 10000
@@ -212,6 +191,10 @@ spec:
       - name: config-store
         persistentVolumeClaim:
           claimName: pvc-config-store
+      - configMap:
+          name: kuid-config
+          optional: true
+        name: config-volume
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -579,6 +562,50 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: kuid-server
+  namespace: kuid-system
+
+---
+apiVersion: v1
+data:
+  config.json: |-
+    {
+      "storage": "badgerdb",
+      "groups": [
+        {
+          "group": "infra.kuid.dev",
+          "enabled": true,
+          "sync": true
+        },
+        {
+          "group": "as.be.kuid.dev",
+          "enabled": true,
+          "sync": true
+        },
+        {
+          "group": "extcomm.be.kuid.dev",
+          "enabled": true,
+          "sync": true
+        },
+        {
+          "group": "genid.be.kuid.dev",
+          "enabled": true,
+          "sync": true
+        },
+        {
+          "group": "ipam.be.kuid.dev",
+          "enabled": true,
+          "sync": true
+        },
+        {
+          "group": "vlan.be.kuid.dev",
+          "enabled": true,
+          "sync": true
+        }
+      ]
+    }
+kind: ConfigMap
+metadata:
+  name: kuid-config
   namespace: kuid-system
 
 ---

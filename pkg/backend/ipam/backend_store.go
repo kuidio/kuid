@@ -138,7 +138,7 @@ func (r *be) saveAll(ctx context.Context, k store.Key) error {
 		}
 	}
 	for _, curEntry := range curEntries {
-		log.Debug("saveAll delete entry", "entry", curEntry.GetNamespacedName())
+		log.Info("saveAll delete entry", "entry", curEntry.GetNamespacedName())
 		if err := r.bestorage.DeleteEntry(ctx, curEntry); err != nil {
 			log.Error("saveAll update failed", "name", curEntry.GetName(), "error", err.Error())
 			return err
@@ -318,7 +318,7 @@ func (r *be) updateIPIndexClaims(ctx context.Context, index *ipam.IPIndex) error
 	}
 
 	for _, claim := range existingClaims {
-		log.Debug("updateIPIndexClaims: delete existing claims", "claim", claim.GetName())
+		log.Info("updateIPIndexClaims: delete existing claims", "claim", claim.GetName())
 		if err := r.bestorage.DeleteClaim(ctx, claim); err != nil {
 			log.Error("updateIPIndexClaims delete failed", "name", claim.GetName(), "error", err.Error())
 			errm = errors.Join(errm, err)

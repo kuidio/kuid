@@ -56,36 +56,16 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: status.hostIP
-        - name: ENABLE_ASINDEX
-          value: "true"
-        - name: ENABLE_ASCLAIM
-          value: "true"
-        - name: ENABLE_VLANINDEX
-          value: "true"
-        - name: ENABLE_VLANCLAIM
-          value: "true"
-        - name: ENABLE_VXLANINDEX
-          value: "true"
-        - name: ENABLE_VXLANCLAIM
-          value: "true"
-        - name: ENABLE_IPINDEX
-          value: "true"
-        - name: ENABLE_IPCLAIM
-          value: "true"
-        - name: ENABLE_EXTCOMMINDEX
-          value: "true"
-        - name: ENABLE_EXTCOMMCLAIM
-          value: "true"
-        - name: ENABLE_GENIDINDEX
-          value: "true"
-        - name: ENABLE_GENIDCLAIM
-          value: "true"
         volumeMounts:
         - name: apiserver-certs
           mountPath: /apiserver.local.config/certificates
           readOnly: true
         - name: config-store
           mountPath: /config
+        # Mount the ConfigMap as a file
+        - name: config-volume
+          mountPath: /etc/kuid
+          readOnly: true
       volumes:
       - name: apiserver-certs
         secret:
@@ -93,3 +73,7 @@ spec:
       - name: config-store
         persistentVolumeClaim:
           claimName: pvc-config-store
+      - name: config-volume
+        configMap:
+          name: kuid-config
+          optional: true 
