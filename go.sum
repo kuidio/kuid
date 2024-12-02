@@ -147,8 +147,6 @@ github.com/hansthienpondt/nipam v0.0.5 h1:83Mdwdgx3l9tvio8u8ufan97MWx49n38IJwgSB
 github.com/hansthienpondt/nipam v0.0.5/go.mod h1:dJI5FdzV6iaQyaOH4htGqJNs6wGieJeX3lhPj1Ah19U=
 github.com/henderiw/apiserver-builder v0.0.4-0.20241027084658-10d7f9d97252 h1:+I3bHSWCKCKLoUZHRSMCxs5Q7DMFFgdE+DfhOsOOGko=
 github.com/henderiw/apiserver-builder v0.0.4-0.20241027084658-10d7f9d97252/go.mod h1:LfJu1JURnxHwnFa8CVb2XPw50TwdU1xQvuUNxpaSOlE=
-github.com/henderiw/apiserver-store v0.0.3-0.20241106073231-cbded10a8cee h1:Xp1+2fZb7GhS+2HCLlNfWh8oFdFc61ogM5rlCeILiCY=
-github.com/henderiw/apiserver-store v0.0.3-0.20241106073231-cbded10a8cee/go.mod h1:VVkUptd3MTyREmpo+C/t6l+mJAwo3A1UWvHi0QSH0yE=
 github.com/henderiw/apiserver-store v0.0.3-0.20241125153507-9408ac40ee00 h1:4HKu7IOs6W7ZusQ+p9kEA+R1MpwET5ja4N/4ep0hSFI=
 github.com/henderiw/apiserver-store v0.0.3-0.20241125153507-9408ac40ee00/go.mod h1:IQkosLrk7P3M71cMaIrC9BXpMmoKBqblRbJpp+kguE4=
 github.com/henderiw/idxtable v0.0.0-20241126090137-4f6e57a5aec4 h1:c+CfHRWAHKwE+xwnnmveF5Pa7vetcD3tpqcuT4DacjQ=
@@ -476,8 +474,8 @@ k8s.io/utils v0.0.0-20240711033017-18e509b52bc8 h1:pUdcCO1Lk/tbT5ztQWOBi5HBgbBP1
 k8s.io/utils v0.0.0-20240711033017-18e509b52bc8/go.mod h1:OLgZIPagt7ERELqWJFomSt595RzquPNLL48iOWgYOg0=
 sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.30.3 h1:2770sDpzrjjsAtVhSeUFseziht227YAWYHLGNM8QPwY=
 sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.30.3/go.mod h1:Ve9uj1L+deCXFrPOk1LpFXqTg7LCFzFso6PA48q/XZw=
-sigs.k8s.io/controller-runtime v0.19.0 h1:nWVM7aq+Il2ABxwiCizrVDSlmDcshi9llbaFbC0ji/Q=
-sigs.k8s.io/controller-runtime v0.19.0/go.mod h1:iRmWllt8IlaLjvTTDLhRBXIEtkCK6hwVBJJsYS9Ajf4=
+sigs.k8s.io/controller-runtime v0.19.2 h1:3sPrF58XQEPzbE8T81TN6selQIMGbtYwuaJ6eDssDF8=
+sigs.k8s.io/controller-runtime v0.19.2/go.mod h1:iRmWllt8IlaLjvTTDLhRBXIEtkCK6hwVBJJsYS9Ajf4=
 sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3 h1:/Rv+M11QRah1itp8VhT6HoVx1Ray9eB4DBr+K+/sCJ8=
 sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3/go.mod h1:18nIHnGi6636UCz6m8i4DhaJ65T6EruyzmoQqI2BVDo=
 sigs.k8s.io/structured-merge-diff/v4 v4.4.1 h1:150L+0vs/8DA78h1u02ooW1/fFq/Lwr+sGiqlzvrtq4=
