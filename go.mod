@@ -7,7 +7,7 @@ toolchain go1.23.2
 replace k8s.io/gengo/v2 => k8s.io/gengo/v2 v2.0.0-20240228010128-51d4e06bde70
 
 require (
-	github.com/dgraph-io/badger/v4 v4.4.0
+	github.com/dgraph-io/badger/v4 v4.5.0
 	github.com/google/go-cmp v0.6.0
 	github.com/google/uuid v1.6.0
 	github.com/hansthienpondt/nipam v0.0.5
@@ -21,7 +21,7 @@ require (
 	github.com/kubenet-dev/apis v0.0.0-20241125090920-214523829415
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.8.1
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	go.opentelemetry.io/otel v1.32.0
 	go.uber.org/zap v1.27.0
 	go4.org/netipx v0.0.0-20231129151722-fdeea329fbba
@@ -29,13 +29,13 @@ require (
 	golang.org/x/sync v0.9.0
 	k8s.io/api v0.31.3
 	k8s.io/apimachinery v0.31.3
-	k8s.io/apiserver v0.31.1
+	k8s.io/apiserver v0.31.3
 	k8s.io/client-go v0.31.3
 	k8s.io/code-generator v0.31.3
-	k8s.io/component-base v0.31.1
+	k8s.io/component-base v0.31.3
 	k8s.io/kube-openapi v0.0.0-20240827152857-f7e401e7b4c2
 	k8s.io/utils v0.0.0-20240711033017-18e509b52bc8
-	sigs.k8s.io/controller-runtime v0.19.0
+	sigs.k8s.io/controller-runtime v0.19.3
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.1
 )
 
@@ -141,7 +141,7 @@ require (
 	k8s.io/apiextensions-apiserver v0.31.1 // indirect
 	k8s.io/gengo/v2 v2.0.0-20240911193312-2b36238f13e9 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
-	k8s.io/kms v0.31.1 // indirect
+	k8s.io/kms v0.31.3 // indirect
 	sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.30.3 // indirect
 	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
