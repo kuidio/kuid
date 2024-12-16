@@ -26,7 +26,7 @@ require (
 	go.uber.org/zap v1.27.0
 	go4.org/netipx v0.0.0-20231129151722-fdeea329fbba
 	golang.org/x/mod v0.22.0
-	golang.org/x/sync v0.9.0
+	golang.org/x/sync v0.10.0
 	k8s.io/api v0.31.3
 	k8s.io/apimachinery v0.31.3
 	k8s.io/apiserver v0.31.3
