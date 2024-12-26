@@ -115,42 +115,41 @@ func Convert_v1alpha1_ClaimLabels_To_common_ClaimLabels(in *commonv1alpha1.Claim
 }
 
 func autoConvert_v1alpha1_ClaimLabels_To_common_ClaimLabels(in *commonv1alpha1.ClaimLabels, out *common.ClaimLabels, _ conversion.Scope) error {
-    if in == nil {
-        return errors.New("input v1alpha1.ClaimLabels is nil")
-    }
-    if out == nil {
-        out = &common.ClaimLabels{} // Allocate new structure if out is nil
-    }
+	if in == nil {
+		return errors.New("input v1alpha1.ClaimLabels is nil")
+	}
+	if out == nil {
+		out = &common.ClaimLabels{} // Allocate new structure if out is nil
+	}
 
-    // Directly copy UserDefinedLabels assuming direct compatibility
-    out.UserDefinedLabels = common.UserDefinedLabels(in.UserDefinedLabels)
+	// Directly copy UserDefinedLabels assuming direct compatibility
+	out.UserDefinedLabels = common.UserDefinedLabels(in.UserDefinedLabels)
 
-    // Handle conversion of LabelSelector
-    if in.Selector != nil {
-        out.Selector = &metav1.LabelSelector{}
-        if in.Selector.MatchLabels != nil {
-            out.Selector.MatchLabels = make(map[string]string)
-            for key, value := range in.Selector.MatchLabels {
-                out.Selector.MatchLabels[key] = value
-            }
-        }
-        if in.Selector.MatchExpressions != nil {
-            out.Selector.MatchExpressions = make([]metav1.LabelSelectorRequirement, len(in.Selector.MatchExpressions))
-            for i, expr := range in.Selector.MatchExpressions {
-                out.Selector.MatchExpressions[i] = metav1.LabelSelectorRequirement{
-                    Key:      expr.Key,
-                    Operator: metav1.LabelSelectorOperator(expr.Operator),
-                    Values:   append([]string{}, expr.Values...), // Copy slice to avoid reference issues
-                }
-            }
-        }
-    } else {
-        out.Selector = nil // Set to nil if the source is nil
-    }
+	// Handle conversion of LabelSelector
+	if in.Selector != nil {
+		out.Selector = &metav1.LabelSelector{}
+		if in.Selector.MatchLabels != nil {
+			out.Selector.MatchLabels = make(map[string]string)
+			for key, value := range in.Selector.MatchLabels {
+				out.Selector.MatchLabels[key] = value
+			}
+		}
+		if in.Selector.MatchExpressions != nil {
+			out.Selector.MatchExpressions = make([]metav1.LabelSelectorRequirement, len(in.Selector.MatchExpressions))
+			for i, expr := range in.Selector.MatchExpressions {
+				out.Selector.MatchExpressions[i] = metav1.LabelSelectorRequirement{
+					Key:      expr.Key,
+					Operator: metav1.LabelSelectorOperator(expr.Operator),
+					Values:   append([]string{}, expr.Values...), // Copy slice to avoid reference issues
+				}
+			}
+		}
+	} else {
+		out.Selector = nil // Set to nil if the source is nil
+	}
 
-    return nil
+	return nil
 }
-
 
 func Convert_common_UserDefinedLabels_To_v1alpha1_UserDefinedLabels(in *common.UserDefinedLabels, out *commonv1alpha1.UserDefinedLabels, s conversion.Scope) error {
 	return autoConvert_common_UserDefinedLabels_To_v1alpha1_UserDefinedLabels(in, out, s)
@@ -160,7 +159,6 @@ func autoConvert_common_UserDefinedLabels_To_v1alpha1_UserDefinedLabels(in *comm
 	in.Labels = out.Labels
 	return nil
 }
-
 
 func Convert_v1alpha1_UserDefinedLabels_To_common_UserDefinedLabels(in *commonv1alpha1.UserDefinedLabels, out *common.UserDefinedLabels, s conversion.Scope) error {
 	return autoConvert_v1alpha1_UserDefinedLabels_To_common_UserDefinedLabels(in, out, s)

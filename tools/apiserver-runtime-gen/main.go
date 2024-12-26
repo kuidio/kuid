@@ -33,6 +33,9 @@ import (
 
 var bin string
 
+// only needed for protobuf
+var output string
+
 var cmd = cobra.Command{
 	Use:     "apiserver-runtime-gen",
 	Short:   "run code generators",
@@ -59,36 +62,45 @@ func runE(cmd *cobra.Command, args []string) error {
 	}
 	// install the generators
 	if install {
-		//for _, gen := range generators {
+		for _, gen := range generators {
 			// nolint:gosec
-			/*
-				if gen == "openapi-gen" {
-					err := run(exec.Command("go", "install", "k8s.io/kube-openapi/cmd/openapi-gen@latest"))
-					if err != nil {
-						return err
-					}
-				} else {
-					err := run(exec.Command("go", "install", path.Join("k8s.io/code-generator/cmd", gen)))
-					if err != nil {
-						return err
-					}
+			if gen == "go-to-protobuf" {
+				err := run(exec.Command("go", "mod", "vendor"))
+				if err != nil {
+					return err
 				}
-			*/
-			/*
-				if gen == "go-to-protobuf" {
-
-					err := run(exec.Command("go", "mod", "vendor"))
-					if err != nil {
-						return err
-					}
-					err = run(exec.Command("go", "mod", "tidy"))
-					if err != nil {
-						return err
-					}
-
+				err = run(exec.Command("go", "mod", "tidy"))
+				if err != nil {
+					return err
 				}
-			*/
-		//}
+				// setup the directory to generate the code to.
+				// code generators don't work with go modules, and try the full path of the module
+				output, err = os.MkdirTemp("", "gen")
+				if err != nil {
+					return err
+				}
+				if clean {
+					// nolint:errcheck
+					defer os.RemoveAll(output)
+				}
+				d, l := path.Split(module)                   // split the directory from the link we will create
+				p := filepath.Join(strings.Split(d, "/")...) // convert module path to os filepath
+				p = filepath.Join(output, p)                 // create the directory which will contain the link
+				err = os.MkdirAll(p, 0700)
+				if err != nil {
+					return err
+				}
+				// link the tmp location to this one so the code generator writes to the correct path
+				wd, err := os.Getwd()
+				if err != nil {
+					return err
+				}
+				err = os.Symlink(wd, filepath.Join(p, l))
+				if err != nil {
+					return err
+				}
+			}
+		}
 	}
 
 	return doGen()
@@ -127,15 +139,6 @@ func doGen() error {
 			return err
 		}
 	}
-
-	/*
-			/Users/henderiw/code/tmp/kube-openapi/openapi-gen \
-		    --output-dir pkg/generated/openapi \
-		    --output-pkg openapi \
-		    --output-file zz_generated.openapi.go \
-		    --go-header-file hack/boilerplate.go.txt \
-		    github.com/kuidio/kuid/apis/backend/as/v1alpha1 github.com/kuidio/kuid/apis/id/v1alpha1 github.com/kuidio/kuid/apis/common/v1alpha1
-	*/
 
 	if gen["openapi-gen"] {
 		// HACK had to use openapi-gen and use go mod v1.23 iso go.mod v1.20
@@ -220,11 +223,11 @@ func doGen() error {
 	}
 
 	if gen["go-to-protobuf"] {
-		err := run(getCmd(
+		err := run(getProtoCmd(
 			"go-to-protobuf",
 			"--packages", strings.Join(protobufVersions, ","),
-			"--apimachinery-packages", "-k8s.io/apimachinery/pkg/api/resource,-k8s.io/apimachinery/pkg/runtime/schema,-k8s.io/apimachinery/pkg/runtime,-k8s.io/apimachinery/pkg/apis/meta/v1",
-			//"--proto-import", "./vendor",
+			"--apimachinery-packages", "-k8s.io/apimachinery/pkg/api/resource,-k8s.io/apimachinery/pkg/runtime/schema,-k8s.io/apimachinery/pkg/runtime,-k8s.io/apimachinery/pkg/apis/meta/v1,-github.com/kform-dev/choreo/apis/condition/v1alpha1,-github.com/kubenet-dev/apis/apis/network/core/v1alpha1",
+			"--proto-import", "./vendor",
 		))
 		if err != nil {
 			return err
@@ -313,6 +316,14 @@ func getCmd(cmd string, args ...string) *exec.Cmd {
 func getCmdSimple(cmd string, args ...string) *exec.Cmd {
 	// nolint:gosec
 	e := exec.Command(cmd, "--go-header-file", header)
+
+	e.Args = append(e.Args, args...)
+	return e
+}
+
+func getProtoCmd(cmd string, args ...string) *exec.Cmd {
+	// nolint:gosec
+	e := exec.Command(filepath.Join(bin, cmd), "--output-dir", output, "--go-header-file", header)
 
 	e.Args = append(e.Args, args...)
 	return e

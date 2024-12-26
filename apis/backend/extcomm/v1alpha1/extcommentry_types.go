@@ -20,8 +20,8 @@ import (
 	"reflect"
 
 	condv1alpha1 "github.com/kform-dev/choreo/apis/condition/v1alpha1"
-	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	"github.com/kuidio/kuid/apis/backend"
+	commonv1alpha1 "github.com/kuidio/kuid/apis/common/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

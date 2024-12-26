@@ -44,10 +44,10 @@ type NodeSpec struct {
 	// PlatformType define the type of platform implementing the nodespec
 	PlatformType string `json:"platformType" protobuf:"bytes,6,opt,name=platformType"`
 	// Version define the SW version of the node
-	Version *string  `json:"version,omitempty"  protobuf:"bytes,7,opt,name=version"`
+	Version *string `json:"version,omitempty" protobuf:"bytes,7,opt,name=version"`
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
-	commonv1alpha1.UserDefinedLabels `json:",inline"  protobuf:"bytes,8,opt,name=userDefinedLabels"`
+	commonv1alpha1.UserDefinedLabels `json:",inline" protobuf:"bytes,8,opt,name=userDefinedLabels"`
 
 	// TBD
 	// Serial number

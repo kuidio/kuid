@@ -22,6 +22,8 @@ import (
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
+// +kubebuilder:object:generate=false
+// +k8s:deepcopy-gen:false
 type SyntaxValidator interface {
 	Validate(claim *EXTCOMMClaim, extCommType ExtendedCommunityType) field.ErrorList
 }

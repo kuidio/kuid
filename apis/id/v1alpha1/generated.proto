@@ -19,181 +19,170 @@ syntax = "proto2";
 
 package github.com.kuidio.kuid.apis.id.v1alpha1;
 
-import "github.com/gogo/protobuf/gogoproto/gogo.proto";
-
 // Package-wide variables from generator "generated".
-option (gogoproto.marshaler_all) = true;
-option (gogoproto.stable_marshaler_all) = true;
-option (gogoproto.sizer_all) = true;
-option (gogoproto.goproto_stringer_all) = false;
-option (gogoproto.stringer_all) = true;
-option (gogoproto.unmarshaler_all) = true;
-option (gogoproto.goproto_unrecognized_all) = false;
-option (gogoproto.goproto_enum_prefix_all) = false;
-option (gogoproto.goproto_getters_all) = false;
 option go_package = "github.com/kuidio/kuid/apis/id/v1alpha1";
 
 message ClusterID {
-  optional SiteID siteID = 1 [(gogoproto.customname) = "SiteID", (gogoproto.nullable) = false];
+  optional SiteID siteID = 1;
 
   // Cluster defines the name of the cluster
-  optional string cluster = 2 [(gogoproto.customname) = "Cluster", (gogoproto.nullable) = false];
+  optional string cluster = 2;
 }
 
 message EndpointID {
-  optional NodeID nodeID = 1 [(gogoproto.customname) = "NodeID", (gogoproto.nullable) = false];
+  optional NodeID nodeID = 1;
 
   // ModuleBay defines the moduleBay reference id
-  optional int64 moduleBay = 2 [(gogoproto.customname) = "ModuleBay"];
+  optional uint32 moduleBay = 2;
 
   // Module defines the module reference id
-  optional int64 module = 3 [(gogoproto.customname) = "Module"];
+  optional uint32 module = 3;
 
   // Port defines the id of the port
-  optional int64 port = 4 [(gogoproto.customname) = "Port", (gogoproto.nullable) = false];
+  optional uint32 port = 4;
 
   // Adaptor defines the name of the adaptor
-  optional string adaptor = 5 [(gogoproto.customname) = "Adaptor", (gogoproto.nullable) = false];
+  optional string adaptor = 5;
 
   // Endpoint defines the name of the endpoint
-  optional int64 endpoint = 6 [(gogoproto.customname) = "Endpoint", (gogoproto.nullable) = false];
+  optional uint32 endpoint = 6;
 }
 
 message NodeID {
-  optional SiteID siteID = 1 [(gogoproto.customname) = "SiteID", (gogoproto.nullable) = false];
+  optional SiteID siteID = 1;
 
   // Node defines the name of the node
-  optional string node = 2 [(gogoproto.customname) = "Node", (gogoproto.nullable) = false];
+  optional string node = 2;
 }
 
 message PartitionAdaptorID {
-  optional PartitionPortID nodeID = 1 [(gogoproto.customname) = "PartitionPortID", (gogoproto.nullable) = false];
+  optional PartitionPortID nodeID = 1;
 
   // Adaptor defines the name of the adaptor
-  optional string adaptor = 5 [(gogoproto.customname) = "Adaptor", (gogoproto.nullable) = false];
+  optional string adaptor = 5;
 }
 
 message PartitionAttachmentID {
   // Partition defines the partition this resource belongs to
-  optional string partition = 1 [(gogoproto.customname) = "Partition", (gogoproto.nullable) = false];
+  optional string partition = 1;
 
   // SiteID define the siteid of the node
-  optional SiteID siteID = 2 [(gogoproto.customname) = "SiteID", (gogoproto.nullable) = false];
+  optional SiteID siteID = 2;
 
   // Cluster defines the name of the cluster
-  optional string cluster = 3 [(gogoproto.customname) = "Cluster"];
+  optional string cluster = 3;
 
   // Node defines the name of the node
-  optional string node = 4 [(gogoproto.customname) = "Node"];
+  optional string node = 4;
 
   // Node defines the name of the nodeset
-  optional string nodeset = 5 [(gogoproto.customname) = "NodeSet"];
+  optional string nodeset = 5;
 
   // Interface defines the name of the interface
-  optional string interface = 6 [(gogoproto.customname) = "Interface", (gogoproto.nullable) = false];
+  optional string interface = 6;
 }
 
 message PartitionClusterID {
   // Partition defines the partition this resource belongs to
-  optional string partition = 1 [(gogoproto.customname) = "Partition", (gogoproto.nullable) = false];
+  optional string partition = 1;
 
   // SiteID define the siteid of the node
-  optional SiteID siteID = 2 [(gogoproto.customname) = "SiteID", (gogoproto.nullable) = false];
+  optional SiteID siteID = 2;
 
   // Cluster defines the name of the cluster
-  optional string cluster = 3 [(gogoproto.customname) = "Cluster", (gogoproto.nullable) = false];
+  optional string cluster = 3;
 }
 
 message PartitionEndpointID {
-  optional PartitionNodeID nodeID = 1 [(gogoproto.customname) = "PartitionNodeID", (gogoproto.nullable) = false];
+  optional PartitionNodeID nodeID = 1;
 
   // ModuleBay defines the moduleBay reference id
-  optional int64 moduleBay = 2 [(gogoproto.customname) = "ModuleBay"];
+  optional uint32 moduleBay = 2;
 
   // Module defines the module reference id
-  optional int64 module = 3 [(gogoproto.customname) = "Module"];
+  optional uint32 module = 3;
 
   // Port defines the id of the port
-  optional int64 port = 4 [(gogoproto.customname) = "Port", (gogoproto.nullable) = false];
+  optional uint32 port = 4;
 
   // Adaptor defines the name of the adaptor
-  optional string adaptor = 5 [(gogoproto.customname) = "Adaptor"];
+  optional string adaptor = 5;
 
   // Endpoint defines the name of the endpoint
-  optional int64 endpoint = 6 [(gogoproto.customname) = "Endpoint", (gogoproto.nullable) = false];
+  optional uint32 endpoint = 6;
 
   // Name is used to refer to internal names of the node
-  optional string name = 7 [(gogoproto.customname) = "Name"];
+  optional string name = 7;
 }
 
 message PartitionNodeID {
   // Partition defines the partition this resource belongs to
-  optional string partition = 1 [(gogoproto.customname) = "Partition", (gogoproto.nullable) = false];
+  optional string partition = 1;
 
   // SiteID define the siteid of the node
-  optional SiteID siteID = 2 [(gogoproto.customname) = "SiteID", (gogoproto.nullable) = false];
+  optional SiteID siteID = 2;
 
   // Node defines the name of the node
-  optional string node = 3 [(gogoproto.customname) = "Node", (gogoproto.nullable) = false];
+  optional string node = 3;
 }
 
 message PartitionPortID {
-  optional PartitionNodeID nodeID = 1 [(gogoproto.customname) = "PartitionNodeID", (gogoproto.nullable) = false];
+  optional PartitionNodeID nodeID = 1;
 
   // ModuleBay defines the moduleBay reference id
-  optional int64 moduleBay = 2 [(gogoproto.customname) = "ModuleBay"];
+  optional uint32 moduleBay = 2;
 
   // Module defines the module reference id
-  optional int64 module = 3 [(gogoproto.customname) = "Module"];
+  optional uint32 module = 3;
 
   // Port defines the id of the port
-  optional int64 port = 4 [(gogoproto.customname) = "Port", (gogoproto.nullable) = false];
+  optional uint32 port = 4;
 }
 
 message PartitionProviderEndpointID {
-  optional PartitionProviderNodeID nodeID = 2 [(gogoproto.customname) = "PartitionProviderNodeID", (gogoproto.nullable) = false];
+  optional PartitionProviderNodeID nodeID = 2;
 
   // ModuleBay defines the moduleBay reference id
-  optional int64 moduleBay = 3 [(gogoproto.customname) = "ModuleBay"];
+  optional uint32 moduleBay = 3;
 
   // Module defines the module reference id
-  optional int64 module = 4 [(gogoproto.customname) = "Module"];
+  optional uint32 module = 4;
 
   // Port defines the id of the port
-  optional int64 port = 5 [(gogoproto.customname) = "Port", (gogoproto.nullable) = false];
+  optional uint32 port = 5;
 
   // Adaptor defines the name of the adaptor
-  optional string adaptor = 6 [(gogoproto.customname) = "Adaptor"];
+  optional string adaptor = 6;
 
   // Endpoint defines the name of the endpoint
-  optional int64 endpoint = 7 [(gogoproto.customname) = "Endpoint", (gogoproto.nullable) = false];
+  optional uint32 endpoint = 7;
 
   // Name is used to refer to internal names of the node
-  optional string name = 8 [(gogoproto.customname) = "Name"];
+  optional string name = 8;
 }
 
 message PartitionProviderNodeID {
   // Partition defines the partition this resource belongs to
-  optional string partition = 1 [(gogoproto.customname) = "Partition", (gogoproto.nullable) = false];
+  optional string partition = 1;
 
   // SiteID define the siteid of the node
-  optional SiteID siteID = 2 [(gogoproto.customname) = "SiteID", (gogoproto.nullable) = false];
+  optional SiteID siteID = 2;
 
   // Node defines the name of the node
-  optional string node = 3 [(gogoproto.customname) = "Node", (gogoproto.nullable) = false];
+  optional string node = 3;
 
   // Provider defines the provider implementing this resource.
-  optional string provider = 4 [(gogoproto.customname) = "Provider", (gogoproto.nullable) = false];
+  optional string provider = 4;
 
   // PlatformType define the type of platform implementing the nodespec
-  optional string platformType = 5 [(gogoproto.customname) = "PlatformType", (gogoproto.nullable) = false];
+  optional string platformType = 5;
 }
 
 message SiteID {
   // Region defines the region of the resource
-  optional string region = 1 [(gogoproto.customname) = "Region", (gogoproto.nullable) = false];
+  optional string region = 1;
 
   // Site defines the site of the resource
-  optional string site = 2 [(gogoproto.customname) = "Site", (gogoproto.nullable) = false];
+  optional string site = 2;
 }
 
