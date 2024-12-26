@@ -19,34 +19,13 @@ syntax = "proto2";
 
 package github.com.kuidio.kuid.apis.backend.as.v1alpha1;
 
-import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "github.com/kform-dev/choreo/apis/condition/v1alpha1/generated.proto";
 import "github.com/kuidio/kuid/apis/common/v1alpha1/generated.proto";
 import "k8s.io/apimachinery/pkg/apis/meta/v1/generated.proto";
 import "k8s.io/apimachinery/pkg/runtime/schema/generated.proto";
 
 // Package-wide variables from generator "generated".
-option (gogoproto.marshaler_all) = true;
-option (gogoproto.stable_marshaler_all) = true;
-option (gogoproto.sizer_all) = true;
-option (gogoproto.goproto_stringer_all) = false;
-option (gogoproto.stringer_all) = true;
-option (gogoproto.unmarshaler_all) = true;
-option (gogoproto.goproto_unrecognized_all) = false;
-option (gogoproto.goproto_enum_prefix_all) = false;
-option (gogoproto.goproto_getters_all) = false;
 option go_package = "github.com/kuidio/kuid/apis/backend/as/v1alpha1";
-
-message Condition {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.Condition condition = 1 [(gogoproto.customname) = "Condition", (gogoproto.nullable) = false];
-}
-
-message ConditionedStatus {
-  // Conditions of the resource.
-  // +optional
-  // +listType:=map
-  // +listMapKey:=type
-  repeated Condition conditions = 1 [(gogoproto.customname) = "Conditions", (gogoproto.nullable) = false];
-}
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -55,56 +34,56 @@ message ConditionedStatus {
 // +kubebuilder:resource:categories={kuid}
 // ASClaim is the Schema for the ASClaim API
 message ASClaim {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional ASClaimSpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional ASClaimSpec spec = 2;
 
-  optional ASClaimStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional ASClaimStatus status = 3;
 }
 
 // ASClaimList contains a list of ASClaims
 message ASClaimList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated ASClaim items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated ASClaim items = 2;
 }
 
 // ASClaimSpec defines the desired state of ASClaim
 message ASClaimSpec {
   // Index defines the index for the AS Claim
-  optional string index = 1 [(gogoproto.customname) = "Index", (gogoproto.nullable) = false];
+  optional string index = 1;
 
   // ASID defines the AS for the AS claim
-  optional uint32 id = 2 [(gogoproto.customname) = "ID"];
+  optional uint32 id = 2;
 
   // Range defines the AS range for the AS claim
   // The following notation is used: start-end <start-ASID>-<end-ASID>
   // the ASs in the range must be consecutive
-  optional string range = 3 [(gogoproto.customname) = "Range"];
+  optional string range = 3;
 
   // ClaimLabels define the user defined labels and selector labels used
   // in resource claim
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.ClaimLabels claimLabels = 4 [(gogoproto.customname) = "ClaimLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.ClaimLabels claimLabels = 4;
 }
 
 // ASClaimStatus defines the observed state of ASClaim
 message ASClaimStatus {
   // ConditionedStatus provides the status of the ASClain using conditions
   // - a ready condition indicates the overall status of the resource
-  optional ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 
   // ASID defines the AS for the AS claim
   // +optional
-  optional uint32 id = 2 [(gogoproto.customname) = "ID"];
+  optional uint32 id = 2;
 
   // ASRange defines the AS range for the AS claim
   // +optional
-  optional string range = 3 [(gogoproto.customname) = "Range"];
+  optional string range = 3;
 
   // ExpiryTime defines when the claim expires
   // +kubebuilder:validation:Optional
   // +optional
-  optional string expiryTime = 4 [(gogoproto.customname) = "ExpiryTime"];
+  optional string expiryTime = 4;
 }
 
 // +genclient
@@ -114,44 +93,44 @@ message ASClaimStatus {
 // +kubebuilder:resource:categories={kuid}
 // ASEntry is the Schema for the ASentry API
 message ASEntry {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional ASEntrySpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional ASEntrySpec spec = 2;
 
-  optional ASEntryStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional ASEntryStatus status = 3;
 }
 
 // ASEntryList contains a list of ASEntries
 message ASEntryList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated ASEntry items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated ASEntry items = 2;
 }
 
 // ASEntrySpec defines the desired state of ASEntry
 message ASEntrySpec {
   // Index defines the index for the resource
-  optional string index = 1 [(gogoproto.customname) = "Index", (gogoproto.nullable) = false];
+  optional string index = 1;
 
   // IndexEntry identifies if the entry is originated from an IP Index
-  optional bool indexEntry = 2 [(gogoproto.customname) = "IndexEntry", (gogoproto.nullable) = false];
+  optional bool indexEntry = 2;
 
   // ClaimType defines the claimType of the resource
-  optional string claimType = 3 [(gogoproto.casttype) = "github.com/kuidio/kuid/apis/backend.ClaimType", (gogoproto.customname) = "ClaimType", (gogoproto.nullable) = false];
+  optional string claimType = 3;
 
   // ID defines the id of the resource in the tree
-  optional string id = 4 [(gogoproto.customname) = "ID", (gogoproto.nullable) = false];
+  optional string id = 4;
 
   // ClaimLabels define the user defined labels and selector labels used
   // in resource claim
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.ClaimLabels claimLabels = 5 [(gogoproto.customname) = "ClaimLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.ClaimLabels claimLabels = 5;
 }
 
 // ASEntryStatus defines the observed state of ASEntry
 message ASEntryStatus {
   // ConditionedStatus provides the status of the ASEntry using conditions
   // - a ready condition indicates the overall status of the resource
-  optional ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
 // +genclient
@@ -161,49 +140,49 @@ message ASEntryStatus {
 // +kubebuilder:resource:categories={kuid}
 // ASIndex is the Schema for the ASIndex API
 message ASIndex {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional ASIndexSpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional ASIndexSpec spec = 2;
 
-  optional ASIndexStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional ASIndexStatus status = 3;
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:object:root=true
 // ASIndexList contains a list of ASIndex
 message ASIndexList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated ASIndex items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated ASIndex items = 2;
 }
 
 // ASIndexSpec defines the desired state of ASIndex
 message ASIndexSpec {
   // MinID defines the min VLAN ID the index supports
   // +optional
-  optional uint32 minID = 1 [(gogoproto.customname) = "MinID"];
+  optional uint32 minID = 1;
 
   // MaxID defines the max VLAN ID the index supports
   // +optional
-  optional uint32 maxID = 2 [(gogoproto.customname) = "MaxID"];
+  optional uint32 maxID = 2;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3 [(gogoproto.customname) = "UserDefinedLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
 }
 
 // ASIndexStatus defines the observed state of ASIndex
 message ASIndexStatus {
   // MinID defines the min VLAN ID the index supports
   // +optional
-  optional uint32 minID = 1 [(gogoproto.customname) = "MinID"];
+  optional uint32 minID = 1;
 
   // MaxID defines the max VLAN ID the index supports
   // +optional
-  optional uint32 maxID = 2 [(gogoproto.customname) = "MaxID"];
+  optional uint32 maxID = 2;
 
   // ConditionedStatus provides the status of the VLANIndex using conditions
   // - a ready condition indicates the overall status of the resource
-  optional ConditionedStatus conditionedStatus = 3 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 3;
 }
 

@@ -19,36 +19,14 @@ syntax = "proto2";
 
 package github.com.kuidio.kuid.apis.infra.v1alpha1;
 
-import "github.com/gogo/protobuf/gogoproto/gogo.proto";
-import "github.com/kuidio/kuid/apis/backend/as/v1alpha1/generated.proto";
+import "github.com/kform-dev/choreo/apis/condition/v1alpha1/generated.proto";
 import "github.com/kuidio/kuid/apis/common/v1alpha1/generated.proto";
 import "github.com/kuidio/kuid/apis/id/v1alpha1/generated.proto";
 import "k8s.io/apimachinery/pkg/apis/meta/v1/generated.proto";
 import "k8s.io/apimachinery/pkg/runtime/schema/generated.proto";
 
 // Package-wide variables from generator "generated".
-option (gogoproto.marshaler_all) = true;
-option (gogoproto.stable_marshaler_all) = true;
-option (gogoproto.sizer_all) = true;
-option (gogoproto.goproto_stringer_all) = false;
-option (gogoproto.stringer_all) = true;
-option (gogoproto.unmarshaler_all) = true;
-option (gogoproto.goproto_unrecognized_all) = false;
-option (gogoproto.goproto_enum_prefix_all) = false;
-option (gogoproto.goproto_getters_all) = false;
 option go_package = "github.com/kuidio/kuid/apis/infra/v1alpha1";
-
-message Condition {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.Condition condition = 1 [(gogoproto.customname) = "Condition", (gogoproto.nullable) = false];
-}
-
-message ConditionedStatus {
-  // Conditions of the resource.
-  // +optional
-  // +listType:=map
-  // +listMapKey:=type
-  repeated .github.com.kuidio.kuid.apis.backend.as.v1alpha1.Condition conditions = 1 [(gogoproto.customname) = "Conditions", (gogoproto.nullable) = false];
-}
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -62,36 +40,36 @@ message ConditionedStatus {
 // receiving data, enabling seamless communication between Nodes.
 // +k8s:openapi-gen=true
 message Adaptor {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional AdaptorSpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional AdaptorSpec spec = 2;
 
-  optional AdaptorStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional AdaptorStatus status = 3;
 }
 
 // AdaptorList contains a list of Adaptors
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message AdaptorList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated Adaptor items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated Adaptor items = 2;
 }
 
 // AdaptorSpec defines the desired state of Adaptor
 message AdaptorSpec {
   // NodeGroupAdaptorID identifies the Adaptor identity this resource belongs to
-  optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionAdaptorID nodeGroupAdaptorID = 1 [(gogoproto.customname) = "PartitionAdaptorID", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionAdaptorID nodeGroupAdaptorID = 1;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3 [(gogoproto.customname) = "UserDefinedLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
 }
 
 // AdaptorStatus defines the observed state of Adaptor
 message AdaptorStatus {
   // ConditionedStatus provides the status of the IPClain using conditions
   // - a ready condition indicates the overall status of the resource
-  optional .github.com.kuidio.kuid.apis.backend.as.v1alpha1.ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
 // +genclient
@@ -102,42 +80,42 @@ message AdaptorStatus {
 // +kubebuilder:resource:categories={kuid}
 // A Cluster represents a kubernetes cluster and is typically used as a nodeGroup identifier.
 message Cluster {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional ClusterSpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional ClusterSpec spec = 2;
 
-  optional ClusterStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional ClusterStatus status = 3;
 }
 
 // ClusterList contains a list of Clusters
 message ClusterList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated Cluster items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated Cluster items = 2;
 }
 
 // ClusterSpec defines the desired state of Cluster
 message ClusterSpec {
   // PartitionClusterID defines the cluster partition
-  optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionClusterID nodeID = 1 [(gogoproto.customname) = "PartitionClusterID", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionClusterID nodeID = 1;
 
   // Provider defines the provider implementing this resource.
-  optional string provider = 2 [(gogoproto.customname) = "Provider", (gogoproto.nullable) = false];
+  optional string provider = 2;
 
   // Location defines the location information where this resource is located
   // in lon/lat coordinates
-  optional Location location = 3 [(gogoproto.customname) = "Location"];
+  optional Location location = 3;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 4 [(gogoproto.customname) = "UserDefinedLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 4;
 }
 
 // ClusterStatus defines the observed state of Cluster
 message ClusterStatus {
   // ConditionedStatus provides the status of the IPClain using conditions
   // - a ready condition indicates the overall status of the resource
-  optional .github.com.kuidio.kuid.apis.backend.as.v1alpha1.ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
 // +genclient
@@ -152,19 +130,19 @@ message ClusterStatus {
 // receiving data, enabling seamless communication between Nodes.
 // +k8s:openapi-gen=true
 message Endpoint {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional EndpointSpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional EndpointSpec spec = 2;
 
-  optional EndpointStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional EndpointStatus status = 3;
 }
 
 // EndpointList contains a list of Endpoints
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message EndpointList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated Endpoint items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated Endpoint items = 2;
 }
 
 // +genclient
@@ -179,19 +157,19 @@ message EndpointList {
 // between a set of nodes belonging to a single nodeGroup.
 // +k8s:openapi-gen=true
 message EndpointSet {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional EndpointSetSpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional EndpointSetSpec spec = 2;
 
-  optional EndpointSetStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional EndpointSetStatus status = 3;
 }
 
 // EndpointSetList contains a list of EndpointSets
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message EndpointSetList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated EndpointSet items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated EndpointSet items = 2;
 }
 
 // EndpointSetSpec defines the desired state of EndpointSet
@@ -200,56 +178,56 @@ message EndpointSetList {
 message EndpointSetSpec {
   // Endpoints defines the Endpoints that are part of the EndpointSet
   // Min 1, Max 16
-  repeated .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionEndpointID endpoints = 1 [(gogoproto.customname) = "Endpoints"];
+  repeated .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionEndpointID endpoints = 1;
 
   // Lacp defines if the lag enabled LACP
   // +optional
-  optional bool lacp = 2 [(gogoproto.customname) = "Lacp"];
+  optional bool lacp = 2;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3 [(gogoproto.customname) = "UserDefinedLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
 }
 
 // EndpointSetStatus defines the observed state of EndpointSet
 message EndpointSetStatus {
   // ConditionedStatus provides the status of the IPClain using conditions
   // - a ready condition indicates the overall status of the resource
-  optional .github.com.kuidio.kuid.apis.backend.as.v1alpha1.ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 
   // ESI defines the ethernet segment identifier of the logical link
   // if set this is a multi-homed logical endpoint
   // the ESI is a global unique identifier within the administrative domain
   // +optional
-  optional uint32 esi = 2 [(gogoproto.customname) = "ESI"];
+  optional uint32 esi = 2;
 
   // LagId defines the lag id for the logical single-homed or multi-homed
   // endpoint
   // +optional
-  optional uint32 lagID = 3 [(gogoproto.customname) = "LagId"];
+  optional uint32 lagID = 3;
 }
 
 // EndpointSpec defines the desired state of Endpoint
 message EndpointSpec {
   // NodeGroupEndpointID identifies the endpoint identity this resource belongs to
-  optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionEndpointID nodeGroupEndpointID = 1 [(gogoproto.customname) = "PartitionEndpointID", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionEndpointID nodeGroupEndpointID = 1;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3 [(gogoproto.customname) = "UserDefinedLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
 
   // (Gbps)
-  optional string speed = 4 [(gogoproto.customname) = "Speed"];
+  optional string speed = 4;
 
   // VLANTagging defines if VLAN tagging is enabled or disabled on the interface
-  optional bool vlanTagging = 5 [(gogoproto.customname) = "VLANTagging", (gogoproto.nullable) = false];
+  optional bool vlanTagging = 5;
 }
 
 // EndpointStatus defines the observed state of Endpoint
 message EndpointStatus {
   // ConditionedStatus provides the status of the IPClain using conditions
   // - a ready condition indicates the overall status of the resource
-  optional .github.com.kuidio.kuid.apis.backend.as.v1alpha1.ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
 // +genclient
@@ -262,19 +240,19 @@ message EndpointStatus {
 // between 2 endpoints of a node.
 // +k8s:openapi-gen=true
 message Link {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional LinkSpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional LinkSpec spec = 2;
 
-  optional LinkStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional LinkStatus status = 3;
 }
 
 // LinkList contains a list of Links
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message LinkList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated Link items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated Link items = 2;
 }
 
 // +genclient
@@ -289,88 +267,88 @@ message LinkList {
 // belonging to 1 or multiple nodeGroups/Topologies.
 // +k8s:openapi-gen=true
 message LinkSet {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional LinkSetSpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional LinkSetSpec spec = 2;
 
-  optional LinkSetStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional LinkSetStatus status = 3;
 }
 
 // LinkSetList contains a list of LinkSets
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message LinkSetList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated LinkSet items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated LinkSet items = 2;
 }
 
 // LinkSetSpec defines the desired state of LinkSet
 message LinkSetSpec {
   // Endpoints define the endpoint identifiers of the LinkSet
-  repeated .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionEndpointID endpoints = 1 [(gogoproto.customname) = "Endpoints"];
+  repeated .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionEndpointID endpoints = 1;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 2 [(gogoproto.customname) = "UserDefinedLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 2;
 }
 
 // LinkSetStatus defines the observed state of LinkSet
 message LinkSetStatus {
   // ConditionedStatus provides the status of the IPClain using conditions
   // - a ready condition indicates the overall status of the resource
-  optional .github.com.kuidio.kuid.apis.backend.as.v1alpha1.ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 
   // ESI defines the ethernet segment identifier of the logical link
   // if set this is a multi-homed linkset
   // the ESI is a global unique identifier within the administrative domain/topology
-  optional uint32 esi = 2 [(gogoproto.customname) = "ESI"];
+  optional uint32 esi = 2;
 
   // LagId defines the lag id for the logical single-homed or multi-homed
   // endpoint
-  optional uint32 lagId = 3 [(gogoproto.customname) = "LagId"];
+  optional uint32 lagId = 3;
 }
 
 // LinkSpec defines the desired state of Link
 message LinkSpec {
   // Internal indicated if the link is internal to the topology
-  optional bool internal = 1 [(gogoproto.customname) = "Internal"];
+  optional bool internal = 1;
 
   // Endpoints define the 2 endpoint identifiers of the link
   // Can only have 2 endpoints
-  repeated .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionEndpointID endpoints = 2 [(gogoproto.customname) = "Endpoints"];
+  repeated .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionEndpointID endpoints = 2;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3 [(gogoproto.customname) = "UserDefinedLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
 
   // BFD defines the BFD specific parameters on the link
   // +optional
-  optional BFDLinkParameters bfd = 4 [(gogoproto.customname) = "BFD"];
+  optional BFDLinkParameters bfd = 4;
 
   // OSPF defines the OSPF specific parameters on the link
   // +optional
-  optional OSPFLinkParameters ospf = 5 [(gogoproto.customname) = "OSPF"];
+  optional OSPFLinkParameters ospf = 5;
 
   // ISIS defines the ISIS specific parameters on the link
   // +optional
-  optional ISISLinkParameters isis = 6 [(gogoproto.customname) = "ISIS"];
+  optional ISISLinkParameters isis = 6;
 
   // BGP defines the BGP specific parameters on the link
   // +optional
-  optional BGPLinkParameters bgp = 7 [(gogoproto.customname) = "BGP"];
+  optional BGPLinkParameters bgp = 7;
 }
 
 // LinkStatus defines the observed state of Link
 message LinkStatus {
   // ConditionedStatus provides the status of the IPClain using conditions
   // - a ready condition indicates the overall status of the resource
-  optional .github.com.kuidio.kuid.apis.backend.as.v1alpha1.ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
 message Location {
-  optional string latitude = 1 [(gogoproto.customname) = "Latitude", (gogoproto.nullable) = false];
+  optional string latitude = 1;
 
-  optional string longitude = 2 [(gogoproto.customname) = "Longitude", (gogoproto.nullable) = false];
+  optional string longitude = 2;
 }
 
 // +genclient
@@ -384,11 +362,11 @@ message Location {
 // allowing users to enhance and customize their deployments according to specific requirements.
 // +k8s:openapi-gen=true
 message Module {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional ModuleSpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional ModuleSpec spec = 2;
 
-  optional ModuleStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional ModuleStatus status = 3;
 }
 
 // +genclient
@@ -402,67 +380,67 @@ message Module {
 // allowing users to customize and enhance their infrastructure deployments according to specific requirements.
 // +k8s:openapi-gen=true
 message ModuleBay {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional ModuleBaySpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional ModuleBaySpec spec = 2;
 
-  optional ModuleBayStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional ModuleBayStatus status = 3;
 }
 
 // ModuleBayList contains a list of ModuleBays
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message ModuleBayList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated ModuleBay items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated ModuleBay items = 2;
 }
 
 // ModuleBaySpec defines the desired state of ModuleBay
 message ModuleBaySpec {
   // NodeID identifies the node identity this resource belongs to
-  optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionNodeID nodeID = 1 [(gogoproto.customname) = "PartitionNodeID", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionNodeID nodeID = 1;
 
   // Position defines the position in the node the moduleBay is deployed
-  optional int64 psoition = 2 [(gogoproto.customname) = "Position", (gogoproto.nullable) = false];
+  optional int64 psoition = 2;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3 [(gogoproto.customname) = "UserDefinedLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
 }
 
 // ModuleBayStatus defines the observed state of ModuleBay
 message ModuleBayStatus {
   // ConditionedStatus provides the status of the IPClain using conditions
   // - a ready condition indicates the overall status of the resource
-  optional .github.com.kuidio.kuid.apis.backend.as.v1alpha1.ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
 // ModuleList contains a list of Modules
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message ModuleList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated Module items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated Module items = 2;
 }
 
 // ModuleSpec defines the desired state of Module
 message ModuleSpec {
   // NodeID identifies the node identity this resource belongs to
-  optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionNodeID nodeID = 1 [(gogoproto.customname) = "PartitionNodeID", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionNodeID nodeID = 1;
 
   // ModuelBay defines the bay in which the module is deployed
-  optional int64 moduleBay = 2 [(gogoproto.customname) = "ModuleBay", (gogoproto.nullable) = false];
+  optional int64 moduleBay = 2;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3 [(gogoproto.customname) = "UserDefinedLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
 }
 
 // ModuleStatus defines the observed state of Module
 message ModuleStatus {
   // ConditionedStatus provides the status of the IPClain using conditions
   // - a ready condition indicates the overall status of the resource
-  optional .github.com.kuidio.kuid.apis.backend.as.v1alpha1.ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
 // +genclient
@@ -480,11 +458,11 @@ message ModuleStatus {
 // Each Node is assigned a provider, representing the entity responsible for implementing the specifics of the Node.
 // +k8s:openapi-gen=true
 message Node {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional NodeSpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional NodeSpec spec = 2;
 
-  optional NodeStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional NodeStatus status = 3;
 }
 
 // +genclient
@@ -499,44 +477,44 @@ message Node {
 // NodeItem is used to represent the modular components of a node.
 // +k8s:openapi-gen=true
 message NodeItem {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional NodeItemSpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional NodeItemSpec spec = 2;
 
-  optional NodeItemStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional NodeItemStatus status = 3;
 }
 
 // NodeItemList contains a list of NodeItems
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message NodeItemList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated NodeItem items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated NodeItem items = 2;
 }
 
 // NodeItemSpec defines the desired state of NodeItem
 message NodeItemSpec {
   // NodeID identifies the node identity this resource belongs to
-  optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionNodeID nodeID = 1 [(gogoproto.customname) = "PartitionNodeID", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionNodeID nodeID = 1;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 2 [(gogoproto.customname) = "UserDefinedLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 2;
 }
 
 // NodeItemStatus defines the observed state of NodeItem
 message NodeItemStatus {
   // ConditionedStatus provides the status of the IPClain using conditions
   // - a ready condition indicates the overall status of the resource
-  optional .github.com.kuidio.kuid.apis.backend.as.v1alpha1.ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
 // NodeList contains a list of Nodes
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message NodeList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated Node items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated Node items = 2;
 }
 
 // +genclient
@@ -551,81 +529,81 @@ message NodeList {
 // Another usage of NodeSet is the representation of a virtual Node that consists of multiple nodes.
 // +k8s:openapi-gen=true
 message NodeSet {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional NodeSetSpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional NodeSetSpec spec = 2;
 
-  optional NodeSetStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional NodeSetStatus status = 3;
 }
 
 // NodeSetList contains a list of NodeSets
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message NodeSetList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated NodeSet items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated NodeSet items = 2;
 }
 
 // NodeSetSetSpec defines the desired state of NodeSet
 message NodeSetSpec {
-  optional string nodeSet = 1 [(gogoproto.customname) = "NodeSet", (gogoproto.nullable) = false];
+  optional string nodeSet = 1;
 
   // PartitionClusterID defines the cluster partition
-  optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionClusterID nodeID = 2 [(gogoproto.customname) = "PartitionClusterID", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionClusterID nodeID = 2;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.ClaimLabels userDefinedLabels = 3 [(gogoproto.customname) = "ClaimLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.ClaimLabels userDefinedLabels = 3;
 }
 
 // NodeSetStatus defines the observed state of NodeSet
 message NodeSetStatus {
   // ConditionedStatus provides the status of the IPClain using conditions
   // - a ready condition indicates the overall status of the resource
-  optional .github.com.kuidio.kuid.apis.backend.as.v1alpha1.ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
 // NodeSpec defines the desired state of Node
 message NodeSpec {
   // NodeGroupNodeID identifies the nodeGroup identity this resource belongs to
-  optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionNodeID nodeID = 1 [(gogoproto.customname) = "PartitionNodeID", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionNodeID nodeID = 1;
 
   // Rack defines the rack in which the node is deployed
   // +optional
-  optional string rack = 2 [(gogoproto.customname) = "Rack"];
+  optional string rack = 2;
 
   // relative position in the rack
   // +optional
-  optional string position = 3 [(gogoproto.customname) = "Position"];
+  optional string position = 3;
 
   // Location defines the location information where this resource is located
   // in lon/lat coordinates
   // +optional
-  optional Location location = 4 [(gogoproto.customname) = "Location"];
+  optional Location location = 4;
 
   // Provider defines the provider implementing this resource.
-  optional string provider = 5 [(gogoproto.customname) = "Provider", (gogoproto.nullable) = false];
+  optional string provider = 5;
 
   // PlatformType define the type of platform implementing the nodespec
-  optional string platformType = 6 [(gogoproto.customname) = "PlatformType", (gogoproto.nullable) = false];
+  optional string platformType = 6;
 
   // Version define the SW version of the node
-  optional string version = 7 [(gogoproto.customname) = "Version"];
+  optional string version = 7;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 8 [(gogoproto.customname) = "UserDefinedLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 8;
 }
 
 // NodeStatus defines the observed state of Node
 message NodeStatus {
   // ConditionedStatus provides the status of the IPClain using conditions
   // - a ready condition indicates the overall status of the resource
-  optional .github.com.kuidio.kuid.apis.backend.as.v1alpha1.ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 
   // System ID define the unique system id of the node
   // +optional
-  optional string systemID = 2 [(gogoproto.customname) = "SystemID"];
+  optional string systemID = 2;
 }
 
 // +genclient
@@ -635,33 +613,33 @@ message NodeStatus {
 // +kubebuilder:subresource:status
 // +kubebuilder:resource:categories={kuid}
 message Partition {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional PartitionSpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional PartitionSpec spec = 2;
 
-  optional PartitionStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional PartitionStatus status = 3;
 }
 
 // PartitionList contains a list of Partitions
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message PartitionList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated Partition items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated Partition items = 2;
 }
 
 // PartitionSpec defines the desired state of the partition
 message PartitionSpec {
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 7 [(gogoproto.customname) = "UserDefinedLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 7;
 }
 
 // PartitionStatus defines the observed state of Partition
 message PartitionStatus {
   // ConditionedStatus provides the status of the IPClain using conditions
   // - a ready condition indicates the overall status of the resource
-  optional .github.com.kuidio.kuid.apis.backend.as.v1alpha1.ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
 // +genclient
@@ -676,36 +654,36 @@ message PartitionStatus {
 // receiving data, enabling seamless communication between Nodes.
 // +k8s:openapi-gen=true
 message Port {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional PortSpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional PortSpec spec = 2;
 
-  optional PortStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional PortStatus status = 3;
 }
 
 // PortList contains a list of Ports
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message PortList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated Port items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated Port items = 2;
 }
 
 // PortSpec defines the desired state of Port
 message PortSpec {
   // PartitionPortID the Port identity this resource belongs to
-  optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionPortID partitionPortID = 1 [(gogoproto.customname) = "PartitionPortID", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionPortID partitionPortID = 1;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3 [(gogoproto.customname) = "UserDefinedLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
 }
 
 // PortStatus defines the observed state of Port
 message PortStatus {
   // ConditionedStatus provides the status of the IPClain using conditions
   // - a ready condition indicates the overall status of the resource
-  optional .github.com.kuidio.kuid.apis.backend.as.v1alpha1.ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
 // +genclient
@@ -717,46 +695,46 @@ message PortStatus {
 // A rack represents a physical equipment rack within your environment. Each rack is designed to accommodate
 // the installation of devices and equipment.
 message Rack {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional RackSpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional RackSpec spec = 2;
 
-  optional RackStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional RackStatus status = 3;
 }
 
 // RackList contains a list of Racks
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message RackList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated Rack items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated Rack items = 2;
 }
 
 // RackSpec defines the desired state of Rack
 message RackSpec {
   // SiteID identifies the siteID this resource belongs to
-  optional .github.com.kuidio.kuid.apis.id.v1alpha1.SiteID siteID = 1 [(gogoproto.customname) = "SiteID", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.id.v1alpha1.SiteID siteID = 1;
 
   // Location defines the location information where this resource is located
   // in lon/lat coordinates
-  optional Location location = 2 [(gogoproto.customname) = "Location"];
+  optional Location location = 2;
 
   // The height of the rack, measured in units.
-  optional string height = 3 [(gogoproto.customname) = "Height", (gogoproto.nullable) = false];
+  optional string height = 3;
 
   // The canonical distance between the two vertical rails on a face. In inch
-  optional string width = 4 [(gogoproto.customname) = "Width", (gogoproto.nullable) = false];
+  optional string width = 4;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined label
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 5 [(gogoproto.customname) = "UserDefinedLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 5;
 }
 
 // RackStatus defines the observed state of Rack
 message RackStatus {
   // ConditionedStatus provides the status of the IPClain using conditions
   // - a ready condition indicates the overall status of the resource
-  optional .github.com.kuidio.kuid.apis.backend.as.v1alpha1.ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
 // +genclient
@@ -768,33 +746,33 @@ message RackStatus {
 // A region represent a geography in which multiple infrastructure resources are grouped
 // A region might represent a continent, country, city, campus, or other area depending on your environment.
 message Region {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional RegionSpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional RegionSpec spec = 2;
 
-  optional RegionStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional RegionStatus status = 3;
 }
 
 // RegionList contains a list of Regions
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message RegionList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated Region items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated Region items = 2;
 }
 
 // RegionSpec defines the desired state of Region
 message RegionSpec {
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 1 [(gogoproto.customname) = "UserDefinedLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 1;
 }
 
 // RegionStatus defines the observed state of Region
 message RegionStatus {
   // ConditionedStatus provides the status of the IPClain using conditions
   // - a ready condition indicates the overall status of the resource
-  optional .github.com.kuidio.kuid.apis.backend.as.v1alpha1.ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
 // +genclient
@@ -807,75 +785,75 @@ message RegionStatus {
 // The utilization of sites may vary based on the organizational structure and requirements,
 // but in essence, each site typically corresponds to a distinct building or campus.
 message Site {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional SiteSpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional SiteSpec spec = 2;
 
-  optional SiteStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional SiteStatus status = 3;
 }
 
 // SiteList contains a list of Sites
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message SiteList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated Site items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated Site items = 2;
 }
 
 // SiteSpec defines the desired state of Site
 message SiteSpec {
   // SiteID defines the siteID
-  optional .github.com.kuidio.kuid.apis.id.v1alpha1.SiteID siteID = 1 [(gogoproto.customname) = "SiteID", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.id.v1alpha1.SiteID siteID = 1;
 
   // Location defines the location information where this resource is located
   // in lon/lat coordinates
-  optional Location location = 2 [(gogoproto.customname) = "Location"];
+  optional Location location = 2;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3 [(gogoproto.customname) = "UserDefinedLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
 }
 
 // SiteStatus defines the observed state of Site
 message SiteStatus {
   // ConditionedStatus provides the status of the IPClain using conditions
   // - a ready condition indicates the overall status of the resource
-  optional .github.com.kuidio.kuid.apis.backend.as.v1alpha1.ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
 message BFDLinkParameters {
   // Disabled defines if bfd is disabled or not
   // +optional
-  optional bool enabled = 1 [(gogoproto.customname) = "Enabled"];
+  optional bool enabled = 1;
 
   // MinTx defines the desired minimal interval for sending BFD packets, in msec.
   // +optional
-  optional uint32 minTx = 2 [(gogoproto.customname) = "MinTx"];
+  optional uint32 minTx = 2;
 
   // MinTx defines the required minimal interval for receiving BFD packets, in msec.
   // +optional
-  optional uint32 minRx = 3 [(gogoproto.customname) = "MinRx"];
+  optional uint32 minRx = 3;
 
   // MinEchoRx defines the echo function timer, in msec.
   // +optional
-  optional uint32 minEchoRx = 4 [(gogoproto.customname) = "MinEchoRx"];
+  optional uint32 minEchoRx = 4;
 
   // Multiplier defines the number of missed packets before the session is considered down
   // +optional
-  optional uint32 multiplier = 5 [(gogoproto.customname) = "Multiplier"];
+  optional uint32 multiplier = 5;
 
   // TTL defines the time to live on the outgoing BFD packet
   // +kubebuilder:validation:Maximum:=255
   // +kubebuilder:validation:Minimum:=2
   // +optional
-  optional uint32 ttl = 6 [(gogoproto.customname) = "TTL"];
+  optional uint32 ttl = 6;
 }
 
 message BGPLinkParameters {
   // BFD defines if BFD is enabled for the EGP on this interface
   // +kubebuilder:default:=true
   // +optional
-  optional bool bfd = 1 [(gogoproto.customname) = "BFD"];
+  optional bool bfd = 1;
 }
 
 message IGPLinkParameters {
@@ -883,39 +861,39 @@ message IGPLinkParameters {
   // +kubebuilder:validation:Enum=`pointToPoint`;`broadcast`;
   // +kubebuilder:default=pointToPoint
   // +optional
-  optional string networkType = 1 [(gogoproto.casttype) = "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.NetworkType", (gogoproto.customname) = "NetworkType"];
+  optional string networkType = 1;
 
   // Passive defines if this interface is passive
   // +optional
-  optional bool passive = 2 [(gogoproto.customname) = "Passive"];
+  optional bool passive = 2;
 
   // BFD defines if BFD is enabled for the IGP on this interface
   // +kubebuilder:default:=true
   // +optional
-  optional bool bfd = 3 [(gogoproto.customname) = "BFD"];
+  optional bool bfd = 3;
 
   // Metric defines the interface metric associated with the native routing topology
   // +optional
-  optional uint32 metric = 4 [(gogoproto.customname) = "Metric"];
+  optional uint32 metric = 4;
 }
 
 message ISISLinkParameters {
   // Generic IGP Link Parameters
   // +optional
-  optional IGPLinkParameters igpLinkParameters = 1 [(gogoproto.customname) = "IGPLinkParameters", (gogoproto.nullable) = false];
+  optional IGPLinkParameters igpLinkParameters = 1;
 
   // Defines the ISIS level the link is assocaited with
   // +optional
-  optional string area = 2 [(gogoproto.casttype) = "github.com/kubenet-dev/apis/apis/network/core/v1alpha1.ISISLevel", (gogoproto.customname) = "Level"];
+  optional string area = 2;
 }
 
 message OSPFLinkParameters {
   // Generic IGP Link Parameters
   // +optional
-  optional IGPLinkParameters igpLinkParameters = 1 [(gogoproto.customname) = "IGPLinkParameters", (gogoproto.nullable) = false];
+  optional IGPLinkParameters igpLinkParameters = 1;
 
   // Defines the OSPF area the link is assocaited with
   // +optional
-  optional string area = 2 [(gogoproto.customname) = "Area"];
+  optional string area = 2;
 }
 

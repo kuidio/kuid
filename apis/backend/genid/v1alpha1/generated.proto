@@ -19,35 +19,13 @@ syntax = "proto2";
 
 package github.com.kuidio.kuid.apis.backend.genid.v1alpha1;
 
-import "github.com/gogo/protobuf/gogoproto/gogo.proto";
-import "github.com/kuidio/kuid/apis/backend/as/v1alpha1/generated.proto";
+import "github.com/kform-dev/choreo/apis/condition/v1alpha1/generated.proto";
 import "github.com/kuidio/kuid/apis/common/v1alpha1/generated.proto";
 import "k8s.io/apimachinery/pkg/apis/meta/v1/generated.proto";
 import "k8s.io/apimachinery/pkg/runtime/schema/generated.proto";
 
 // Package-wide variables from generator "generated".
-option (gogoproto.marshaler_all) = true;
-option (gogoproto.stable_marshaler_all) = true;
-option (gogoproto.sizer_all) = true;
-option (gogoproto.goproto_stringer_all) = false;
-option (gogoproto.stringer_all) = true;
-option (gogoproto.unmarshaler_all) = true;
-option (gogoproto.goproto_unrecognized_all) = false;
-option (gogoproto.goproto_enum_prefix_all) = false;
-option (gogoproto.goproto_getters_all) = false;
 option go_package = "github.com/kuidio/kuid/apis/backend/genid/v1alpha1";
-
-message Condition {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.Condition condition = 1 [(gogoproto.customname) = "Condition", (gogoproto.nullable) = false];
-}
-
-message ConditionedStatus {
-  // Conditions of the resource.
-  // +optional
-  // +listType:=map
-  // +listMapKey:=type
-  repeated .github.com.kuidio.kuid.apis.backend.as.v1alpha1.Condition conditions = 1 [(gogoproto.customname) = "Conditions", (gogoproto.nullable) = false];
-}
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -56,57 +34,57 @@ message ConditionedStatus {
 // +kubebuilder:resource:categories={kuid}
 // GENIDClaim is the Schema for the GENIDClaim API
 message GENIDClaim {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional GENIDClaimSpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional GENIDClaimSpec spec = 2;
 
-  optional GENIDClaimStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional GENIDClaimStatus status = 3;
 }
 
 // GENIDClaimList contains a list of GENIDClaims
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message GENIDClaimList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated GENIDClaim items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated GENIDClaim items = 2;
 }
 
 // GENIDClaimSpec defines the desired state of GENIDClaim
 message GENIDClaimSpec {
   // Index defines the index for the resource
-  optional string index = 1 [(gogoproto.customname) = "Index", (gogoproto.nullable) = false];
+  optional string index = 1;
 
   // ID defines the id of the resource
-  optional uint64 id = 2 [(gogoproto.customname) = "ID"];
+  optional uint64 id = 2;
 
   // Range defines the VLAN range of the resource
   // The following notation is used: start-end <start-VLANID>-<end-VLANID>
   // the VLANs in the range must be consecutive
-  optional string range = 3 [(gogoproto.customname) = "Range"];
+  optional string range = 3;
 
   // ClaimLabels define the user defined labels and selector labels used
   // in resource claim
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.ClaimLabels claimLabels = 4 [(gogoproto.customname) = "ClaimLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.ClaimLabels claimLabels = 4;
 }
 
 // GENIDClaimStatus defines the observed state of GENIDClaim
 message GENIDClaimStatus {
   // ConditionedStatus provides the status of the VLANClain using conditions
   // - a ready condition indicates the overall status of the resource
-  optional .github.com.kuidio.kuid.apis.backend.as.v1alpha1.ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 
   // ID defines the ID assigned to the resource
   // +optional
-  optional uint64 id = 2 [(gogoproto.customname) = "ID"];
+  optional uint64 id = 2;
 
   // Range defines the range assigned to the resource
   // +optional
-  optional string range = 3 [(gogoproto.customname) = "Range"];
+  optional string range = 3;
 
   // ExpiryTime defines when the claim expires
   // +kubebuilder:validation:Optional
   // +optional
-  optional string expiryTime = 4 [(gogoproto.customname) = "ExpiryTime"];
+  optional string expiryTime = 4;
 }
 
 // +genclient
@@ -116,45 +94,45 @@ message GENIDClaimStatus {
 // +kubebuilder:resource:categories={kuid}
 // GENIDEntry is the Schema for the GENIDEntry API
 message GENIDEntry {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional GENIDEntrySpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional GENIDEntrySpec spec = 2;
 
-  optional GENIDEntryStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional GENIDEntryStatus status = 3;
 }
 
 // GENIDEntryList contains a list of VLANEntries
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message GENIDEntryList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated GENIDEntry items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated GENIDEntry items = 2;
 }
 
 // GENIDEntrySpec defines the desired state of GENIDEntry
 message GENIDEntrySpec {
   // Index defines the index for the resource
-  optional string index = 1 [(gogoproto.customname) = "Index", (gogoproto.nullable) = false];
+  optional string index = 1;
 
   // IndexEntry identifies if the entry is originated from an IP Index
-  optional bool indexEntry = 2 [(gogoproto.customname) = "IndexEntry", (gogoproto.nullable) = false];
+  optional bool indexEntry = 2;
 
   // ClaimType defines the claimType of the resource
-  optional string claimType = 3 [(gogoproto.casttype) = "github.com/kuidio/kuid/apis/backend.ClaimType", (gogoproto.customname) = "ClaimType", (gogoproto.nullable) = false];
+  optional string claimType = 3;
 
   // ID defines the id of the resource in the tree
-  optional string id = 4 [(gogoproto.customname) = "ID", (gogoproto.nullable) = false];
+  optional string id = 4;
 
   // ClaimLabels define the user defined labels and selector labels used
   // in resource claim
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.ClaimLabels claimLabels = 5 [(gogoproto.customname) = "ClaimLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.ClaimLabels claimLabels = 5;
 }
 
 // GENIDEntryStatus defines the observed state of GENIDEntry
 message GENIDEntryStatus {
   // ConditionedStatus provides the status of the GENIDEntry using conditions
   // - a ready condition indicates the overall status of the resource
-  optional .github.com.kuidio.kuid.apis.backend.as.v1alpha1.ConditionedStatus conditionedStatus = 1 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
 }
 
 // +genclient
@@ -164,52 +142,52 @@ message GENIDEntryStatus {
 // +kubebuilder:resource:categories={kuid}
 // GENIDIndex is the Schema for the GENIDIndex API
 message GENIDIndex {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1 [(gogoproto.customname) = "ObjectMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta metadata = 1;
 
-  optional GENIDIndexSpec spec = 2 [(gogoproto.customname) = "Spec", (gogoproto.nullable) = false];
+  optional GENIDIndexSpec spec = 2;
 
-  optional GENIDIndexStatus status = 3 [(gogoproto.customname) = "Status", (gogoproto.nullable) = false];
+  optional GENIDIndexStatus status = 3;
 }
 
 // GENIDIndexList contains a list of GENIDIndexs
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message GENIDIndexList {
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1 [(gogoproto.customname) = "ListMeta", (gogoproto.nullable) = false];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.ListMeta metadata = 1;
 
-  repeated GENIDIndex items = 2 [(gogoproto.customname) = "Items", (gogoproto.nullable) = false];
+  repeated GENIDIndex items = 2;
 }
 
 // GENIDIndexSpec defines the desired state of GENIDIndex
 message GENIDIndexSpec {
   // MinID defines the min ID the index supports
   // +optional
-  optional uint64 minID = 1 [(gogoproto.customname) = "MinID"];
+  optional uint64 minID = 1;
 
   // MaxID defines the max ID the index supports
   // +optional
-  optional uint64 maxID = 2 [(gogoproto.customname) = "MaxID"];
+  optional uint64 maxID = 2;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
-  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3 [(gogoproto.customname) = "UserDefinedLabels", (gogoproto.nullable) = false];
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
 
   // Type defines the type of the GENID
   // 16bit, 32bit, 48bit, 64bit
-  optional string type = 4 [(gogoproto.customname) = "Type", (gogoproto.nullable) = false];
+  optional string type = 4;
 }
 
 // GENIDIndexStatus defines the observed state of GENIDIndex
 message GENIDIndexStatus {
   // MinID defines the min ID the index supports
   // +optional
-  optional uint64 minID = 1 [(gogoproto.customname) = "MinID"];
+  optional uint64 minID = 1;
 
   // MaxID defines the max ID the index supports
   // +optional
-  optional uint64 maxID = 2 [(gogoproto.customname) = "MaxID"];
+  optional uint64 maxID = 2;
 
   // ConditionedStatus provides the status of the GENIDIndex using conditions
   // - a ready condition indicates the overall status of the resource
-  optional .github.com.kuidio.kuid.apis.backend.as.v1alpha1.ConditionedStatus conditionedStatus = 3 [(gogoproto.customname) = "ConditionedStatus", (gogoproto.nullable) = false];
+  optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 3;
 }
 

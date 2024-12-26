@@ -19,33 +19,23 @@ syntax = "proto2";
 
 package github.com.kuidio.kuid.apis.common.v1alpha1;
 
-import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 import "k8s.io/apimachinery/pkg/apis/meta/v1/generated.proto";
 
 // Package-wide variables from generator "generated".
-option (gogoproto.marshaler_all) = true;
-option (gogoproto.stable_marshaler_all) = true;
-option (gogoproto.sizer_all) = true;
-option (gogoproto.goproto_stringer_all) = false;
-option (gogoproto.stringer_all) = true;
-option (gogoproto.unmarshaler_all) = true;
-option (gogoproto.goproto_unrecognized_all) = false;
-option (gogoproto.goproto_enum_prefix_all) = false;
-option (gogoproto.goproto_getters_all) = false;
 option go_package = "github.com/kuidio/kuid/apis/common/v1alpha1";
 
 message ClaimLabels {
-  optional UserDefinedLabels userDefinedLabels = 1 [(gogoproto.customname) = "UserDefinedLabels", (gogoproto.nullable) = false];
+  optional UserDefinedLabels userDefinedLabels = 1;
 
   // Selector defines the selector criterias
   // +kubebuilder:validation:Optional
-  optional .k8s.io.apimachinery.pkg.apis.meta.v1.LabelSelector selector = 2 [(gogoproto.customname) = "Selector"];
+  optional .k8s.io.apimachinery.pkg.apis.meta.v1.LabelSelector selector = 2;
 }
 
 // UserDefinedLabels define metadata to the resource.
 message UserDefinedLabels {
   // Labels as user defined labels
   // +optional
-  map<string, string> labels = 1 [(gogoproto.customname) = "Labels", (gogoproto.nullable) = false];
+  map<string, string> labels = 1;
 }
 
