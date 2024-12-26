@@ -4,7 +4,7 @@ go 1.23.3
 
 toolchain go1.23.4
 
-replace k8s.io/gengo/v2 => k8s.io/gengo/v2 v2.0.0-20240228010128-51d4e06bde70
+replace sigs.k8s.io/structured-merge-diff/v4 => sigs.k8s.io/structured-merge-diff/v4 v4.4.1
 
 require (
 	github.com/dgraph-io/badger/v4 v4.5.0
