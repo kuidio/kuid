@@ -1485,7 +1485,7 @@ func Convert_infra_LinkStatus_To_v1alpha1_LinkStatus(in *infra.LinkStatus, out *
 	return autoConvert_infra_LinkStatus_To_v1alpha1_LinkStatus(in, out, s)
 }
 
-func autoConvert_v1alpha1_Location_To_infra_Location(in *Location, out *infra.Location, s conversion.Scope) error {
+func autoConvert_v1alpha1_Location_To_infra_Location(in *Location, out *infra.Location, _ conversion.Scope) error {
 	out.Latitude = in.Latitude
 	out.Longitude = in.Longitude
 	return nil
@@ -1496,7 +1496,7 @@ func Convert_v1alpha1_Location_To_infra_Location(in *Location, out *infra.Locati
 	return autoConvert_v1alpha1_Location_To_infra_Location(in, out, s)
 }
 
-func autoConvert_infra_Location_To_v1alpha1_Location(in *infra.Location, out *Location, s conversion.Scope) error {
+func autoConvert_infra_Location_To_v1alpha1_Location(in *infra.Location, out *Location, _ conversion.Scope) error {
 	out.Latitude = in.Latitude
 	out.Longitude = in.Longitude
 	return nil

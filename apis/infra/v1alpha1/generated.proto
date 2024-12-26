@@ -20,6 +20,7 @@ syntax = "proto2";
 package github.com.kuidio.kuid.apis.infra.v1alpha1;
 
 import "github.com/kform-dev/choreo/apis/condition/v1alpha1/generated.proto";
+import "github.com/kubenet-dev/apis/apis/network/core/v1alpha1/generated.proto";
 import "github.com/kuidio/kuid/apis/common/v1alpha1/generated.proto";
 import "github.com/kuidio/kuid/apis/id/v1alpha1/generated.proto";
 import "k8s.io/apimachinery/pkg/apis/meta/v1/generated.proto";
@@ -323,19 +324,19 @@ message LinkSpec {
 
   // BFD defines the BFD specific parameters on the link
   // +optional
-  optional BFDLinkParameters bfd = 4;
+  optional .github.com.kubenet_dev.apis.apis.network.core.v1alpha1.BFDLinkParameters bfd = 4;
 
   // OSPF defines the OSPF specific parameters on the link
   // +optional
-  optional OSPFLinkParameters ospf = 5;
+  optional .github.com.kubenet_dev.apis.apis.network.core.v1alpha1.OSPFLinkParameters ospf = 5;
 
   // ISIS defines the ISIS specific parameters on the link
   // +optional
-  optional ISISLinkParameters isis = 6;
+  optional .github.com.kubenet_dev.apis.apis.network.core.v1alpha1.ISISLinkParameters isis = 6;
 
   // BGP defines the BGP specific parameters on the link
   // +optional
-  optional BGPLinkParameters bgp = 7;
+  optional .github.com.kubenet_dev.apis.apis.network.core.v1alpha1.BGPLinkParameters bgp = 7;
 }
 
 // LinkStatus defines the observed state of Link
@@ -401,7 +402,7 @@ message ModuleBaySpec {
   optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionNodeID nodeID = 1;
 
   // Position defines the position in the node the moduleBay is deployed
-  optional int64 psoition = 2;
+  optional uint32 psoition = 2;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
@@ -429,7 +430,7 @@ message ModuleSpec {
   optional .github.com.kuidio.kuid.apis.id.v1alpha1.PartitionNodeID nodeID = 1;
 
   // ModuelBay defines the bay in which the module is deployed
-  optional int64 moduleBay = 2;
+  optional uint32 moduleBay = 2;
 
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
@@ -819,81 +820,5 @@ message SiteStatus {
   // ConditionedStatus provides the status of the IPClain using conditions
   // - a ready condition indicates the overall status of the resource
   optional .github.com.kform_dev.choreo.apis.condition.v1alpha1.ConditionedStatus conditionedStatus = 1;
-}
-
-message BFDLinkParameters {
-  // Disabled defines if bfd is disabled or not
-  // +optional
-  optional bool enabled = 1;
-
-  // MinTx defines the desired minimal interval for sending BFD packets, in msec.
-  // +optional
-  optional uint32 minTx = 2;
-
-  // MinTx defines the required minimal interval for receiving BFD packets, in msec.
-  // +optional
-  optional uint32 minRx = 3;
-
-  // MinEchoRx defines the echo function timer, in msec.
-  // +optional
-  optional uint32 minEchoRx = 4;
-
-  // Multiplier defines the number of missed packets before the session is considered down
-  // +optional
-  optional uint32 multiplier = 5;
-
-  // TTL defines the time to live on the outgoing BFD packet
-  // +kubebuilder:validation:Maximum:=255
-  // +kubebuilder:validation:Minimum:=2
-  // +optional
-  optional uint32 ttl = 6;
-}
-
-message BGPLinkParameters {
-  // BFD defines if BFD is enabled for the EGP on this interface
-  // +kubebuilder:default:=true
-  // +optional
-  optional bool bfd = 1;
-}
-
-message IGPLinkParameters {
-  // Type defines the type of network
-  // +kubebuilder:validation:Enum=`pointToPoint`;`broadcast`;
-  // +kubebuilder:default=pointToPoint
-  // +optional
-  optional string networkType = 1;
-
-  // Passive defines if this interface is passive
-  // +optional
-  optional bool passive = 2;
-
-  // BFD defines if BFD is enabled for the IGP on this interface
-  // +kubebuilder:default:=true
-  // +optional
-  optional bool bfd = 3;
-
-  // Metric defines the interface metric associated with the native routing topology
-  // +optional
-  optional uint32 metric = 4;
-}
-
-message ISISLinkParameters {
-  // Generic IGP Link Parameters
-  // +optional
-  optional IGPLinkParameters igpLinkParameters = 1;
-
-  // Defines the ISIS level the link is assocaited with
-  // +optional
-  optional string area = 2;
-}
-
-message OSPFLinkParameters {
-  // Generic IGP Link Parameters
-  // +optional
-  optional IGPLinkParameters igpLinkParameters = 1;
-
-  // Defines the OSPF area the link is assocaited with
-  // +optional
-  optional string area = 2;
 }
 

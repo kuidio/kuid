@@ -19,7 +19,7 @@ require (
 	github.com/henderiw/logger v0.0.0-20230911123436-8655829b1abe
 	github.com/henderiw/store v0.0.2-0.20241030044529-f6baff74eab3
 	github.com/kform-dev/choreo v0.0.21-0.20241226164553-fde3b818f2d4
-	github.com/kubenet-dev/apis v0.0.0-20241125090920-214523829415
+	github.com/kubenet-dev/apis v0.0.0-20241226172644-d5605a09645c
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.10.0

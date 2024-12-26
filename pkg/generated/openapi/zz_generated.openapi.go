@@ -4532,14 +4532,14 @@ func schema_kuid_apis_id_v1alpha1_EndpointID(ref common.ReferenceCallback) commo
 						SchemaProps: spec.SchemaProps{
 							Description: "ModuleBay defines the moduleBay reference id",
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"module": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Module defines the module reference id",
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"port": {
@@ -4547,7 +4547,7 @@ func schema_kuid_apis_id_v1alpha1_EndpointID(ref common.ReferenceCallback) commo
 							Description: "Port defines the id of the port",
 							Default:     0,
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"adaptor": {
@@ -4563,7 +4563,7 @@ func schema_kuid_apis_id_v1alpha1_EndpointID(ref common.ReferenceCallback) commo
 							Description: "Endpoint defines the name of the endpoint",
 							Default:     0,
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 				},
@@ -4652,14 +4652,14 @@ func schema_kuid_apis_id_v1alpha1_PartitionAdaptorID(ref common.ReferenceCallbac
 						SchemaProps: spec.SchemaProps{
 							Description: "ModuleBay defines the moduleBay reference id",
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"module": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Module defines the module reference id",
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"port": {
@@ -4667,7 +4667,7 @@ func schema_kuid_apis_id_v1alpha1_PartitionAdaptorID(ref common.ReferenceCallbac
 							Description: "Port defines the id of the port",
 							Default:     0,
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"adaptor": {
@@ -4838,14 +4838,14 @@ func schema_kuid_apis_id_v1alpha1_PartitionEndpointID(ref common.ReferenceCallba
 						SchemaProps: spec.SchemaProps{
 							Description: "ModuleBay defines the moduleBay reference id",
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"module": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Module defines the module reference id",
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"port": {
@@ -4853,7 +4853,7 @@ func schema_kuid_apis_id_v1alpha1_PartitionEndpointID(ref common.ReferenceCallba
 							Description: "Port defines the id of the port",
 							Default:     0,
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"adaptor": {
@@ -4868,7 +4868,7 @@ func schema_kuid_apis_id_v1alpha1_PartitionEndpointID(ref common.ReferenceCallba
 							Description: "Endpoint defines the name of the endpoint",
 							Default:     0,
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"name": {
@@ -4972,14 +4972,14 @@ func schema_kuid_apis_id_v1alpha1_PartitionPortID(ref common.ReferenceCallback) 
 						SchemaProps: spec.SchemaProps{
 							Description: "ModuleBay defines the moduleBay reference id",
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"module": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Module defines the module reference id",
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"port": {
@@ -4987,7 +4987,7 @@ func schema_kuid_apis_id_v1alpha1_PartitionPortID(ref common.ReferenceCallback) 
 							Description: "Port defines the id of the port",
 							Default:     0,
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 				},
@@ -5055,14 +5055,14 @@ func schema_kuid_apis_id_v1alpha1_PartitionProviderEndpointID(ref common.Referen
 						SchemaProps: spec.SchemaProps{
 							Description: "ModuleBay defines the moduleBay reference id",
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"module": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Module defines the module reference id",
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"port": {
@@ -5070,7 +5070,7 @@ func schema_kuid_apis_id_v1alpha1_PartitionProviderEndpointID(ref common.Referen
 							Description: "Port defines the id of the port",
 							Default:     0,
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"adaptor": {
@@ -5085,7 +5085,7 @@ func schema_kuid_apis_id_v1alpha1_PartitionProviderEndpointID(ref common.Referen
 							Description: "Endpoint defines the name of the endpoint",
 							Default:     0,
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"name": {
@@ -5331,14 +5331,14 @@ func schema_kuid_apis_infra_v1alpha1_AdaptorSpec(ref common.ReferenceCallback) c
 						SchemaProps: spec.SchemaProps{
 							Description: "ModuleBay defines the moduleBay reference id",
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"module": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Module defines the module reference id",
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"port": {
@@ -5346,7 +5346,7 @@ func schema_kuid_apis_infra_v1alpha1_AdaptorSpec(ref common.ReferenceCallback) c
 							Description: "Port defines the id of the port",
 							Default:     0,
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"adaptor": {
@@ -5942,14 +5942,14 @@ func schema_kuid_apis_infra_v1alpha1_EndpointSpec(ref common.ReferenceCallback) 
 						SchemaProps: spec.SchemaProps{
 							Description: "ModuleBay defines the moduleBay reference id",
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"module": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Module defines the module reference id",
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"port": {
@@ -5957,7 +5957,7 @@ func schema_kuid_apis_infra_v1alpha1_EndpointSpec(ref common.ReferenceCallback) 
 							Description: "Port defines the id of the port",
 							Default:     0,
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"adaptor": {
@@ -5972,7 +5972,7 @@ func schema_kuid_apis_infra_v1alpha1_EndpointSpec(ref common.ReferenceCallback) 
 							Description: "Endpoint defines the name of the endpoint",
 							Default:     0,
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"name": {
@@ -6647,7 +6647,7 @@ func schema_kuid_apis_infra_v1alpha1_ModuleBaySpec(ref common.ReferenceCallback)
 							Description: "Position defines the position in the node the moduleBay is deployed",
 							Default:     0,
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"labels": {
@@ -6795,7 +6795,7 @@ func schema_kuid_apis_infra_v1alpha1_ModuleSpec(ref common.ReferenceCallback) co
 							Description: "ModuelBay defines the bay in which the module is deployed",
 							Default:     0,
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"labels": {
@@ -7770,14 +7770,14 @@ func schema_kuid_apis_infra_v1alpha1_PortSpec(ref common.ReferenceCallback) comm
 						SchemaProps: spec.SchemaProps{
 							Description: "ModuleBay defines the moduleBay reference id",
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"module": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Module defines the module reference id",
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"port": {
@@ -7785,7 +7785,7 @@ func schema_kuid_apis_infra_v1alpha1_PortSpec(ref common.ReferenceCallback) comm
 							Description: "Port defines the id of the port",
 							Default:     0,
 							Type:        []string{"integer"},
-							Format:      "int32",
+							Format:      "int64",
 						},
 					},
 					"labels": {

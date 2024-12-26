@@ -226,7 +226,7 @@ func doGen() error {
 		err := run(getProtoCmd(
 			"go-to-protobuf",
 			"--packages", strings.Join(protobufVersions, ","),
-			"--apimachinery-packages", "-k8s.io/apimachinery/pkg/api/resource,-k8s.io/apimachinery/pkg/runtime/schema,-k8s.io/apimachinery/pkg/runtime,-k8s.io/apimachinery/pkg/apis/meta/v1,-github.com/kform-dev/choreo/apis/condition/v1alpha1",
+			"--apimachinery-packages", "-k8s.io/apimachinery/pkg/api/resource,-k8s.io/apimachinery/pkg/runtime/schema,-k8s.io/apimachinery/pkg/runtime,-k8s.io/apimachinery/pkg/apis/meta/v1,-github.com/kform-dev/choreo/apis/condition/v1alpha1,-github.com/kubenet-dev/apis/apis/network/core/v1alpha1",
 			"--proto-import", "./vendor",
 		))
 		if err != nil {

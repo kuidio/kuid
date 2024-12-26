@@ -30,7 +30,7 @@ type ModuleBaySpec struct {
 	// NodeID identifies the node identity this resource belongs to
 	id.PartitionNodeID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeID"`
 	// Position defines the position in the node the moduleBay is deployed
-	Position int `json:"psoition" yaml:"psoition" protobuf:"bytes,2,opt,name=psoition"`
+	Position uint32 `json:"psoition" yaml:"psoition" protobuf:"bytes,2,opt,name=psoition"`
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
 	common.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,3,opt,name=userDefinedLabels"`

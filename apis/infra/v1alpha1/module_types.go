@@ -30,7 +30,7 @@ type ModuleSpec struct {
 	// NodeID identifies the node identity this resource belongs to
 	idv1alpha1.PartitionNodeID `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=nodeID"`
 	// ModuelBay defines the bay in which the module is deployed
-	ModuleBay int `json:"moduleBay" yaml:"moduleBay" protobuf:"bytes,2,opt,name=moduleBay"`
+	ModuleBay uint32 `json:"moduleBay" yaml:"moduleBay" protobuf:"bytes,2,opt,name=moduleBay"`
 	// UserDefinedLabels define metadata to the resource.
 	// defined in the spec to distingiush metadata labels from user defined labels
 	commonv1alpha1.UserDefinedLabels `json:",inline" yaml:",inline" protobuf:"bytes,3,opt,name=userDefinedLabels"`
