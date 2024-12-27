@@ -27,33 +27,33 @@ import (
 // VLANClaimSpec defines the desired state of VLANClaim
 type VLANClaimSpec struct {
 	// Index defines the index for the resource
-	Index string `json:"index" yaml:"index" protobuf:"bytes,1,opt,name=index"`
+	Index string `json:"index" protobuf:"bytes,1,opt,name=index"`
 	// ID defines the id of the resource
-	ID *uint32 `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,2,opt,name=id"`
+	ID *uint32 `json:"id,omitempty" protobuf:"bytes,2,opt,name=id"`
 	// Range defines the VLAN range of the resource
 	// The following notation is used: start-end <start-VLANID>-<end-VLANID>
 	// the VLANs in the range must be consecutive
-	Range *string `json:"range,omitempty" yaml:"range,omitempty" protobuf:"bytes,3,opt,name=range"`
+	Range *string `json:"range,omitempty" protobuf:"bytes,3,opt,name=range"`
 	// ClaimLabels define the user defined labels and selector labels used
 	// in resource claim
-	commonv1alpha1.ClaimLabels `json:",inline" yaml:",inline" protobuf:"bytes,4,opt,name=claimLabels"`
+	commonv1alpha1.ClaimLabels `json:",inline" protobuf:"bytes,4,opt,name=claimLabels"`
 }
 
 // VLANClaimStatus defines the observed state of VLANClaim
 type VLANClaimStatus struct {
 	// ConditionedStatus provides the status of the VLANClain using conditions
 	// - a ready condition indicates the overall status of the resource
-	condv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=conditionedStatus"`
+	condv1alpha1.ConditionedStatus `json:",inline" protobuf:"bytes,1,opt,name=conditionedStatus"`
 	// VLANID defines the VLAN for the VLAN claim
 	// +optional
-	ID *uint32 `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,2,opt,name=id"`
+	ID *uint32 `json:"id,omitempty" protobuf:"bytes,2,opt,name=id"`
 	// VLANRange defines the VLAN range for the VLAN claim
 	// +optional
-	Range *string `json:"range,omitempty" yaml:"range,omitempty" protobuf:"bytes,3,opt,name=range"`
+	Range *string `json:"range,omitempty" protobuf:"bytes,3,opt,name=range"`
 	// ExpiryTime defines when the claim expires
 	// +kubebuilder:validation:Optional
 	// +optional
-	ExpiryTime *string `json:"expiryTime,omitempty" yaml:"expiryTime,omitempty" protobuf:"bytes,4,opt,name=expiryTime"`
+	ExpiryTime *string `json:"expiryTime,omitempty" protobuf:"bytes,4,opt,name=expiryTime"`
 }
 
 // +genclient
@@ -63,19 +63,19 @@ type VLANClaimStatus struct {
 // +kubebuilder:resource:categories={kuid}
 // VLANClaim is the Schema for the VLANClaim API
 type VLANClaim struct {
-	metav1.TypeMeta   `json:",inline" yaml:",inline"`
-	metav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
 
-	Spec   VLANClaimSpec   `json:"spec,omitempty" yaml:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
-	Status VLANClaimStatus `json:"status,omitempty" yaml:"status,omitempty" protobuf:"bytes,3,opt,name=status"`
+	Spec   VLANClaimSpec   `json:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
+	Status VLANClaimStatus `json:"status,omitempty" protobuf:"bytes,3,opt,name=status"`
 }
 
 // VLANClaimList contains a list of VLANClaims
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 type VLANClaimList struct {
-	metav1.TypeMeta `json:",inline" yaml:",inline"`
-	metav1.ListMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
-	Items           []VLANClaim `json:"items" yaml:"items" protobuf:"bytes,2,rep,name=items"`
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
+	Items           []VLANClaim `json:"items" protobuf:"bytes,2,rep,name=items"`
 }
 
 var (

@@ -152,6 +152,23 @@ message EXTCOMMIndex {
   optional EXTCOMMIndexStatus status = 3;
 }
 
+message EXTCOMMIndexClaim {
+  // Name of the Claim
+  optional string name = 1;
+
+  // EXTCOMMID defines the EXTCOMM for the EXTCOMM claim
+  optional uint64 id = 2;
+
+  // Range defines the range of the resource
+  // The following notation is used: start-end <start-ID>-<end-ID>
+  // the IDs in the range must be consecutive
+  optional string range = 3;
+
+  // UserDefinedLabels define metadata to the resource.
+  // defined in the spec to distingiush metadata labels from user defined labels
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 4;
+}
+
 // EXTCOMMIndexList contains a list of EXTCOMMIndexs
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message EXTCOMMIndexList {
@@ -190,6 +207,9 @@ message EXTCOMMIndexSpec {
   // IPV4 addrress
   // irrelevant for the opaque type
   optional string globalID = 7;
+
+  // Claims define the embedded claims in the Index
+  repeated EXTCOMMIndexClaim claims = 8;
 }
 
 // EXTCOMMIndexStatus defines the observed state of EXTCOMMIndex

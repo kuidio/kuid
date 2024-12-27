@@ -149,6 +149,23 @@ message GENIDIndex {
   optional GENIDIndexStatus status = 3;
 }
 
+message GENIDIndexClaim {
+  // Name of the Claim
+  optional string name = 1;
+
+  // ID defines the id of the resource
+  optional uint64 id = 2;
+
+  // Range defines the range of the resource
+  // The following notation is used: start-end <start-ID>-<end-ID>
+  // the IDs in the range must be consecutive
+  optional string range = 3;
+
+  // UserDefinedLabels define metadata to the resource.
+  // defined in the spec to distingiush metadata labels from user defined labels
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 4;
+}
+
 // GENIDIndexList contains a list of GENIDIndexs
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message GENIDIndexList {
@@ -174,6 +191,9 @@ message GENIDIndexSpec {
   // Type defines the type of the GENID
   // 16bit, 32bit, 48bit, 64bit
   optional string type = 4;
+
+  // Claims define the embedded claims in the Index
+  repeated GENIDIndexClaim claims = 5;
 }
 
 // GENIDIndexStatus defines the observed state of GENIDIndex

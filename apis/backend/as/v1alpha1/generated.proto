@@ -147,6 +147,23 @@ message ASIndex {
   optional ASIndexStatus status = 3;
 }
 
+message ASIndexClaim {
+  // Name of the Claim
+  optional string name = 1;
+
+  // ASID defines the AS for the AS claim
+  optional uint32 id = 2;
+
+  // Range defines the range of the resource
+  // The following notation is used: start-end <start-ID>-<end-ID>
+  // the IDs in the range must be consecutive
+  optional string range = 3;
+
+  // UserDefinedLabels define metadata to the resource.
+  // defined in the spec to distingiush metadata labels from user defined labels
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 4;
+}
+
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:object:root=true
 // ASIndexList contains a list of ASIndex
@@ -169,6 +186,9 @@ message ASIndexSpec {
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
   optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
+
+  // Claims define the embedded claims in the Index
+  repeated ASIndexClaim claims = 4;
 }
 
 // ASIndexStatus defines the observed state of ASIndex

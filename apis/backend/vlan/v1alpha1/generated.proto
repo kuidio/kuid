@@ -149,6 +149,23 @@ message VLANIndex {
   optional VLANIndexStatus status = 3;
 }
 
+message VLANIndexClaim {
+  // Name of the Claim
+  optional string name = 1;
+
+  // ID defines the id of the resource
+  optional uint32 id = 2;
+
+  // Range defines the range of the resource
+  // The following notation is used: start-end <start-ID>-<end-ID>
+  // the IDs in the range must be consecutive
+  optional string range = 3;
+
+  // UserDefinedLabels define metadata to the resource.
+  // defined in the spec to distingiush metadata labels from user defined labels
+  optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 4;
+}
+
 // VLANIndexList contains a list of VLANIndexs
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 message VLANIndexList {
@@ -170,6 +187,9 @@ message VLANIndexSpec {
   // UserDefinedLabels define metadata to the resource.
   // defined in the spec to distingiush metadata labels from user defined labels
   optional .github.com.kuidio.kuid.apis.common.v1alpha1.UserDefinedLabels userDefinedLabels = 3;
+
+  // Claims define the embedded claims in the Index
+  repeated VLANIndexClaim claims = 4;
 }
 
 // VLANIndexStatus defines the observed state of VLANIndex

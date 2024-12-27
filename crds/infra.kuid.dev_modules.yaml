@@ -51,6 +51,7 @@ spec:
                 type: object
               moduleBay:
                 description: ModuelBay defines the bay in which the module is deployed
+                format: int32
                 type: integer
               node:
                 description: Node defines the name of the node

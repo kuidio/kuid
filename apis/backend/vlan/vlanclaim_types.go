@@ -30,9 +30,9 @@ type VLANClaimSpec struct {
 	Index string `json:"index" yaml:"index" protobuf:"bytes,1,opt,name=index"`
 	// ID defines the id of the resource
 	ID *uint32 `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,2,opt,name=id"`
-	// Range defines the VLAN range of the resource
-	// The following notation is used: start-end <start-VLANID>-<end-VLANID>
-	// the VLANs in the range must be consecutive
+	// Range defines the range of the resource
+	// The following notation is used: start-end <start-ID>-<end-ID>
+	// the IDs in the range must be consecutive
 	Range *string `json:"range,omitempty" yaml:"range,omitempty" protobuf:"bytes,3,opt,name=range"`
 	// ClaimLabels define the user defined labels and selector labels used
 	// in resource claim

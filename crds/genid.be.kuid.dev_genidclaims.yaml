@@ -55,9 +55,9 @@ spec:
                 type: object
               range:
                 description: |-
-                  Range defines the VLAN range of the resource
-                  The following notation is used: start-end <start-VLANID>-<end-VLANID>
-                  the VLANs in the range must be consecutive
+                  Range defines the range of the resource
+                  The following notation is used: start-end <start-ID>-<end-ID>
+                  the IDs in the range must be consecutive
                 type: string
               selector:
                 description: Selector defines the selector criterias

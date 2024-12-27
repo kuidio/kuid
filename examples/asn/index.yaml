@@ -5,3 +5,8 @@ metadata:
 spec:
   labels:
     inv.kuid.dev/topology: topo1
+  claims:
+  - name: aspool
+    range: 65000-65100
+  - name: ibgp
+    id: 65535

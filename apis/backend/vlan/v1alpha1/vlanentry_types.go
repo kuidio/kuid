@@ -28,23 +28,23 @@ import (
 // VLANEntrySpec defines the desired state of VLANEntry
 type VLANEntrySpec struct {
 	// Index defines the index for the resource
-	Index string `json:"index" yaml:"index" protobuf:"bytes,1,opt,name=index"`
+	Index string `json:"index" protobuf:"bytes,1,opt,name=index"`
 	// IndexEntry identifies if the entry is originated from an IP Index
-	IndexEntry bool `json:"indexEntry" yaml:"indexEntry" protobuf:"bytes,2,opt,name=indexEntry"`
+	IndexEntry bool `json:"indexEntry" protobuf:"bytes,2,opt,name=indexEntry"`
 	// ClaimType defines the claimType of the resource
-	ClaimType backend.ClaimType `json:"claimType,omitempty" yaml:"claimType,omitempty" protobuf:"bytes,3,opt,name=claimType"`
+	ClaimType backend.ClaimType `json:"claimType,omitempty" protobuf:"bytes,3,opt,name=claimType"`
 	// ID defines the id of the resource in the tree
-	ID string `json:"id,omitempty" yaml:"id,omitempty" protobuf:"bytes,4,opt,name=id"`
+	ID string `json:"id,omitempty" protobuf:"bytes,4,opt,name=id"`
 	// ClaimLabels define the user defined labels and selector labels used
 	// in resource claim
-	commonv1alpha1.ClaimLabels `json:",inline" yaml:",inline" protobuf:"bytes,5,opt,name=claimLabels"`
+	commonv1alpha1.ClaimLabels `json:",inline" protobuf:"bytes,5,opt,name=claimLabels"`
 }
 
 // VLANEntryStatus defines the observed state of VLANEntry
 type VLANEntryStatus struct {
 	// ConditionedStatus provides the status of the VLANEntry using conditions
 	// - a ready condition indicates the overall status of the resource
-	condv1alpha1.ConditionedStatus `json:",inline" yaml:",inline" protobuf:"bytes,1,opt,name=conditionedStatus"`
+	condv1alpha1.ConditionedStatus `json:",inline" protobuf:"bytes,1,opt,name=conditionedStatus"`
 }
 
 // +genclient
@@ -54,19 +54,19 @@ type VLANEntryStatus struct {
 // +kubebuilder:resource:categories={kuid}
 // VLANEntry is the Schema for the VLANentry API
 type VLANEntry struct {
-	metav1.TypeMeta   `json:",inline" yaml:",inline"`
-	metav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
 
-	Spec   VLANEntrySpec   `json:"spec,omitempty" yaml:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
-	Status VLANEntryStatus `json:"status,omitempty" yaml:"status,omitempty" protobuf:"bytes,3,opt,name=status"`
+	Spec   VLANEntrySpec   `json:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
+	Status VLANEntryStatus `json:"status,omitempty" protobuf:"bytes,3,opt,name=status"`
 }
 
 // VLANEntryList contains a list of VLANEntries
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 type VLANEntryList struct {
-	metav1.TypeMeta `json:",inline" yaml:",inline"`
-	metav1.ListMeta `json:"metadata,omitempty" yaml:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
-	Items           []VLANEntry `json:"items" yaml:"items" protobuf:"bytes,2,rep,name=items"`
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
+	Items           []VLANEntry `json:"items" protobuf:"bytes,2,rep,name=items"`
 }
 
 var (

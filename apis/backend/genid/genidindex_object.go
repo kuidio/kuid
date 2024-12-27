@@ -26,6 +26,7 @@ import (
 	"github.com/henderiw/idxtable/pkg/tree/tree64"
 	"github.com/henderiw/store"
 	"github.com/kuidio/kuid/apis/backend"
+	"github.com/kuidio/kuid/apis/common"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -129,6 +130,9 @@ func (r *GENIDIndex) GetClaims() []backend.ClaimObject {
 	if r.GetMaxID() != nil && *r.GetMaxID() != r.GetMax() {
 		claims = append(claims, r.GetMaxClaim())
 	}
+	for _, claim := range r.Spec.Claims {
+		claims = append(claims, r.GetClaim(claim))
+	}
 	return claims
 }
 
@@ -162,7 +166,7 @@ func (r *GENIDIndex) GetMaxClaim() backend.ClaimObject {
 			OwnerReferences: []metav1.OwnerReference{
 				{
 					APIVersion: schema.GroupVersion{Group: SchemeGroupVersion.Group, Version: "v1alpha1"}.Identifier(),
-					Kind:       r.Kind,
+					Kind:       GENIDIndexKind,
 					Name:       r.Name,
 					UID:        r.UID,
 				},
@@ -172,6 +176,36 @@ func (r *GENIDIndex) GetMaxClaim() backend.ClaimObject {
 			Index: r.Name,
 			Range: ptr.To(GetMaxClaimRange(GetGenIDType(r.Spec.Type), *r.Spec.MaxID)),
 		},
+		nil,
+	)
+}
+
+func (r *GENIDIndex) GetClaim(claim GENIDIndexClaim) backend.ClaimObject {
+	spec := &GENIDClaimSpec{
+		Index: r.Name,
+		ClaimLabels: common.ClaimLabels{
+			UserDefinedLabels: claim.UserDefinedLabels,
+		},
+	}
+	if claim.ID != nil {
+		spec.ID = claim.ID
+	} else {
+		spec.Range = claim.Range
+	}
+	return BuildGENIDClaim(
+		metav1.ObjectMeta{
+			Namespace: r.GetNamespace(),
+			Name:      fmt.Sprintf("%s.%s", r.Name, claim.Name),
+			OwnerReferences: []metav1.OwnerReference{
+				{
+					APIVersion: schema.GroupVersion{Group: SchemeGroupVersion.Group, Version: "v1alpha1"}.Identifier(),
+					Kind:       GENIDIndexKind,
+					Name:       r.Name,
+					UID:        r.UID,
+				},
+			},
+		},
+		spec,
 		nil,
 	)
 }

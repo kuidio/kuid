@@ -37,10 +37,10 @@ func (r *be) restore(ctx context.Context, index backend.IndexObject) error {
 		return nil
 	}
 
-	//if err := r.restoreMinMaxRanges(ctx, cacheInstanceCtx, curEntries, index); err != nil {
-	//	return err
-	//}
 	if err := r.restoreClaims(ctx, cacheInstanceCtx, curEntries, r.indexKind, backend.ClaimType_Range, claimmap); err != nil {
+		return err
+	}
+	if err := r.restoreClaims(ctx, cacheInstanceCtx, curEntries, r.indexKind, backend.ClaimType_StaticID, claimmap); err != nil {
 		return err
 	}
 	if err := r.restoreClaims(ctx, cacheInstanceCtx, curEntries, r.claimKind, backend.ClaimType_Range, claimmap); err != nil {
@@ -111,6 +111,9 @@ func (r *be) saveAll(ctx context.Context, k store.Key) error {
 // Destroy removes the store db
 func (r *be) destroy(ctx context.Context, k store.Key) error {
 	// no need to delete the index as this is what this fn is supposed to do
+	if err := r.deleteClaims(ctx, k); err != nil {
+		return err
+	}
 	return r.deleteEntries(ctx, k)
 }
 
@@ -156,13 +159,34 @@ func (r *be) deleteEntries(ctx context.Context, k store.Key) error {
 	return errm
 }
 
+func (r *be) deleteClaims(ctx context.Context, k store.Key) error {
+	log := log.FromContext(ctx)
+
+	log.Debug("deleteClaims list")
+	claims, err := r.listClaims(ctx, k)
+	if err != nil {
+		log.Error("cannot list claims", "error", err)
+		return err
+	}
+
+	var errm error
+	for _, claim := range claims {
+		log.Debug("deleteClaim from storage", "claim", claim.GetName())
+
+		if err := r.bestorage.DeleteClaim(ctx, claim); err != nil {
+			log.Error("cannot delete claim", "error", err)
+			errm = errors.Join(errm, err)
+			continue
+		}
+	}
+	return errm
+}
+
 func (r *be) listEntries(ctx context.Context, k store.Key) ([]backend.EntryObject, error) {
-	//log := log.FromContext(ctx).With("key", k.String())
 	return r.bestorage.ListEntries(ctx, k)
 }
 
 func (r *be) listClaims(ctx context.Context, k store.Key) (map[string]backend.ClaimObject, error) {
-	//log := log.FromContext(ctx).With("key", k.String())
 	return r.bestorage.ListClaims(ctx, k)
 }
 

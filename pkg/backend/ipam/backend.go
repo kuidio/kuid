@@ -99,7 +99,7 @@ func (r *be) CreateIndex(ctx context.Context, obj runtime.Object) error {
 			return err
 		}
 	}
-	//log.Info("update IPIndex claims", "object", index)
+	log.Debug("update IPIndex claims", "object", index)
 	return r.updateIPIndexClaims(ctx, index)
 }
 

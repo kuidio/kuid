@@ -41,6 +41,32 @@ spec:
           spec:
             description: VLANIndexSpec defines the desired state of VLANIndex
             properties:
+              claims:
+                description: Claims define the embedded claims in the Index
+                items:
+                  properties:
+                    id:
+                      description: ID defines the id of the resource
+                      format: int32
+                      type: integer
+                    labels:
+                      additionalProperties:
+                        type: string
+                      description: Labels as user defined labels
+                      type: object
+                    name:
+                      description: Name of the Claim
+                      type: string
+                    range:
+                      description: |-
+                        Range defines the range of the resource
+                        The following notation is used: start-end <start-ID>-<end-ID>
+                        the IDs in the range must be consecutive
+                      type: string
+                  required:
+                  - name
+                  type: object
+                type: array
               labels:
                 additionalProperties:
                   type: string
@@ -160,6 +186,32 @@ spec:
           spec:
             description: VLANIndexSpec defines the desired state of VLANIndex
             properties:
+              claims:
+                description: Claims define the embedded claims in the Index
+                items:
+                  properties:
+                    id:
+                      description: ID defines the id of the resource
+                      format: int32
+                      type: integer
+                    labels:
+                      additionalProperties:
+                        type: string
+                      description: Labels as user defined labels
+                      type: object
+                    name:
+                      description: Name of the Claim
+                      type: string
+                    range:
+                      description: |-
+                        Range defines the range of the resource
+                        The following notation is used: start-end <start-ID>-<end-ID>
+                        the IDs in the range must be consecutive
+                      type: string
+                  required:
+                  - name
+                  type: object
+                type: array
               labels:
                 additionalProperties:
                   type: string
