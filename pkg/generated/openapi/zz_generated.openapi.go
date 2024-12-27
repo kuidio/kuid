@@ -73,6 +73,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntrySpec":                                       schema_apis_backend_as_v1alpha1_ASEntrySpec(ref),
 		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASEntryStatus":                                     schema_apis_backend_as_v1alpha1_ASEntryStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndex":                                           schema_apis_backend_as_v1alpha1_ASIndex(ref),
+		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexClaim":                                      schema_apis_backend_as_v1alpha1_ASIndexClaim(ref),
 		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexList":                                       schema_apis_backend_as_v1alpha1_ASIndexList(ref),
 		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexSpec":                                       schema_apis_backend_as_v1alpha1_ASIndexSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexStatus":                                     schema_apis_backend_as_v1alpha1_ASIndexStatus(ref),
@@ -85,6 +86,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMEntrySpec":                             schema_apis_backend_extcomm_v1alpha1_EXTCOMMEntrySpec(ref),
 		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMEntryStatus":                           schema_apis_backend_extcomm_v1alpha1_EXTCOMMEntryStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMIndex":                                 schema_apis_backend_extcomm_v1alpha1_EXTCOMMIndex(ref),
+		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMIndexClaim":                            schema_apis_backend_extcomm_v1alpha1_EXTCOMMIndexClaim(ref),
 		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMIndexList":                             schema_apis_backend_extcomm_v1alpha1_EXTCOMMIndexList(ref),
 		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMIndexSpec":                             schema_apis_backend_extcomm_v1alpha1_EXTCOMMIndexSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMIndexStatus":                           schema_apis_backend_extcomm_v1alpha1_EXTCOMMIndexStatus(ref),
@@ -97,6 +99,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDEntrySpec":                                 schema_apis_backend_genid_v1alpha1_GENIDEntrySpec(ref),
 		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDEntryStatus":                               schema_apis_backend_genid_v1alpha1_GENIDEntryStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDIndex":                                     schema_apis_backend_genid_v1alpha1_GENIDIndex(ref),
+		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDIndexClaim":                                schema_apis_backend_genid_v1alpha1_GENIDIndexClaim(ref),
 		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDIndexList":                                 schema_apis_backend_genid_v1alpha1_GENIDIndexList(ref),
 		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDIndexSpec":                                 schema_apis_backend_genid_v1alpha1_GENIDIndexSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDIndexStatus":                               schema_apis_backend_genid_v1alpha1_GENIDIndexStatus(ref),
@@ -122,6 +125,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANEntrySpec":                                   schema_apis_backend_vlan_v1alpha1_VLANEntrySpec(ref),
 		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANEntryStatus":                                 schema_apis_backend_vlan_v1alpha1_VLANEntryStatus(ref),
 		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndex":                                       schema_apis_backend_vlan_v1alpha1_VLANIndex(ref),
+		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndexClaim":                                  schema_apis_backend_vlan_v1alpha1_VLANIndexClaim(ref),
 		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndexList":                                   schema_apis_backend_vlan_v1alpha1_VLANIndexList(ref),
 		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndexSpec":                                   schema_apis_backend_vlan_v1alpha1_VLANIndexSpec(ref),
 		"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndexStatus":                                 schema_apis_backend_vlan_v1alpha1_VLANIndexStatus(ref),
@@ -1784,6 +1788,57 @@ func schema_apis_backend_as_v1alpha1_ASIndex(ref common.ReferenceCallback) commo
 	}
 }
 
+func schema_apis_backend_as_v1alpha1_ASIndexClaim(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name of the Claim",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"id": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ASID defines the AS for the AS claim",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"range": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Range defines the range of the resource The following notation is used: start-end <start-ID>-<end-ID> the IDs in the range must be consecutive",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"labels": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Labels as user defined labels",
+							Type:        []string{"object"},
+							AdditionalProperties: &spec.SchemaOrBool{
+								Allows: true,
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"name"},
+			},
+		},
+	}
+}
+
 func schema_apis_backend_as_v1alpha1_ASIndexList(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -1870,9 +1925,25 @@ func schema_apis_backend_as_v1alpha1_ASIndexSpec(ref common.ReferenceCallback) c
 							},
 						},
 					},
+					"claims": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Claims define the embedded claims in the Index",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexClaim"),
+									},
+								},
+							},
+						},
+					},
 				},
 			},
 		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/as/v1alpha1.ASIndexClaim"},
 	}
 }
 
@@ -2373,6 +2444,57 @@ func schema_apis_backend_extcomm_v1alpha1_EXTCOMMIndex(ref common.ReferenceCallb
 	}
 }
 
+func schema_apis_backend_extcomm_v1alpha1_EXTCOMMIndexClaim(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name of the Claim",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"id": {
+						SchemaProps: spec.SchemaProps{
+							Description: "EXTCOMMID defines the EXTCOMM for the EXTCOMM claim",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"range": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Range defines the range of the resource The following notation is used: start-end <start-ID>-<end-ID> the IDs in the range must be consecutive",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"labels": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Labels as user defined labels",
+							Type:        []string{"object"},
+							AdditionalProperties: &spec.SchemaOrBool{
+								Allows: true,
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"name"},
+			},
+		},
+	}
+}
+
 func schema_apis_backend_extcomm_v1alpha1_EXTCOMMIndexList(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -2489,10 +2611,26 @@ func schema_apis_backend_extcomm_v1alpha1_EXTCOMMIndexSpec(ref common.ReferenceC
 							Format:      "",
 						},
 					},
+					"claims": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Claims define the embedded claims in the Index",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMIndexClaim"),
+									},
+								},
+							},
+						},
+					},
 				},
 				Required: []string{"type", "subType"},
 			},
 		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/extcomm/v1alpha1.EXTCOMMIndexClaim"},
 	}
 }
 
@@ -2985,6 +3123,57 @@ func schema_apis_backend_genid_v1alpha1_GENIDIndex(ref common.ReferenceCallback)
 	}
 }
 
+func schema_apis_backend_genid_v1alpha1_GENIDIndexClaim(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name of the Claim",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"id": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ID defines the id of the resource",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"range": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Range defines the range of the resource The following notation is used: start-end <start-ID>-<end-ID> the IDs in the range must be consecutive",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"labels": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Labels as user defined labels",
+							Type:        []string{"object"},
+							AdditionalProperties: &spec.SchemaOrBool{
+								Allows: true,
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"name"},
+			},
+		},
+	}
+}
+
 func schema_apis_backend_genid_v1alpha1_GENIDIndexList(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -3078,9 +3267,25 @@ func schema_apis_backend_genid_v1alpha1_GENIDIndexSpec(ref common.ReferenceCallb
 							Format:      "",
 						},
 					},
+					"claims": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Claims define the embedded claims in the Index",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDIndexClaim"),
+									},
+								},
+							},
+						},
+					},
 				},
 			},
 		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/genid/v1alpha1.GENIDIndexClaim"},
 	}
 }
 
@@ -4261,6 +4466,57 @@ func schema_apis_backend_vlan_v1alpha1_VLANIndex(ref common.ReferenceCallback) c
 	}
 }
 
+func schema_apis_backend_vlan_v1alpha1_VLANIndexClaim(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name of the Claim",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"id": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ID defines the id of the resource",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"range": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Range defines the range of the resource The following notation is used: start-end <start-ID>-<end-ID> the IDs in the range must be consecutive",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"labels": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Labels as user defined labels",
+							Type:        []string{"object"},
+							AdditionalProperties: &spec.SchemaOrBool{
+								Allows: true,
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: "",
+										Type:    []string{"string"},
+										Format:  "",
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"name"},
+			},
+		},
+	}
+}
+
 func schema_apis_backend_vlan_v1alpha1_VLANIndexList(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -4347,9 +4603,25 @@ func schema_apis_backend_vlan_v1alpha1_VLANIndexSpec(ref common.ReferenceCallbac
 							},
 						},
 					},
+					"claims": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Claims define the embedded claims in the Index",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Default: map[string]interface{}{},
+										Ref:     ref("github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndexClaim"),
+									},
+								},
+							},
+						},
+					},
 				},
 			},
 		},
+		Dependencies: []string{
+			"github.com/kuidio/kuid/apis/backend/vlan/v1alpha1.VLANIndexClaim"},
 	}
 }
 

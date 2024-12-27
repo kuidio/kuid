@@ -59,12 +59,15 @@ spec:
                       type: string
                     endpoint:
                       description: Endpoint defines the name of the endpoint
+                      format: int32
                       type: integer
                     module:
                       description: Module defines the module reference id
+                      format: int32
                       type: integer
                     moduleBay:
                       description: ModuleBay defines the moduleBay reference id
+                      format: int32
                       type: integer
                     name:
                       description: Name is used to refer to internal names of the
@@ -79,6 +82,7 @@ spec:
                       type: string
                     port:
                       description: Port defines the id of the port
+                      format: int32
                       type: integer
                     region:
                       description: Region defines the region of the resource

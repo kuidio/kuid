@@ -41,6 +41,32 @@ spec:
           spec:
             description: EXTCOMMIndexSpec defines the dEXTCOMMred state of EXTCOMMIndex
             properties:
+              claims:
+                description: Claims define the embedded claims in the Index
+                items:
+                  properties:
+                    id:
+                      description: EXTCOMMID defines the EXTCOMM for the EXTCOMM claim
+                      format: int64
+                      type: integer
+                    labels:
+                      additionalProperties:
+                        type: string
+                      description: Labels as user defined labels
+                      type: object
+                    name:
+                      description: Name of the Claim
+                      type: string
+                    range:
+                      description: |-
+                        Range defines the range of the resource
+                        The following notation is used: start-end <start-ID>-<end-ID>
+                        the IDs in the range must be consecutive
+                      type: string
+                  required:
+                  - name
+                  type: object
+                type: array
               globalID:
                 description: |-
                   GlobalID is interpreted dependeing on the type
@@ -184,6 +210,32 @@ spec:
           spec:
             description: EXTCOMMIndexSpec defines the dEXTCOMMred state of EXTCOMMIndex
             properties:
+              claims:
+                description: Claims define the embedded claims in the Index
+                items:
+                  properties:
+                    id:
+                      description: EXTCOMMID defines the EXTCOMM for the EXTCOMM claim
+                      format: int64
+                      type: integer
+                    labels:
+                      additionalProperties:
+                        type: string
+                      description: Labels as user defined labels
+                      type: object
+                    name:
+                      description: Name of the Claim
+                      type: string
+                    range:
+                      description: |-
+                        Range defines the range of the resource
+                        The following notation is used: start-end <start-ID>-<end-ID>
+                        the IDs in the range must be consecutive
+                      type: string
+                  required:
+                  - name
+                  type: object
+                type: array
               globalID:
                 description: |-
                   GlobalID is interpreted dependeing on the type

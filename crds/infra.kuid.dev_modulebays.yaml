@@ -59,6 +59,7 @@ spec:
               psoition:
                 description: Position defines the position in the node the moduleBay
                   is deployed
+                format: int32
                 type: integer
               region:
                 description: Region defines the region of the resource

@@ -24,6 +24,7 @@ import (
 	"github.com/henderiw/idxtable/pkg/tree/tree16"
 	"github.com/henderiw/store"
 	"github.com/kuidio/kuid/apis/backend"
+	"github.com/kuidio/kuid/apis/common"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -105,6 +106,9 @@ func (r *VLANIndex) GetClaims() []backend.ClaimObject {
 	if r.GetMaxID() != nil && *r.GetMaxID() != r.GetMax() {
 		claims = append(claims, r.GetMaxClaim())
 	}
+	for _, claim := range r.Spec.Claims {
+		claims = append(claims, r.GetClaim(claim))
+	}
 	return claims
 }
 
@@ -148,6 +152,36 @@ func (r *VLANIndex) GetMaxClaim() backend.ClaimObject {
 			Index: r.Name,
 			Range: ptr.To[string](GetMaxClaimRange(*r.Spec.MaxID)),
 		},
+		nil,
+	)
+}
+
+func (r *VLANIndex) GetClaim(claim VLANIndexClaim) backend.ClaimObject {
+	spec := &VLANClaimSpec{
+		Index: r.Name,
+		ClaimLabels: common.ClaimLabels{
+			UserDefinedLabels: claim.UserDefinedLabels,
+		},
+	}
+	if claim.ID != nil {
+		spec.ID = claim.ID
+	} else {
+		spec.Range = claim.Range
+	}
+	return BuildVLANClaim(
+		metav1.ObjectMeta{
+			Namespace: r.GetNamespace(),
+			Name:      fmt.Sprintf("%s.%s", r.Name, claim.Name),
+			OwnerReferences: []metav1.OwnerReference{
+				{
+					APIVersion: schema.GroupVersion{Group: SchemeGroupVersion.Group, Version: "v1alpha1"}.Identifier(),
+					Kind:       VLANIndexKind,
+					Name:       r.Name,
+					UID:        r.UID,
+				},
+			},
+		},
+		spec,
 		nil,
 	)
 }

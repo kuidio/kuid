@@ -56,9 +56,9 @@ spec:
                 type: object
               range:
                 description: |-
-                  Range defines the EXTCOMM range for the EXTCOMM claim
-                  The following notation is used: start-end <start-EXTCOMMID>-<end-EXTCOMMID>
-                  the EXTCOMMs in the range must be consecutive
+                  Range defines the range of the resource
+                  The following notation is used: start-end <start-ID>-<end-ID>
+                  the IDs in the range must be consecutive
                 type: string
               selector:
                 description: Selector defines the selector criterias

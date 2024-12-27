@@ -104,7 +104,7 @@ func (r *be) CreateIndex(ctx context.Context, obj runtime.Object) error {
 			return err
 		}
 	}
-	log.Debug("update IPIndex claims", "object", obj)
+	log.Debug("update Index claims", "object", obj)
 	return r.updateIndexClaims(ctx, index)
 }
 
@@ -127,6 +127,7 @@ func (r *be) DeleteIndex(ctx context.Context, obj runtime.Object) error {
 		log.Error("cannot delete Index", "error", err.Error())
 		return err
 	}
+	log.Debug("destroyed")
 	r.cache.Delete(ctx, key)
 
 	log.Debug("finished")
